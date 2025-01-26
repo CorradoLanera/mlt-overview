@@ -1,0 +1,287 @@
+---
+title: "TITLE"
+subtitle: 'EVENT - CONTEXT/SCHOOL'
+author: "[CorradoLanera](www.CorradoLanera.it)"
+date: "YYYY-MM-DD (last update: `r Sys.Date()`)"
+institute: "[Unit of Biostatistics, Epidemiology, and Public Health](https://www.unipd-ubep.it/) --- University of Padova"
+output: 
+  xaringan::moon_reader:
+    seal: false  # no title slide! Do It Yourself here below
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    css: xaringan-themer.css
+---
+class: center, middle, bg_title, hide-count
+
+
+<img src="img/logo_800anni.png" width="150px"/>
+<img src="img/DSCTV.png" width="50px"/>
+<img src="img/UBEP.png" width="50px"/>
+<img src="img/LAIMS.png" width="50px"/>
+
+```{r setup, include=FALSE}
+options(
+  tmltools.dir.version = FALSE,
+  htmltools.preserve.raw = FALSE
+)
+
+knitr::opts_chunk$set(
+  fig.retina = 3,
+  warning = FALSE,
+  message = FALSE,
+  comment = "",
+  out.width = "100%"
+)
+library(knitr)
+library(xaringanExtra)
+library(xaringanthemer)
+
+library(tidyverse)
+library(gridExtra)
+
+library(countdown)
+library(metathis)
+
+options(width = 59) # fit into the right-column slides
+
+```
+
+
+```{r xaringans, echo=FALSE}
+# https://github.com/gadenbuie/xaringanExtra
+use_tachyons()
+use_share_again()
+use_panelset()
+use_clipboard()
+use_editable(expires = 1)
+use_scribble()
+# use_freezeframe()
+use_extra_styles(
+  hover_code_line = TRUE,         #<<
+  mute_unhighlighted_code = TRUE  #<<
+)
+use_progress_bar(color = "#0051BA", location = "top")
+```
+
+```{r style-share-again, echo=FALSE}
+style_share_again(
+  share_buttons = c("twitter", "linkedin", "pocket")
+)
+```
+
+
+```{r meta, echo=FALSE}
+meta() %>%
+  meta_general(
+    description = "Machine learning assisted Systematic Reviews",
+    generator = "xaringan and remark.js"
+  ) %>% 
+  meta_name("github-repo" = "CorradoLanera/ml4sr") %>% 
+  meta_social(
+    title = "Machine learning assisted Systematic Reviews",
+    url = "https://CorradoLanera.github.io/ml4sr/#1",
+    image = "https://github.com/CorradoLanera/ml4sr/raw/main/img/cover.jpg",
+    og_type = "website",
+    og_author = "UBEP",
+    twitter_card_type = "summary",
+    twitter_creator = "@CorradoLanera"
+  )
+```
+
+```{css, echo=FALSE}
+.left-code {
+  color: #777;
+  width: 38%;
+  height: 92%;
+  float: left;
+}
+.right-code {
+  color: #777;
+  width: 55%;
+  height: 92%;
+  float: right;
+  padding-top: 0.5em;
+}
+.left-plot {
+  width: 43%;
+  float: left;
+}
+.right-plot {
+  width: 60%;
+  float: right;
+}
+.hide-count .remark-slide-number {
+  display: none;
+}
+
+.bg_title {
+  position: relative;
+  z-index: 1;
+}
+
+.bg_title::before {    
+      content: "";
+      background-image: url('img/bg1.png');
+      background-size: contain;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      opacity: 0.3;
+      z-index: -1;
+}
+
+```
+
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+red <- "#f34213"
+purple <- "#3e2f5b"
+orange <- "#ff8811"
+green <- "#136f63"
+white <- "#FFFFFF"
+pastel_orange <- "#F97B64"
+blu_gray <- "#1F4257"
+style_duo_accent(
+    colors = c(
+        red = red,
+        purple = purple,
+        orange = orange,
+        green = green,
+        white = white,
+        pastel_orange = pastel_orange,
+        blu_gray = blu_gray
+    )
+)
+```
+
+
+<br>
+<br>
+<br>
+
+# **FIRST LINE TITLE**<br>**.orange[SECOND LINE TITLE]**
+
+<br>
+<br>
+
+**GLOBAL EVENT** - Place, YYYY/MM/DD -
+
+Context/school/program
+
+<br>
+
+**.black[[Corrado Lanera](https://CorradoLanera.it)]** | [**.orange[Laboratory of Artificial Intelligence for Medical Sciences]**](https://www.unipd-ubep.it/topics-laboratories/artificial-intelligence-for-medical-sciences-laims/)<br>[**Unit of Biostatistics, Epidemiology, and Public Health**](https://www.unipd-ubep.it/) | [**.red[University of Padova]**](https://unipd.it)<br>[.black[Department of Cardiac, Thoracic, Vascular Sciences, and Public Health]](https://www.dctv.unipd.it/)
+
+---
+class: inverse, bottom, right, hide-count
+
+
+```{r, echo=FALSE, out.width = "50%"}
+knitr::include_graphics("img/profilo_CL.jpg")
+```
+# Find me at...
+
+
+[`r fontawesome::fa("link")`](https://www.unipd-ubep.it/) [**www.unipd-ubep.it**](https://www.unipd-ubep.it/)
+
+[`r fontawesome::fa("mail-bulk")`](mailto:Corrado.Lanera@ubep.unipd.it) [**Corrado.Lanera**__.orange[@ubep.unipd.it]__](mailto:Corrado.Lanera@ubep.unipd.it)
+
+[`r fontawesome::fa("github")`](https://github.com/corradolanera)
+[`r fontawesome::fa("twitter")`](https://twitter.com/corradolanera)
+[`r fontawesome::fa("telegram-plane")`](https://telegram.me/CorradoLanera)
+**@CorradoLanera**
+
+[`r fontawesome::fa("github")`](https://github.com/UBESP-DCTV)
+**@UBESP-DCTV**
+
+
+---
+class: hide-count
+
+
+# .orange[Outline]
+
+- Topic **one**
+
+- Second **topic**
+
+- Another **interesting** topic
+
+
+
+
+---
+class: inverse, middle, center, hide-count
+
+# .orange[Topic **one**]
+ 
+
+---
+
+# Foo
+
+
+---
+class: inverse, middle, center, hide-count
+
+# .orange[Second **topic**]
+ 
+
+---
+
+# Bar
+
+
+
+---
+class: inverse, middle, center, hide-count
+
+# .orange[Another **interesting** topic]
+ 
+ 
+---
+
+# Tar
+
+---
+class: inverse, center, middle, hide-count
+
+
+
+.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt5[
+.left[
+_If you think the only acceptable performance is the ".orange[perfect performance]",<br>AI is not for you! ...But, I've heard that even humans have made mistakes..._
+]
+
+.tr[
+— Daniel Oberski<br>2021/03/26 ASReview interview - https://daob.nl/
+]
+]
+
+
+# Thank .orange[you] for the attention!
+
+
+
+Slides: <SLIDES' URL>
+
+```{r, echo=FALSE, out.width = "15%"}
+# knitr::include_graphics("img/bit.ly_<qrcode>.png")
+```
+
+
+[`r fontawesome::fa("link")`](https://www.unipd-ubep.it/) [**www.unipd-ubep.it**](https://www.unipd-ubep.it/) | 
+[`r fontawesome::fa("mail-bulk")`](mailto:Corrado.Lanera@ubep.unipd.it) [**Corrado.Lanera@ubep.unipd.it**](mailto:Corrado.Lanera@ubep.unipd.it)
+
+[`r fontawesome::fa("github")`](https://github.com/corradolanera)
+[`r fontawesome::fa("twitter")`](https://twitter.com/corradolanera)
+[`r fontawesome::fa("telegram-plane")`](https://telegram.me/CorradoLanera)
+**@CorradoLanera** | 
+[`r fontawesome::fa("github")`](https://github.com/UBESP-DCTV)
+**@UBESP-DCTV**
+
+
