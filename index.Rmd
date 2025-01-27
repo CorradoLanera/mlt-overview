@@ -180,7 +180,6 @@ knitr::include_graphics("img/profilo_CL.jpg")
 [`r fontawesome::fa("mail-bulk")`](mailto:Corrado.Lanera@ubep.unipd.it) [**Corrado.Lanera .orange[@ubep.unipd.it]**](mailto:Corrado.Lanera@ubep.unipd.it)
 
 [`r fontawesome::fa("github")`](https://github.com/corradolanera)
-[`r fontawesome::fa("twitter")`](https://twitter.com/corradolanera)
 [`r fontawesome::fa("telegram-plane")`](https://telegram.me/CorradoLanera)
 **@CorradoLanera**
 
@@ -194,12 +193,14 @@ knitr::include_graphics("img/profilo_CL.jpg")
 class: inverse, hide-count
 # What we are going to see
 
-Purpose of this class is to introducing **.orange[what is]** Machine Learning, why/in what is different from other (statistical) tools, how to understand (and **.orange[trust]**!) it's results, and looking at **.orange[some example]** and **.orange[best practice]** in conducing a machine learning project. This from simple _classical_ techniques to large language models.
+Purpose of this class is to introducing **.orange[what is]** Machine Learning, what are the techniques involved, how they work and how to understand (and **.orange[trust]**!) their results; we will also look at **.orange[some example]** and **.orange[best practice]** in conducing a machine learning project.
+
+The class will cover from simple _classical_ techniques to large language models, introducing agents.
 
 <br>
 <br>
 
-My principal aim is to let you able to start **.orange[understanding]** (and **.orange[evaluating]** the quality!) of a machine learning project when used for clinical purposes (possibly regardless of its complexity).
+My principal aim is to give you the tools to start **.orange[understanding]** (and **.orange[evaluating]** the quality!) of a machine learning project when used for clinical purposes (possibly regardless of its complexity).
 
 <br>
 <br>
@@ -208,18 +209,6 @@ My principal aim is to let you able to start **.orange[understanding]** (and **.
 
 **.orange[Promise]: I do not show you any code `r emo::ji("halo")`**
 
-
----
-class: hide-count
-# .orange[Acknowledgement]
-
-Parts of the following slides and their contents were produced thanks to the precious work of .orange[**Paola Berchialla**] (UniTo/DSCB)
-
-.center[
-```{r, echo=FALSE, out.width = "50%"}
-knitr::include_graphics(c("img/thankyou-robot.jpg"))
-```
-]
 
 
 ---
@@ -250,7 +239,7 @@ knitr::include_graphics("img/profilo_CL.jpg")
 class: inverse, middle
 # .center[**.orange[Overview]**]
 
-- **Intro**: what does it means "Machine Learning"?
+- **Introduction**: what does it means "Machine Learning"?
 
 - **Classifiers**
 
@@ -262,7 +251,7 @@ class: inverse, middle
 
 - **.orange[Unstructured] data** (e.g., images, text)
 
-- **Large** **.orange[Language Models]** (and ChatGPT)
+- **Large** **.orange[Language Models]**, ChatGPT, and Agents
 
 - **Best practices** for implementing Machine Learning
 
@@ -275,7 +264,7 @@ class: inverse, middle
 
 ---
 class: inverse, middle, center, hide-count
-# .orange[Intro]
+# .orange[Introduction]
 
 What does it means "Machine Learning"?
 
@@ -478,15 +467,18 @@ Machine learning is concerned with finding functions that **_best_ predict** out
 .pull-left[
 $$Y \simeq f(X)$$
 
-<img src="img/ml-process.png" width="95%" />
+<img src="img/ml-process.png" width="100%" />
+
+.orange[_Learners_] are algorithms that improve their skills (in producing better models/functions) by learning from old/known .orange[__(training)__] data.
+
 ]
 
 .pull-right[
-<img src="img/mlt_loop.png" width="85%" />
+<img src="img/mlt_loop.png" width="10017
+%" />
 ]
 
 
-.orange[_Learners_] are algorithms that improve their skills (in producing better models/functions) by learning from old/known .orange[__(training)__] data.
 
 
 > A .orange[_learner_] uses data and experience to perform better over time (i.e., producing new models that performs better than the previous ones)
@@ -536,22 +528,22 @@ include_graphics("img/MLvsTrad.png")
 ---
 # Types of .orange[learning]
 
-- .orange[Unsupervised] learning: The input data is _not labeled_ (there are not right answers!)
+- **.orange[Unsupervised] learning**: The input data is _not labeled_ (there are not right answers!)
 
 Data is given to the model, which is left to learn optimal .orange[patterns]/.orange[clusters].
 
 
 
-- (Passive) .orange[Supervised] learning: The learning algorithm is provided with a set of inputs along with the corresponding .orange[correct] outputs.
+- **(Passive) .orange[Supervised] learning**: The learning algorithm is provided with a set of inputs along with the corresponding .orange[correct] outputs.
  
 The algorithm compares its current inferred output with the correct one to learn from its .orange[errors] (i.e., to minimize it).
 
 
-- .orange[Active] learning: The learning algorithm .orange[interactively] queries a user (the _oracle_) to label new data with the desired (correct) outputs.
+- **.orange[Active] learning**: The learning algorithm .orange[interactively] queries a user (the _oracle_) to label new data with the desired (correct) outputs.
  
 With input data labeled on the fly by .orange[oracle's knowledge], the model cycles query/train stages on the left unlabeled data.
 
-- .orange[Reinforcement] learning (RL): The learning algorithm (an _agent_) interacts with an environment by performing actions in given states and then receiving rewards (or penalties).
+- **.orange[Reinforcement] learning (RL)**: The learning algorithm (an _agent_) interacts with an environment by performing actions in given states and then receiving rewards (or penalties).
  
 Learning a policy (state → action mapping) that optimally balances (maximizing) short-term and long-term gains.
 
@@ -856,7 +848,7 @@ include_graphics("img/linear_classifier_6.png")
 ```
   
 
-.footnote[An hyperplane is a **subspace of co-dimension = 1** of a space (i.e. 1 dimension less then the space ones).
+.footnote[An hyperplane is a **subspace of co-dimension = 1** of a space (i.e. 1 dimension less then the original space).
 
 E.g., a line (1D) in a plane (2D); a plane (2D) in a 3D space; a 23D subspace in a 24D space.]
 
@@ -1632,9 +1624,12 @@ $\text{output(s)} = g(\sum_{i=1}^n a_i*w_i)$
 
 
 ---
-# Fully connected network 
+# .orange[Fully connected] network 
 
-<img src="img/mlp.png" width="50%"/>
+.center[
+<img src="img/mlp.png" width="65%"/>
+]
+90
 
 <br>
 
@@ -1925,6 +1920,11 @@ knitr::include_graphics("img/squatch-eat-pizza.png")
 ```
 ]
 
+<small>
+.right[StatQuest video: https://www.youtube.com/watch?v=zxQyTK8quyY]
+</small110
+>
+
 ---
 # <small>.orange[Embeddings] & .orange[positional encoding]</small>
 
@@ -1943,14 +1943,6 @@ knitr::include_graphics("img/pizza-eat-squatch.png")
 ]
 
 
-
----
-# (.orange[Multi-head]) (.orange[self-]).orange[attention]
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%", fig.alt="https://youtu.be/zxQyTK8quyY"}
-knitr::include_graphics("img/attention.png")
-```
 
 ---
 
@@ -2144,7 +2136,7 @@ knitr::include_graphics(
 ---
 class: inverse, middle, center, hide-count
 
-# .orange[How do I use **Chat GPT**?]
+# .orange[How **Chat GPT**?]
 
 .left[
 - Base: **Web**
@@ -2152,8 +2144,6 @@ class: inverse, middle, center, hide-count
 - Medium: **Prompt design**
 
 - Advanced: **API**
-]
-
 ]
 
 
@@ -2172,8 +2162,6 @@ https://chat.openai.com
 - age verification
 - robustness/correctness
 - chat history
-- projects
-- canvas
 - free vs plus (vs pro)
 ]
 
@@ -2320,19 +2308,17 @@ https://cdn.openai.com/spec/model-spec-2024-05-08.html#follow-the-chain-of-comma
 https://platform.openai.com/docs/guides/gpt/chat-completions-api
 
 ---
-# .orange[Costs]
+# .orange[Costs] <small><small><small>(https://platform.openai.com/docs/pricing)</small></small></small>
 
-```{r, echo=FALSE, out.width="80%", fig.alt="https://openai.com/pricing"}
+```{r, echo=FALSE, out.width="90%", fig.alt="https://openai.com/pricing"}
 knitr::include_graphics(
   here::here("img/gpt-api-price.png")
 )
 ```
 
-https://platform.openai.com/docs/pricing
-
 
 ---
-# .orange[counting] tokens
+# .orange[Counting] tokens
 
 <small>https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them</small>
 
@@ -2351,28 +2337,10 @@ knitr::include_graphics(
 >
 > Programmatica: https://github.com/openai/tiktoken
 ]
----
-# .orange[Playground] (GUI4API test `r emo::ji("sweat_smile")`)
 
-
-```{r, echo=FALSE, out.width="100%", fig.alt="https://platform.openai.com/playground"}
-knitr::include_graphics(
-  here::here("img/playground.png")
-)
-```
-
-
-```{r, echo=FALSE, out.width="100%", fig.alt="https://platform.openai.com/playground"}
-knitr::include_graphics(
-  here::here("img/playground-cost.png")
-)
-```
-
-
-https://platform.openai.com/playground
-
-
-
+E.g. ~10000 paragraphs, or ~750000 words (--> ~1M tokens) with gpt-4o:
+ -  ~2.5 $ if input
+ - ~10   $ if output
 
 
 
