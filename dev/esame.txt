@@ -1,0 +1,89 @@
+1. Secondo la definizione di Tom Mitchell, quale delle seguenti situazioni rappresenta un esempio di apprendimento automatico?
+
+A) Un programma che esegue un insieme fisso di istruzioni senza modificare il suo comportamento.
+B) Un algoritmo che, dopo aver analizzato un gran numero di immagini di cifre scritte a mano, riduce l’errore di classificazione nel riconoscimento delle stesse.
+C) Un sistema che utilizza una tabella di lookup per associare input e output predefiniti.
+D) Un’applicazione che esegue il calcolo di formule matematiche predeterminate.
+
+Risposta corretta: B
+
+2. Qual è la differenza fondamentale tra apprendimento supervisionato e non supervisionato?
+
+A) L’apprendimento supervisionato non richiede dati etichettati.
+B) L’apprendimento non supervisionato utilizza dati etichettati per guidare il modello.
+C) L’apprendimento supervisionato si basa su dati etichettati mentre quello non supervisionato no.
+D) Non esiste alcuna differenza sostanziale tra i due.
+
+Risposta corretta: C
+
+3. Nel metodo k-Nearest Neighbors (kNN), quale effetto ha l’aumento del valore di k?
+
+A) Aumenta la flessibilità del modello, riducendo il bias.
+B) Riduce la varianza ma aumenta il bias, rendendo il modello meno flessibile.
+C) Non influisce sulle prestazioni del modello.
+D) Aumenta sia la varianza che riduce il bias.
+
+Risposta corretta: B
+
+4. In un modello Random Forest, quale delle seguenti affermazioni è corretta riguardo ai parametri ntree e mtry?
+
+A) Aumentare ntree aumenta la variabilità delle previsioni.
+B) Aumentare mtry riduce la flessibilità del modello, mentre ntree determina il numero di alberi; un maggior numero di alberi riduce la varianza.
+C) Aumentare mtry riduce la varianza, e ntree influisce solo sui tempi di addestramento.
+D) Nessuno dei due parametri influisce sulle prestazioni del modello.
+
+Risposta corretta: B
+
+5. Qual è lo scopo principale della procedura di cross-validation nella selezione dei modelli?
+
+A) Ottimizzare le prestazioni del modello sul set di addestramento.
+B) Fornire una stima imparziale dell’errore di generalizzazione su dati non visti.
+C) Aumentare il numero di dati di addestramento senza doverne raccogliere altri.
+D) Ridurre il bias del modello eliminando il set di test.
+
+Risposta corretta: B
+
+6. Nel contesto della validazione incrociata k-fold, quale effetto produce la scelta di un valore molto elevato di k (ad esempio, leave-one-out cross-validation)?
+
+A) Produce una stima con basso bias ma alta varianza.
+B) Produce una stima con alto bias e alta varianza.
+C) Riduce sia bias che varianza.
+D) Non ha alcun effetto sulle stime dell’errore.
+
+Risposta corretta: A
+
+7. Che cosa si intende per trade-off bias-varianza in machine learning?
+
+A) È la scelta tra modelli con alta accuratezza e modelli con bassa complessità.
+B) È il compromesso tra la capacità del modello di adattarsi ai dati di addestramento (varianza) e la sua capacità di generalizzare su dati nuovi (bias).
+C) Indica l’equilibrio tra il numero di feature e la dimensione del dataset.
+D) Rappresenta il compromesso tra tempo di addestramento e precisione.
+
+Risposta corretta: B
+
+8. Qual è il ruolo principale di una funzione di attivazione in una rete neurale?
+
+A) Fornire una rappresentazione lineare dei dati in ingresso.
+B) Introdurre non-linearità, permettendo alla rete di apprendere relazioni complesse.
+C) Normalizzare i dati prima dell’addestramento.
+D) Ridurre il numero di parametri del modello.
+
+Risposta corretta: B
+
+9. Quale delle seguenti affermazioni descrive correttamente il ruolo dei layer di convoluzione in una CNN?
+
+A) I layer di convoluzione sono utilizzati per ridurre la dimensionalità dei dati aggregando le informazioni spaziali tramite operazioni di pooling.
+B) I layer di convoluzione applicano filtri locali per estrarre caratteristiche (come bordi, angoli e texture) dalle immagini, sfruttando la condivisione dei pesi e riducendo il numero totale di parametri.
+C) I layer di convoluzione hanno il compito esclusivo di normalizzare gli input per rendere il modello più robusto agli outlier.
+D) I layer di convoluzione sostituiscono integralmente i layer fully connected, eliminando la necessità di ulteriori elaborazioni.
+
+Risposta corretta: B
+
+10. Quale delle seguenti componenti è fondamentale nell’architettura dei Transformer, come utilizzata in modelli tipo ChatGPT?
+
+A) Un meccanismo di pooling max.
+B) La convoluzione 3D.
+C) Il meccanismo di self-attention.
+D) L’uso di alberi decisionali.
+
+Risposta corretta: C
