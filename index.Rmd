@@ -2,7 +2,7 @@
 title: "Machine Learning Overview"
 subtitle: 'From Basics to Agents'
 author: "[CorradoLanera](www.CorradoLanera.it)"
-date: "2022-05-25 (last update: `r Sys.Date()`)"
+date: "2025-05-08 (last update: `r Sys.Date()`)"
 institute: "Unit of Biostatistics, Epidemiology, and Public Health --- University of Padova"
 output: 
   xaringan::moon_reader:
@@ -200,14 +200,14 @@ The class will cover from simple _classical_ techniques to large language models
 <br>
 <br>
 
-My principal aim is to give you the tools to start **.orange[understanding]** (and **.orange[evaluating]** the quality!) of a machine learning project when used for clinical purposes (possibly regardless of its complexity).
+My principal aim is to give you the tools to start **.orange[understanding]** and **.orange[evaluating]** the quality of a machine learning project when used for clinical purposes, possibly regardless of its complexity.
 
 <br>
 <br>
 <br>
 <br>
 
-**.orange[Promise]: I do not show you any code `r emo::ji("halo")`**
+**.orange[Disclaimer]: Today I do not show you any code `r emo::ji("halo")`**
 
 
 
