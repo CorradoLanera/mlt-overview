@@ -2,9 +2,9 @@
 title: "Machine Learning Overview"
 subtitle: 'From Basics to Agents'
 author: "[CorradoLanera](www.CorradoLanera.it)"
-date: "2025-09-23 (last update: `r Sys.Date()`)"
+date: "2025-05-08 (last update: `r Sys.Date()`)"
 institute: "Unit of Biostatistics, Epidemiology, and Public Health --- University of Padova"
-output:
+output: 
   xaringan::moon_reader:
     seal: false  # no title slide! Do It Yourself
     nature:
@@ -16,6 +16,7 @@ output:
 class: center, middle, bg_title, hide-count
 
 
+<img src="img/logo_800anni.png" width="150px"/>
 <img src="img/DSCTV.png" width="50px"/>
 <img src="img/UBEP.png" width="50px"/>
 <img src="img/LAIMS.png" width="50px"/>
@@ -108,7 +109,7 @@ meta() %>%
   z-index: 1;
 }
 
-.bg_title::before {
+.bg_title::before {    
       content: "";
       background-image: url('img/bg1.png');
       background-size: contain;
@@ -211,6 +212,30 @@ My principal aim is to give you the tools to start **.orange[understanding]** an
 
 
 ---
+class: inverse, bottom, right, hide-count
+
+
+```{r, echo=FALSE, out.width = "50%"}
+knitr::include_graphics("img/profilo_CL.jpg")
+```
+# Find me at...
+
+
+[`r fontawesome::fa("link")`](https://www.unipd-ubep.it/) [**www.unipd-ubep.it**](https://www.unipd-ubep.it/)
+
+[`r fontawesome::fa("github")`](https://github.com/UBESP-DCTV)
+**@UBESP-DCTV**
+
+[`r fontawesome::fa("github")`](https://github.com/corradolanera)
+[`r fontawesome::fa("twitter")`](https://twitter.com/corradolanera)
+[`r fontawesome::fa("telegram-plane")`](https://telegram.me/CorradoLanera)
+**@CorradoLanera**
+
+[`r fontawesome::fa("mail-bulk")`](mailto:Corrado.Lanera@ubep.unipd.it) [**Corrado.Lanera**__.orange[@ubep.unipd.it]__](mailto:Corrado.Lanera@ubep.unipd.it)
+
+[`r fontawesome::fa("calendar-check")`](https://calendly.com/corradolanera) [**calendly.com/corradolanera**](https://calendly.com/corradolanera)
+
+---
 class: inverse, middle
 # .center[**.orange[Overview]**]
 
@@ -248,13 +273,13 @@ What does it means "Machine Learning"?
 
 ---
 # .orange[What is **Machine Learning**]
-
+  
 
 .bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt1[
   .left[
     Machine Learning deals with the study, the design and the development of algorithms that give computers the capability to learn without being **explicitly** programmed.
   ]
-
+  
   .tr[
     — Arthur Samuel, 1959
   ]
@@ -269,12 +294,12 @@ include_graphics("img/samuel.png")
 
 ---
 # .orange[What is **Machine Learning**]
-
+  
 .bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt1[
   .left[
     A computer program is said to learn from **experience** (E) with respect to some class of **tasks** (T) and performance measure  (P), if its **performance** at the given task improves with **experience**
   ]
-
+  
   .tr[
     — _Machine Learning_ - Mitchell, 1997
   ]
@@ -289,19 +314,27 @@ include_graphics("img/Tom-Mitchell-2.webp")
 .pull-right[
 
 <br>
-<br>
-<br>
+
 **.orange[Learning]**: performance on **T** as measured by **P** improves with **E**.
+
+<br>
+<small>
+  
+E.g., Misclassification error (**P**) for diagnoses' classification (**T**) improves (i.e., become lower) after training on additional data (**E**).
+
+E.g., Misclassification error (**P**) for diagnoses' classification (**T**) improves (i.e., become lower) after additional iterations of the training procedure (**E**) on the same data-set.
+</small>
+]
 
 ---
 # .orange[What is **Machine Learning**]
-
+  
 
 .bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt1[
   .left[
     A task (red box) requires an appropriate mapping - a model- from data described by feature to outputs. **Obtaining** such mapping from training data is what constitute a **learning problem** (blue box).
   ]
-
+  
   .tr[
     — _Machine Learning_ - Peter Flach, 2012
   ]
@@ -324,7 +357,7 @@ include_graphics("img/flach_learning_problem.png")
 
 ---
 # .orange[Task]
-
+  
 A __task__ is something the ML must carry out
 
 - the process of learning itself is not the task
@@ -341,17 +374,24 @@ A __task__ is defined in terms of _how the ML should process a collection of Exa
 
 
 ---
+# .orange[Learning: are cars "learning"?!]
+
+<iframe width="800" height="450" src="https://www.youtube.com/embed/Aut32pR5PQA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+... or is the generative models which learns to produce well trained cars!?
+
+---
 # .orange[Task: Example]
-
-
+  
+  
 <small>
 
-**Learning Problem** | Task **T**
+**Learning Problem** | Task **T**  
 ---------------------|------------
 Learning Checkers    | **Playing checkers**
 Handwriting recognition | **Recognizing/Classifying handwritten words/numbers within images**
 Self-driving car | **Driving from A to B**
-Diseases extraction from EHR | **classify EHR by the disease reported (in free-text natural language)**
+Diseases extraction from EHR | **classify EHR by the disease reported (in free-text natural language)** 
 Describe patient movement in bed | **At any given time provide position and dynamics of patients**
 
 </small>
@@ -360,13 +400,13 @@ Describe patient movement in bed | **At any given time provide position and dyna
 
 ---
 # .orange[Performance]
-
+  
 A __performance__ is a quantitative measure for assessing the ability of ML
 
 - performance is measured on the task being carried out
 
 Usually __performance__ is measured in terms of:
-
+  
 - .orange[_accuracy_]: proportion of examples for which the model produces the correct output.
 
 - .orange[_error rate_]: proportion of examples for which the model produces the incorrect output.
@@ -374,18 +414,18 @@ Usually __performance__ is measured in terms of:
 <br>
 <br>
 <br>
-
+  
 
 #### .orange[**WARNING**: unbalanced data require balanced metrics!]
-
-
-
+  
+  
+  
 ---
 # .orange[Performance: Example]
-
+  
 <small>
 
-**Learning Problem** | Task **T** | Performance **P**
+**Learning Problem** | Task **T** | Performance **P** 
 ---------------------|------------|-------------------
 Learning Checkers    | Playing checkers | **% games won **
 Handwriting recognition | Recognizing/Classifying handwritten words/numbers within images | **% correctly classified words **
@@ -397,16 +437,16 @@ Describe patient movement in bed | At any given time provide position and dynami
 
 ---
 #.orange[Experience]
-
+  
 .orange[__Experience__] is primarily determined by the amount of supervision during the learning process and the availability of labeled data
 
 
 ---
 #.orange[Experience: Example]
-
+  
 <small>
 
-**Learning Problem** | Task **T** | Performance **P** | Experience **E**
+**Learning Problem** | Task **T** | Performance **P** | Experience **E** 
 ---------------------|------------|-------------------|-----------------
 Learning Checkers    | Playing checkers | % games won | **playing (against itself)**
 Handwriting recognition | Recognizing/Classifying handwritten words/numbers within images | % correctly classified words | **process data sets of handwritten words with given classification**
@@ -421,7 +461,7 @@ Describe patient movement in bed | At any given time provide position and dynami
 
 ---
 # .orange[How do Machines **learn**?]
-
+  
 Machine learning is concerned with finding functions that **_best_ predict** outputs (responses), given data inputs (predictors)
 
 .pull-left[
@@ -447,9 +487,9 @@ $$Y \simeq f(X)$$
 
 ---
 # .orange[How do Machines **learn**?]
-
-
-
+  
+  
+  
 .left-code[
 In traditional programming:
 - **provide** an algorithm (a finite set of instructions)
@@ -467,7 +507,7 @@ Machine Learning problems are .orange[*optimisation*] ones.
 ]
 
 .right-plot[
-
+  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', out.width="100%"}
 include_graphics("img/MLvsTrad.png")
 ```
@@ -495,16 +535,16 @@ Data is given to the model, which is left to learn optimal .orange[patterns]/.or
 
 
 - **(Passive) .orange[Supervised] learning**: The learning algorithm is provided with a set of inputs along with the corresponding .orange[correct] outputs.
-
+ 
 The algorithm compares its current inferred output with the correct one to learn from its .orange[errors] (i.e., to minimize it).
 
 
 - **.orange[Active] learning**: The learning algorithm .orange[interactively] queries a user (the _oracle_) to label new data with the desired (correct) outputs.
-
+ 
 With input data labeled on the fly by .orange[oracle's knowledge], the model cycles query/train stages on the left unlabeled data.
 
 - **.orange[Reinforcement] learning (RL)**: The learning algorithm (an _agent_) interacts with an environment by performing actions in given states and then receiving rewards (or penalties).
-
+ 
 Learning a policy (state → action mapping) that optimally balances (maximizing) short-term and long-term gains.
 
 ---
@@ -553,6 +593,30 @@ include_graphics("img/food.jpg")
 
 
 ---
+# .orange[Classification]
+
+Does data belong to class A? .orange[_**is this really a heart failure patient?**_]
+
+<br>
+
+Classifiers are the most commonly used ML algorithms in analytics applications
+
+
+  -  Suggest possible patient diagnoses
+
+  - Identify patients with high readmission risk
+
+  - Automatically alert care providers early in the development of sepsis
+
+  - Define the threshods for _abnormal_ lab results
+
+  - Automatically differentiate between clinical and administrative documents
+
+  - Recommend the most effective wellness or disease management intervention for a patient
+
+  -  many, many more...
+
+---
 
 # .orange[Classifiers] and .orange[regressors].
 
@@ -565,7 +629,7 @@ knitr::include_graphics(
 
 ---
 # .orange[Classification]
-
+  
 .left-code[
 __Feature space__
 
@@ -580,17 +644,17 @@ __Classifier functions (_classifiers_)__
 - a classifier for $K$ classes is a function
 
 $$
-f:\mathbb{R}^d \to \{1, \ldots, K \}
+f:\mathbb{R}^d \to \{1, \ldots, K \}   
 $$
 - classifiers carve up the space into regions
 ]
 
 .right-plot[
-
+  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%"}
 include_graphics("img/classification_3.png")
 ```
-
+  
 ]
 
 
@@ -613,13 +677,13 @@ $$\mathfrak{L}(i, j) = \begin{cases}
 0 & \textrm {if } i = j  \\
 \end{cases}$$
 
-Note: if the outcome of $f$ is a set of probabilities for the classes, the same definition is valid considering
+Note: if the outcome of $f$ is a set of probabilities for the classes, the same definition is valid considering 
 $$\mathfrak{L}: \{p_1, \cdots, p_K\} \times \{1, \cdots, K\} \to [0, \infty)$$
 
 
 ---
 # .orange[Risk of classifier]
-
+    
 If the distribution of the classes is known, the .orange[risk] of classifier is the expected loss
 
 $$
@@ -637,10 +701,10 @@ We can evaluate the classifier by how large its risk is
 <br>
 
 
-> N.B. The above one is a sort of common **_misuse of notation_**: a classifier is **.orange[a (single!) model]**, and **cannot be trained**!! when we say "train a model" the real meaning is
+> N.B. The above one is a sort of common **_misuse of notation_**: a classifier is **.orange[a (single!) model]**, and **cannot be trained**!! when we say "train a model" the real meaning is 
 .center[**"a MLT start producing models, somehow; new ones replacing the prevouses"**.]
 Interpreting "replacement" like "modification", we can pretend that a (**.orange[single]**...) model is trained.
-
+  
 
 
 ---
@@ -649,16 +713,16 @@ class: inverse, middle, center, hide-count
 
 
 
-
+  
 ---
 # .orange[Nearest neighbor]
-
+  
 .orange[__Idea:__] use training data itself as classifier
 
 - Given: data point $x$
-
+  
   - Find training data point closest to $x$
-
+  
   - Assign $x$ the label of closest point
 
 
@@ -675,6 +739,18 @@ include_graphics("img/knn.png")
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="60%"}
 include_graphics("img/knn_2.png")
 ```
+
+
+---
+class: inverse, middle, center, hide-count
+
+# Question
+
+.left[
+How can we __train__ a model using a nearest neighbor MLT?
+
+(i.e. what can be the _experience_?)
+]
 
 
 
@@ -695,6 +771,30 @@ include_graphics("img/knn_2.png")
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center",fig.cap="https://medium.com/analytics-vidhya/diabetes-classification-with-knn-and-logistic-regression-2edd3760a8c7",  out.width="60%"}
 include_graphics("img/knn_k.png")
 ```
+
+
+---
+class: inverse, middle, center, hide-count
+
+# Question
+
+.left[
+How can we __train__ a model using a k-nearest neighbor MLT?
+
+(i.e. what can be the _experience_?)
+]
+
+
+---
+class: inverse, middle, center, hide-count
+
+# Question
+
+.left[
+**Increasing** k, we provide **.orange[more or less] flexibility** to the model?
+
+Which are the **minimum** and **maximum** possible k?
+]
 
 
 
@@ -720,7 +820,7 @@ __What to do for large dataset:__
 
 
 ---
-# .orange[Linear classifiers]
+# .orange[Linear classifiers] 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="70%"}
 include_graphics("img/linear_classifier_3.png")
@@ -728,7 +828,7 @@ include_graphics("img/linear_classifier_3.png")
 
 
 ---
-# .orange[Linear classifiers]
+# .orange[Linear classifiers] 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="70%"}
 include_graphics("img/linear_classifier_5.png")
@@ -739,6 +839,18 @@ include_graphics("img/linear_classifier_5.png")
 
 
 
+---
+#.orange[Linear classifiers:<br>Maximum margin hyperplane] 
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="70%"}
+include_graphics("img/linear_classifier_6.png")
+```
+  
+
+.footnote[An hyperplane is a **subspace of co-dimension = 1** of a space (i.e. 1 dimension less then the original space).
+
+E.g., a line (1D) in a plane (2D); a plane (2D) in a 3D space; a 23D subspace in a 24D space.]
 
 ---
 #.orange[Linear classifiers:<br>Maximum margin hyperplane]
@@ -749,13 +861,9 @@ include_graphics("img/linear_classifier_5.png")
 include_graphics("img/linear_classifier_7.png")
 ```
 
-.footnote[An hyperplane is a **subspace of co-dimension = 1** of a space (i.e. 1 dimension less then the original space).
-
-E.g., a line (1D) in a plane (2D); a plane (2D) in a 3D space; a 23D subspace in a 24D space.]
-
 
 ---
-#.orange[Linear classifiers: Support-Vector Machine]
+#.orange[Linear classifiers: Support-Vector Machine] 
 
 
 A maximum margin classifier is called __Support-Vector Machine__
@@ -771,24 +879,24 @@ Training a SVM is a .orange[convex] optimization problem
 # .orange[Limitations of linear classifiers]
 
 .pull-left[
-
+  
 Problem 1: **curved optimal decision boundary**
-
+  
   - SVM solves Problem 1 using the so-called .orange[_kernel trick_]
 
 <br>
 <br>
-
+  
 Problem 2: **classes may overlap**
-
+  
 - SVM solve Problem 2 by:
-
+  
   - permitting .orange[misclassified] training points (**C** hyper-parameter)
 
   - each such point contributes a .orange[_cost_] to the optimization target function
 
   - using the .orange[kernel tricks]
-
+  
 ]
 
 .pull-right[
@@ -819,7 +927,7 @@ include_graphics("img/kernel_1.png")
 ---
 # .orange[Example of the kernel trick]
 
-Project it into a three-dimensional space where the new coordinates are
+Project it into a three-dimensional space where the new coordinates are 
 
 .left-column[
 $$\begin{cases}
@@ -840,7 +948,7 @@ include_graphics("img/kernel.gif")
 ---
 # .orange[Example of the kernel trick]
 
-Run the SVM on the trasformed data
+Run the SVM on the trasformed data 
 
 .right-column[
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="90%"}
@@ -864,6 +972,33 @@ include_graphics("img/kernel_2.png")
 
 
 
+
+---
+#.orange[Limitations of linear classifiers]
+
+Problem 3: more than two classes 
+
+- Can be addressed by combining multiple linear classifier
+
+<br> 
+<br> 
+
+> Some classifiers naturally apply to more classes, e.g., kNN.
+
+
+
+---
+class: inverse, middle, center, hide-count
+
+# Question
+
+.left[
+The **C** parameter of SVMs MLTs determines the amount of violation admitted, i.e. how much **.orange[weight]** have data _crossing the line_ (so, it cannot be negative).
+
+C = 0 is "violation is not relevant" (i.e., you can cross the line as much as you want).
+
+**Increasing** C, we provide **.orange[more or less] flexibility** to the model?
+]
 
 
 
@@ -897,7 +1032,7 @@ If weak classifiers are applicable to $k>2$ classes, so it is ensemble.
 ---
 # .orange[Classification by majority vote]
 
-$m$ classifiers take a vote
+$m$ classifiers take a vote 
 
 > let us suppose $m$ is an odd number
 
@@ -915,12 +1050,22 @@ $$\rm sgn \left( \sum_{j=1}^m f_j(x)\right)$$
 
 
 
-
-
-
-
 ---
-## .orange[Classification by majority vote]
+# .orange[Classification by majority vote]
+
+Does the majority make the right choice?
+
+.pull-left[
+  Let's assume
+
+-  each classifier makes the right choice with probability $p\in [0,1]$
+
+- votes stochastilly independent when regarded as random outcomes
+]
+
+
+.pull-right[
+.panelset[
 ```{r, panelset = TRUE, message = FALSE, warning=FALSE, fig.align='center', out.width="100%", background='transparent'}
 vote_class_plot <- function(p = 0.55) {
   n_classifier <- 1:250
@@ -935,7 +1080,16 @@ vote_class_plot <- function(p = 0.55) {
     ylab("Probability")
 }
 
+vote_class_plot()
 ```
+]
+]
+
+
+
+
+---
+## .orange[Classification by majority vote]
 
 ```{r, message = FALSE, warning=FALSE, echo = FALSE, fig.align='center', out.width="70%"}
 layout(matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE))
@@ -1003,16 +1157,16 @@ include_graphics("img/tree_5.png")
 
 ---
 # .orange[Random forest]
-
+  
 .orange[Tree training]: Input $n$ training points of classes $1,\ldots, K$
-
+  
 - select $n$ points uniformly at random with replacement
 
 - train a tree on the randomized data set
 
 
 .orange[For each tree]:
-
+  
 - in each step, select $m$ axes at random (**mtry** hyper-parameter)
 
 - compute best split point for each of these axes
@@ -1025,6 +1179,44 @@ include_graphics("img/tree_5.png")
 >  - take majority vote
 
 
+
+
+---
+#.orange[Hyperplane comparison]
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="70%", fig.cap='2 classes classification'}
+include_graphics("img/hyperplane.png")
+```
+
+---
+#.orange[Hyperplane comparison]
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="65%", fig.cap='Hyperplane for XOR pattern'}
+include_graphics("img/hyperplane_2.png")
+```
+
+
+
+
+
+---
+class: inverse, middle, center, hide-count
+
+# Question
+
+.left[
+The **mtry** parameter of RF MLTs determines how many variables are randomly selected to train each tree.
+
+- **Increasing** mtry, we provide **.orange[more or less] flexibility** to the model?
+- **Increasing** mtry, we provide **.orange[more or less] variability** to the model?
+- Which are the **minimum** and **maximum** possible mtry?
+
+The **ntree** parameter of RF MLTs determines how many trees there are in the forest (i.e., you are going to train).
+
+- What is the effect of **increasing** ntree?
+
+]
 
 
 
@@ -1047,14 +1239,14 @@ class: inverse, middle, center, hide-count
 
 ---
 # .orange[Overfitting]
-
-
+  
+  
 Sample data acts as proxy for underlying data source
 
 .orange[_Over-fitting_] means adapting too closely to the idiosyncrasies of a sample set
 
 **Result**: Small error on training data but .orange[poor predictive performance]!
-
+  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="90%"}
 knitr::include_graphics("img/overfit.jpg")
 ```
@@ -1062,7 +1254,7 @@ knitr::include_graphics("img/overfit.jpg")
 
 ---
 # .orange[Overfitting]
-
+  
 Model is .orange[not able to generalize]
 
 Learn the data and .orange[not the underlying function]
@@ -1078,9 +1270,9 @@ knitr::include_graphics("img/figure3.png")
 ---
 # .orange[Overfitting: example]
 
-Two alternative models of human papillomavirus infection and its progression to cervical cancer (CIN)
+Two alternative models of human papillomavirus infection and its progression to cervical cancer (CIN) 
 
-The complex model includes multiple stages of pre-cancerous lesions which can progress or regress at different rates (model parameters)
+The complex model includes multiple stages of pre-cancerous lesions which can progress or regress at different rates (model parameters) 
 
 <br>
 
@@ -1131,15 +1323,15 @@ knitr::include_graphics("img/yogi-berra-photo-quote-1.jpg")
 
 ---
 # .orange[Bias and Variance trade-off]
-
+  
 In order to minimize test error on new data points we need to
 > **select a function** that achieves **.orange[_low variance_]** and **.orange[_low bias_]**.
 
 
-- .orange[**Variance**] refers to the amount by which our predictions would **change if we estimated using a different training set**.
+- .orange[**Variance**] refers to the amount by which our predictions would **change if we estimated using a different training set**. 
 > The more flexible the model, the higher the variance.
 
-- .orange[**Bias**] refers to the **error that introduced by the approximation** we are making with our model (represent complicated data by a simple model).
+- .orange[**Bias**] refers to the **error that introduced by the approximation** we are making with our model (represent complicated data by a simple model). 
 > The more simple the model, the higher the bias.
 
 There is a .orange[trade off] between increasing variance (flexibility) and decreasing bias (simplicity) and vice versa.
@@ -1149,13 +1341,27 @@ knitr::include_graphics("img/tradeoff.png")
 ```
 
 
+---
+#.orange[Bias variance trade-off]
+  
+  
+A predictor having high bias or variance won't do well in predicting on new data
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="70%"}
+knitr::include_graphics("img/BV.png")
+```
+
+
+Good, generalizable predictors need to have .orange[both low bias and low variance]
+
+
 
 
 ---
 
 #.orange[(Hyper-)parameters]
 
-
+ 
 MLT                 |parameters             | Hyper-parameters|
 --------------------|-----------------------|-----------------
 Decision tree       | Splits' locations     | # splits
@@ -1163,7 +1369,7 @@ Random forest       | Splits' locations     | # splits<br># trees<br># dimension
 SVM                 | Hyper-plane's position | type of nonlinearity<br>margin<br>overlap
 Logistic regression | $\beta$s              | polynomial degrees<br># nodes for splines<br>interactions
 ANN/DL              | weights               | # layers<br># neurons/layer<br># training's epochs<br>batch size<br>learning rate
-
+  
 
 
 ---
@@ -1174,9 +1380,9 @@ ANN/DL              | weights               | # layers<br># neurons/layer<br># t
 <br>
 
 __Recall__: model selection **.orange[chooses a model complexity]** (hyper-parameter)
-
+  
   - Training a classifiers chooses parameter values
-
+  
   - The training can often be formulated as minimizing the training error
 
 <br>
@@ -1192,9 +1398,9 @@ __Recall__: model selection **.orange[chooses a model complexity]** (hyper-param
 1. Split data into three sets
 
   a. training set
-
+  
   b. validation set
-
+  
   c. test set (hold out set)
 
 
@@ -1241,6 +1447,41 @@ We **must not use** **.orange[same data for both]**.
 
 
 ---
+# .orange[Leave-one-out cross-validation]
+
+
+For every data point $x_i,\ i = 1, \ldots, n$:
+
+  - train the model on every point except the single point $X_i$,
+  
+  - compute the validation error on the held out point
+
+
+<br>
+
+Average the test error
+
+
+---
+class: hide-count
+# .orange[Leave-one-out cross-validation]
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="90%"}
+include_graphics("img/cv_1.png")
+```
+
+
+---
+class: hide-count
+# .orange[Leave-one-out cross-validation]
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="90%"}
+include_graphics("img/cv_2.png")
+```
+
+
+
+---
 #.orange[K-fold cross validation]
 
 
@@ -1251,11 +1492,11 @@ We **must not use** **.orange[same data for both]**.
 2. Cross-validate: for $k = 1,\cdots, K$
 
   - remove block $k$ from training data
-
+  
   - train classifier on remaining blocks.
-
+  
   - estimate prediction error on block $k$
-
+  
 3. Estimates over all $k$ and select best classifier
 
 4. Retrain the best classifiers (i.e. with its hyper-parameters) on the whole training set (all K sets!)
@@ -1267,7 +1508,7 @@ We **must not use** **.orange[same data for both]**.
 ---
 # .orange[K-fold cross validation]
 
-The misclassification error rate is computed on the observations in the held-out fold.
+The misclassification error rate is computed on the observations in the held-out fold. 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%"}
 include_graphics("img/Cv1.png")
@@ -1302,7 +1543,7 @@ include_graphics("img/Cv3.png")
 
 ---
 # .orange[K-fold cross validation]
-
+  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%"}
 knitr::include_graphics("img/splits.png")
 ```
@@ -1310,50 +1551,36 @@ knitr::include_graphics("img/splits.png")
 Generally, .orange[k between 5 and 10] avoids over-training the model (variance), whilst avoiding too few training points (bias)
 
 
-
-
-
----
-#.orange[Cross validation Flow]
-
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%"}
-knitr::include_graphics("img/resampling.svg")
-```
-
-
-
 ---
 #.orange[Cross validation variability]
-
-
-
+  
+  
+  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%"}
 knitr::include_graphics("img/overfitting.png")
 ```
 
 
-
-
-
 ---
-#.orange[Bias variance trade-off]
+#.orange[Cross validation Flow]
 
-
-A predictor having high bias or variance won't do well in predicting on new data
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="70%"}
-knitr::include_graphics("img/BV.png")
+  
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%"}
+knitr::include_graphics("img/resampling.svg")
 ```
 
 
-Good, generalizable predictors need to have .orange[both low bias and low variance]
+---
+class: inverse, middle, center, hide-count
 
+# Question
 
+.left[
 
+- What is the effect of **Increasing** k in a k-fold cross-validation procedure?
+- Which are the **minimum** and **maximum** possible k?
 
-
-
+]
 
 
 
@@ -1397,7 +1624,7 @@ $\text{output(s)} = g(\sum_{i=1}^n a_i*w_i)$
 
 
 ---
-# .orange[Fully connected] network
+# .orange[Fully connected] network 
 
 .center[
 <img src="img/mlp.png" width="65%"/>
@@ -1413,12 +1640,12 @@ $\text{output(s)} = g(\sum_{i=1}^n a_i*w_i)$
 
 ---
 ### Can we try to write it down?
-3 input; 2 hidden layer w/ 2 neurons each; 1 (sigmoid) output
+3 input; 2 hidden layer w/ 2 neurons each; 1 (sigmoid) output 
 
 
 
 ---
-# ML: .orange[optimized] neurons' network
+# ML: .orange[optimized] neurons' network 
 
 .pull-left[
 <img src="img/fc.png" width="80%"/>
@@ -1507,7 +1734,7 @@ knitr::include_graphics("img/cnn-struct.png")
 #### Sequencies (input/output)
 
 <br>
-
+  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%"}
 knitr::include_graphics("img/sequences.png")
 ```
@@ -1516,30 +1743,30 @@ knitr::include_graphics("img/sequences.png")
 
 ---
 # Recurrent networks
-
-
+  
+  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%"}
 knitr::include_graphics("img/rnn-full_CL.png")
 ```
 
 
 <small>
-
+  
 .pull-left[
-  $x^{<t>}$: input position t
-
+  $x^{<t>}$: input position t 
+  
   $T_x$: length of input
-
+  
   $W^{[l]}_{yx}$ :weight matrix used with input x for output y on layer l
-
+  
   $b^{[l]}_y$: (bias) vector for output y on layer l
 ]
 
 .pull-right[
-  $y^{<t>}$ : output position t
-
+  $y^{<t>}$ : output position t 
+  
   $T_y$: length of output
-
+  
   $a^{[l]}_{<t>}$ : activation vector at position t on layer l
 ]
 
@@ -1548,9 +1775,9 @@ knitr::include_graphics("img/rnn-full_CL.png")
 
 ---
 # Take them all
-
+  
 <small><small>
-
+  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%", fig.cap="<br><br><br><br><br>Network from https://www.sciencedirect.com/science/article/pii/S0007091219306361 <br>Bradley A. Fritz, et al. 'Deep-learning model for predicting 30-day postoperative mortality' - BJA 2019"}
 knitr::include_graphics("img/multi-dl.jpg")
 ```
@@ -1562,7 +1789,7 @@ knitr::include_graphics("img/multi-dl.jpg")
 # DARP-D
 
 <small><small>
-
+  
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="65%", fig.cap="Network from https://doi.org/10.1371/journal.pone.0297793 <br>Corianò, Lanera, et al. 'Deep learning-based prediction of major arrhythmic events in dilated cardiomyopathy' - PLoS-One 2024"}
 knitr::include_graphics("img/darp-d.png")
 ```
@@ -1632,7 +1859,7 @@ class: inverse, middle, center, hide-count
 
 .left[
 
-- **Transformer**
+- **Transformer** 
 
 - **Pre-trained**
 
@@ -1677,11 +1904,105 @@ knitr::include_graphics("img/encdec.png")
 
 
 ---
-# Components
+# <small>.orange[Embeddings] & .orange[positional encoding]</small>
 
-- .orange[Embeddings] & .orange[positional encoding]
-- (.orange[Multi-head]) (.orange[self-]).orange[attention]
+#### Squatch eats pizza
+.left-column[
+- .orange[Embeddings]: each word has its own independent of position!
 
+- .orange[Positional coding]: each position has its own independent of the word!
+
+- .orange[Positional embedding coding]: simple sum
+]
+.right-column[
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%", fig.alt="https://youtu.be/zxQyTK8quyY"}
+knitr::include_graphics("img/squatch-eat-pizza.png")
+```
+]
+
+<small>
+.right[StatQuest video: https://www.youtube.com/watch?v=zxQyTK8quyY]
+</small110
+>
+
+---
+# <small>.orange[Embeddings] & .orange[positional encoding]</small>
+
+#### pizza eats Squatch
+.left-column[
+- .orange[Embeddings]: **change** in each position (follow the word!).
+
+- .orange[Positional coding]: **no**!
+
+- .orange[Positional embedding coding]: sum **different**!
+]
+.right-column[
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%", fig.alt="https://youtu.be/zxQyTK8quyY"}
+knitr::include_graphics("img/pizza-eat-squatch.png")
+```
+]
+
+
+
+---
+
+# _Let's see it_ ... with .orange[Attention]!
+
+.pull-left[
+
+#### One-head
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%", fig.alt="https://jalammar.github.io/illustrated-transformer/"}
+knitr::include_graphics("img/self-attention.png")
+```
+]
+
+.pull-right[
+
+#### Multi-heads
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%", fig.alt="https://jalammar.github.io/illustrated-transformer/"}
+knitr::include_graphics("img/multi-head-self-attention-visual.png")
+```
+]
+
+
+---
+# (.orange[Multi-head]) (.orange[self-]).orange[attention]
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="85%", fig.alt="https://youtu.be/zxQyTK8quyY"}
+knitr::include_graphics("img/qky-transformer.png")
+```
+
+$\mathrm{softmax}(\mathbf{x})_i = \frac{e^{x_i}}{\sum_{j=1}^n e^{x_j}}, \quad \text{for} \; i = 1, 2, \dots, n.$
+
+
+Each of the values $\mathrm{softmax}(\mathbf{x})_i$ lies in the range $(0,1)$, and their sum is equal to 1, thus transforming the "raw scores" $x_i$ into a **probability distribution**.
+
+---
+# (.orange[Multi-head]) (.orange[self-]).orange[attention]
+
+.pull-left[
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%", fig.alt="https://youtu.be/zxQyTK8quyY?si=a_y3mJaX10sREe03"}
+knitr::include_graphics("img/multi-head-self-attention.png")
+```
+]
+
+
+---
+# (.orange[Multi-head]) (.orange[self-]).orange[attention]
+
+.left-column[
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%", fig.alt="https://youtu.be/zxQyTK8quyY"}
+knitr::include_graphics("img/multi-head-self-attention.png")
+```
+]
+
+.right-column[
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%", fig.alt="https://youtu.be/zxQyTK8quyY"}
+knitr::include_graphics("img/encdec-attention.png")
+```
+]
 
 
 ---
@@ -1718,7 +2039,7 @@ knitr::include_graphics("img/transformer-4.png")
 
 
 ---
-# Generative ... .orange[Transformers]
+# .orange[Transformers]
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%", fig.alt="https://jalammar.github.io/illustrated-transformer/"}
 knitr::include_graphics("img/transformer_decoding_2.gif")
@@ -1756,8 +2077,25 @@ knitr::include_graphics(
 ```
 
 
+
 ---
-# Potential .orange[usages]
+class: inverse, middle, center, hide-count
+
+# Chat .orange[G]PT: .orange[Generative]
+
+
+
+---
+# .orange[Generators]
+
+```{r, echo=FALSE, out.width="100%", fig.alt="https://chatbotslife.com/language-translation-with-transformers-in-pytorch-ff8b32cf848"}
+knitr::include_graphics(
+  here::here("img/translation-with-transformers.png")
+)
+```
+
+---
+# Generators: potential .orange[usages]
 
 
 
@@ -2078,7 +2416,7 @@ class: inverse, middle, center, hide-count
 ## .orange[Start quickly and simple; **next iterate**!]
 
 Keep .orange[robustness]
-- less model complexity and fewer parameters are always beneficial
+- less model complexity and fewer parameters are always beneficial 
 
 
 Keep it .orange[simple] both for model selection and data for your analysis
@@ -2087,13 +2425,13 @@ Keep it .orange[simple] both for model selection and data for your analysis
 
 
 ## .orange[Treat data with suspicious]
-
-.orange[Look] at the data
-- dig into its details
+  
+.orange[Look] at the data 
+- dig into its details 
 - look for correlations
 - systematic biases, errors, and flaw
 
-.orange[Normalize] input data
+.orange[Normalize] input data 
 - ML algorithms can perform .orange[poorly and slowly] if there are large differences in scale between different features
 
 
@@ -2120,18 +2458,18 @@ Before starting a (classification) project, better figure out which precision an
 
 ---
 ## .orange[Healthcare does not trust black boxes]
+  
+Some ML methods are more transparent than others    
 
-Some ML methods are more transparent than others
+- Clustering, tend to be easy to interpret, because they create groupings of concepts      
 
-- Clustering, tend to be easy to interpret, because they create groupings of concepts
+- Linear regression can tell how important each feature is to the final output 
 
-- Linear regression can tell how important each feature is to the final output
-
-- Same for decision trees, but they are easily prone to overfitting!
+- Same for decision trees, but they are easily prone to overfitting! 
 
 
 <br>
-
+  
 Random forests are .orange[difficult to interpret].
 
 Neural networks and deep learning are .orange[truly black boxes], i.e., very little transparency to what is important in the decision making process (or very high effort to obtain it).
@@ -2157,14 +2495,16 @@ knitr::include_graphics("img/procione.jpeg")
 
 <br>
 
-[`r fontawesome::fa("link")`](https://www.unipd-ubep.it/) [**www.unipd-ubep.it**](https://www.unipd-ubep.it/) |
+[`r fontawesome::fa("link")`](https://www.unipd-ubep.it/) [**www.unipd-ubep.it**](https://www.unipd-ubep.it/) | 
 [`r fontawesome::fa("mail-bulk")`](mailto:Corrado.Lanera@ubep.unipd.it) [**Corrado.Lanera@ubep.unipd.it**](mailto:Corrado.Lanera@ubep.unipd.it)
 
 [`r fontawesome::fa("github")`](https://github.com/corradolanera)
 [`r fontawesome::fa("twitter")`](https://twitter.com/corradolanera)
 [`r fontawesome::fa("telegram-plane")`](https://telegram.me/CorradoLanera)
-**@CorradoLanera** |
+**@CorradoLanera** | 
 [`r fontawesome::fa("github")`](https://github.com/UBESP-DCTV)
 **@UBESP-DCTV**
 
 [`r fontawesome::fa("calendar-check")`](https://calendly.com/corradolanera) [**calendly.com/corradolanera**](https://calendly.com/corradolanera)
+
+
