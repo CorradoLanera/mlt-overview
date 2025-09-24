@@ -921,7 +921,7 @@ $$\rm sgn \left( \sum_{j=1}^m f_j(x)\right)$$
 
 ---
 ## .orange[Classification by majority vote]
-```{r, panelset = TRUE, message = FALSE, warning=FALSE, fig.align='center', out.width="100%", background='transparent'}
+```{r, echo=FALSE}
 vote_class_plot <- function(p = 0.55) {
   n_classifier <- 1:250
   y <- 1 - pbinom(n_classifier / 2, n_classifier, prob = p)
@@ -1676,17 +1676,10 @@ knitr::include_graphics("img/encdec.png")
 ```
 
 
----
-# Components
-
-- .orange[Embeddings] & .orange[positional encoding]
-- (.orange[Multi-head]) (.orange[self-]).orange[attention]
-
-
 
 ---
 
-# .orange[Transformers]
+# Generative... .orange[Transformers]
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="60%"}
 knitr::include_graphics("img/transformer-1.png")
@@ -1694,7 +1687,7 @@ knitr::include_graphics("img/transformer-1.png")
 
 ---
 
-# .orange[Transformers]
+# Generative... .orange[Transformers]
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="60%"}
 knitr::include_graphics("img/transformer-2.png")
@@ -1702,7 +1695,7 @@ knitr::include_graphics("img/transformer-2.png")
 
 ---
 
-# .orange[Transformers]
+# Generative... .orange[Transformers]
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="60%"}
 knitr::include_graphics("img/transformer-3.png")
@@ -1710,7 +1703,7 @@ knitr::include_graphics("img/transformer-3.png")
 
 ---
 
-# .orange[Transformers]
+# Generative... .orange[Transformers]
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="60%"}
 knitr::include_graphics("img/transformer-4.png")
@@ -2140,6 +2133,17 @@ Neural networks and deep learning are .orange[truly black boxes], i.e., very lit
 > Some techniques for explanation:
 - Variable importance
 - SHAP analyses
+
+
+---
+
+# My .orange[very personal] classification of AI users
+
+|                | Ignorant of AI                              | AI User                                                                 |
+|----------------|---------------------------------------------|-------------------------------------------------------------------------|
+| **Inexperienced** | **Dependent Outsider**<br/>Relies on others. Doesn’t cause harm, but neither brings advantages: out of the game and survives only thanks to others. | **Exposed Charlatan**<br/>Might cause damage before getting burned. The most common category, at all levels. Appears (but only if one is truly an expert) way too easy. |
+| **Expert**        | **Resistant Craftsman**<br/>Risks being isolated or wiped out from the market. | **Modern Alchemist**<br/>Can produce anything from terrible to sublime, even “quality scams”: the most ambivalent yet powerful figure. |
+
 
 
 ---
