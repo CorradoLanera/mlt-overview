@@ -153,10 +153,9 @@ style_duo_accent(
 <br>
 <br>
 
-# **Machine Learning**<br>**.orange[Overview]**
+# **Machine Learning** .orange[and] **AI**<br>**.orange[Overview]**
 
 From **Basics** to **.orange[Agents]**
-<br>
 <br>
 <br>
 <br>
@@ -292,6 +291,8 @@ include_graphics("img/Tom-Mitchell-2.webp")
 <br>
 <br>
 **.orange[Learning]**: performance on **T** as measured by **P** improves with **E**.
+
+]
 
 ---
 # .orange[What is **Machine Learning**]
@@ -727,42 +728,20 @@ include_graphics("img/linear_classifier_3.png")
 ```
 
 
----
-# .orange[Linear classifiers]
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="70%"}
-include_graphics("img/linear_classifier_5.png")
-```
-
-.center[draw the convex hull]
-
-
-
-
 
 ---
-#.orange[Linear classifiers:<br>Maximum margin hyperplane]
+#.orange[Linear classifiers: Support-Vector Machine]
 
-<br>
+A maximum margin classifier is called __Support-Vector Machine__
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="70%"}
 include_graphics("img/linear_classifier_7.png")
 ```
 
+
 .footnote[An hyperplane is a **subspace of co-dimension = 1** of a space (i.e. 1 dimension less then the original space).
 
 E.g., a line (1D) in a plane (2D); a plane (2D) in a 3D space; a 23D subspace in a 24D space.]
-
-
----
-#.orange[Linear classifiers: Support-Vector Machine]
-
-
-A maximum margin classifier is called __Support-Vector Machine__
-
-Training a SVM is a .orange[convex] optimization problem
-
-> Empirically, SVM are among the most powerful (and fast) classifiers
 
 
 
@@ -776,7 +755,6 @@ Problem 1: **curved optimal decision boundary**
 
   - SVM solves Problem 1 using the so-called .orange[_kernel trick_]
 
-<br>
 <br>
 
 Problem 2: **classes may overlap**
@@ -1151,19 +1129,6 @@ knitr::include_graphics("img/tradeoff.png")
 
 
 
----
-
-#.orange[(Hyper-)parameters]
-
-
-MLT                 |parameters             | Hyper-parameters|
---------------------|-----------------------|-----------------
-Decision tree       | Splits' locations     | # splits
-Random forest       | Splits' locations     | # splits<br># trees<br># dimension (randomly selected)
-SVM                 | Hyper-plane's position | type of nonlinearity<br>margin<br>overlap
-Logistic regression | $\beta$s              | polynomial degrees<br># nodes for splines<br>interactions
-ANN/DL              | weights               | # layers<br># neurons/layer<br># training's epochs<br>batch size<br>learning rate
-
 
 
 ---
@@ -1240,29 +1205,6 @@ We **must not use** **.orange[same data for both]**.
 
 
 
----
-#.orange[K-fold cross validation]
-
-
-0. .orange[Remove test set] and set it aside
-
-1. Divide remaining data into $K$ .orange[equally sized] blocks
-
-2. Cross-validate: for $k = 1,\cdots, K$
-
-  - remove block $k$ from training data
-
-  - train classifier on remaining blocks.
-
-  - estimate prediction error on block $k$
-
-3. Estimates over all $k$ and select best classifier
-
-4. Retrain the best classifiers (i.e. with its hyper-parameters) on the whole training set (all K sets!)
-
-5. When classifier is chosen and retrained, estimate its performance .orange[on test set]
-
-
 
 ---
 # .orange[K-fold cross validation]
@@ -1314,6 +1256,30 @@ Generally, .orange[k between 5 and 10] avoids over-training the model (variance)
 
 
 ---
+#.orange[K-fold cross validation]
+
+
+0. .orange[Remove test set] and set it aside
+
+1. Divide remaining data into $K$ .orange[equally sized] blocks
+
+2. Cross-validate: for $k = 1,\cdots, K$
+
+  - remove block $k$ from training data
+
+  - train classifier on remaining blocks.
+
+  - estimate prediction error on block $k$
+
+3. Estimates over all $k$ and select best classifier
+
+4. Retrain the best classifiers (i.e. with its hyper-parameters) on the whole training set (all K sets!)
+
+5. When classifier is chosen and retrained, estimate its performance .orange[on test set]
+
+
+
+---
 #.orange[Cross validation Flow]
 
 
@@ -1349,6 +1315,18 @@ knitr::include_graphics("img/BV.png")
 
 Good, generalizable predictors need to have .orange[both low bias and low variance]
 
+---
+
+#.orange[(Hyper-)parameters]
+
+
+MLT                 |parameters             | Hyper-parameters|
+--------------------|-----------------------|-----------------
+Decision tree       | Splits' locations     | # splits
+Random forest       | Splits' locations     | # splits<br># trees<br># dimension (randomly selected)
+SVM                 | Hyper-plane's position | type of nonlinearity<br>margin<br>overlap
+Logistic regression | $\beta$s              | polynomial degrees<br># nodes for splines<br>interactions
+ANN/DL              | weights               | # layers<br># neurons/layer<br># training's epochs<br>batch size<br>learning rate
 
 
 
@@ -1459,11 +1437,27 @@ class: inverse, middle, center, hide-count
 - Sequential one-dimension privileged single-information (e.g., text/signals)
 ]
 
+---
+
+## Images
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="90%"}
+knitr::include_graphics("img/imagetypegrayscale.png")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="90%"}
+knitr::include_graphics("img/imagetypergb.png")
+```
+
+
+
 
 ---
 ## Multi-dimensional single-information
 
 ### Convolutional networks
+
+> Apply a filter (kernel) to the input data, producing a feature map that captures local patterns and spatial hierarchies in the data. I.e., a sort of summary, a spatial compression, of the input data.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%"}
 knitr::include_graphics("img/convExample.png")
@@ -1602,6 +1596,17 @@ knitr::include_graphics("img/100M-users.png")
 ```{r, echo=FALSE}
 knitr::include_graphics("img/1M-users.png")
 ```
+
+
+---
+
+# Currently
+
+<br>
+```{r, echo=FALSE}
+knitr::include_graphics("img/900M-uers.png")
+```
+
 
 
 
@@ -1993,16 +1998,13 @@ knitr::include_graphics(
 > Programmatica: https://github.com/openai/tiktoken
 ]
 
-E.g. ~10000 paragraphs, or ~750000 words (--> ~1M tokens) with gpt-4o:
- -  ~2.5 $ if input
- - ~10   $ if output
+E.g. ~10000 paragraphs, or ~750000 words --> ~1M tokens approx
 
 
 
 
 ---
 class: inverse, middle, center, hide-count
-
 # .orange[**Agents**] (.orange[authonomous] search)
 
 ```{r, echo=FALSE, out.width="100%", fig.alt="https://operator.chatgpt.com"}

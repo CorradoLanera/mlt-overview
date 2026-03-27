@@ -141,10 +141,9 @@ class: center, middle, bg_title, hide-count
 &lt;br&gt;
 &lt;br&gt;
 
-# **Machine Learning**&lt;br&gt;**.orange[Overview]**
+# **Machine Learning** .orange[and] **AI**&lt;br&gt;**.orange[Overview]**
 
 From **Basics** to **.orange[Agents]**
-&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
@@ -274,6 +273,8 @@ What does it means "Machine Learning"?
 &lt;br&gt;
 &lt;br&gt;
 **.orange[Learning]**: performance on **T** as measured by **P** improves with **E**.
+
+]
 
 ---
 # .orange[What is **Machine Learning**]
@@ -690,38 +691,18 @@ __What to do for large dataset:__
 &lt;img src="img/linear_classifier_3.png" width="70%" style="display: block; margin: auto;" /&gt;
 
 
----
-# .orange[Linear classifiers]
-
-&lt;img src="img/linear_classifier_5.png" width="70%" style="display: block; margin: auto;" /&gt;
-
-.center[draw the convex hull]
-
-
-
-
-
----
-#.orange[Linear classifiers:&lt;br&gt;Maximum margin hyperplane]
-
-&lt;br&gt;
-
-&lt;img src="img/linear_classifier_7.png" width="70%" style="display: block; margin: auto;" /&gt;
-
-.footnote[An hyperplane is a **subspace of co-dimension = 1** of a space (i.e. 1 dimension less then the original space).
-
-E.g., a line (1D) in a plane (2D); a plane (2D) in a 3D space; a 23D subspace in a 24D space.]
-
 
 ---
 #.orange[Linear classifiers: Support-Vector Machine]
 
-
 A maximum margin classifier is called __Support-Vector Machine__
 
-Training a SVM is a .orange[convex] optimization problem
+&lt;img src="img/linear_classifier_7.png" width="70%" style="display: block; margin: auto;" /&gt;
 
-&gt; Empirically, SVM are among the most powerful (and fast) classifiers
+
+.footnote[An hyperplane is a **subspace of co-dimension = 1** of a space (i.e. 1 dimension less then the original space).
+
+E.g., a line (1D) in a plane (2D); a plane (2D) in a 3D space; a 23D subspace in a 24D space.]
 
 
 
@@ -735,7 +716,6 @@ Problem 1: **curved optimal decision boundary**
 
   - SVM solves Problem 1 using the so-called .orange[_kernel trick_]
 
-&lt;br&gt;
 &lt;br&gt;
 
 Problem 2: **classes may overlap**
@@ -872,7 +852,7 @@ majority vote at input `\(x\)` is
 ## .orange[Classification by majority vote]
 
 
-&lt;img src="index_files/figure-html/unnamed-chunk-23-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-22-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -1053,19 +1033,6 @@ There is a .orange[trade off] between increasing variance (flexibility) and decr
 
 
 
----
-
-#.orange[(Hyper-)parameters]
-
-
-MLT                 |parameters             | Hyper-parameters|
---------------------|-----------------------|-----------------
-Decision tree       | Splits' locations     | # splits
-Random forest       | Splits' locations     | # splits&lt;br&gt;# trees&lt;br&gt;# dimension (randomly selected)
-SVM                 | Hyper-plane's position | type of nonlinearity&lt;br&gt;margin&lt;br&gt;overlap
-Logistic regression | `\(\beta\)`s              | polynomial degrees&lt;br&gt;# nodes for splines&lt;br&gt;interactions
-ANN/DL              | weights               | # layers&lt;br&gt;# neurons/layer&lt;br&gt;# training's epochs&lt;br&gt;batch size&lt;br&gt;learning rate
-
 
 
 ---
@@ -1142,29 +1109,6 @@ We **must not use** **.orange[same data for both]**.
 
 
 
----
-#.orange[K-fold cross validation]
-
-
-0. .orange[Remove test set] and set it aside
-
-1. Divide remaining data into `\(K\)` .orange[equally sized] blocks
-
-2. Cross-validate: for `\(k = 1,\cdots, K\)`
-
-  - remove block `\(k\)` from training data
-
-  - train classifier on remaining blocks.
-
-  - estimate prediction error on block `\(k\)`
-
-3. Estimates over all `\(k\)` and select best classifier
-
-4. Retrain the best classifiers (i.e. with its hyper-parameters) on the whole training set (all K sets!)
-
-5. When classifier is chosen and retrained, estimate its performance .orange[on test set]
-
-
 
 ---
 # .orange[K-fold cross validation]
@@ -1208,6 +1152,30 @@ Generally, .orange[k between 5 and 10] avoids over-training the model (variance)
 
 
 ---
+#.orange[K-fold cross validation]
+
+
+0. .orange[Remove test set] and set it aside
+
+1. Divide remaining data into `\(K\)` .orange[equally sized] blocks
+
+2. Cross-validate: for `\(k = 1,\cdots, K\)`
+
+  - remove block `\(k\)` from training data
+
+  - train classifier on remaining blocks.
+
+  - estimate prediction error on block `\(k\)`
+
+3. Estimates over all `\(k\)` and select best classifier
+
+4. Retrain the best classifiers (i.e. with its hyper-parameters) on the whole training set (all K sets!)
+
+5. When classifier is chosen and retrained, estimate its performance .orange[on test set]
+
+
+
+---
 #.orange[Cross validation Flow]
 
 
@@ -1237,6 +1205,18 @@ A predictor having high bias or variance won't do well in predicting on new data
 
 Good, generalizable predictors need to have .orange[both low bias and low variance]
 
+---
+
+#.orange[(Hyper-)parameters]
+
+
+MLT                 |parameters             | Hyper-parameters|
+--------------------|-----------------------|-----------------
+Decision tree       | Splits' locations     | # splits
+Random forest       | Splits' locations     | # splits&lt;br&gt;# trees&lt;br&gt;# dimension (randomly selected)
+SVM                 | Hyper-plane's position | type of nonlinearity&lt;br&gt;margin&lt;br&gt;overlap
+Logistic regression | `\(\beta\)`s              | polynomial degrees&lt;br&gt;# nodes for splines&lt;br&gt;interactions
+ANN/DL              | weights               | # layers&lt;br&gt;# neurons/layer&lt;br&gt;# training's epochs&lt;br&gt;batch size&lt;br&gt;learning rate
 
 
 
@@ -1345,11 +1325,23 @@ class: inverse, middle, center, hide-count
 - Sequential one-dimension privileged single-information (e.g., text/signals)
 ]
 
+---
+
+## Images
+
+&lt;img src="img/imagetypegrayscale.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+&lt;img src="img/imagetypergb.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+
+
 
 ---
 ## Multi-dimensional single-information
 
 ### Convolutional networks
+
+&gt; Apply a filter (kernel) to the input data, producing a feature map that captures local patterns and spatial hierarchies in the data. I.e., a sort of summary, a spatial compression, of the input data.
 
 &lt;img src="img/convExample.png" width="100%" style="display: block; margin: auto;" /&gt;
 
@@ -1470,6 +1462,15 @@ class: inverse, middle, center, hide-count
 
 &lt;br&gt;
 &lt;img src="img/1M-users.png" width="100%" /&gt;
+
+
+---
+
+# Currently
+
+&lt;br&gt;
+&lt;img src="img/900M-uers.png" width="100%" /&gt;
+
 
 
 
@@ -1811,16 +1812,13 @@ https://platform.openai.com/docs/guides/gpt/chat-completions-api
 &gt; Programmatica: https://github.com/openai/tiktoken
 ]
 
-E.g. ~10000 paragraphs, or ~750000 words (--&gt; ~1M tokens) with gpt-4o:
- -  ~2.5 $ if input
- - ~10   $ if output
+E.g. ~10000 paragraphs, or ~750000 words --&gt; ~1M tokens approx
 
 
 
 
 ---
 class: inverse, middle, center, hide-count
-
 # .orange[**Agents**] (.orange[authonomous] search)
 
 &lt;img src="img/operator_find_guidelines.png" alt="https://operator.chatgpt.com" width="100%" /&gt;
