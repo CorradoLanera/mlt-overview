@@ -1,0 +1,19 @@
+/*-- scss:defaults --*/
+$body-bg: #ffffff;
+$body-color: #1a1a1a;
+$link-color: #E8741E;                 // orange accent
+$selection-bg: #F9C99B;
+$presentation-heading-font: "Cabin", "Noto Sans", sans-serif;
+$presentation-font-size-root: 30px;
+$font-family-sans-serif: "Noto Sans", system-ui, Arial, sans-serif;
+$font-family-monospace: "Source Code Pro", Consolas, monospace;
+$presentation-heading-color: #C75A12; // darker orange for headings
+$code-block-bg: #f4f1ec;
+
+/*-- scss:rules --*/
+.reveal h1, .reveal h2 { letter-spacing: -0.01em; }
+.reveal .slide-number { color: #E8741E; }
+.reveal section img { border: 0; box-shadow: none; }
+.reveal blockquote { border-left: 4px solid #E8741E; }
+.reveal .title-slide h1 { color: #E8741E; }
+.reveal table th { background: #E8741E; color: #fff; }
