@@ -2,3 +2,18 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# Local-only Claude settings (vault paths — private; repo may go public)
+.claude/settings.local.json
+# Temporary workshop deck (to be deleted by the author)
+docs/StorIA_2026.pptx
+# Scratch
+*.tmp.md
+docs/_*.tmp*
+# Quarto/pandoc build artifacts
+/_site/
+/_book/
+/.quarto/
+# Python
+__pycache__/
+.pytest_cache/
