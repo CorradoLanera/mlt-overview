@@ -1,5 +1,7 @@
 # Machine Learning — An Applied Overview
 
+> **Resume the build (teacher):** reload Claude Code in this repo, then type *"andiamo avanti col corso MLT"* (or `/mlt`) and follow the guided steps — no commands to remember.
+
 Introductory ML overview for biomedical/clinical graduate students (UBEP, University of Padova).
 ~4h gross. From the T-P-E framework to classifiers, model selection, deep learning, LLMs and agents,
 with an applied clinical slant.
