@@ -267,12 +267,13 @@ Ogni nuovo script/skill passa da `feature-dev:code-reviewer`. TDD dove ha senso 
 - Localizzazione completa IT degli artefatti studenti (sono EN per scelta §2).
 - Riscrittura dei contenuti tecnici datati (sezione LLM/ChatGPT) oltre il necessario alla migrazione — è lavoro di contenuto, non di toolkit.
 
-## 14. Assunzioni da confermare in revisione
+## 14. Decisioni confermate (2026-05-26)
 
-1. La mappatura capitoli = le 10 sezioni attuali di `index.Rmd` (§4) va bene come punto di partenza?
-2. La versione `index.Rmd` (corrente) è la base, non `index-full.Rmd`?
-3. `mlt-subunits` (sotto-unità + formativi proposto→risolto) è attivabile per-capitolo on-demand, non obbligatorio ovunque — ok?
-4. Il tema visivo: partire dalla palette `xaringan-themer.css` esistente (continuità) o ripensarlo?
+1. **Capitoli:** si parte dalle 10 sezioni di `index.Rmd` (§4), ma **non è una decisione hard**: l'orchestratore/scaffold può proporre una divisione migliore se emerge in corso d'opera.
+2. **Base:** `index.Rmd` (corrente, insegnato). `index-full.Rmd` (più lungo ma più vecchio) viene **"minato"** per recuperare contenuti tagliati, da riproporre come **moduli opzionali** (`include: false`) — coerente con la filosofia modulare. Diff dei due da fare in Fase 0.
+3. **`mlt-subunits`:** attivabile **per-capitolo on-demand**, non obbligatorio ovunque.
+4. **Tema:** si parte dalla palette `xaringan-themer.css` (continuità), **liberi di variare**; **l'arancione è preferito** dal docente → accento dominante candidato.
+5. **Sezione Agents:** da **ampliare in modo proporzionato** usando la sorgente preservata `docs/sources/agents-from-storia-workshop.md` (modello 2×2→2×3 con la colonna agentica: Apprendista Stregone / Demiurgo Digitale; meccaniche "come funzionano gli agenti"). Resta una overview: il "come" applicativo è materia dei workshop di proseguimento → candidato **pre-hook** verso quei workshop. Spunto, non vincolo.
 
 ---
 
