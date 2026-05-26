@@ -49,12 +49,35 @@ def test_render_is_self_contained(tmp_path):
 
 
 @skip_no_pandoc
+def test_no_duplicate_title_block(tmp_path):
+    # The body H1 must be the only visible title; pandoc's metadata-title block
+    # (id="title-block-header") would duplicate it. We set pagetitle instead.
+    p = tmp_path / "m.md"
+    p.write_text("# My Heading\n\nbody\n", encoding="utf-8")
+    html = mdmath.render_to_html(p)
+    assert "title-block-header" not in html
+    assert "My Heading" in html  # still present as the body H1
+    assert "<title>My Heading</title>" in html  # tab title set
+
+
+@skip_no_pandoc
 def test_render_table_and_code(tmp_path):
     p = tmp_path / "m.md"
     p.write_text("# T\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n```r\nx <- 1\n```\n", encoding="utf-8")
     html = mdmath.render_to_html(p)
     assert "<table" in html
     assert "<code" in html
+
+
+@skip_no_pandoc
+def test_render_accepts_relative_path(tmp_path, monkeypatch):
+    # Regression: hook passes a path relative to the project cwd, while
+    # render_to_html changes cwd to the file's parent for resource embedding.
+    (tmp_path / "sub").mkdir()
+    (tmp_path / "sub" / "x.md").write_text("# T\n\n$a_1$\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+    html = mdmath.render_to_html(Path("sub/x.md"))
+    assert "<math" in html
 
 
 @skip_no_pandoc

@@ -51,15 +51,18 @@ def render_to_html(md_path: Path) -> str:
     pandoc = find_pandoc()
     if not pandoc:
         raise RuntimeError("pandoc not found (expected via Quarto install)")
-    md_path = Path(md_path)
+    md_path = Path(md_path).resolve()  # absolute: input must not depend on cwd
     cmd = [
         pandoc, str(md_path),
         "--from", "gfm+tex_math_dollars",
         "--to", "html5",
         "--standalone", "--embed-resources", "--mathml",
-        "--metadata", f"title={derive_title(md_path)}",
+        # pagetitle (not title): sets <title> without rendering a duplicate
+        # visible title-block header above the document's own H1.
+        "--metadata", f"pagetitle={derive_title(md_path)}",
         "--css", str(THEME_CSS),
     ]
+    # cwd = file's parent so relative resources (images) embed correctly
     res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8",
                          cwd=str(md_path.parent))
     if res.returncode != 0:
