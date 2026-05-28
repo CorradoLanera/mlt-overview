@@ -1,0 +1,321 @@
+## Draw the line; count the cost. {.center .inverse background-color="#1F4257"}
+
+::: {.notes}
+Cover del capitolo 2 — 20 minuti. Sei-parole approvata: due imperativi col punto e virgola — *tracci, poi paghi*. Riprende letteralmente il pre-hook del cap. 01 ("draws a line") e *estende*: a tracciare un confine si abbina sempre un costo. I 4 item formativi sono in coda per recap/self-study; il sommativo live ("Draw the boundary, count the cost") gira negli ultimi ~8′.
+:::
+
+<!-- BEAT 1 — Hook visivo -->
+
+## *It decides with a single line.*
+
+![](../img/storyboard/sb-02_01.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Elena chiede come *decide* il modello: la risposta è una linea su uno scatter di pazienti, un lato *high-risk*. L'immagine è il gancio — lasciatela parlare 3-5 secondi prima di dire qualcosa.
+:::
+
+<!-- BEAT 2 — Contesto: classification vs regression -->
+
+## *Two outputs: a label, or a number.*
+
+![](../img/storyboard/sb-02_02.png){fig-align="center" width="78%"}
+
+::: {.notes}
+Output discreto = **classificazione** (un'etichetta); output continuo = **regressione** (un numero). Questo capitolo è sul primo. Stesso disegno, frecce diverse — è la stessa scelta di framing del cap. 01 (input/output swap).
+:::
+
+## Classification vs regression — the single discriminator
+
+|  | Output | Lives in | Example |
+|---|---|---|---|
+| **Classification** | a *label* (discrete) | $\{1, \ldots, K\}$ | "*high-risk* or *low-risk*?" |
+| **Regression** | a *value* (continuous) | $\mathbb{R}$ | "predict HbA1c (%) at 6 months" |
+
+::: {.notes}
+La differenza è **cosa il modello produce in output** — un'etichetta o un valore — non il tipo di input. Anche se il modello può internamente calcolare un *punteggio* probabilistico, ciò che lo studente deve guardare è l'output finale come framing del problema clinico. Tutto questo capitolo è sulla classificazione.
+:::
+
+<!-- BEAT 3 — Sfida: overlapping classes -->
+
+## *No line catches them all.*
+
+![](../img/storyboard/sb-02_03.png){fig-align="center" width="78%"}
+
+::: {.notes}
+Su pazienti reali le classi si sovrappongono: nessun confine le separa perfettamente. Qualcuno cade sempre dal lato sbagliato. Il *rischio minimo* è strutturalmente > 0 — non è un difetto dell'algoritmo, è una proprietà dei dati.
+:::
+
+<!-- BEAT 4 — Nodo: classifier as a function partitioning the space -->
+
+## *A classifier splits the space into regions.*
+
+![](../img/storyboard/sb-02_04.png){fig-align="center" width="72%"}
+
+::: {.notes}
+Formalmente il classificatore è una *funzione* $f:\mathbb{R}^d \to \{1,\ldots,K\}$ che taglia lo spazio in regioni — una per classe. **Il confine È il classificatore**: cambia il confine, cambia il classificatore.
+:::
+
+## A classifier is a function on the feature space
+
+For features $X \in \mathbb{R}^d$ and $K$ classes, a classifier is a function
+$$f : \mathbb{R}^d \to \{1, \ldots, K\}.$$
+
+- Every point of $\mathbb{R}^d$ is sent to *exactly one* class — no gaps, no overlaps.
+- The **decision regions** are the preimages $f^{-1}(1), \ldots, f^{-1}(K)$.
+- The **boundary** between regions IS the classifier (Obj. 2).
+
+::: {.notes}
+Punto chiave: "$f$ è un classificatore" e "le regioni partizionano $\mathbb{R}^d$" sono **lo stesso** enunciato — non due cose diverse. Questo è il fulcro dell'item 02 (Partition the plane).
+:::
+
+<!-- BEAT 5 — Metodo: 0/1 loss + risk -->
+
+## *Count the cost: risk = total loss.*
+
+![](../img/storyboard/sb-02_05.png){fig-align="center" width="76%"}
+
+::: {.notes}
+Si contano gli errori con la **0/1 loss** e si sommano: è il **rischio**. Una metrica costruita non come "premio per i giusti" ma come "costo per gli sbagliati" — coerente con la lente del cap. 01 (95% accurate, clinically useless).
+:::
+
+## 0/1 loss and risk on a sample
+
+**0/1 loss** — one unit of cost per misclassification:
+
+$$\mathfrak{L}(y, \hat y) = \begin{cases} 1 & \text{if } y \ne \hat y \\ 0 & \text{otherwise.} \end{cases}$$
+
+**0/1 risk on a sample** — the average loss over the $n$ patients we have:
+
+$$\widehat{\text{risk}}(f) \;=\; \frac{1}{n} \sum_{i=1}^n \mathfrak{L}\bigl(y_i, f(x_i)\bigr) \;=\; \frac{\#\text{misclassified}}{n}.$$
+
+The **lower-risk classifier is the better one** *on the data we have*.
+
+::: {.notes}
+La risk-on-sample è solo una *stima* della risk vera ($\mathbb{E}[\mathfrak{L}(f(X), Y)]$), ma è tutto quello che possiamo calcolare. Il distinguo "su questo banco vs. su pazienti nuovi" è il gancio finale del capitolo + l'item 04 + tutto il cap. 04.
+:::
+
+<!-- BEAT 6 — Payoff -->
+
+## *Cheapest mistake found. But who drew it?*
+
+![](../img/storyboard/sb-02_06.png){fig-align="center" width="78%"}
+
+::: {.notes}
+Si sceglie il confine col rischio più basso (mai $0$ se le classi si sovrappongono); ma chi *trova* quella linea? Lo vediamo coi veri algoritmi al cap. 03.
+:::
+
+## Pre-hook → chapter 3: algorithm examples
+
+You can now *judge* a boundary by its risk — but you still drew it by hand. How do real algorithms actually *find* a good line?
+
+Some look at the nearest patients. Some fit a straight cut. Some grow trees and vote.
+
+Those are the concrete classifiers — and they are next.
+
+::: {.notes}
+Pre-hook scriptato a chiusura del cap. 02. Non rivelare ancora il vocabolario di kNN / SVM / RF; lasciate la classe con la domanda "*chi lo traccia?*" → cap. 03.
+:::
+
+<!-- ============================================================ -->
+<!-- EXERCISES — at end of chapter, summative LAST.               -->
+<!-- ============================================================ -->
+
+## Exercises {.inverse .center background-color="#1F4257"}
+
+::: {.notes}
+Blocco esercizi. I 4 item formativi sono recap/self-study; il sommativo live ("Draw the boundary, count the cost") gira negli ultimi ~8′ (min 12-20). Dopo ogni question una slide bianca per scrivere a mano la risposta in classe, poi la slide soluzione.
+:::
+
+<!-- Item 01 — MCQ — classification vs regression -->
+
+## Item 01 — Question
+
+Which **one** of the following clinical machine-learning tasks is a **regression** task (rather than classification)?
+
+- **A)** Predicting **whether** a patient will be re-admitted within 30 days, from EHR.
+- **B)** Predicting a patient's **HbA1c value** six months after starting metformin.
+- **C)** Predicting **which** of three diabetes subtypes (T1, T2, gestational) a case belongs to.
+- **D)** Predicting **whether** a chest X-ray shows pneumonia.
+
+::: {.notes}
+Item 01 — Comprehension / MCQ / low. Obj. 1 (classification vs regression by output type). Distrattori: tutti binari/multi-classe con output *label*; solo B produce un *numero* (HbA1c continuo). Vedi `course/02-classifiers/items/item_01_classification-vs-regression_mcq.md`.
+:::
+
+## Item 01 — Solution (write yours)
+
+::: {.notes}
+Lascio ~60 secondi. Spesso parte la confusione "ma il modello calcola comunque un numero internamente" — è il momento perfetto per rinforzare il single discriminator: *cosa produce in output*.
+:::
+
+## Item 01 — Solution
+
+**Correct: B — HbA1c value.** The output is a *continuous numeric value* (e.g., $6.5\%$). The output lives in $\mathbb{R}$, not in a finite label set $\{1, \ldots, K\}$.
+
+Why the distractors are wrong:
+
+- **A** and **D** are binary classification: output = label *yes/no*, not a number.
+- **C** is multi-class classification: output = one of $K = 3$ subtype labels.
+
+The single discriminator is **what the model produces** — a label (classification) or a value (regression) — not the data type of the inputs, nor whether an internal probability could be reported.
+
+::: {.notes}
+Take-away: la distinzione è sull'*output*. Riprendete la tabella del beat 2.
+:::
+
+<!-- Item 02 — Applicativa — Partition the plane -->
+
+## Item 02 — Question {.smaller}
+
+A clinical screening tool uses **fasting glucose** $x$ (mg/dL) and **BMI** $y$ (kg/m²) to flag patients as *high-risk* ($1$) or *low-risk* ($0$). The classifier is $f:\mathbb{R}^2 \to \{0, 1\}$ defined by
+
+$$f(x, y) = \begin{cases} 1 & \text{if } x + 2y > 200 \\ 0 & \text{otherwise.} \end{cases}$$
+
+Three new patients arrive: P1 $(100, 30)$, P2 $(140, 35)$, P3 $(90, 60)$.
+
+1. **Compute** $f$ for each of P1, P2, P3 — show the arithmetic.
+2. **Sketch** the two decision regions of $f$ on the $(x, y)$ plane.
+3. **Explain** why the two regions cover $\mathbb{R}^2$ with no gaps and no overlaps — and why this is a *necessary* property of any classifier $f:\mathbb{R}^2 \to \{0, 1\}$.
+
+::: {.notes}
+Item 02 — Application / applicativa / medium. Obj. 2 (classifier as $f:\mathbb{R}^2 \to \{0,1\}$ partitioning the plane). Tempo atteso: 4 minuti. Rubrica: `course/02-classifiers/rubriche/rubrica_02_partition-the-plane.md`.
+:::
+
+## Item 02 — Solution (write yours)
+
+::: {.notes}
+Slide bianca per fare i calcoli a mano: $100+60=160<200 \Rightarrow 0$; $140+70=210>200 \Rightarrow 1$; $90+120=210>200 \Rightarrow 1$. Disegno alla lavagna la retta $x+2y=200$ (passa per $(200,0)$ e $(0,100)$), e marchio le due regioni.
+:::
+
+## Item 02 — Solution {.smaller}
+
+**1. Compute $f$ for each patient.**
+
+- **P1** $(100, 30)$: $\;100 + 60 = 160 < 200 \Rightarrow f = 0$ → **low-risk**.
+- **P2** $(140, 35)$: $\;140 + 70 = 210 > 200 \Rightarrow f = 1$ → **high-risk**.
+- **P3** $(90, 60)$: $\;90 + 120 = 210 > 200 \Rightarrow f = 1$ → **high-risk**.
+
+**2. Decision regions.** The line $x + 2y = 200$ passes through $(200, 0)$ and $(0, 100)$, splitting the plane into two half-planes: above-right $= $ *high-risk* ($f=1$); below-left $=$ *low-risk* ($f=0$).
+
+**3. No gaps, no overlaps.** $f$ is a *function*: every $(x, y) \in \mathbb{R}^2$ goes to exactly one of $\{0, 1\}$. The regions are the preimages $f^{-1}(0), f^{-1}(1)$ — their union is the whole plane, their intersection is empty. Saying *"$f$ is a classifier"* IS saying *"the regions partition $\mathbb{R}^2$"*.
+
+::: {.notes}
+Punto pedagogico chiave: il fatto che le regioni partizionino il piano *non è* una scelta stilistica del disegno — *è* la definizione di "$f$ è una funzione". Geometria e definizione coincidono.
+:::
+
+<!-- Item 03 — MCQ — Count the cost -->
+
+## Item 03 — Question {.smaller}
+
+A binary classifier $f$ is tested on 10 patients:
+
+| # | True $Y$ | Predicted $\hat Y$ | # | True $Y$ | Predicted $\hat Y$ |
+|:-:|:--|:--|:-:|:--|:--|
+| 1 | high-risk | high-risk | 6 | low-risk  | **high-risk** |
+| 2 | low-risk  | low-risk  | 7 | high-risk | high-risk |
+| 3 | high-risk | **low-risk** | 8 | low-risk  | low-risk |
+| 4 | low-risk  | low-risk  | 9 | high-risk | **low-risk** |
+| 5 | high-risk | high-risk | 10 | low-risk  | low-risk |
+
+Using the 0/1 loss, what is $f$'s **0/1 risk on this sample**?
+
+- **A)** $0/10$ &nbsp;·&nbsp; **B)** $2/10$ &nbsp;·&nbsp; **C)** $3/10$ &nbsp;·&nbsp; **D)** $7/10$
+
+::: {.notes}
+Item 03 — Application / MCQ / medium. Obj. 3 (0/1 loss + risk on sample). 3 misclassified (#3, #6, #9). Tempo atteso: 90s. Vedi `course/02-classifiers/items/item_03_count-the-cost_mcq.md`.
+:::
+
+## Item 03 — Solution (write yours)
+
+::: {.notes}
+Lascio gli studenti contare i misclassified. Il distrattore D ($7/10$) cattura chi confonde accuracy (success rate) col rischio (error rate) — è il punto da riprendere nella reveal.
+:::
+
+## Item 03 — Solution
+
+**Correct: C ($3/10$).** Three patients misclassified: **#3**, **#6**, **#9**.
+
+$$\widehat{\text{risk}}(f) = \frac{1}{10} \sum_{i=1}^{10} \mathfrak{L}(y_i, \hat y_i) = \frac{3}{10}.$$
+
+Why the distractors are wrong:
+
+- **A** ($0/10$) confuses *most-patients-right* with *no-errors-at-all*.
+- **B** ($2/10$) counts only the false negatives ($\#3, \#9$) and forgets the false positive $\#6$. The 0/1 loss is **symmetric**.
+- **D** ($7/10$) is the **accuracy / risk inversion**: $7$ is the count of *correctly* classified; that's the accuracy, not the risk. We count *costs*, not wins.
+
+::: {.notes}
+Take-away: la 0/1 loss conta i *costi*. Il distrattore D è il più frequente — vale la pena fermarsi e ricordare il framing del beat 5.
+:::
+
+<!-- Item 04 — Argomentativa — Compare two boundaries -->
+
+## Item 04 — Question
+
+Two clinicians work on the **same 10-patient sample**. Each built a classifier $f:\mathbb{R}^2 \to \{0, 1\}$:
+
+- $f_A$ correctly classifies **7 of 10** (3 misclassified).
+- $f_B$ correctly classifies **8 of 10** (2 misclassified).
+
+**Clinician B:** *"$f_B$ is better — its 0/1 risk on this sample is lower."*
+**Clinician A:** *"That is only on these 10 patients. My classifier might do better on a different group."*
+
+1. State the **0/1 risk on the sample** of each classifier as a fraction.
+2. **Within this chapter's concepts**, whose claim is supported by the available evidence? Justify in 3–5 sentences.
+3. What **kind of information** would we need to settle Clinician A's pushback?
+
+::: {.notes}
+Item 04 — Argumentation / argomentativa / medium-high. Obj. 2 + Obj. 3 + epistemic awareness. Il punto è la *consapevolezza dei limiti del cap. 02*: si può dire chi vince sui dati in mano, NON su pazienti che non abbiamo misurato. Il sub-3 è il gancio operativo al cap. 04. Rubrica: `course/02-classifiers/rubriche/rubrica_04_compare-two-boundaries.md`.
+:::
+
+## Item 04 — Solution (write yours)
+
+::: {.notes}
+Slide bianca per costruire l'argomentazione in 3 parti. Suggerisco di fare il sub-3 collettivamente alla lavagna: il vocabolario "un secondo set di pazienti con le etichette note" è esattamente l'apparato che il cap. 04 chiama train/validation/test.
+:::
+
+## Item 04 — Solution
+
+1. **$\widehat{\text{risk}}(f_A) = 3/10$**; $\widehat{\text{risk}}(f_B) = 2/10$.
+
+2. **Clinician B's claim is supported by what this chapter has given us.** The chapter provides exactly one criterion: 0/1 risk on the available sample. $f_B$ ($2/10$) is lower-risk than $f_A$ ($3/10$). Clinician A is voicing a **hypothesis about patients we don't have**, and within ch. 02 alone there is *no* number we could compute about patients not in our sample. So B has evidence; A has, at this point, only a hypothesis.
+
+3. We would need **0/1 risk estimates on patients NOT in the 10-patient sample** — a *second* set of patients with known labels, on which both classifiers can be evaluated independently. Within ch. 02 alone we have no such set: that is exactly *the question this chapter cannot yet answer*. **(That is what ch. 04 will pick up.)**
+
+::: {.notes}
+Il sub-3 è il gancio narrativo del cap. 04. *"Un secondo set di pazienti con etichette note che il classificatore non ha mai visto durante la scelta"*: questa è la *definizione operativa* del test set, anticipata senza chiamarla per nome.
+:::
+
+<!-- Summative -->
+
+## Summative — *Draw the boundary, count the cost* {.inverse background-color="#1F4257"}
+
+Each pair (or breakout room) gets a 2D scatter of ~10 patients on $(x, y) =$ (*fasting glucose*, *BMI*), each labelled *high-risk* / *low-risk*.
+
+1. **Draw** a single boundary that splits the plane into two regions (one per class).
+2. **Count** the misclassified patients → its **0/1 risk on the sample** $= \dfrac{\#\text{misclassified}}{\#\text{total}}$.
+3. The same patients are *also* given another task: *"predict each patient's HbA1c value"*. Which task — class label or HbA1c value — is **classification**? Which is **regression**? Why?
+
+*Take-home challenge:* the lowest-risk boundary on this sample is *not necessarily* the best on new patients — why? (We'll resolve at ch. 4.)
+
+::: {.notes}
+Sommativo — gira negli ultimi ~8′ (min 12-20). ~2′ assegnare + ~4′ draw+count+answer + ~2′ confronto + reveal. **Duale:** la *stessa* scatter è l'artefatto condiviso, sia in presenza (carta) sia da remoto (slide condivisa con drawing tool, o descrizione in parole "linea verticale a glucose=110"). Un poll Slido raccoglie il rischio $k/10$ di ogni gruppo per il confronto immediato. Se la classe è < 4 gruppi: metà classe boundary rettilineo, metà boundary libero — emerge che il libero abbassa il rischio *su questo banco* — ma tieni aperta la domanda "vale anche su pazienti nuovi?" (gancio al cap. 04).
+:::
+
+## Summative — Solution (write yours)
+
+::: {.notes}
+Slide bianca: raccolgo a voce/poll i $k/10$ di ciascun gruppo e li scrivo sulla shared board. Anche disegno alla lavagna 1-2 boundary di esempio (uno rettilineo, uno libero) per il confronto.
+:::
+
+## Summative — Solution {.smaller}
+
+**The task on the scatter is classification.** Output = a discrete label (*high-risk* / *low-risk*) — lives in $\{0, 1\}$. The HbA1c task is regression: output = a continuous value in $\mathbb{R}$.
+
+**0/1 risk on the sample.** Each group's boundary partitions the plane; count patients on the wrong side; divide by 10. The lower-risk boundary is the better classifier *on this sample*.
+
+**Live signal of mastery.** On these patients (not perfectly separable), **no boundary reaches risk $0$**. Groups can rank their boundaries by 0/1 risk; the rank is the chapter's only criterion.
+
+**Take-home:** *whether* the lowest-risk boundary on these 10 patients will also be the lowest-risk on patients we haven't measured is a question this chapter cannot answer — chapter 4 will.
+
+::: {.notes}
+**Reveal pedagogico:** se un gruppo è arrivato a rischio $0$ sul banco, probabilmente ha disegnato un boundary molto contorto che *passa* su o avvolge ogni paziente — è esattamente il *gancio operativo* del cap. 03 (kNN $k=1$) e del cap. 04 (overfitting). Non penalizzare; usare per il bridge. Reveal del task-distinguer: la scatter mostra etichette discrete → classificazione; HbA1c è un numero → regressione (eco diretto al beat 2 del capitolo).
+:::
