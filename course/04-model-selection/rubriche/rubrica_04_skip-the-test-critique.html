@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 04 (Comparing techniques: the second selection
+that looks invisible)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-04-comparing-techniques-the-second-selection-that-looks-invisible">Rubric
+— Item 04 (Comparing techniques: the second selection that looks
+invisible)</h1>
+<p><strong>Item</strong>: IB-04-model-selection-04 <strong>Learning
+objective</strong>: Argue, using the chapter&#39;s tools (train/val/test
+split,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>-fold
+CV as validation, <em>contamination principle</em>; <em>validation
+chooses among candidate models / hyperparameter settings</em>), why a
+procedure that <em>appears</em> to follow best practice — including
+tuning each technique correctly with CV — can still violate the
+contamination principle when used to compare multiple techniques on the
+test set; propose the correct procedure (Obj. 1 + Obj. 2).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Find the exact flaw</strong> (sub-question 1)</td>
+<td>Student says the colleague&#39;s procedure is wrong but does not
+pinpoint that the violation is at <strong>Steps 4–5</strong> (comparing
+three retrained candidates <em>on the test set</em>) — instead
+attributes it to the within-technique CV (which is <em>not</em> the
+flaw), to dataset size, or to a vague &quot;too much complexity&quot;.</td>
+<td>Student identifies <strong>Steps 4–5</strong> as the violation: the
+test set was used to <strong>choose among the three techniques</strong>,
+and that choice is a decision based on test-set numbers, which spends
+the test set under the contamination principle. Within-technique tuning
+is correctly recognised as <em>not</em> the problem.</td>
+<td>All of Good, plus the student explicitly articulates the
+<strong>two-level selection</strong> structure of the colleague&#39;s
+procedure: there is a <em>within-technique</em> selection (done
+correctly on validation/CV) AND a <em>between-technique</em> selection
+(done wrongly on test); the chapter&#39;s rule &quot;validation chooses among
+candidate models / hyperparameter settings&quot; applies to
+<strong>both</strong> levels; doing the between-technique selection on
+test makes the test set a <em>de facto</em> second validation set.
+Bonus: characterises the bias direction (<em>minimum of three test
+errors</em> → optimistically biased downward).</td>
+</tr>
+<tr>
+<td><strong>C2 — Propose the correct procedure</strong> (sub-question
+2)</td>
+<td>Student says &quot;do the selection on validation&quot; or &quot;use CV more&quot; but
+does not specify that the between-technique comparison must happen at
+the validation step, or does not commit to retraining only one winner
+before test.</td>
+<td>Student describes the correct sequence: use validation/CV to choose
+among the three best-tuned candidates (between-technique selection done
+at validation step), retrain <strong>only the winner</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">M_\star</annotation></semantics></math>
+on training + validation data, evaluate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">M_\star</annotation></semantics></math>
+<strong>once</strong> on the held-out test set.</td>
+<td>All of Good, plus the student explains <em>why</em> the corrected
+procedure satisfies the contamination principle: at the moment the test
+set is consulted, <strong>no decision is still open</strong> — all
+selections (both within and between techniques) happened on validation.
+Each dataset is spent exactly once: <em>training fits</em>,
+<em>validation chose (at both levels)</em>, <em>test estimated</em>.
+(Optional bonus: notes the &quot;<em>comparing on a fourth held-out set is
+just sliding the problem one more level out</em>&quot; insight — the
+structural fix is discipline, not more data.)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza:</strong> <strong>entrambi i criteri a
+livello <em>Base</em></strong> (e nessuno sotto Base). Un Argumentation
+item di livello medium–high a livello magistrale richiede sia la
+<em>parte critica</em> (identificare il flaw, C1) sia la <em>parte
+costruttiva</em> (proporre la procedura corretta, C2): chi nomina la
+violazione ma non sa proporre il rimedio non ha completato l&#39;esercizio.
+Below-Base in C1 = student <em>accepts</em> the colleague&#39;s defence
+(&quot;each technique was tuned correctly, the test was never used for
+training&quot;) or attributes the flaw to the within-technique CV step;
+below-Base in C2 = student proposes a procedure that <em>still</em> uses
+the test set to compare multiple candidates <em>or</em> does not propose
+any alternative procedure.</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>Pretendere il termine &quot;contamination principle&quot;.</strong> Lo
+studente può dire <em>&quot;the rule that a number used to make a decision is
+no longer a clean estimate&quot;</em> — è equivalente in sostanza. Vale
+<strong>Good</strong> anche senza il nome esatto.</li>
+<li><strong>CRITICO — Confondere &quot;test set used for training&quot; con &quot;test
+set used for any decision&quot;.</strong> Questa è <em>la</em> misconception
+centrale dell&#39;item; il collega lo difende sostenendo che il test set non
+è stato usato per training. Uno studente che accetta questa difesa
+(<em>&quot;il collega ha ragione, il test set non è stato toccato durante il
+training delle tre tecniche&quot;</em>) è <strong>below-Base</strong> su C1 —
+ha confuso <em>training</em> con <em>qualsiasi decisione</em>.</li>
+<li><strong>CRITICO — Attribuire il flaw alla CV within-technique al
+Step 2.</strong> La CV within-technique è la <em>parte corretta</em>
+della procedura del collega. Lo studente che dice <em>&quot;il problema è che
+la CV per ogni tecnica era informativa, dovevano confrontare le CV&quot;</em>
+sta correttamente individuando la soluzione, ma se attribuisce il flaw
+al Step 2 (la CV) anziché al Step 4-5 (il test usato per scegliere), è
+<strong>Base</strong> su C1 al massimo. Il flaw è <em>dove la decisione
+finale è stata presa</em>, non in chi non l&#39;aveva ancora presa.</li>
+<li><strong>Penalizzare lo studente che non nomina la &quot;two-level
+selection&quot; struttura.</strong> Articolare esplicitamente che ci sono
+<em>due livelli di selezione</em> (within-tech e between-tech) è una
+qualifica per <strong>Excellent</strong>; uno studente Good può aver
+individuato il flaw senza nominare esplicitamente i due livelli, finché
+ha colto che la <em>between-tech selection</em> è quella che spende il
+test.</li>
+<li><strong>CRITICO — Lessico di ch. 05 (deep learning, NN, layers,
+regularisation, dropout, early stopping).</strong> Il capitolo non lo
+richiede; uno studente che lo importa <strong>non va premiato di
+più</strong> per il lessico — vale solo la sostanza ch. 04 — ma neppure
+penalizzato.</li>
+<li><strong>Dare ragione al collega &quot;perché in pratica i bravi data
+scientist fanno così&quot;.</strong> Tentazione di realismo, <em>e in questo
+caso è particolarmente seducente</em> perché il pattern del collega È
+esattamente quello che molti praticano. Ma l&#39;item insegna proprio che
+<strong>anche le persone competenti che pensano di fare bene fanno
+questo errore</strong> — il punto del capitolo è imparare a
+<em>riconoscere</em> la violazione anche quando la procedura sembra
+meticolosa. Lo studente che conclude <em>&quot;è la prassi standard, il
+collega va bene&quot;</em> è <strong>below-Base</strong> su C1.</li>
+<li><strong>Penalizzare la non-menzione del &quot;retrain only the winner&quot;
+step in C2 a Good.</strong> Il retrain <em>solo del vincitore</em> è una
+qualifica per <strong>Excellent</strong>; uno studente che dice
+<em>&quot;choose at validation, evaluate the chosen one on test&quot;</em> senza
+specificare il retrain step esplicitamente ha colto il punto centrale
+(no selection at test) e merita <strong>Good</strong>.</li>
+<li><strong>Premiare l&#39;insight &quot;sliding-problem-one-level-out&quot; come
+prerequisito Excellent.</strong> È esplicitamente un <strong>bonus
+opzionale</strong>, non un prerequisito.</li>
+<li><strong>Pretendere la quantificazione probabilistica del
+bias.</strong> Una caratterizzazione qualitativa della direzione
+(downward / optimistic) è sufficiente per Excellent.</li>
+</ul>
+</body>
+</html>

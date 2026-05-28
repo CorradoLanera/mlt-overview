@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>04 — Model selection &amp; validation · Learning objectives
+&amp; summative exercise</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="04--model-selection--validation--learning-objectives--summative-exercise">04
+— Model selection &amp; validation · Learning objectives &amp; summative
+exercise</h1>
+<blockquote>
+<p>Chapter: <strong>Model selection &amp; validation</strong> · 30 min ·
+biomedical/clinical graduate students (UBEP). Student-facing text in
+English; teacher design notes (<em>nota docente</em>) in Italian.</p>
+</blockquote>
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>By the end of this chapter, students can:</p>
+<ol type="1">
+<li><strong>Diagnose</strong> overfitting from the signature <em>low
+training error + high error on new data</em>: name the phenomenon, and
+state its cause — the model has captured idiosyncrasies of the training
+sample, not the underlying signal the task wants to learn — rather than
+a fault of the algorithm itself.</li>
+<li><strong>Apply</strong> the train / validation / test split to a
+model-selection task: assign each subset its role — <em>training</em>
+fits the model&#39;s parameters, <em>validation</em> chooses between
+candidate models / hyperparameter settings, <em>test</em> (held out)
+estimates the final model&#39;s performance on truly unseen data — and state
+explicitly why <strong>the same data cannot be used both to choose a
+model and to estimate its performance</strong> (every decision taken
+after looking at a number on a dataset contaminates that number as a
+future estimate).</li>
+<li><strong>Use</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>-fold
+cross-validation as the practical procedure for the <em>validation</em>
+step: state the algorithm — split the (non-test) data into
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+equal blocks; for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">k = 1, \ldots, K</annotation></semantics></math>
+train on the remaining blocks and estimate error on block
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>;
+average the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+errors — identify what the CV error rate <strong>estimates</strong> (the
+prediction error of the chosen model on unseen data), and recognise that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>5</mn><mo>,</mo><mn>10</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">K \in [5, 10]</annotation></semantics></math>
+is the standard range (smaller
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+over-trains, larger
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+adds variance).</li>
+</ol>
+<p><em>Nota docente:</em> tre obiettivi per 30′. <strong>Questo capitolo
+è il payoff narrativo dei cap. 02–03</strong>: chiude la pushback di
+&quot;Clinician A&quot; (cap. 02 item 04 — &quot;ma su pazienti nuovi?&quot;) e
+l&#39;iperaderenza di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>
+(cap. 03 storyboard frame 6, narrative pre-hook). I tre obiettivi sono
+uno per il <em>fenomeno</em> (Obj. 1, diagnostico), uno per la
+<em>struttura</em> della soluzione (Obj. 2, split + perché tre set), uno
+per il <em>metodo</em> canonico (Obj. 3,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>-fold
+CV). Il <strong>bias–variance trade-off</strong> resta <strong>voce
+docente</strong>: è la cornice concettuale del <em>perché</em> la
+complessità del modello porta all&#39;overfitting, ma non è una performance
+separatamente verificabile in 30′. La tabella <em>parameters vs
+hyper-parameters</em> per i vari algoritmi (decision tree / RF / SVM /
+logistic / ANN) resta esposizione, non valutazione. Il pre-hook al cap.
+05 (&quot;e se il modello può essere reso arbitrariamente complesso? — reti
+neurali profonde&quot;) va nella <code>narrative.md</code>, non qui.</p>
+<h2 id="summative-live-exercise--catch-the-overfitter">Summative live
+exercise — &quot;Catch the overfitter&quot;</h2>
+<p><em>Nota docente:</em> sommativo, gira negli <strong>ultimi
+~10′</strong> (min 20–30). <strong>Banco:</strong> quattro modelli
+candidati per uno stesso compito clinico (es. classificazione
+<em>high-risk / low-risk</em> su pazienti diabetici), tutti
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+con hyper-parametro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+diverso, valutati con <strong>5-fold CV</strong> sul training+validation
+set
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+pazienti). La tabella va proiettata e distribuita ai banchi / shared
+slide:</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN)</th>
+<th>Training error</th>
+<th>5-fold CV error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>A</mi></msub><annotation encoding="application/x-tex">M_A</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k = 1</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">0 / 100</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">0\%</annotation></semantics></math>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>30</mn><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">30 / 100</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>30</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">30\%</annotation></semantics></math>)</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">k = 5</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">12 / 100</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">12\%</annotation></semantics></math>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">18 / 100</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>)</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>C</mi></msub><annotation encoding="application/x-tex">M_C</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>15</mn></mrow><annotation encoding="application/x-tex">k = 15</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>20</mn><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">20 / 100</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>20</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">20\%</annotation></semantics></math>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>22</mn><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">22 / 100</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>22</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">22\%</annotation></semantics></math>)</td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>D</mi></msub><annotation encoding="application/x-tex">M_D</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>51</mn></mrow><annotation encoding="application/x-tex">k = 51</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>40</mn><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">40 / 100</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>40</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">40\%</annotation></semantics></math>)</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>42</mn><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">42 / 100</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>42</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">42\%</annotation></semantics></math>)</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objective verified</td>
+<td>Obj. 1 (diagnose overfitting), Obj. 2 (why a separate test set is
+still needed after CV picks), Obj. 3 (CV as the procedure to
+<em>select</em> among candidates).</td>
+</tr>
+<tr>
+<td>In-person action</td>
+<td>Table groups receive the 4-row table on paper. They: (i)
+<strong>identify the overfitter</strong> — the model with the largest
+gap between training error and CV error — and name <em>what</em> the
+phenomenon is and <em>why</em> it happens for that specific
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>;
+(ii) <strong>pick the best model</strong> by CV error and write its row
+down; (iii) <strong>answer in one sentence</strong>: <em>&quot;You now have a
+winner from the CV table. Why is the CV error of that winner
+<strong>not</strong> a trustworthy estimate of its performance on new
+patients, and what data would you use to get a trustworthy
+estimate?&quot;</em> — the answer must invoke the
+<em>every-decision-contaminates</em> rule from Obj. 2; (iv)
+<strong>assign the role</strong> of each of the three subsets by
+completing the three blanks: <em>&quot;The TRAINING set is used to ___. The
+VALIDATION set (here implemented as 5-fold CV) is used to ___. The TEST
+set is used to ___.&quot;</em>. Each group photographs its answers and drops
+them into the shared doc.</td>
+</tr>
+<tr>
+<td>Remote equivalent</td>
+<td>Same table on a shared slide. Remote groups type their four answers
+directly into their row of the shared doc. A Slido / poll collects the
+<strong>identified overfitter</strong> (4 options
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>A</mi></msub><annotation encoding="application/x-tex">M_A</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>C</mi></msub><annotation encoding="application/x-tex">M_C</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>D</mi></msub><annotation encoding="application/x-tex">M_D</annotation></semantics></math>)
+so the remote-vs-presence vote is visible live.</td>
+</tr>
+<tr>
+<td>Shared artifact</td>
+<td>A single shared doc / whiteboard with a 4-column section per group:
+<em>overfitter id + reason</em> · <em>winner id by CV</em> · <em>why CV
+≠ test estimate</em> · <em>roles of the three subsets</em>. Visible to
+in-person and remote at once.</td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>10 min, minutes 20–30 (end of chapter): ~2′ read the table + assign,
+~5′ groups fill in the four cells (photos uploaded <em>during</em> this
+phase), ~3′ instructor-led reveal — the four models are explicitly
+labelled
+(<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>A</mi></msub><annotation encoding="application/x-tex">M_A</annotation></semantics></math>
+overfit /
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+sweet spot /
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>C</mi></msub><annotation encoding="application/x-tex">M_C</annotation></semantics></math>
+smoother /
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>D</mi></msub><annotation encoding="application/x-tex">M_D</annotation></semantics></math>
+underfit</em>); the test-set question is closed in front of the class;
+<strong>and the instructor explicitly names the prior cliff-hangers that
+this very procedure resolves</strong> — <em>&quot;this is what was at stake
+when <strong>Clinician A</strong> asked us in ch. 02 (item 04) &#39;but on a
+different group of patients?&#39; — we now have the answer; and this is why
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>NN&#39;s
+paper-thin wrap</strong> in ch. 03 (storyboard frame 6) was a trap — its
+zero training error was the very signature of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>A</mi></msub><annotation encoding="application/x-tex">M_A</annotation></semantics></math>
+in front of us.&quot;</em></td>
+</tr>
+<tr>
+<td>Success criterion</td>
+<td>The class produces: (i)
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>A</mi></msub><annotation encoding="application/x-tex">M_A</annotation></semantics></math></strong>
+correctly identified as the overfitter, <em>and</em> the reason given as
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>
+memorises every training point — zero training error — but generalises
+badly on new data&quot;</em> (or equivalent); (ii)
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math></strong>
+picked as the winner by CV
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>
+is the lowest CV error) — <em>note for the corrector: a group that picks
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>C</mi></msub><annotation encoding="application/x-tex">M_C</annotation></semantics></math>
+&quot;because it has the smallest training-vs-CV gap&quot; has misread the
+criterion (&#39;lowest CV&#39;, not &#39;smallest gap&#39;) and is a <strong>teachable
+moment</strong> in the reveal, not a fail</em>; (iii) the test-set
+answer invokes the rule that <strong>once the CV error has been used to
+choose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>,
+that very CV number is no longer an unbiased estimate of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>&#39;s
+performance on new patients</strong> — a separate held-out <strong>test
+set</strong>, not used for selection, is needed for the final estimate;
+(iv) the three roles correctly assigned — <em>training → fits the
+model&#39;s parameters</em>, <em>validation (5-fold CV) → chooses among
+candidate models / hyperparameters</em>, <em>test → estimates final
+performance on truly unseen patients</em>. <strong>Live signal of
+mastery:</strong> the class can articulate without prompting that
+<em>training error alone is misleading</em>, <em>the CV error chose the
+model</em>, <em>the test error is the trustworthy number to report to
+the clinical team</em>, and <em>each subset has a single,
+non-substitutable role</em>.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Nota docente — perché duale funziona qui:</em> l&#39;artefatto
+condiviso è <strong>uno solo</strong> (la tabella a 4 modelli), e tutto
+il sommativo è verbale/numerico — niente da disegnare, niente asimmetria
+presenza/remoto. Il poll Slido sul <em>overfitter id</em> dà al docente
+un segnale aggregato immediato anche dai remoti su Obj. 1; le tre celle
+nel doc condiviso danno la traccia osservabile per Obj. 2 e Obj. 3. Se
+la classe è piccola (&lt; 4 gruppi), assegna una <em>seconda</em>
+domanda di reveal: <em>&quot;se cambi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+nella CV, cosa ti aspetti accada alla tabella?&quot;</em> — anticipazione del
+bias-variance della CV stessa, voce docente.</p>
+<p><em>Nota docente — sulla scelta dei numeri della tabella:</em> la
+<strong>gap</strong> training-vs-CV è il segnale di overfitting
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>A</mi></msub><annotation encoding="application/x-tex">M_A</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">0\%</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>30</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">30\%</annotation></semantics></math>
+= gap di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+punti).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+è il <em>winner</em> per CV
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>)
+ma il suo training error
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">12\%</annotation></semantics></math>)
+è già non zero — questo previene la confusione &quot;best = lowest training
+error&quot;.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>C</mi></msub><annotation encoding="application/x-tex">M_C</annotation></semantics></math>
+ha training e CV vicini (entrambi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>20</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\sim 20\%</annotation></semantics></math>)
+ma più alti di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+— &quot;no gap ma comunque non vincente&quot; insegna che <em>l&#39;assenza di
+overfitting non è sufficiente</em>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>D</mi></msub><annotation encoding="application/x-tex">M_D</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>51</mn></mrow><annotation encoding="application/x-tex">k = 51</annotation></semantics></math>)
+è il caso <em>underfit</em>: training error alto perché il modello è
+troppo rigido. Tieni questo come voce docente per il reveal — non lo
+chiedere nei gruppi, ma proponilo dopo come &quot;e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>D</mi></msub><annotation encoding="application/x-tex">M_D</annotation></semantics></math>?
+perché ha errore alto sia sul training sia in CV?&quot; — apre il
+bias–variance.</p>
+<p><em>Nota docente — anti-trabocchetto sul &quot;CV error ≠ test
+estimate&quot;:</em> lo studente medio del UBEP <strong>sa già</strong> che
+servono dati separati per test (intuizione clinica); la sottigliezza che
+ch. 04 aggiunge è il <strong>perché</strong>: ogni volta che usi un
+numero per <em>scegliere</em> qualcosa, quel numero diventa
+inutilizzabile come <em>stima</em>. Insegnerai questo nella consegna
+come la regola operativa &quot;<em>every decision taken after looking at a
+number on a dataset contaminates that number as a future estimate</em>&quot;;
+spingi lo studente nella sub-question 3 a esprimere <em>questa</em>
+idea, non la generica &quot;servono più dati&quot;.</p>
+</body>
+</html>

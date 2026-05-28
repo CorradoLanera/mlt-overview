@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 01 — Diagnose overfitting from a training/CV error
+pair</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-01--diagnose-overfitting-from-a-trainingcv-error-pair">Item
+01 — Diagnose overfitting from a training/CV error pair</h1>
+<p><strong>ID</strong>: IB-04-model-selection-01 <strong>Learning
+objective</strong>: Diagnose overfitting from the signature <em>low
+training error + high error on new data</em>; recognise the phenomenon
+and distinguish it from underfit and from a healthy model fit (Obj. 1).
+<strong>Category</strong>: Comprehension <strong>Type</strong>: MCQ
+<strong>Difficulty</strong>: low–medium <strong>Chapter</strong>:
+04-model-selection</p>
+<h2 id="question">Question</h2>
+<p>Four classifiers, all trained for the same binary clinical task, are
+evaluated on the <em>same</em> dataset using
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-fold
+cross-validation. The table below reports each classifier&#39;s
+<strong>training error</strong> (on the data it was trained on) and its
+<strong>CV error</strong> (the average error across the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+held-out folds):</p>
+<table>
+<thead>
+<tr>
+<th>Classifier</th>
+<th>Training error</th>
+<th><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-fold
+CV error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>1</mn></msub><annotation encoding="application/x-tex">M_1</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>25</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">25\%</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>28</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">28\%</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>2</mn></msub><annotation encoding="application/x-tex">M_2</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">0\%</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">32\%</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>3</mn></msub><annotation encoding="application/x-tex">M_3</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>48</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">48\%</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>4</mn></msub><annotation encoding="application/x-tex">M_4</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">7\%</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">9\%</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p>Which <strong>one</strong> of these classifiers shows the clearest
+signature of <strong>overfitting</strong>?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>1</mn></msub><annotation encoding="application/x-tex">M_1</annotation></semantics></math>
+— training error and CV error are both around
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>25</mn><annotation encoding="application/x-tex">25</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>28</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">28\%</annotation></semantics></math>.</li>
+<li>B)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>2</mn></msub><annotation encoding="application/x-tex">M_2</annotation></semantics></math>
+— training error is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">0\%</annotation></semantics></math>
+and CV error is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">32\%</annotation></semantics></math>.</li>
+<li>C)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>3</mn></msub><annotation encoding="application/x-tex">M_3</annotation></semantics></math>
+— both training error and CV error are close to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>.</li>
+<li>D)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>4</mn></msub><annotation encoding="application/x-tex">M_4</annotation></semantics></math>
+— training error and CV error are both very low (around
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">9\%</annotation></semantics></math>).</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: B
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>2</mn></msub><annotation encoding="application/x-tex">M_2</annotation></semantics></math>).</strong>
+Overfitting has a specific signature in the chapter: <strong>very low
+training error <em>together with</em> a much higher error on data the
+model has not been trained on</strong> (here, the CV error).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>2</mn></msub><annotation encoding="application/x-tex">M_2</annotation></semantics></math>
+has <em>zero</em> training error — it gets every training patient right
+— but a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">32\%</annotation></semantics></math>
+CV error: it has memorised the training sample&#39;s idiosyncrasies, not the
+underlying pattern.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>1</mn></msub><annotation encoding="application/x-tex">M_1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>25</mn><mi>/</mi><mn>28</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">25 / 28\%</annotation></semantics></math>)</strong>
+is <em>not</em> overfitting. The two errors are close (small gap,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\sim 3</annotation></semantics></math>
+percentage points) and both moderate. There is no signature of
+&quot;memorised the sample&quot; — the model is doing roughly the same on training
+and on held-out data, just not very well.</li>
+<li><strong>C
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>3</mn></msub><annotation encoding="application/x-tex">M_3</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>48</mn><mi>/</mi><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">48 / 50\%</annotation></semantics></math>)</strong>
+is <strong>underfitting</strong>, the opposite phenomenon: both errors
+are high <em>and close to chance</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>
+is the baseline for binary), meaning the model is too rigid to capture
+even the training data, let alone new patients. Underfit and overfit are
+two different failures; this MCQ tests recognising overfit, and underfit
+is the most-attractive <em>wrong</em> answer for students who confuse
+&quot;high error&quot; with &quot;overfit&quot;.</li>
+<li><strong>D
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>4</mn></msub><annotation encoding="application/x-tex">M_4</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mi>/</mi><mn>9</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">7 / 9\%</annotation></semantics></math>)</strong>
+is a <strong>healthy fit</strong>: both errors are low <em>and close to
+each other</em> — the model has learned a real pattern and it
+generalises. A student who thinks &quot;low training error = overfit&quot; picks D
+and is wrong: overfit is not low train, it is <em>low train
+<strong>plus</strong> big gap to new-data error</em>.</li>
+</ul>
+<p>The single discriminator is the <strong>gap between training error
+and CV error, together with how low the training error is</strong> — not
+the size of either error alone, and not the presence of any gap
+whatsoever. Only
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mn>2</mn></msub><annotation encoding="application/x-tex">M_2</annotation></semantics></math>
+matches the <em>low-train + big-gap</em> signature.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 04 — Comparing techniques: the second selection that looks
+invisible</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-04--comparing-techniques-the-second-selection-that-looks-invisible">Item
+04 — Comparing techniques: the second selection that looks
+invisible</h1>
+<p><strong>ID</strong>: IB-04-model-selection-04 <strong>Learning
+objective</strong>: Argue, using the chapter&#39;s tools (train / validation
+/ test split,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>-fold
+CV as validation, <em>contamination principle</em>; recall that
+<em>validation chooses among candidate models / hyperparameter
+settings</em>), why a procedure that <em>appears</em> to follow best
+practice — including tuning each candidate technique correctly with CV —
+can still violate the contamination principle when used to compare
+<em>multiple</em> techniques against each other on the test set; propose
+the correct procedure (Obj. 1 + Obj. 2). <strong>Category</strong>:
+Argumentation <strong>Type</strong>: argomentativa (open-ended)
+<strong>Difficulty</strong>: medium–high <strong>Chapter</strong>:
+04-model-selection</p>
+<h2 id="question">Question</h2>
+<p>A colleague wants to choose, for the same clinical 2-class task,
+among <strong>three different ML techniques</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-Nearest
+Neighbor, Support-Vector Machine with kernel, and Random Forest. Each
+technique has its own hyperparameters
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+and kernel choice for SVM; <em>mtry</em> and <em>ntree</em> for RF).
+Here is the colleague&#39;s procedure:</p>
+<table>
+<thead>
+<tr>
+<th>Day</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td>Split the dataset into <strong>three</strong> parts: a training set,
+a validation set, and a <strong>test set</strong>. The test set is
+<em>immediately set aside</em> and locked away.</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td><strong>For each of the three techniques separately</strong>, use
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-fold
+CV on the (training + validation) data to find its <strong>best
+hyperparameter setting</strong>. The colleague obtains: best
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+setting →
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">k = 5</annotation></semantics></math>;
+best SVM setting → kernel +
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>;
+best RF setting →
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">mtry</mtext><annotation encoding="application/x-tex">\text{mtry}</annotation></semantics></math>
++
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">ntree</mtext><annotation encoding="application/x-tex">\text{ntree}</annotation></semantics></math>.</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td><strong>Retrain each of the three best-tuned candidates</strong> —
+<em>one per technique</em> — on the <strong>combined training +
+validation data</strong>.</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td>Evaluate the three retrained candidates on the <strong>held-out test
+set</strong>; record each one&#39;s <strong>test error</strong>.</td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td>Pick the technique with the <strong>lowest test error</strong>, call
+it
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">M_\star</annotation></semantics></math>,
+and report
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">M_\star</annotation></semantics></math>&#39;s
+test error as the expected performance on new patients.</td>
+</tr>
+</tbody>
+</table>
+<p>The colleague defends the procedure:</p>
+<blockquote>
+<p><em>&quot;For each technique, I used CV to tune its hyperparameters —
+exactly as the chapter prescribes. Then I retrained the best version of
+each on training + validation, and only then evaluated on the test set.
+The test set was never touched during any tuning. The number I am
+reporting is the test error of the chosen classifier on data it never
+saw during training. What could possibly be wrong?&quot;</em></p>
+</blockquote>
+<p>Argue your answer in two parts, using only the language of this
+chapter.</p>
+<ol type="1">
+<li><strong>Find the exact flaw</strong> in the colleague&#39;s procedure:
+at which step (and <em>how</em>) is the contamination principle
+violated, <strong>even though each technique was tuned correctly with
+its own CV and the test set was never used for training</strong>?</li>
+<li><strong>Propose the correct procedure</strong> for choosing among
+multiple techniques (each with its own hyperparameters), and explain
+<em>why</em> it does not have the same flaw.</li>
+</ol>
+<h2 id="expected-answer">Expected answer</h2>
+<ol type="1">
+<li><p>The flaw is at <strong>Steps 4–5</strong>: the colleague used the
+<strong>test set to <em>choose</em> among the three retrained
+techniques</strong>. Picking the technique with the lowest test error
+among three is a <strong>decision based on test-set numbers</strong>,
+and the <strong>contamination principle</strong> rules it out: <em>every
+time you take a decision based on a number on a dataset, that number is
+no longer a valid estimate</em>. The test set has therefore been
+<strong>spent</strong> in selecting
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">M_\star</annotation></semantics></math>.
+The reported &quot;test error&quot; of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">M_\star</annotation></semantics></math>
+is no longer an unbiased estimate of its performance on new patients: it
+is the <strong>minimum of three test errors</strong>, optimistically
+biased downward. The fact that each technique&#39;s own
+<em>within-technique</em> tuning was done correctly on CV (at Step 2) is
+irrelevant to this second-level selection — the chapter teaches that
+<strong>validation chooses among candidate models / hyperparameter
+settings</strong>, and <em>&quot;comparing three techniques to pick the
+best&quot;</em> is itself one such choice; doing it on the test set violates
+the rule. By framing the within-technique tunings as the &quot;real&quot; CV step
+and treating Step 4 as &quot;mere evaluation&quot;, the colleague has hidden a
+<strong>second selection step</strong> inside what looks like a final
+estimate — effectively turning the test set into a <em>between-technique
+validation set</em>.</p></li>
+<li><p>The correct procedure for comparing multiple techniques is to do
+<strong>all</strong> the selection at the validation step — both
+within-technique and between-technique. Concretely:</p>
+<ul>
+<li>For each technique, use CV (on the training + validation data) to
+find its best hyperparameter setting — as the colleague already does at
+Step 2.</li>
+<li><strong>Use the same CV (or a parallel validation procedure) to also
+compare the three best-tuned candidates against each other</strong>, and
+commit to a single winner
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">M_\star</annotation></semantics></math>
+— the technique-and-setting combination with the lowest CV error among
+the three. <em>This is the choice the colleague made on the test set,
+moved back to where it belongs.</em></li>
+<li><strong>Retrain only
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">M_\star</annotation></semantics></math></strong>
+— that single winning technique with its winning hyperparameters — on
+the training + validation data combined.</li>
+<li><strong>Evaluate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">M_\star</annotation></semantics></math>
+once</strong>, and only once, on the held-out <strong>test set</strong>,
+and report that test error.</li>
+</ul>
+<p>This procedure does not violate the contamination principle because
+<strong>at the moment the test set is consulted, no decision is still
+open</strong>: all selections — within each technique and across
+techniques — have been made on the validation set; the test set is used
+purely to <em>estimate</em> the already-chosen
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mo>⋆</mo></msub><annotation encoding="application/x-tex">M_\star</annotation></semantics></math>&#39;s
+performance. Each dataset is spent exactly once, on exactly one task:
+training fits, <strong>validation chose (at both levels)</strong>, test
+estimated.</p></li>
+</ol>
+<p>(Bonus, for the curious student: the colleague&#39;s intuition —
+<em>&quot;each technique deserves its own fair test on data it has never
+seen&quot;</em> — is sympathetic but procedurally fatal. Comparing multiple
+models <em>on test</em> always spends the test set, no matter how
+carefully each model was tuned beforehand. <em>Note that adding a fourth
+held-out set would not solve the underlying issue</em>: the same logic
+would apply at every new level — any time a number is used to choose, it
+stops being a clean estimator. <strong>The fix is discipline, not more
+partitions</strong>: keep all selection at the validation step, retrain
+only the chosen winner, evaluate once on test.)</p>
+<h2 id="rubric">Rubric</h2>
+<p>See <a href="../rubriche/rubrica_04_skip-the-test-critique.md">rubriche/rubrica_04_skip-the-test-critique.md</a>.</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

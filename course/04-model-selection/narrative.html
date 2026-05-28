@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>04 — Model selection &amp; validation · narrative</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="04--model-selection--validation--narrative">04 — Model selection
+&amp; validation · narrative</h1>
+<blockquote>
+<p>Chapter narrative, hanging off the course <a href="../_global/spine.md">spine</a>. Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Six-word,
+100-word, chapter arc, and an explicit pre-hook to the next chapter
+(<code>05-deep-learning</code>).</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Decisions cost data; hold the test.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su 4
+varianti. Mantiene la struttura a due clausole con punto e virgola dei
+capitoli precedenti (01 <em>&quot;Programs follow rules; learners find
+them.&quot;</em>, 02 <em>&quot;Draw the line; count the cost.&quot;</em>, 03 <em>&quot;Same
+data; three algorithms, three boundaries.&quot;</em>) — la <em>coerenza
+tipografica</em> è ormai cifra della serie. Riprende esplicitamente il
+verbo <em>cost</em> del cap. 02 (<em>count the cost</em>) — lì era il
+costo della classificazione sbagliata (rischio), qui è il costo
+<em>informazionale</em> di ogni decisione presa su una stima.
+<strong>&quot;Hold the test&quot;</strong> è la regola operativa del capitolo: il
+test set è l&#39;unico numero affidabile, e lo è proprio perché <em>non è
+stato speso</em> in nessuna scelta. La tagline pesa: ogni numero che usi
+per scegliere, lo stai consumando.</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>Elena saw
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>NN&#39;s
+perfect score and almost believed it. Then she remembered her own
+pushback from the second chapter — <em>on a different group of
+patients?</em> — and tested the model on a handful she had set aside.
+Many were wrong — the supposedly best was the worst. She learned what
+training error really measures: how a model fits the patients it has
+already seen, nothing about the ones to come. So she divided her data
+three ways: one to fit, one folded several times to choose between
+models, one untouched to confirm. Decisions had cost her data; she had
+paid in advance.</p>
+<p><em>Struttura:</em> Bing = Elena vede l&#39;errore zero di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>NN
+e quasi ci casca | Bang = ricorda la sua stessa obiezione del cap. 02
+(&quot;su pazienti diversi?&quot;), prova il modello su pazienti messi da parte:
+<em>molti sbagliati — il supposto migliore era il peggiore</em>. Capisce
+cosa misura davvero il training error (l&#39;aderenza ai pazienti <em>già
+visti</em>, niente sui prossimi) | Bongo = divide i dati in
+<strong>tre</strong>: uno per <em>fittare</em>, uno (piegato
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+volte) per <em>scegliere</em>, uno intatto per <em>confermare</em>. Le
+decisioni le erano costate dati: aveva pagato in anticipo per ottenere
+una stima affidabile. (100 parole esatte.)</p>
+<h2 id="chapter-arc--hook--challenge--resolution--payoff">Chapter arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio</td>
+<td>The &quot;best&quot; classifier from chapter 3 — the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-NN
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>
+that misclassified <em>zero</em> of Elena&#39;s training patients — meets
+its first new patient and gets it wrong. Then another. Then
+another.</td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto</td>
+<td>Training error is the model&#39;s reflection of itself, not of the
+world. Worse, the <em>more flexible</em> a model becomes, the better it
+can fit any specific training set — at the cost of fitting that one set,
+rather than the underlying pattern (<em>overfitting</em>). She needs a
+way to tell, <em>before</em> she deploys, whether a classifier has
+learned the signal or only memorised the sample. And the question is
+double: among several candidate models, how does she
+<strong>choose</strong>? And once she has chosen, how does she report a
+<em>trustworthy</em> estimate of how well it will do on new
+patients?</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta</td>
+<td>She splits her data three ways: a <strong>training set</strong> to
+fit each model&#39;s parameters; a <strong>validation set</strong> to choose
+between candidate models / hyperparameter settings; and a <strong>test
+set</strong>, <em>held out</em>, used only once at the very end to
+estimate the chosen model&#39;s performance. The validation step is
+operationalised by
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>-fold
+cross-validation</strong>: divide the (non-test) data into
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+equal blocks; for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi></mrow><annotation encoding="application/x-tex">k = 1, \ldots, K</annotation></semantics></math>
+train on the other
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">K - 1</annotation></semantics></math>
+blocks and estimate the error on block
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>;
+average the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+error rates. Standard
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+is in the range
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>5</mn><mo>,</mo><mn>10</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[5, 10]</annotation></semantics></math>.
+The unifying rule is the <strong>contamination principle</strong>:
+<em>every time you take a decision based on a number from a dataset,
+that number is no longer a valid estimate</em>. Selection consumes the
+validation set; the test set is the only one that survives
+untouched.</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta</td>
+<td>She can now tell apart a model that has learned the signal from one
+that has merely memorised the data — and can report a number (the test
+error) that has not been spent in any earlier decision. Looking back at
+the three boundaries of chapter 3, she can finally say <em>which</em> of
+them holds on new patients: the one whose validation error was lowest,
+with its honest test error attached. The cliff-hanger of chapter 2 (&quot;but
+on a different group of patients?&quot;) and the trap of chapter 3
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>NN&#39;s
+paper-thin wrap) are both answered by <em>the same</em> procedure.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>Elena had built three classifiers in chapter three —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-NN,
+kernel SVM, Random Forest — and the simplest test, <em>training
+error</em>, had whispered an answer that felt too easy: the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>-NN
+had got every training patient exactly right. Before she trusted that
+number, she tried the model on a small group of patients she had quietly
+held aside, and the verdict was brutal — many of them landed wrong, and
+the <em>supposedly best</em> classifier had turned out to be the
+<em>worst</em>. Sitting with that, she saw what training error actually
+measures: how well a model fits the rows it has already seen, and
+nothing about the rows still to come. The more flexible she let the
+model be — the smaller
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+the fancier the decision boundary — the more perfectly it could redraw
+its training set, and the further it could drift from the world the
+training set was meant to represent. She needed a discipline. So she
+carved her data into three parts. One she kept to <em>fit</em> the model
+— the <strong>training set</strong>. One she used to <em>choose</em>
+between candidate models, by giving each a turn at being trained on most
+of the data and scored on the rest in turn — the <strong>validation
+set</strong>, organised as a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>-fold
+cross-validation (with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+commonly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>:
+divide into
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+equal blocks, train on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">K-1</annotation></semantics></math>,
+estimate the error on the held-out one, repeat, and average). The third
+part she touched <em>only once</em>, at the very end, when she had
+already chosen — the <strong>test set</strong>, held out, the source of
+the single trustworthy number she could quote back to a clinician. The
+reason there had to be three sets, not two, was a rule about information
+she had not seen named before: <em>every time you take even a single
+decision based on a number on a dataset, that number is no longer a
+valid estimate</em>. Choosing the model consumes the validation set;
+reporting performance has to be done on a set the choice never touched.
+Decisions had cost her data, and so she had paid in advance. By the end
+of that afternoon Elena could look back at the three boundaries from
+chapter three — wiggly, smooth, staircase — pick the one whose
+validation error was lowest, and report its test error as a number that
+meant what it said. The pushback she had heard from &quot;Clinician A&quot; —
+<em>&quot;but on a different group of patients?&quot;</em> — was no longer a
+hypothesis hanging in the air. She had the answer. And she had it
+because she had been willing, on day one, to set some data aside and not
+spend it.</p>
+<h2 id="versione-didattica-objectives-recap">Versione didattica
+(objectives recap)</h2>
+<p>Gli obiettivi formali del capitolo vivono in <a href="objectives.md">objectives.md</a>. In sintesi, il payoff narrativo
+li ricalca: <strong>diagnose</strong> l&#39;overfitting come <em>low
+training error + high error on new data</em> (il modello cattura
+idiosincrasie del campione, non il segnale); <strong>apply</strong> lo
+split <em>train / validation / test</em> assegnando a ciascun set un
+ruolo non sostituibile (fit / choose / report) e applicando la regola di
+contaminazione (<em>ogni decisione presa su un numero spende quel
+numero</em>); <strong>use</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>-fold
+cross-validation come procedura canonica per il validation step (divide
+in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+blocchi, train su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">K-1</annotation></semantics></math>
++ estimate su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+ripeti, media;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>5</mn><mo>,</mo><mn>10</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">K \in [5, 10]</annotation></semantics></math>
+standard).</p>
+<h2 id="pre-hook--05-deep-learning">Pre-hook → 05 Deep Learning</h2>
+<blockquote>
+<p>Elena now has a discipline that works for <em>any</em> classifier she
+can build — fit it, cross-validate it, hold out a test set, report the
+honest number. But what if the <strong>model itself</strong> can be made
+arbitrarily complex — a network of millions of artificial
+<em>neurons</em> that can, in principle, fit <em>anything</em> she shows
+it? The cross-validation discipline still holds. But the
+<em>architecture</em> of the model becomes a new question: how many
+layers, how many neurons, how do they connect? That class of models —
+<strong>deep neural networks</strong> — is next.</p>
+</blockquote>
+<p><em>Glossa:</em> il pre-hook <strong>non ritira</strong> la
+disciplina appena imparata (anzi, la riafferma — sopravvive al cambio di
+scala) e introduce il <em>nuovo asse di scelta</em>: non più <em>quale
+famiglia di algoritmi</em> (ch. 03), né <em>quale hyperparametro</em>
+(ch. 04), ma <em>quale architettura</em>. Il cliff-hanger lessicale è
+<strong>neurons + layers</strong> — il vocabolario di ch. 05 — senza
+rivelarne ancora il meccanismo (backpropagation, weights). Ponte diretto
+a <code>05-deep-learning</code> (via
+<code>manifest.next_enabled</code>).</p>
+</body>
+</html>

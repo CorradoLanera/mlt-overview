@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>04 — Model selection &amp; validation · storyboard (6
+frames)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="04--model-selection--validation--storyboard-6-frames">04 — Model
+selection &amp; validation · storyboard (6 frames)</h1>
+<blockquote>
+<p>Visual plan for the chapter, built from its <a href="narrative.md">arc</a> and <a href="objectives.md">objectives</a>.
+30 min, dual classroom (in-person + remote). On-screen text in
+<strong>English</strong> (≤ 1 sentence/frame, 3-second readable);
+regia/voce docente in <em>italiano</em>. Feeds
+<code>mlt-quarto-build</code>.</p>
+</blockquote>
+<blockquote>
+<p>🎨 La colonna <strong>Visual</strong> è la descrizione sintetica (per
+noi). I <strong>prompt pronti per un generatore di immagini</strong> —
+con lo stesso <em>style-anchor</em> condiviso dei cap. 01, 02 e 03 —
+stanno nella sezione <strong><code>## Prompt visivi</code></strong> in
+fondo. Eventuali label numeriche / percentuali (es.
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">0\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>30</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">30\%</annotation></semantics></math></em>,
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">K = 5</annotation></semantics></math></em>)
+si aggiungono <strong>come overlay</strong> in slide-editor.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funzione</th>
+<th>Visual</th>
+<th>Testo a video</th>
+<th>Voce docente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Hook visivo</td>
+<td><strong>Direct visual callback to ch. 03 frame 6.</strong> Center:
+the tight wiggly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>
+boundary that perfectly wraps every training dot — <em>paper-thin
+precision</em>. To the right: a single <strong>new</strong> unfilled dot
+just outside the wrap, mis-coloured. The expression on a faint clinician
+silhouette behind: dismay.</td>
+<td><em>&quot;Perfect on training. Wrong on the first new patient.&quot;</em></td>
+<td>Il &quot;classificatore migliore&quot; del cap. 03 —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>,
+errore zero sul training — sbaglia il primo paziente nuovo. <em>Il
+supposto migliore era il peggiore</em>.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Contesto</td>
+<td>Split panel — <strong>LEFT</strong> the same model overlaid on the
+<em>training</em> dots (every dot enclosed in its own correct-colour
+bubble); <strong>RIGHT</strong> the same model on a <em>new</em> batch
+of unfilled dots (many landing wrong). A small ch. 02 callback icon
+(Clinician A&#39;s silhouette + speech bubble <em>&quot;on a different
+group?&quot;</em>) in the corner.</td>
+<td><em>&quot;Fits the seen; misses the unseen.&quot;</em></td>
+<td>L&#39;errore sul training misura <em>come il modello aderisce ai
+pazienti già visti</em>, non come si comporterà su quelli nuovi. È la
+pushback del cap. 02 (Clinician A) che torna a chiedere conto.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sfida / Dati</td>
+<td>A clean dual-curve plot: <strong>X-axis</strong> model complexity
+(left → simple, right → flexible); <strong>Y-axis</strong> error rate.
+The <em>training-error</em> curve falls <strong>monotonically toward
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></strong>.
+The <em>new-data-error</em> curve descends, hits a minimum, then
+<strong>rises</strong> — the classic U. The gap between them widens past
+the U&#39;s minimum.</td>
+<td><em>&quot;Training error falls. New-data error eventually
+rises.&quot;</em></td>
+<td>Più il modello è flessibile, meglio si attacca al training — e oltre
+un punto, peggio generalizza. Questo è <strong>overfitting</strong>: il
+modello impara il <em>campione</em>, non il <em>segnale</em>.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Nodo / Impatto</td>
+<td>A token labelled <em>&quot;validation error&quot;</em> enters a gate marked
+<em>&quot;USE THIS NUMBER TO CHOOSE&quot;</em> and emerges on the other side
+<strong>greyed out / stamped USED</strong>, no longer usable as an
+&quot;estimate&quot;. A second untouched token, labelled <em>&quot;test error&quot;</em>,
+sits visibly <em>behind glass</em>, unspent.</td>
+<td><em>&quot;Every decision spends data.&quot;</em></td>
+<td>Ecco la regola del capitolo: <strong>ogni volta che usi un numero
+per scegliere, quel numero è stato speso</strong> — non vale più come
+stima onesta. Per questo il test set sta dietro vetro: non si tocca
+finché la scelta non è fatta.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Metodo / Soluzione (3-way split +
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>-fold
++ summative perno)</td>
+<td><strong>Top half:</strong> a single horizontal bar split into three
+coloured zones — TRAIN (largest), VALIDATION (medium),
+<strong>TEST</strong> (smallest, locked behind a small padlock icon).
+The VALIDATION zone is shown <em>expanded</em> below into
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">K = 5</annotation></semantics></math>
+equal blocks, with rotating arrows: in each of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+steps a different block is held out (orange highlight) while the other
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+train; an average symbol gathers the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+errors into one number. <strong>Bottom half:</strong> the <strong>4-row
+&quot;Catch the overfitter&quot; table</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>A</mi></msub><annotation encoding="application/x-tex">M_A</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k{=}1</annotation></semantics></math>
+·
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">k{=}5</annotation></semantics></math>
+·
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>C</mi></msub><annotation encoding="application/x-tex">M_C</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>15</mn></mrow><annotation encoding="application/x-tex">k{=}15</annotation></semantics></math>
+·
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>D</mi></msub><annotation encoding="application/x-tex">M_D</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>51</mn></mrow><annotation encoding="application/x-tex">k{=}51</annotation></semantics></math>)
+showing <em>(training error, CV error)</em> pairs, with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>&#39;s
+CV error visually circled as the lowest.</td>
+<td><em>&quot;Three sets, one job each — and the test stays
+untouched.&quot;</em></td>
+<td>Si divide in <strong>tre</strong>: <em>train</em> fitta,
+<em>validation</em> (qui
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-fold
+CV) sceglie, <em>test</em> conferma. Qui gira il sommativo
+&quot;<strong>Catch the overfitter</strong>&quot;: ogni gruppo identifica
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>A</mi></msub><annotation encoding="application/x-tex">M_A</annotation></semantics></math>
+come overfit,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+come winner per CV
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>),
+risponde <em>perché il test set è ancora necessario</em> dopo la scelta,
+e assegna i tre ruoli (fit / choose / confirm).</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Payoff / Domanda finale</td>
+<td><strong>Direct visual callback to ch. 03 frame 5</strong> — the
+three columns
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+· SVM · RF) of boundary shapes from ch. 03 come back, but now ONE column
+(whichever the CV picked) is <strong>highlighted with a small honest
+label <em>&quot;test:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>&quot;</em></strong>
+floating beside it. Behind, on the horizon, a faint outline emerges: a
+<strong>network of small connected nodes</strong> (neurons + layers),
+unresolved, deliberately hazy.</td>
+<td><em>&quot;Now I trust the number. But how complex can the model
+be?&quot;</em></td>
+<td>Elena può tornare ai tre confini del cap. 03 e dirne uno <em>con un
+numero affidabile</em>. Ma una domanda nuova si profila: e se il modello
+stesso potesse essere reso <em>arbitrariamente complesso</em>? Reti di
+neuroni, capitolo 5.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="modalità-duale--dove-si-attiva">Modalità duale — dove si
+attiva</h2>
+<p>Il riquadro <strong>5</strong> è il perno attivo: lì gira il
+sommativo &quot;<strong>Catch the overfitter</strong>&quot; (vedi <a href="objectives.md">objectives.md</a>). L&#39;artefatto condiviso è la
+<strong>tabella a 4 modelli</strong> (proiettata + distribuita) + un
+doc/lavagna a <strong>4 colonne per gruppo</strong> (<em>overfitter id +
+reason</em> · <em>winner id by CV</em> · <em>why CV ≠ test estimate</em>
+· <em>roles of the three subsets</em>). Un poll Slido
+sull&#39;<strong>overfitter id</strong> (4 opzioni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>A</mi></msub><annotation encoding="application/x-tex">M_A</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>C</mi></msub><annotation encoding="application/x-tex">M_C</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>D</mi></msub><annotation encoding="application/x-tex">M_D</annotation></semantics></math>)
+dà al docente un segnale aggregato e immediato anche dai remoti.
+Riquadri 1–4 espositivi (~20′), riquadro 5 ospita i ~10′ di sommativo
+(min 20–30), riquadro 6 chiude e fa ponte (~1–2′ alla fine, sovrapposto
+al min 30).</p>
+<h2 id="prompt-visivi">Prompt visivi</h2>
+<p>Prompt pronti per un generatore di immagini. Lo
+<strong><code>style-anchor</code></strong> è definito <em>una volta</em>
+(stesso dei cap. 01, 02 e 03, per coerenza di serie tra capitoli) e va
+premesso a ogni prompt come parametro. Mai testo dentro l&#39;immagine — le
+label numeriche/percentuali si aggiungono come overlay in
+slide-editor.</p>
+<p><strong><code>style-anchor</code></strong> = <em>&quot;Coherent image set,
+one shared visual identity: warm orange (#E8741E) as the single accent
+colour on a dark-slate background, soft cinematic lighting, 16:9, crisp
+and high quality, no text, letters or numbers rendered anywhere in the
+image.&quot;</em></p>
+<ul>
+<li><strong>Riquadro 1 (Hook)</strong>: <code>style-anchor</code> +
+<em>a tight wiggly boundary that wraps every training dot with
+paper-thin precision, each dot in its own correctly-coloured small
+bubble; to the right a single new unfilled dot floats just outside the
+wrap in a mis-matched colour; a faint clinician silhouette in the
+background, expression of dismay.</em> <strong>(Continuity callback to
+ch. 03 frame 6.)</strong></li>
+<li><strong>Riquadro 2 (Contesto)</strong>: <code>style-anchor</code> +
+<em>split-panel diagram: left, a 2D scatter of two-colour patient dots
+each enclosed in its own correct-colour bubble (the model fitting
+training data perfectly); right, the same wiggly model overlaid on a new
+batch of unfilled dots, many of which fall on the wrong-colour side of
+the boundary; small clinician silhouette icon in the corner with a tiny
+speech bubble.</em></li>
+<li><strong>Riquadro 3 (Sfida/Dati)</strong>: <code>style-anchor</code>
++ <em>a minimalist line plot with two curves: one falling smoothly and
+monotonically toward zero (labelled visually as the training-error
+curve); a second descending then reversing into a clear U-shape (the
+new-data-error curve); the X-axis suggests increasing model complexity
+left-to-right; the gap between the two curves widens past the U&#39;s
+minimum.</em></li>
+<li><strong>Riquadro 4 (Nodo / contamination principle)</strong>:
+<code>style-anchor</code> + <em>a single bright orange token enters a
+stylised gate / threshold; on the other side it emerges greyed-out and
+visibly stamped (a circular shape resembling a USED stamp, no readable
+letters); behind the gate, separated by a clean glass pane, a second
+bright orange token sits untouched, evidently reserved.</em></li>
+<li><strong>Riquadro 5 (Metodo + summative perno)</strong>:
+<code>style-anchor</code> + <em>top half: a single horizontal bar
+divided into three coloured segments of decreasing width (training,
+validation, test); the test segment has a small padlock icon over it;
+the validation segment is expanded below into five equal blocks with
+circular rotation arrows showing one block held out at each of five
+steps. Bottom half: a clean four-row table showing four rows, each row
+associated with two visually distinct numeric percentages, one row&#39;s
+right-side percentage circled.</em></li>
+<li><strong>Riquadro 6 (Payoff + pre-hook ch. 05)</strong>:
+<code>style-anchor</code> + <em>three vertical columns side by side,
+each showing a distinct decision boundary shape (a piecewise wiggly
+curve, a smooth curve, an axis-aligned staircase); one column is
+highlighted with a small accent ribbon (the winner); to the side, a
+faint percentage tag floats; in the deep background, an out-of-focus
+horizon emerges with a soft, hazy network of small connected nodes —
+many small circles connected by thin lines, suggesting layers of
+artificial neurons.</em> <strong>(Continuity callback to ch. 03 frame 5;
+pre-hook to ch. 05.)</strong></li>
+</ul>
+<h2 id="verifica-post-output-auto-check">Verifica post-output
+(auto-check)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked></input>Riquadro 1 aggancia in 3
+secondi? — sì: il
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>
+wrap (callback a ch. 03 frame 6) + il nuovo paziente che cade dal lato
+sbagliato + &quot;Perfect on training. Wrong on the first new patient.&quot; è
+leggibile come tradimento immediato.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 3 il dato chiave
+è VISIBILE? — sì: la curva a U dell&#39;errore su dati nuovi vs la discesa
+monotona dell&#39;errore di training è la <em>firma diagnostica</em>
+dell&#39;overfitting — disegnata, non solo nominata.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 4 il nodo è il
+concetto centrale del capitolo? — sì: la <strong>contamination
+principle</strong> (&quot;ogni decisione spende un numero&quot;) è il <em>regola
+unificante</em> del capitolo, ed è visualizzata come un token che entra
+in un gate e ne esce <em>speso/grigio</em>.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 6 lascia una
+domanda-ponte? — sì: <em>&quot;Now I trust the number. But how complex can
+the model be?&quot;</em> + l&#39;orizzonte di neuroni/layers in lontananza →
+cliff-hanger esplicito a ch. 05 deep-learning.</label></li>
+<li><label><input type="checkbox" checked></input>Solo i 6 riquadri (senza
+voce) raccontano l&#39;arco? — sì:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>
+perfetto sul training fallisce sul primo nuovo →
+fits-the-seen-misses-the-unseen → curva training-vs-test diverge → ogni
+decisione spende un numero → 3-way split + K-fold + tabella sommativo →
+ora il numero affidabile c&#39;è, ma quanto può crescere il
+modello?</label></li>
+<li><label><input type="checkbox" checked></input>Stile coerente coi cap.
+01, 02 e 03? — sì: stesso <code>style-anchor</code> (#E8741E,
+dark-slate, 16:9, no text). Riquadro 1 fa <strong>callback esplicito a
+ch. 03 frame 6</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>
+wrap); riquadro 6 fa <strong>callback esplicito a ch. 03 frame
+5</strong> (3 colonne kNN|SVM|RF) — i due ganci visivi di serie più
+espliciti finora.</label></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 02 (Compute a 5-fold CV error)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-02-compute-a-5-fold-cv-error">Rubric — Item 02
+(Compute a 5-fold CV error)</h1>
+<p><strong>Item</strong>: IB-04-model-selection-02 <strong>Learning
+objective</strong>: Use
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>-fold
+cross-validation: compute the CV error rate from per-fold errors,
+identify what it estimates, and recognise the trade-off involved in
+choosing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+(Obj. 3).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Compute the CV error rate</strong> (sub-question
+1)</td>
+<td>The numerical result is correct
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>30</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">30\%</annotation></semantics></math>)
+but the formula or the arithmetic step is missing — the student wrote
+the answer but did not show the <em>averaging</em> procedure.</td>
+<td>Both formula and result correct: the student writes either
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mi>K</mi></mfrac><msub><mo>∑</mo><mi>k</mi></msub><msub><mtext mathvariant="normal">error</mtext><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">\frac{1}{K} \sum_k \text{error}_k</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mtext mathvariant="normal">total misclassified</mtext><mtext mathvariant="normal">total patients</mtext></mfrac><annotation encoding="application/x-tex">\frac{\text{total misclassified}}{\text{total patients}}</annotation></semantics></math>
+explicitly, plugs the numbers in, gets
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>30</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">30\%</annotation></semantics></math>.</td>
+<td>All of Good, plus the student shows the <strong>two equivalent
+computations</strong> (average of per-fold rates <em>and</em>
+total-misclassified divided by total-patients) yielding the same result,
+and identifies <em>why</em> they agree (each fold has the same size,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+patients).</td>
+</tr>
+<tr>
+<td><strong>C2 — State what the CV error estimates</strong>
+(sub-question 2)</td>
+<td>Student says &quot;the error&quot; or &quot;the model&#39;s performance&quot; without
+distinguishing it from training error and test error.</td>
+<td>Student states explicitly that the CV error estimates the
+<strong>prediction error on unseen patients</strong> (or &quot;patients drawn
+from the same population&quot;), distinguishing it from training error.</td>
+<td>All of Good, plus the student notes that the CV error is a
+<strong>validation-stage</strong> estimate — used to <em>choose</em>
+among candidate models — and is therefore <em>not</em> the same as the
+<em>test</em> error reported as the final number (recalling the
+train/val/test role split from Obj. 2).</td>
+</tr>
+<tr>
+<td><strong>C3 — Trade-off when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+changes</strong> (sub-question 3)</td>
+<td>Student correctly describes the <strong>procedure</strong> for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">K = 10</annotation></semantics></math>
+(10 folds of 2 patients each, train on 18 + estimate on 2, repeat 10
+times, average) but does not identify a trade-off or identifies a
+wrong/imprecise one.</td>
+<td>Student describes the procedure correctly <strong>and</strong>
+identifies <strong>one</strong> of the two directions of the trade-off —
+<em>either</em> &quot;more training data per round → less bias&quot; <em>or</em>
+&quot;smaller folds → noisier per-fold rates → more variance&quot;.</td>
+<td>All of Good, plus the student names <strong>both directions</strong>
+of the trade-off (less bias <em>and</em> more variance) and ties them to
+why
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>5</mn><mo>,</mo><mn>10</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">K \in [5, 10]</annotation></semantics></math>
+is the standard recommendation: the balance between <em>enough training
+data per round</em> and <em>enough patients per fold to make the rate
+meaningful</em>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza:</strong> <strong>almeno 2 criteri su 3
+a livello <em>Base</em></strong> (e nessuno sotto Base). Below-Base in
+C1 = numerical result wrong (the procedure was not applied correctly);
+below-Base in C2 = student says &quot;training error&quot; or &quot;test error&quot; instead
+of &quot;prediction error on unseen data&quot;; below-Base in C3 = no description
+of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">K = 10</annotation></semantics></math>
+procedure at all <em>or</em> a description that contradicts the
+procedure (e.g., &quot;K=10 means run CV 10 times&quot;).</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>Pretendere la formula in notazione di sommatoria per
+C1.</strong> Uno studente che scrive <em>&quot;average of the per-fold
+errors:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mn>25</mn><mo>+</mo><mn>25</mn><mo>+</mo><mn>50</mn><mo>+</mo><mn>0</mn><mo>+</mo><mn>50</mn></mrow><mn>5</mn></mfrac><mo>=</mo><mn>30</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\frac{25 + 25 + 50 + 0 + 50}{5} = 30\%</annotation></semantics></math>&quot;</em>
+senza la notazione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>∑</mo><annotation encoding="application/x-tex">\sum</annotation></semantics></math>
+ha mostrato la formula in modo equivalente; vale <strong>Good</strong>.
+Solo la <em>assenza</em> della media (i.e., risultato giusto ma senza
+nessuna traccia di averaging) abbassa a Base.</li>
+<li><strong>Penalizzare lo studente che dice &quot;prediction error&quot; senza
+nominare esplicitamente &quot;<em>unseen patients</em>&quot; in C2.</strong> Se lo
+studente ha scritto <em>&quot;the error the classifier would make on new
+data&quot;</em> o <em>&quot;on patients the model has not seen&quot;</em>, la sostanza
+è corretta — vale <strong>Good</strong>. L&#39;espressione canonica del
+capitolo (&quot;on unseen data&quot; / &quot;prediction error&quot;) non è una formula da
+memorizzare.</li>
+<li><strong>Penalizzare in C3 chi parla di &quot;more variance / less bias&quot;
+in modo qualitativo, senza la quantificazione esatta.</strong> Lo scopo
+del trade-off in ch. 04 è la <em>direzione qualitativa</em>, non la
+formalizzazione probabilistica del bias-variance trade-off (quella resta
+voce docente). Una risposta corretta in direzione qualitativa, anche
+senza formule, vale al pieno livello dichiarato.</li>
+<li><strong>Lessico di ch. 05 (deep learning, NN, layers).</strong> Il
+capitolo non lo richiede. Uno studente che lo importa per dare un
+esempio (es. &quot;for a deep network,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">K=5</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">K=10</annotation></semantics></math>
+would mean...&quot;) <strong>non va premiato di più</strong> per il lessico —
+vale solo la sostanza ch. 04 — ma neppure penalizzato se la sostanza è
+giusta.</li>
+<li><strong>Penalizzare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">K = 10</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">K = 5</annotation></semantics></math>
+in C3 se lo studente argomenta
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">K = 10</annotation></semantics></math>
+è sempre meglio&quot;.</strong> È una posizione difendibile (più training
+data per round) ma <strong>incompleta</strong>: il chapter spinge sul
+trade-off. Va trattato come <strong>Base</strong> in C3 (riconosce la
+direzione bias, non la direzione variance), <strong>non</strong>
+Good.</li>
+</ul>
+</body>
+</html>

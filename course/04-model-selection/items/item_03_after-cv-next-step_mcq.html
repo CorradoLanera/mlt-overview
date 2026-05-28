@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 03 — After CV picks a winner: what is the trustworthy next
+step?</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-03--after-cv-picks-a-winner-what-is-the-trustworthy-next-step">Item
+03 — After CV picks a winner: what is the trustworthy next step?</h1>
+<p><strong>ID</strong>: IB-04-model-selection-03 <strong>Learning
+objective</strong>: Apply the train / validation / test split: invoke
+the <em>contamination principle</em> — every decision taken after
+looking at a number on a dataset spends that number as a future estimate
+— to choose the next procedural step (Obj. 2).
+<strong>Category</strong>: Application <strong>Type</strong>: MCQ
+(scenario) <strong>Difficulty</strong>: medium <strong>Chapter</strong>:
+04-model-selection</p>
+<h2 id="question">Question</h2>
+<p>A clinical team has set aside a separate <strong>test set</strong> at
+the start of a project and used the remaining data for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-fold
+cross-validation to compare four candidate classifiers
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>A</mi></msub><annotation encoding="application/x-tex">M_A</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>C</mi></msub><annotation encoding="application/x-tex">M_C</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>D</mi></msub><annotation encoding="application/x-tex">M_D</annotation></semantics></math>).
+The model with the lowest CV error is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>,
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>.
+The team must now report a number to the clinical staff that represents
+how the chosen model is expected to perform on <strong>new
+patients</strong>.</p>
+<p>What is the <strong>correct next step</strong>?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) Report the CV error
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>)
+of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+as the expected performance of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+on new patients — no further evaluation is needed.</li>
+<li>B) Retrain
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+on the combined training + validation data, then evaluate it on the
+held-out test set; report the resulting test error as the expected
+performance.</li>
+<li>C) Re-run the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-fold
+cross-validation with a different
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+(e.g.,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">K = 10</annotation></semantics></math>)
+to confirm
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>
+CV error is robust, then report it as the final number.</li>
+<li>D) Pool the training, validation, and test sets together into one
+combined dataset and report the average error of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+on the whole pool.</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: B.</strong> The CV error of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>)
+is the very number that was <em>used to choose</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+among the four candidates. By the chapter&#39;s <strong>contamination
+principle</strong> — <em>&quot;every time you take a decision based on a
+number on a dataset, that number is no longer a valid estimate&quot;</em> —
+the chosen winner&#39;s CV error is no longer an unbiased estimate of its
+performance on new patients: it is <em>optimistically biased toward the
+smallest of four CV errors</em>, because the team picked it for being
+small. The <strong>test set</strong> is the <em>only</em> dataset that
+has not been spent in any decision so far; evaluating the (retrained)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>
+on it gives a single, trustworthy number with no contamination.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>
+as the final estimate)</strong> is the classic contamination violation.
+It is the most attractive wrong answer because the CV error
+<em>exists</em> and <em>looks like</em> a performance number — but it
+has already been spent in the act of selection. Reporting it is like
+reporting your <em>best</em> score across many attempts as your
+&quot;expected&quot; score.</li>
+<li><strong>C (re-run CV with different
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>)</strong>
+still does not solve the problem. Even if a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">K = 10</annotation></semantics></math>
+CV gives the <em>same</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>18</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">18\%</annotation></semantics></math>,
+that number too would now be involved in a selection-style decision
+(confirming
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>).
+Re-running CV does not &quot;unspend&quot; the prior CV; it doubles down on the
+same set. The test set is still untouched only because it has never been
+evaluated on at all.</li>
+<li><strong>D (pool train + val + test, report error on the
+pool)</strong> is the most damaging error of the four: it uses the
+<strong>test set as training data</strong> (it includes the test
+patients in the data the model can effectively see for fitting / for
+averaging error). The held-out test set&#39;s whole purpose — being
+untouched — is destroyed. The reported error would be a mix of training
+error (where the model has seen the data) and a small contribution from
+the test patients (now no longer held out). It violates the test set&#39;s
+<em>role</em> (Obj. 2).</li>
+</ul>
+<p>The single discriminating principle is: <strong>does the procedure
+produce a number from a dataset that has not yet been used in any
+decision about
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>B</mi></msub><annotation encoding="application/x-tex">M_B</annotation></semantics></math>?</strong>
+Only B does.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>
