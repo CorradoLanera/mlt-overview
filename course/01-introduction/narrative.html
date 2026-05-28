@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>01 — What is Machine Learning? · narrative</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="01--what-is-machine-learning--narrative">01 — What is Machine
+Learning? · narrative</h1>
+<blockquote>
+<p>Chapter narrative, hanging off the course <a href="../_global/spine.md">spine</a>. Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Six-word,
+100-word, chapter arc, and an explicit pre-hook to the next chapter
+(<code>02-classifiers</code>).</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Programs follow rules; learners find them.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su 4
+varianti. La forma <em>è</em> il contenuto: due clausole simmetriche con
+lo stesso oggetto (<code>rules</code>) che cambia ruolo — dato in input
+nella programmazione tradizionale, trovato in output dal learner.
+Incarna la distinzione fondante del capitolo e prepara la spine
+(&quot;understand the machine&quot;) senza esaurirla.</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>Elena opened the algorithm&#39;s manual, hunting for the rules it
+followed. There were none. No engineer had written &quot;discharge if X&quot;; the
+program had learned from thousands of past patients, finding patterns no
+one dictated. It was defined, she read, by a task, a measure of
+performance, and experience — the data it trained on. Even the learning
+came in kinds: from labelled outcomes, from unlabelled patterns, from
+asking, from reward. The score was not magic, then, but a learner. She
+still couldn&#39;t trust it. But now she knew the three questions to ask:
+which task, measured how, learned from whom.</p>
+<p><em>Struttura:</em> Bing = Elena cerca le regole nel &quot;manuale&quot;
+dell&#39;algoritmo e non le trova | Bang = scopre che nessuno le ha scritte:
+il modello ha <em>appreso</em> dai pazienti passati, ed è definito da
+Task/Performance/Experience; e l&#39;apprendimento ha tipi diversi
+(etichette / pattern / domande / reward =
+supervised/unsupervised/active/reinforcement) | Bongo = la scatola non è
+magia ma un <em>learner</em>; non si fida ancora, ma ora sa le tre
+domande da fare. (100 parole esatte.)</p>
+<h2 id="chapter-arc--hook--challenge--resolution--payoff">Chapter arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio</td>
+<td>Elena looks for the rules the discharge algorithm follows — and
+finds that no one wrote any.</td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto</td>
+<td>If nobody programmed the rules, what <em>is</em> this thing? She
+must learn to describe any ML system by its Task
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>),
+Performance
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>),
+and Experience
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>);
+to tell ML from traditional programming (where the rules are the
+<em>input</em>, not the learned <em>output</em>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mo>≃</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Y \simeq f(X)</annotation></semantics></math>);
+and to recognise which <em>kind</em> of learning a problem needs. A trap
+waits: a model can score 95% accuracy and still be useless when one
+outcome is rare.</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta</td>
+<td>She reframes a clinical task as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>/</mi><mi>P</mi><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">T/P/E</annotation></semantics></math>,
+sees the input/output swap that separates learning from programming, and
+sorts real scenarios into supervised, unsupervised, active, or
+reinforcement learning by asking where the labels come from.</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta</td>
+<td>She can now frame a clinical problem as an ML problem and name the
+kind of learning it requires — the first, non-negotiable question to ask
+<em>before</em> trusting any model.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>The discharge algorithm had a manual, and Elena read it looking for
+the logic — the if-then rules a programmer must have typed. She found
+none. The system had been <em>trained</em>: shown thousands of past
+patients and left to find the patterns itself. That, she realised, is
+the whole difference. In ordinary software you write the rules and feed
+in data to get answers; here you feed in data <em>and</em> answers, and
+the machine hands you back the rule. To describe it precisely she needed
+only three coordinates — the task it performs, the measure that says
+it&#39;s doing well, and the experience it learned from. And &quot;learning&quot;
+itself, she saw, was not one thing: some models are taught with labelled
+outcomes, some left to find structure alone, some ask an expert when
+unsure, some learn by trial and reward. The score on her screen was none
+of them magic. It was a learner — and she had finally learned how to ask
+it the right questions.</p>
+<h2 id="versione-didattica-objectives-recap">Versione didattica
+(objectives recap)</h2>
+<p>Gli obiettivi formali del capitolo vivono in <a href="objectives.md">objectives.md</a>. In sintesi, il payoff narrativo
+coincide con essi: <strong>inquadrare</strong> un problema in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>/</mi><mi>P</mi><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">T/P/E</annotation></semantics></math>,
+<strong>contrapporre</strong> ML e programmazione tradizionale (swap
+input/output), <strong>classificare</strong> il paradigma di
+apprendimento.</p>
+<h2 id="pre-hook--02-classifiers">Pre-hook → 02 Classifiers</h2>
+<blockquote>
+<p>Elena can now say <em>what</em> a learner is and <em>what kind</em>
+of learning her score uses — but not yet <em>how</em> it actually
+reaches a verdict. The simplest learner makes one decision: it draws a
+line and asks which side a patient falls on. That line-drawer is a
+<strong>classifier</strong> — and it is where the box opens next.</p>
+</blockquote>
+<p><em>Glossa:</em> il pre-hook chiude sul gancio &quot;come decide davvero?&quot;
+e introduce il classificatore come la macchina-decisione più semplice,
+ponte diretto al cap. <code>02-classifiers</code> (calcolato via
+<code>manifest.next_enabled</code>).</p>
+</body>
+</html>
