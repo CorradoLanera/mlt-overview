@@ -1,0 +1,17 @@
+---
+pagetitle: "Machine Learning — An Applied Overview"
+format:
+  revealjs:
+    theme: [default, theme.scss]
+    slide-number: true
+    incremental: false
+    embed-resources: true
+    html-math-method: mathjax
+---
+
+{{< include chapters/_opening.qmd >}}
+{{< include chapters/01-introduction.qmd >}}
+{{< include chapters/02-classifiers.qmd >}}
+{{< include chapters/03-algorithm-examples.qmd >}}
+{{< include chapters/04-model-selection.qmd >}}
+{{< include chapters/_closing.qmd >}}

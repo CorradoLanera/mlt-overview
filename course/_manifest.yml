@@ -16,9 +16,9 @@ chapters:
   - { slug: 02-classifiers,        title: "Classifiers",                    include: true,  minutes: 20, objectives: [], subunits: [] }
   - { slug: 03-algorithm-examples, title: "Algorithm examples",             include: true,  minutes: 35, objectives: [], subunits: [] }
   - { slug: 04-model-selection,    title: "Model selection & validation",   include: true,  minutes: 30, objectives: [], subunits: [] }
-  - { slug: 05-deep-learning,      title: "Deep Learning",                  include: true,  minutes: 25, objectives: [], subunits: [] }
-  - { slug: 06-unstructured-data,  title: "Unstructured data (CNN/RNN)",    include: true,  minutes: 20, objectives: [], subunits: [] }
-  - { slug: 07-llm-transformers,   title: "LLMs & Transformers",            include: true,  minutes: 25, objectives: [], subunits: [] }
-  - { slug: 08-chatgpt-usage,      title: "Using ChatGPT in practice",      include: true,  minutes: 15, objectives: [], subunits: [] }
-  - { slug: 09-agents,             title: "Agents",                         include: true,  minutes: 15, objectives: [], subunits: [] }
-  - { slug: 10-best-practices,     title: "Best practices for ML projects", include: true,  minutes: 15, objectives: [], subunits: [] }
+  - { slug: 05-deep-learning,      title: "Deep Learning",                  include: false, minutes: 25, objectives: [], subunits: [] }
+  - { slug: 06-unstructured-data,  title: "Unstructured data (CNN/RNN)",    include: false, minutes: 20, objectives: [], subunits: [] }
+  - { slug: 07-llm-transformers,   title: "LLMs & Transformers",            include: false, minutes: 25, objectives: [], subunits: [] }
+  - { slug: 08-chatgpt-usage,      title: "Using ChatGPT in practice",      include: false, minutes: 15, objectives: [], subunits: [] }
+  - { slug: 09-agents,             title: "Agents",                         include: false, minutes: 15, objectives: [], subunits: [] }
+  - { slug: 10-best-practices,     title: "Best practices for ML projects", include: false, minutes: 15, objectives: [], subunits: [] }
