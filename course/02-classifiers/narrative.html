@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>02 — Classifiers · narrative</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="02--classifiers--narrative">02 — Classifiers · narrative</h1>
+<blockquote>
+<p>Chapter narrative, hanging off the course <a href="../_global/spine.md">spine</a>. Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Six-word,
+100-word, chapter arc, and an explicit pre-hook to the next chapter
+(<code>03-algorithm-examples</code>).</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Draw the line; count the cost.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su 4
+varianti. È l&#39;unica che copre <em>entrambe</em> le metà del capitolo —
+il classificatore che <strong>partiziona</strong> lo spazio (Obj. 2) e
+il <strong>rischio</strong> come costo da contare (Obj. 3) — in due
+imperativi; il punto e virgola crea l&#39;asimmetria &quot;tracci, poi paghi&quot; che
+è la tensione della 0/1 loss. Riprende letteralmente il pre-hook del
+cap. 01 (&quot;traccia una linea&quot;) e <em>estende</em>, e coincide col titolo
+dell&#39;esercizio sommativo.</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>Elena finally saw how the model decided: it placed each patient as a
+point on a chart of two simple measurements and drew a single line,
+labelling everyone on one side as high-risk. She tried drawing the line
+herself. Wherever she put it, a few patients landed on the wrong side —
+there was no line that caught them all. Each misplaced patient, she
+realised, was a cost, and the model was judged by the total: its risk.
+The line was not the truth; it was the cheapest mistake. Now she could
+see exactly which patients her classifier would get wrong.</p>
+<p><em>Struttura:</em> Bing = Elena scopre che il modello decide
+tracciando una <strong>linea</strong> in uno spazio di due misure, e
+mette ogni paziente da un lato | Bang = prova a tracciarla lei: ovunque
+la metta, qualcuno cade dal lato sbagliato — <strong>nessuna linea li
+prende tutti</strong>; ogni errore è un <strong>costo</strong>, e il
+modello è giudicato dal totale, il suo <strong>rischio</strong> | Bongo
+= la linea non è la verità, è &quot;l&#39;errore più economico&quot;; ora vede
+<em>quali</em> pazienti il suo classificatore sbaglierebbe. (100 parole
+esatte.)</p>
+<h2 id="chapter-arc--hook--challenge--resolution--payoff">Chapter arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio</td>
+<td>Elena asks how the model actually <em>decides</em>, and finds it
+draws a single line on a chart of two measurements, putting each patient
+on one side.</td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto</td>
+<td>The data are points in a feature space
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mi>d</mi></msup><annotation encoding="application/x-tex">\mathbb{R}^d</annotation></semantics></math>),
+and a classifier is a function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">f:\mathbb{R}^d \to \{1,\ldots,K\}</annotation></semantics></math>
+that carves the space into regions — but <em>which</em> line? On real
+patients the classes overlap, so some always land on the wrong side. She
+needs a way to score one boundary against another.</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta</td>
+<td>Count the mistakes with a 0/1 loss; the classifier&#39;s
+<strong>risk</strong> is its expected loss
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">risk</mtext><mo stretchy="false" form="prefix">(</mo><mi>f</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>𝔏</mi><mo stretchy="false" form="prefix">(</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\text{risk}(f)=\mathbb{E}[\mathfrak{L}(f(X), Y)]</annotation></semantics></math>
+— its total cost — and the better classifier is the one with lower risk.
+She also separates <strong>classification</strong> (output is a discrete
+label) from <strong>regression</strong> (output is a continuous
+value).</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta</td>
+<td>She can read any classifier as a boundary in feature space and judge
+it by its risk — and she accepts that, when classes overlap, even the
+best classifier has risk
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">&gt; 0</annotation></semantics></math>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>For the first time Elena could see the decision itself. Her patients
+were points scattered across a chart — fasting glucose against BMI — and
+the model was simply a line: everyone on one side called high-risk,
+everyone on the other side cleared. So she tried to draw a better line.
+She quickly learned the hard truth of overlapping data: wherever she
+drew it, a handful of patients sat stubbornly on the wrong side, and no
+boundary caught them all. To compare her attempts she had to
+<em>count</em> — one unit of cost for every patient on the wrong side.
+That sum had a name: the classifier&#39;s risk, the total she was trying to
+make small. The line, she understood, was never going to be the truth;
+it was going to be the cheapest mistake she could find. And a classifier
+was just that: a function that splits the space, chosen because its risk
+is low.</p>
+<h2 id="versione-didattica-objectives-recap">Versione didattica
+(objectives recap)</h2>
+<p>Gli obiettivi formali del capitolo vivono in <a href="objectives.md">objectives.md</a>. Il payoff narrativo li ricalca:
+<strong>distinguere</strong> classification/regression,
+<strong>rappresentare</strong> il classificatore come funzione che
+partiziona lo spazio, <strong>applicare</strong> la 0/1 loss e leggere
+il <strong>rischio</strong> come costo da minimizzare.</p>
+<h2 id="pre-hook--03-algorithm-examples">Pre-hook → 03 Algorithm
+examples</h2>
+<blockquote>
+<p>Elena can now <em>judge</em> a boundary by its risk — but she still
+drew hers by hand. How do real algorithms actually <em>find</em> a good
+line? Some look at the nearest patients, some fit a straight cut, some
+grow trees and vote. Those are the concrete classifiers — and they are
+next.</p>
+</blockquote>
+<p><em>Glossa:</em> il pre-hook chiude sul gancio &quot;ok, so giudicare un
+confine, ma chi lo <em>trova</em>?&quot; e introduce gli algoritmi concreti
+(kNN, lineari, alberi, ensemble) come risposta, ponte diretto al cap.
+<code>03-algorithm-examples</code> (via
+<code>manifest.next_enabled</code>).</p>
+</body>
+</html>
