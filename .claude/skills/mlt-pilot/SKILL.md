@@ -13,13 +13,15 @@ Student-facing artifacts in **English**; teacher notes in **Italian**.
 
 Run: `python -c "import sys; sys.path.insert(0,'.claude/skills/lib'); import manifest,json; m=manifest.load(); print(json.dumps(manifest.artifact_status(m),indent=2))"`
 Also check globals: `course/_global/spine.md` and `course/_global/syllabus.md`. Build a compact status table:
-each enabled chapter (manifest order) × {objectives, narrative, subunits(opt), storyboard, items}.
+each enabled chapter (manifest order) × {objectives, narrative, subunits(opt), storyboard, items, slides}.
 
 ## Completion model
 
-- A chapter is content-complete when objectives + narrative + storyboard + items all exist (subunits optional).
+- A chapter is **content-complete** when objectives + narrative + storyboard + items all exist (subunits optional).
+- A chapter is **production-complete** when, on top, **slides** (`slides/chapters/<slug>.qmd`) exist.
 - Course-level: the narrative **spine** (once) and the **syllabus** (after the chapters).
-- Natural phase order: spine → per chapter [objectives → narrative → (subunits, optional) → storyboard → items] → syllabus → student review.
+- Natural phase order: spine → per chapter [objectives → narrative → (subunits, optional) → storyboard → items → **slides**] → syllabus → student review.
+- The slides phase comes **right after items** for the same chapter — propose it before moving to the next chapter.
 
 ## Propose the next step (one at a time)
 
@@ -46,10 +48,14 @@ assume. If the teacher gave an explicit phase/chapter (e.g. via /mlt arguments),
   (coherence / cognitive level / clarity); on "procedi" **RE-READ** `item_NN_*.md` from disk (the teacher may
   have hand-edited it), update the `.md` and its `.html`, dedupe objectives, then the next; at the end
   consolidate `items_valutativi.md`; run `assessment-reviewer`.
+- **slides** → invoke the `mlt-quarto-build` skill for the chapter: storyboard-driven beat expansion (each of
+  the 6 beats becomes 1-N slides), anchor image per beat from `img/storyboard/sb-<NN>_<FF>.png`, supporting
+  figures pulled from `img/`, formulas/text reused from `index.Rmd`/`index-full.Rmd`; refreshes
+  `slides/slides.qmd` (manifest-driven master) and renders revealjs. Mandatory visual QA (chrome-devtools).
 - **syllabus** → invoke `syllabus-2p` (writes `course/_global/syllabus.md`), then the `studente-confuso`
   sub-agent for the POV review (`course/_global/syllabus-revisione-studenti.md`).
 
-(Requires storia-companion v2 for narrative/storyboard/items/syllabus steps.)
+(Requires storia-companion v2 for narrative/storyboard/items/syllabus steps. Slides require Quarto only.)
 
 ## Gate + advance
 

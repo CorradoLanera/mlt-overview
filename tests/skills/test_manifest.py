@@ -66,3 +66,13 @@ def test_artifact_status_reads_filesystem(tmp_path):
     assert st["01-a"]["narrative"] is False
     assert st["01-a"]["items"] == 1
     assert st["03-c"]["objectives"] is False
+
+
+def test_artifact_status_detects_slides_qmd(tmp_path):
+    m = manifest.load(_write(tmp_path))
+    slides_chapters = tmp_path / "slides_dir" / "chapters"
+    slides_chapters.mkdir(parents=True)
+    (slides_chapters / "03-c.qmd").write_text("x", encoding="utf-8")
+    st = manifest.artifact_status(m, root=tmp_path, slides_root=tmp_path / "slides_dir")
+    assert st["03-c"]["slides"] is True
+    assert st["01-a"]["slides"] is False

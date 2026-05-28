@@ -34,9 +34,13 @@ def chapter_dir(slug: str, root="course") -> Path:
     return Path(root) / slug
 
 
-def artifact_status(m: dict, root="course") -> dict:
-    """Per chapter: which artifacts exist (bool) and item count (int)."""
+def artifact_status(m: dict, root="course", slides_root="slides") -> dict:
+    """Per chapter: which artifacts exist (bool) and item count (int).
+
+    Slides are detected at `<slides_root>/chapters/<slug>.qmd` (Fase B output).
+    """
     out = {}
+    slides_chapters = Path(slides_root) / "chapters"
     for c in m.get("chapters", []):
         d = Path(root) / c["slug"]
         items_dir = d / "items"
@@ -46,5 +50,6 @@ def artifact_status(m: dict, root="course") -> dict:
             "subunits": (d / "subunits.md").exists(),
             "storyboard": (d / "storyboard.md").exists(),
             "items": len(list(items_dir.glob("item_*.md"))) if items_dir.exists() else 0,
+            "slides": (slides_chapters / f"{c['slug']}.qmd").exists(),
         }
     return out
