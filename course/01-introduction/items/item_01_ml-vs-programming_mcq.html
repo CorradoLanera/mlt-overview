@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 01 — Machine learning vs traditional programming</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-01--machine-learning-vs-traditional-programming">Item 01 —
+Machine learning vs traditional programming</h1>
+<p><strong>ID</strong>: IB-01-introduction-01 <strong>Learning
+objective</strong>: Contrast machine learning with traditional
+programming, stating what is provided as input and what is produced as
+output (Obj. 2). <strong>Category</strong>: Comprehension
+<strong>Type</strong>: MCQ <strong>Difficulty</strong>: low–medium
+<strong>Chapter</strong>: 01-introduction</p>
+<h2 id="question">Question</h2>
+<p>A hospital deploys a model that predicts 30-day readmission from each
+patient&#39;s electronic health record. Which statement best captures how
+this machine-learning system differs from a traditional, rule-based
+program written for the same task?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) In traditional programming an engineer writes the decision rules
+and the program applies them to data; in machine learning the rules —
+the model — are <em>learned</em> from data paired with known
+outcomes.</li>
+<li>B) Machine learning needs no data, whereas a traditional program
+requires data as input.</li>
+<li>C) A traditional program can only handle numeric inputs, while
+machine learning is the only approach able to process patient records at
+all.</li>
+<li>D) Machine learning is guaranteed to be more accurate than any
+hand-written rule, because learning from data removes human bias.</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: A.</strong> The defining difference is the
+input/output swap. In ordinary software the rules are the <em>input</em>
+(hand-written) and answers come out; in machine learning you provide the
+data <em>and</em> the known answers, and the model — the rule
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mo>≃</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Y \simeq f(X)</annotation></semantics></math>
+— is the <em>output</em>, learned from training data.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>B</strong> inverts the dependency: ML is <em>more</em>
+data-dependent, not less — it needs training data with known outcomes to
+learn at all.</li>
+<li><strong>C</strong> is a false capability claim: rule-based programs
+can process records too; data type is not what distinguishes the two
+approaches.</li>
+<li><strong>D</strong> is the &quot;ML is objective / always better&quot;
+misconception: a model can score 95% accuracy and still be clinically
+useless on imbalanced data, and it inherits whatever bias is in its
+training data.</li>
+</ul>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

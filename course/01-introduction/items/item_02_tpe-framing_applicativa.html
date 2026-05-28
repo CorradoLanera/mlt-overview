@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 02 — Frame a clinical task as T/P/E</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-02--frame-a-clinical-task-as-tpe">Item 02 — Frame a
+clinical task as T/P/E</h1>
+<p><strong>ID</strong>: IB-01-introduction-02 <strong>Learning
+objective</strong>: Frame an applied clinical problem as an ML problem
+by specifying its Task
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>),
+Performance
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>),
+and Experience
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>),
+and reason about why a performance measure is or is not appropriate for
+the data (Obj. 1). <strong>Category</strong>: Application
+<strong>Type</strong>: applicativa (open-ended)
+<strong>Difficulty</strong>: medium <strong>Chapter</strong>:
+01-introduction</p>
+<h2 id="question">Question</h2>
+<p>An ICU team wants a system that, <strong>at admission</strong>,
+predicts whether a patient will develop <strong>sepsis during their ICU
+stay</strong>. They have several years of past ICU admissions, each
+described by the information available <em>at admission</em> and
+labelled with whether sepsis later occurred. In their data, only about
+<strong>4% of admissions developed sepsis</strong>.</p>
+<ol type="1">
+<li><p>Frame this as a machine-learning problem by specifying its
+<strong>Task
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>)</strong>,
+<strong>Performance measure
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>)</strong>,
+and <strong>Experience
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>)</strong>.</p></li>
+<li><p>The team proposes to judge the system by plain
+<strong>accuracy</strong> (the proportion of all patients predicted
+correctly). A measure designed for imbalanced problems is
+<strong>balanced accuracy</strong>: the average of the model&#39;s accuracy
+<em>within each class</em> — i.e. the average of the fraction of sepsis
+patients it correctly flags and the fraction of non-sepsis patients it
+correctly clears.</p>
+<p>Consider a trivial model that predicts <strong>&quot;no sepsis&quot; for every
+patient</strong>. (a) What is its plain accuracy, and what is its
+balanced accuracy? (b) Use your answer to explain why balanced accuracy
+is the more appropriate choice of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+for this task.</p></li>
+</ol>
+<h2 id="expected-answer">Expected answer</h2>
+<ul>
+<li><strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math></strong>:
+predict, at admission, whether a patient will develop sepsis during the
+ICU stay — a binary classification task.</li>
+<li><strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math></strong>:
+balanced accuracy (rather than plain accuracy).</li>
+<li><strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math></strong>:
+the past ICU admissions labelled with whether sepsis occurred —
+supervised experience.</li>
+<li><strong>(a)</strong> The &quot;always no-sepsis&quot; model is correct on the
+96% who never develop sepsis, so its <strong>plain accuracy ≈
+96%</strong>. But its accuracy on the sepsis class is 0% and on the
+non-sepsis class is 100%, so its <strong>balanced accuracy = (0% + 100%)
+/ 2 = 50%</strong>.</li>
+<li><strong>(b)</strong> Plain accuracy is inflated by the 96% majority
+of negatives, so a clinically useless model still scores ≈ 96%. Balanced
+accuracy weighs the two classes equally, so failing to catch any sepsis
+case drags it down to 50% — no better than chance — which honestly
+reveals that the model is useless for the task that matters.</li>
+</ul>
+<h2 id="rubric">Rubric</h2>
+<p>See <a href="../rubriche/rubrica_02_tpe-framing.md">rubriche/rubrica_02_tpe-framing.md</a>.</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

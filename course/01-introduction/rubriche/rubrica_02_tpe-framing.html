@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 02 (Frame a clinical task as T/P/E)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-02-frame-a-clinical-task-as-tpe">Rubric — Item 02
+(Frame a clinical task as T/P/E)</h1>
+<p><strong>Item</strong>: IB-01-introduction-02
+<strong>Objective</strong>: Frame a clinical problem as an ML problem
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>/</mi><mi>P</mi><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">T/P/E</annotation></semantics></math>)
+and reason about why a performance measure is or is not appropriate for
+the data.</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>/</mi><mi>P</mi><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">T/P/E</annotation></semantics></math>
+decomposition</strong></td>
+<td>Identifies all three
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>),
+but one is vague or partly mislabelled</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+(binary prediction at admission),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+(balanced accuracy), and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+all correct and appropriate</td>
+<td>As <em>Good</em>, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+explicitly recognised as <em>supervised</em> (past admissions labelled
+with the outcome)</td>
+</tr>
+<tr>
+<td><strong>C2 — The revealing computation</strong></td>
+<td>States qualitatively that the trivial model scores high on plain
+accuracy but poorly on balanced accuracy</td>
+<td>Gives the correct figures: <strong>plain accuracy ≈ 96%</strong>,
+<strong>balanced accuracy = 50%</strong></td>
+<td>As <em>Good</em>, and shows the working: balanced accuracy = (0% on
+sepsis + 100% on non-sepsis) / 2</td>
+</tr>
+<tr>
+<td><strong>C3 — Interpretation</strong></td>
+<td>States that plain accuracy is misleading here</td>
+<td>Explains <em>why</em>: plain accuracy is inflated by the 96%
+majority of negatives, so a useless model still scores ≈ 96%</td>
+<td>As <em>Good</em>, and explains why balanced accuracy is better — it
+weighs both classes equally, so missing the rare class pulls it to
+chance level (50%)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Threshold (sufficiency)</strong>: at least
+<strong>Base</strong> on all three criteria; <strong>C2 and C3 at least
+Base are mandatory</strong> — the revealing computation and its
+interpretation are the load-bearing points of the item.</p>
+<p><strong>Bias da evitare in correzione</strong> <em>(nota
+docente):</em> valutare il <em>ragionamento</em>, non il vocabolario —
+accettare formulazioni concettuali corrette anche senza i termini
+esatti; non penalizzare lessico imperfetto se il concetto è giusto; non
+premiare la lunghezza. La <em>balanced accuracy</em> è <strong>definita
+nell&#39;enunciato</strong>: l&#39;item non presuppone che sia stata introdotta
+prima.</p>
+</body>
+</html>
