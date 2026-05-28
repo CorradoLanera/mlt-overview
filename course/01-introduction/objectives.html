@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>01 — What is Machine Learning? · Learning objectives &amp;
+summative exercise</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="01--what-is-machine-learning--learning-objectives--summative-exercise">01
+— What is Machine Learning? · Learning objectives &amp; summative
+exercise</h1>
+<blockquote>
+<p>Chapter: <strong>What is Machine Learning?</strong> · 25 min ·
+biomedical/clinical graduate students (UBEP). Student-facing text in
+English; teacher design notes (<em>nota docente</em>) in Italian.</p>
+</blockquote>
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>By the end of this chapter, students can:</p>
+<ol type="1">
+<li><strong>Frame</strong> an applied (clinical) problem as a
+machine-learning problem by specifying its Task
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>),
+Performance measure
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>),
+and Experience
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>),
+following Mitchell&#39;s definition.</li>
+<li><strong>Contrast</strong> machine learning with traditional
+programming, stating for each what is provided as input and what is
+produced as output (in ML the algorithm is the <em>output</em>, learned
+from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">training data</mtext><annotation encoding="application/x-tex">\text{training data}</annotation></semantics></math>,
+modelling
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mo>≃</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Y \simeq f(X)</annotation></semantics></math>).</li>
+<li><strong>Classify</strong> a described scenario into the correct
+learning paradigm — <em>unsupervised</em>, <em>supervised</em>,
+<em>active</em>, or <em>reinforcement</em> — and justify the choice from
+the kind and availability of supervision/labels.</li>
+</ol>
+<p><em>Nota docente:</em> tre obiettivi (non quattro) per stare nei 25′
+lasciando spazio a un sommativo vero. I &quot;Basic components&quot;
+(training/validation/test, modello, loss) restano contenuto espositivo,
+agganciato dentro l&#39;obiettivo 1 (la
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>)
+ma non valutato qui: diventeranno oggetto di verifica nel cap. 04 (model
+selection).</p>
+<h2 id="summative-live-exercise--turn-a-clinical-problem-into-an-ml-problem">Summative
+live exercise — &quot;Turn a clinical problem into an ML problem&quot;</h2>
+<p><em>Nota docente:</em> sommativo, non riscaldamento — gira negli
+<strong>ultimi 8′</strong> del capitolo (min 17–25), dopo aver visto
+T/P/E, ML-vs-tradizionale e i tipi di apprendimento. Si lavora su un
+<strong>banco di 4 mini-scenari clinici</strong>, uno per
+gruppo/breakout, scelti perché ciascuno ricade in un <em>paradigma
+diverso</em> — così l&#39;obiettivo 3 è davvero discriminante e non collassa
+su &quot;supervised&quot; per tutti.</p>
+<p><strong>Scenario bank</strong> (distribute one per group):</p>
+<ul>
+<li><strong>A — 30-day readmission.</strong> A hospital wants to flag at
+discharge which inpatients will be re-admitted within 30 days, from
+routinely collected EHR data. <em>(→ supervised classification; labels =
+readmitted yes/no.)</em></li>
+<li><strong>B — Patient phenotypes.</strong> From lab panels of diabetic
+patients, find data-driven subgroups with no predefined diagnosis
+labels. <em>(→ unsupervised clustering.)</em></li>
+<li><strong>C — Adaptive insulin dosing.</strong> A controller adjusts
+each insulin dose from the patient&#39;s glucose response over time, to keep
+glucose in range. <em>(→ reinforcement learning; reward =
+time-in-range.)</em></li>
+<li><strong>D — Disease coding from free text.</strong> A model
+classifies EHR notes by reported disease and asks a clinician to label
+only the cases it is most uncertain about. <em>(→ active learning;
+oracle = clinician.)</em></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objective verified</td>
+<td>Obj. 1
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>/</mi><mi>P</mi><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">T/P/E</annotation></semantics></math>),
+Obj. 2 (ML vs traditional), Obj. 3 (learning paradigm) — all three, per
+scenario.</td>
+</tr>
+<tr>
+<td>In-person action</td>
+<td>Table groups each draw one scenario <strong>card</strong>. On a
+shared <strong>T/P/E poster</strong> they write: (i)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+in three cells —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+must be a <em>quantitative</em> measure (e.g. accuracy, error rate,
+time-in-range), not a vague word; (ii) circle the learning type; (iii)
+complete the fixed-form sentence &quot;<em>in traditional programming the
+input would have been … (hand-written rules); with ML the output is …
+(the model/rule), learned from …</em>&quot; — the blanks force them to name
+input and output. A group member <strong>photographs the poster as soon
+as a cell is filled</strong> (not at the end) and drops it into the
+shared doc. Posters go on the board.</td>
+</tr>
+<tr>
+<td>Remote equivalent</td>
+<td>Each breakout room gets the same scenario on a slide and types the
+identical three fields into its row of a shared doc; the learning-type
+choice is also cast in a Slido/poll (4 options) so it is visible
+live.</td>
+</tr>
+<tr>
+<td>Shared artifact</td>
+<td>One shared <strong>whiteboard/Google Doc</strong> with a 4-row table
+(one row per scenario,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+/ learning type / ML-vs-traditional) visible to in-person <em>and</em>
+remote at once: remote groups type directly, in-person posters are
+photographed and dropped in.</td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>8 min, minutes 17–25 (end of chapter): ~2′ read &amp; assign, ~4′
+group fill (poster photos uploaded <em>during</em> this phase so the doc
+is already populated), ~2′ instructor-led reveal. The reveal
+<strong>spotlights the two counter-intuitive rows — C (reinforcement)
+and D (active)</strong> — while A and B (canonical
+supervised/unsupervised) self-correct via the Slido poll without oral
+discussion.</td>
+</tr>
+<tr>
+<td>Success criterion</td>
+<td>For each scenario the class produces: (i) a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>/</mi><mi>P</mi><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">T/P/E</annotation></semantics></math>
+triple where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+is a quantitative measure appropriate to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>;
+(ii) the <strong>correct</strong> learning-type label with a
+justification that cites label availability / kind of supervision; (iii)
+a sentence that names the <strong>input/output swap</strong> —
+<em>traditional: hand-written rules are the input; ML: the model/rule is
+the output, learned from data</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mo>≃</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">Y \simeq f(X)</annotation></semantics></math>).
+<strong>Live signal of mastery:</strong> ≥ 3 of the 4 rows correct on
+first pass, and any mis-labelled paradigm is corrected by the group
+during the reveal when challenged (&quot;where do the labels come
+from?&quot;).</td>
+</tr>
+</tbody>
+</table>
+<p><em>Nota docente — perché duale funziona qui:</em> l&#39;artefatto
+condiviso è <strong>uno solo</strong> (la tabella a 4 righe), quindi
+remoto e in presenza convergono sullo stesso oggetto invece di lavorare
+in canali separati; il poll Slido sul tipo di apprendimento dà al
+docente un segnale <em>aggregato e immediato</em> (objective 3) anche
+dai remoti, che altrimenti resterebbero muti. Se la classe è piccola
+(&lt; 4 gruppi) assegna A, B, C e tieni D come scenario di reveal fatto
+insieme.</p>
+<p><em>Nota docente — reveal scenario C (reinforcement):</em> in RL
+l&#39;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+<strong>non</strong> è un dataset di training etichettato ma lo
+<em>stream</em> di interazioni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">stato</mtext><mo>→</mo><mtext mathvariant="normal">dose</mtext><mo>→</mo><mtext mathvariant="normal">risposta</mtext></mrow><annotation encoding="application/x-tex">\text{stato} \to \text{dose} \to \text{risposta}</annotation></semantics></math>.
+Accetta come corretta la cella
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>E</mi><annotation encoding="application/x-tex">E</annotation></semantics></math>
+se lo studente nomina l&#39;interazione/feedback sequenziale con l&#39;ambiente;
+non pretendere un &quot;training set&quot; statico, e non marcarlo &quot;wrong&quot; se
+manca. Il framing T/P/E regge (T = glucosio in range, P = time-in-range,
+E = sequenza di interazioni), ma è il caso più sottile: anticipa
+l&#39;obiezione invece di subirla.</p>
+<p><em>Nota docente — reveal scenario D (active):</em> il modello
+<em>è</em> un classificatore supervisionato; l&#39;active learning è la
+<em>strategia di acquisizione delle label</em> (uncertainty sampling
+sull&#39;oracolo-clinico). Se un gruppo cerchia &quot;supervised&quot; non sbaglia del
+tutto: la risposta più precisa è &quot;active&quot; perché ciò che distingue lo
+scenario è la <strong>richiesta selettiva di label all&#39;oracolo</strong>.
+Usa questo per insegnare la distinzione, non per penalizzare.</p>
+</body>
+</html>
