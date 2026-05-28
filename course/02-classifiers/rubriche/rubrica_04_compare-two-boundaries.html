@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 04 (Compare two boundaries)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-04-compare-two-boundaries">Rubric — Item 04
+(Compare two boundaries)</h1>
+<p><strong>Item</strong>: IB-02-classifiers-04 <strong>Learning
+objective</strong>: Argue, using the chapter&#39;s tools (classifier as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">f:\mathbb{R}^d \to \{1,\ldots,K\}</annotation></semantics></math>
+partitioning the feature space, 0/1 loss, risk as average loss on the
+sample), which of two competing classifiers is supported by the
+available evidence; <em>and</em> identify the kind of information needed
+to go beyond what the chapter can settle (Obj. 2 + Obj. 3 + epistemic
+awareness of chapter scope).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Compute the two sample risks</strong> (sub-question
+1)</td>
+<td>One risk computed correctly as a fraction, the other missing or
+wrong.</td>
+<td>Both risks correctly computed as fractions
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">3/10</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">2/10</annotation></semantics></math>),
+expressed as <strong>average 0/1 losses</strong>, not just
+&quot;errors&quot;.</td>
+<td>Both risks correctly computed, expressed using the chapter&#39;s
+vocabulary (&quot;0/1 risk on the sample&quot; / &quot;average 0/1 loss&quot;), and
+<em>stated relative to each other</em> (e.g.,
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mi>B</mi></msub><annotation encoding="application/x-tex">f_B</annotation></semantics></math>&#39;s
+sample risk is lower than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mi>A</mi></msub><annotation encoding="application/x-tex">f_A</annotation></semantics></math>&#39;s
+by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">1/10</annotation></semantics></math>&quot;).</td>
+</tr>
+<tr>
+<td><strong>C2 — Resolve the dispute within the chapter</strong>
+(sub-question 2)</td>
+<td>States that Clinician B is correct because
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>/</mi><mn>10</mn><mo>&lt;</mo><mn>3</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">2/10 &lt; 3/10</annotation></semantics></math>&quot;
+but without naming the chapter&#39;s criterion (risk on the sample) or
+addressing Clinician A&#39;s pushback.</td>
+<td>Names the chapter&#39;s criterion explicitly (0/1 risk on the sample =
+the average 0/1 loss over the patients we have), uses it to support
+Clinician B, <strong>and</strong> correctly characterises Clinician A&#39;s
+pushback as <em>a hypothesis about patients we don&#39;t have</em> — without
+yet explaining why that pushback is unaddressable here.</td>
+<td>All of Good, plus argues explicitly that <strong>within ch. 02 we
+have no way to compare classifiers on patients not in the
+sample</strong> — there is no quantity the chapter has defined that
+speaks to &quot;a different group of patients&quot;. I.e., Clinician B has
+<em>evidence</em>, Clinician A has only a <em>hypothesis</em>,
+<em>and</em> the asymmetry is intrinsic to the toolkit so far.</td>
+</tr>
+<tr>
+<td><strong>C3 — Identify the informational gap</strong> (sub-question
+3)</td>
+<td>Says &quot;we&#39;d need more data&quot; <em>or</em> &quot;we&#39;d need to test the
+classifiers on new patients&quot; — gestures at the right direction without
+specifying what kind of data.</td>
+<td>States that the new data must be <strong>patients with known true
+labels that are not in the original 10-patient sample</strong>, on which
+<strong>both classifiers</strong> can be evaluated to produce a fresh
+0/1 risk for each.</td>
+<td>All of Good, plus articulates the <em>structural</em> requirement: a
+<strong>second dataset separate from the one used to compare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mi>A</mi></msub><annotation encoding="application/x-tex">f_A</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mi>B</mi></msub><annotation encoding="application/x-tex">f_B</annotation></semantics></math>
+so far</strong>, with true labels, used to compute a fresh 0/1 risk for
+each classifier on <strong>patients neither was assessed on
+before</strong> — i.e., the comparison must move to data <strong>the
+comparison itself has not seen</strong>. (Optional bonus: explicitly
+notes that this is what the next chapter will take up — <em>without</em>
+importing the ch. 04 toolkit to the answer.)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza:</strong> <strong>almeno 2 criteri su 3
+a livello <em>Base</em></strong> (e nessuno sotto Base). Below-Base in
+C1 = neither risk computed correctly <em>or</em> neither expressed as a
+fraction; below-Base in C2 = declares a winner without invoking the
+<em>risk</em> concept at all, or supports Clinician A as right within
+the chapter; below-Base in C3 = does not attempt to characterise the
+missing information (the sub-question is the conceptual perno of the
+item — leaving it blank is not &quot;Base&quot;).</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>Penalizzare lo studente che importa lessico di ch.
+04</strong> (es. <em>training set</em>, <em>test set</em>,
+<em>cross-validation</em>, <em>generalisation</em>,
+<em>overfitting</em>) <strong>per C3.</strong> Questi termini <em>non
+sono pretesi</em> da ch. 02 e <em>non costituiscono un bonus</em>: il
+livello (Base/Good/Excellent) si misura solo sulla
+<strong>sostanza</strong> — l&#39;aver correttamente identificato il
+<em>requisito strutturale</em> sui dati (servono pazienti non usati nel
+confronto). Uno studente che usa termini di ch. 04 <em>senza
+prerequisiti corretti</em> va valutato esattamente come uno che usa solo
+inglese piano: la presenza o l&#39;assenza del lessico tecnico non sposta il
+livello. Specularmente, <strong>non penalizzare</strong> uno studente
+che li usa correttamente se la sostanza è giusta.</li>
+<li><strong>Premiare l&#39;autorità di Clinician B nel modo
+sbagliato.</strong> Per C2, <em>non</em> basta dire &quot;B ha più pazienti
+giusti&quot; → quello premia un&#39;intuizione, non l&#39;applicazione del criterio
+del rischio definito dal capitolo. Il livello Base richiede di nominare
+il rischio come <em>la quantità che si confronta</em>, non solo di
+contare le accuracy.</li>
+<li><strong>Dare ragione a Clinician A &quot;perché solidale verso pazienti
+non visti&quot;.</strong> È una tentazione clinica naturale (&quot;non si può
+giudicare un metodo solo sui dati a disposizione&quot;). Per C2, lo studente
+che conclude <em>&quot;A ha ragione, B ha torto perché generalizza male&quot;</em>
+sta <em>importando</em> la critica di ch. 04 senza fondamento in ch. 02
+→ è <strong>below-Base</strong> su C2 (anche se la risposta a C3 fosse
+corretta). Il punto di ch. 02 è che <em>con questi strumenti, A ha solo
+un&#39;ipotesi</em>; importare ch. 04 per risolverla collassa l&#39;ironia
+didattica del capitolo.</li>
+<li><strong>Penalizzare lo studente che usa parole semplici al posto
+della notazione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>f</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">f^{-1}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝔏</mi><annotation encoding="application/x-tex">\mathfrak{L}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝔼</mi><annotation encoding="application/x-tex">\mathbb{E}</annotation></semantics></math>.</strong>
+Per C2/C3, una risposta in inglese chiaro (&quot;the chapter only lets us
+count mistakes on patients we have&quot;) è equivalente a una con notazione
+formale, se la sostanza è uguale.</li>
+<li><strong>Pretendere la menzione esplicita di ch. 04 per C3.</strong>
+La menzione esplicita è un <em>bonus</em> a livello Excellent, non un
+requisito.</li>
+</ul>
+</body>
+</html>

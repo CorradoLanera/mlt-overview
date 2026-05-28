@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item bank — 02 Classifiers</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-bank--02-classifiers">Item bank — 02 Classifiers</h1>
+<blockquote>
+<p>Chapter: <code>02-classifiers</code> · MLT course (UBEP,
+biomedical/clinical graduate students). Generated 2026-05-28. Items
+student-facing in English; rubrics 3-level (Base/Good/Excellent).
+Review: <code>assessment-reviewer</code> ✓ <strong>APPROVED</strong>
+(2026-05-28). Anti-leakage check from ch. 03 (kNN/SVM/kernel/RF) and ch.
+04 (overfitting/train-test/CV) held cleanly across all 4 items + both
+rubrics. Item 04 walks the line deliberately (its sub-question 3 names
+the informational gap that ch. 04 will fill) and stays on the right
+side. Applied: rubric 04 bias-clarification — the C3 rule &quot;do not
+penalise / do not reward ch. 04 vocabulary&quot; rephrased so the heading
+aligns with the body (substance only counts).</p>
+</blockquote>
+<h2 id="item--objective-map">Item ↔︎ objective map</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Learning objective</th>
+<th>Category</th>
+<th>Type</th>
+<th>Difficulty</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>Obj. 1 — distinguish classification from regression by type of
+output</td>
+<td>Comprehension</td>
+<td>MCQ</td>
+<td>low</td>
+<td><a href="items/item_01_classification-vs-regression_mcq.md">item_01_classification-vs-regression_mcq.md</a></td>
+</tr>
+<tr>
+<td>02</td>
+<td>Obj. 2 — represent a classifier as a function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">f:\mathbb{R}^d \to \{1,\ldots,K\}</annotation></semantics></math>
+partitioning the feature space into decision regions</td>
+<td>Application</td>
+<td>applicativa</td>
+<td>medium</td>
+<td><a href="items/item_02_partition-the-plane_applicativa.md">item_02_partition-the-plane_applicativa.md</a></td>
+</tr>
+<tr>
+<td>03</td>
+<td>Obj. 3 — apply the 0/1 loss and compute the risk on a sample as the
+average 0/1 loss</td>
+<td>Application</td>
+<td>MCQ (scenario)</td>
+<td>medium</td>
+<td><a href="items/item_03_count-the-cost_mcq.md">item_03_count-the-cost_mcq.md</a></td>
+</tr>
+<tr>
+<td>04</td>
+<td>Obj. 2 + Obj. 3 + epistemic awareness — argue which of two competing
+classifiers is supported by the chapter&#39;s evidence; identify the
+informational gap that the chapter cannot close</td>
+<td>Argumentation</td>
+<td>argomentativa</td>
+<td>medium–high</td>
+<td><a href="items/item_04_compare-two-boundaries_argomentativa.md">item_04_compare-two-boundaries_argomentativa.md</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="coverage">Coverage</h2>
+<p><strong>By objective</strong> (all three chapter objectives
+covered):</p>
+<ul>
+<li><strong>Obj. 1</strong> (classification vs regression by output
+type): item 01 (primary).</li>
+<li><strong>Obj. 2</strong> (classifier as function partitioning the
+feature space): item 02 (primary), item 04 (secondary).</li>
+<li><strong>Obj. 3</strong> (0/1 loss + risk as average loss on the
+sample): item 03 (primary), item 04 (secondary).</li>
+</ul>
+<p><strong>By cognitive category</strong> (3 of 4 categories; no
+pure-recall item, appropriate for graduate level):</p>
+<ul>
+<li>Knowledge: 0</li>
+<li>Comprehension: 1</li>
+<li>Application: 2</li>
+<li>Argumentation/evaluation: 1</li>
+</ul>
+<h2 id="rubrics">Rubrics</h2>
+<ul>
+<li><a href="rubriche/rubrica_02_partition-the-plane.md">rubrica_02_partition-the-plane.md</a>
+— item 02 (applicativa)</li>
+<li><a href="rubriche/rubrica_04_compare-two-boundaries.md">rubrica_04_compare-two-boundaries.md</a>
+— item 04 (argomentativa)</li>
+</ul>
+<p><em>(Items 01 and 03 are MCQ — single correct option, no
+rubric.)</em></p>
+<h2 id="pre-hook-to-ch-03--embedded-in-item-04">Pre-hook to ch. 03 —
+embedded in item 04</h2>
+<p>Item 04&#39;s sub-question 3 deliberately surfaces — without resolving —
+the question of <em>whether</em> one classifier might do better on a
+different group of patients. The expected answer names this as the
+<strong>natural endpoint of ch. 02</strong>: with the chapter&#39;s tools we
+can pick the lower-risk classifier on the sample we have, but
+<strong>not</strong> make any claim about patients we have not measured.
+That informational gap is the gancio operativo for ch. 04 (model
+selection / validation).</p>
+<p>The bank therefore mirrors the chapter&#39;s own arc: items 01–03
+<em>apply</em> the chapter&#39;s machinery; item 04 <em>exposes its
+limit</em> and points beyond it without smuggling the next chapter&#39;s
+vocabulary in.</p>
+</body>
+</html>

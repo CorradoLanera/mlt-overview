@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 03 — Count the cost: 0/1 risk on a sample</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-03--count-the-cost-01-risk-on-a-sample">Item 03 — Count the
+cost: 0/1 risk on a sample</h1>
+<p><strong>ID</strong>: IB-02-classifiers-03 <strong>Learning
+objective</strong>: Apply the 0/1 loss to a classifier&#39;s predictions and
+interpret its <strong>risk</strong> on a sample as the average 0/1 loss
+over the patients — the quantity training seeks to minimise (Obj. 3).
+<strong>Category</strong>: Application <strong>Type</strong>: MCQ
+(scenario) <strong>Difficulty</strong>: medium <strong>Chapter</strong>:
+02-classifiers</p>
+<h2 id="question">Question</h2>
+<p>A binary classifier
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+is tested on 10 patients. For each patient the table reports the true
+class
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+and the classifier&#39;s prediction
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>Y</mi><mo accent="true">̂</mo></mover><mo>=</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat Y = f(X)</annotation></semantics></math>:</p>
+<table>
+<thead>
+<tr>
+<th>Patient</th>
+<th>True
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math></th>
+<th>Predicted
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>Y</mi><mo accent="true">̂</mo></mover><mo>=</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat Y = f(X)</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>high-risk</td>
+<td>high-risk</td>
+</tr>
+<tr>
+<td>2</td>
+<td>low-risk</td>
+<td>low-risk</td>
+</tr>
+<tr>
+<td>3</td>
+<td>high-risk</td>
+<td>low-risk</td>
+</tr>
+<tr>
+<td>4</td>
+<td>low-risk</td>
+<td>low-risk</td>
+</tr>
+<tr>
+<td>5</td>
+<td>high-risk</td>
+<td>high-risk</td>
+</tr>
+<tr>
+<td>6</td>
+<td>low-risk</td>
+<td>high-risk</td>
+</tr>
+<tr>
+<td>7</td>
+<td>high-risk</td>
+<td>high-risk</td>
+</tr>
+<tr>
+<td>8</td>
+<td>low-risk</td>
+<td>low-risk</td>
+</tr>
+<tr>
+<td>9</td>
+<td>high-risk</td>
+<td>low-risk</td>
+</tr>
+<tr>
+<td>10</td>
+<td>low-risk</td>
+<td>low-risk</td>
+</tr>
+</tbody>
+</table>
+<p>Using the 0/1 loss
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝔏</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo>,</mo><mover><mi>y</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\mathfrak{L}(y, \hat y) = 1</annotation></semantics></math>
+if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>≠</mo><mover><mi>y</mi><mo accent="true">̂</mo></mover></mrow><annotation encoding="application/x-tex">y \ne \hat y</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+otherwise, what is the classifier&#39;s <strong>0/1 risk on this
+sample</strong> — the average 0/1 loss over the 10 patients?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">0/10</annotation></semantics></math></li>
+<li>B)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">2/10</annotation></semantics></math></li>
+<li>C)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">3/10</annotation></semantics></math></li>
+<li>D)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">7/10</annotation></semantics></math></li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: C
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">3/10</annotation></semantics></math>).</strong>
+Going row by row, the 0/1 loss is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+exactly when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mo>≠</mo><mover><mi>Y</mi><mo accent="true">̂</mo></mover></mrow><annotation encoding="application/x-tex">Y \ne \hat Y</annotation></semantics></math>.
+Three patients are misclassified: <strong>#3</strong> (true
+<em>high-risk</em>, predicted <em>low-risk</em>), <strong>#6</strong>
+(true <em>low-risk</em>, predicted <em>high-risk</em>), and
+<strong>#9</strong> (true <em>high-risk</em>, predicted
+<em>low-risk</em>). The average 0/1 loss is therefore</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">risk on sample</mtext><mo stretchy="false" form="prefix">(</mo><mi>f</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><mn>10</mn></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mn>10</mn></munderover><mi>𝔏</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>,</mo><msub><mover><mi>y</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>3</mn><mn>10</mn></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">\text{risk on sample}(f) = \frac{1}{10} \sum_{i=1}^{10} \mathfrak{L}(y_i, \hat y_i) = \frac{3}{10}.</annotation></semantics></math></p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">0/10</annotation></semantics></math>)</strong>
+is the &quot;<em>the classifier looks accurate, so the risk must be
+zero</em>&quot; misreading: it confuses <em>most-patients-right</em> with
+<em>no-error-on-any-patient</em>. Risk counts the misclassifications,
+and there are three.</li>
+<li><strong>B
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">2/10</annotation></semantics></math>)</strong>
+counts only <strong>false negatives</strong> — the two high-risk
+patients
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>#</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">\#3</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>#</mi><mn>9</mn></mrow><annotation encoding="application/x-tex">\#9</annotation></semantics></math>)
+that the classifier missed — and ignores the <strong>false
+positive</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>#</mi><mn>6</mn></mrow><annotation encoding="application/x-tex">\#6</annotation></semantics></math>
+(a low-risk patient flagged as high-risk). The 0/1 loss is
+<strong>symmetric</strong>: every disagreement costs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+regardless of which direction the error goes.</li>
+<li><strong>D
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">7/10</annotation></semantics></math>)</strong>
+is the <strong>accuracy / risk inversion</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+is the count of <em>correctly</em> classified patients
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo>−</mo><mn>3</mn><mo>=</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">10 - 3 = 7</annotation></semantics></math>),
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">7/10</annotation></semantics></math>
+is the <em>accuracy</em>, not the risk. The 0/1 risk is the error rate,
+not the success rate — the very point of the chapter is that we are
+counting <strong>costs</strong>, not wins.</li>
+</ul>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

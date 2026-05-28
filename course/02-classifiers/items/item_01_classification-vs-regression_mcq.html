@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 01 — Classification or regression?</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-01--classification-or-regression">Item 01 — Classification
+or regression?</h1>
+<p><strong>ID</strong>: IB-02-classifiers-01 <strong>Learning
+objective</strong>: Distinguish a classification task from a regression
+task by the type of output it produces — a discrete class label vs a
+continuous value — and identify which one a given clinical task requires
+(Obj. 1). <strong>Category</strong>: Comprehension
+<strong>Type</strong>: MCQ <strong>Difficulty</strong>: low
+<strong>Chapter</strong>: 02-classifiers</p>
+<h2 id="question">Question</h2>
+<p>Which <strong>one</strong> of the following clinical machine-learning
+tasks is a <strong>regression</strong> task (rather than
+classification)?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) Predicting <strong>whether</strong> a patient will be re-admitted
+within 30 days of discharge from their electronic health record
+features.</li>
+<li>B) Predicting a patient&#39;s <strong>HbA1c value</strong> six months
+after starting metformin, from baseline labs.</li>
+<li>C) Predicting <strong>which</strong> of three diabetes subtypes
+(Type-1, Type-2, gestational) a newly diagnosed case belongs to, from
+clinical features.</li>
+<li>D) Predicting <strong>whether</strong> a chest X-ray shows
+pneumonia.</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: B.</strong> HbA1c is a <em>continuous numeric
+value</em> (e.g.,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6.5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">6.5\%</annotation></semantics></math>);
+the task asks the model to predict that number, so its output is a
+value, not a label — the definition of regression in this chapter.
+Formally, the output lives in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℝ</mi><annotation encoding="application/x-tex">\mathbb{R}</annotation></semantics></math>,
+not in a finite label set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{1,\ldots,K\}</annotation></semantics></math>.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A</strong> is binary classification: the <em>output</em> is
+a discrete label <em>re-admitted yes / re-admitted no</em>, not a
+number. The fact that one <em>could</em> report a risk <em>score</em>
+does not change the task as framed (&quot;predicting
+<strong>whether</strong>&quot;).</li>
+<li><strong>C</strong> is multi-class classification with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">K = 3</annotation></semantics></math>:
+the output is one of three discrete subtype labels, not a number.</li>
+<li><strong>D</strong> is binary classification: pneumonia <em>yes /
+no</em> is a discrete label, not a value.</li>
+</ul>
+<p>The single discriminator is <strong>what the model produces as
+output</strong> — a label (classification) or a value (regression) — not
+the apparent simplicity of the task, the data type of the inputs, or
+whether a probability <em>could</em> be reported alongside.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

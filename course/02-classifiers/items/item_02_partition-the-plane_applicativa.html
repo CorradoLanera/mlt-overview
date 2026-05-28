@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 02 — Partition the plane</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-02--partition-the-plane">Item 02 — Partition the plane</h1>
+<p><strong>ID</strong>: IB-02-classifiers-02 <strong>Learning
+objective</strong>: Represent a classifier geometrically as a function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">f:\mathbb{R}^d \to \{1,\ldots,K\}</annotation></semantics></math>
+that partitions the feature space into decision regions (one region per
+class) (Obj. 2). <strong>Category</strong>: Application
+<strong>Type</strong>: applicativa (open-ended applicative)
+<strong>Difficulty</strong>: medium <strong>Chapter</strong>:
+02-classifiers</p>
+<h2 id="question">Question</h2>
+<p>A clinical screening tool uses two patient features — <em>fasting
+glucose</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+(mg/dL) and <em>BMI</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+(kg/m²) — to flag patients as <strong>high-risk</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>)
+or <strong>low-risk</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>).
+The screening tool is the classifier
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><msup><mi>ℝ</mi><mn>2</mn></msup><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">f:\mathbb{R}^2 \to \{0, 1\}</annotation></semantics></math>
+defined by the rule</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mi>x</mi><mo>+</mo><mn>2</mn><mi>y</mi><mo>&gt;</mo><mn>200</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise.</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">f(x, y) = \begin{cases} 1 &amp; \text{if } x + 2y &gt; 200 \\ 0 &amp; \text{otherwise.} \end{cases}</annotation></semantics></math></p>
+<p>Three new patients arrive:</p>
+<table>
+<thead>
+<tr>
+<th>Patient</th>
+<th>Fasting glucose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math></th>
+<th>BMI
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math></td>
+</tr>
+<tr>
+<td>P2</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>140</mn><annotation encoding="application/x-tex">140</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>35</mn><annotation encoding="application/x-tex">35</annotation></semantics></math></td>
+</tr>
+<tr>
+<td>P3</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>90</mn><annotation encoding="application/x-tex">90</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>60</mn><annotation encoding="application/x-tex">60</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p>Answer the three sub-questions:</p>
+<ol type="1">
+<li><strong>Compute</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+for each of P1, P2, P3 — i.e., assign each patient the label
+<em>high-risk</em> or <em>low-risk</em> — showing the arithmetic.</li>
+<li><strong>Sketch or describe</strong> the two <strong>decision
+regions</strong> of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+on the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x, y)</annotation></semantics></math>
+plane: draw the boundary line
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mn>2</mn><mi>y</mi><mo>=</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">x + 2y = 200</annotation></semantics></math>
+and indicate which side is the <em>high-risk region</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">f = 1</annotation></semantics></math>)
+and which is the <em>low-risk region</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f = 0</annotation></semantics></math>).</li>
+<li><strong>Explain</strong> why the two decision regions
+<strong>together cover the entire plane
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathbb{R}^2</annotation></semantics></math>
+with no gaps and no overlaps</strong>, and why this is a
+<em>necessary</em> property of any classifier
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><msup><mi>ℝ</mi><mn>2</mn></msup><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">f:\mathbb{R}^2 \to \{0, 1\}</annotation></semantics></math>
+— not a stylistic choice of how to draw it.</li>
+</ol>
+<h2 id="expected-answer">Expected answer</h2>
+<ol type="1">
+<li><p>Compute
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mn>2</mn><mi>y</mi></mrow><annotation encoding="application/x-tex">x + 2y</annotation></semantics></math>
+for each patient and compare with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>:</p>
+<ul>
+<li><strong>P1</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mo>+</mo><mn>2</mn><mo>⋅</mo><mn>30</mn><mo>=</mo><mn>160</mn><mo>&lt;</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">100 + 2 \cdot 30 = 160 &lt; 200</annotation></semantics></math>
+→
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">P1</mtext><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f(\text{P1}) = 0</annotation></semantics></math>
+→ <strong>low-risk</strong>.</li>
+<li><strong>P2</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>140</mn><mo>+</mo><mn>2</mn><mo>⋅</mo><mn>35</mn><mo>=</mo><mn>210</mn><mo>&gt;</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">140 + 2 \cdot 35 = 210 &gt; 200</annotation></semantics></math>
+→
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">P2</mtext><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">f(\text{P2}) = 1</annotation></semantics></math>
+→ <strong>high-risk</strong>.</li>
+<li><strong>P3</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mo>+</mo><mn>2</mn><mo>⋅</mo><mn>60</mn><mo>=</mo><mn>210</mn><mo>&gt;</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">90 + 2 \cdot 60 = 210 &gt; 200</annotation></semantics></math>
+→
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">P3</mtext><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">f(\text{P3}) = 1</annotation></semantics></math>
+→ <strong>high-risk</strong>.</li>
+</ul></li>
+<li><p><strong>Boundary:</strong> the line
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mn>2</mn><mi>y</mi><mo>=</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">x + 2y = 200</annotation></semantics></math>
+passes through
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>200</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(200, 0)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>100</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 100)</annotation></semantics></math>.
+The plane splits into two half-planes:</p>
+<ul>
+<li><strong>High-risk region
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">f = 1</annotation></semantics></math>):</strong>
+the half-plane <em>above-right</em> of the line, where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mn>2</mn><mi>y</mi><mo>&gt;</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">x + 2y &gt; 200</annotation></semantics></math>.
+P2 and P3 fall here.</li>
+<li><strong>Low-risk region
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f = 0</annotation></semantics></math>):</strong>
+the half-plane <em>below-left</em> of the line, where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>+</mo><mn>2</mn><mi>y</mi><mo>&lt;</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">x + 2y &lt; 200</annotation></semantics></math>.
+P1 falls here.</li>
+<li>(The boundary line itself goes to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f = 0</annotation></semantics></math>,
+per the rule&#39;s strict inequality.)</li>
+</ul></li>
+<li><p>The regions cover
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathbb{R}^2</annotation></semantics></math>
+with <strong>no gaps, no overlaps</strong> because
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+is a <strong>function</strong>: by definition, for <em>every</em> input
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi>ℝ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">(x, y) \in \mathbb{R}^2</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+must return <strong>exactly one</strong> output in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{0, 1\}</annotation></semantics></math>
+— never <em>none</em> (which would be a gap, an input with no label) and
+never <em>two</em> (which would be an overlap, an input with conflicting
+labels). The two decision regions are exactly the
+<strong>preimages</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>f</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>:</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">f^{-1}(0) = \{(x,y) : f(x,y) = 0\}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>f</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>:</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">f^{-1}(1) = \{(x,y) : f(x,y) = 1\}</annotation></semantics></math>;
+their union is the whole plane, and their intersection is empty. Saying
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+is a classifier&quot; <em>is</em> saying &quot;the regions partition
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\mathbb{R}^2</annotation></semantics></math>&quot;
+— the geometric picture and the function definition are the same
+statement.</p></li>
+</ol>
+<h2 id="rubric">Rubric</h2>
+<p>See <a href="../rubriche/rubrica_02_partition-the-plane.md">rubriche/rubrica_02_partition-the-plane.md</a>.</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>
