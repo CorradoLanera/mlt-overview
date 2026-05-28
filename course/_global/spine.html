@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>MLT course — narrative spine (global)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="mlt-course--narrative-spine-global">MLT course — narrative spine
+(global)</h1>
+<blockquote>
+<p>Whole-course narrative backbone for <strong>&quot;Machine Learning — An
+Applied Overview&quot;</strong> (UBEP, biomedical/clinical graduate students,
+~240 min, 10 chapters). Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Every
+chapter&#39;s own arc (see each <code>narrative.md</code>) hangs off this
+spine.</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Understand the machine before trusting it.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su 4
+varianti. È l&#39;unica che codifica una <em>sequenza</em>
+(<code>before</code>: capire → fidarsi) anziché una constatazione, e
+regge su tutti i 10 capitoli — ogni capitolo è un gradino
+dell&#39;&quot;understand&quot; che precede il &quot;trust&quot;. Prende posizione contro
+entrambi gli estremi del brief: né data scientist, né fiducia cieca.
+L&#39;antagonista del corso è l&#39;<strong>opacità</strong>, non la
+macchina.</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>The risk score flashed red on Elena&#39;s screen, recommending a
+discharge she doubted. The hospital had bought the algorithm; nobody
+could tell her why it decided. She felt overruled by a black box,
+signing off what a machine dictated. So she began asking how it learned:
+what task, what data, what counted as success. Class by class the box
+opened — classifiers, validation, the patients it never saw during
+training. One morning the score flashed red again. This time Elena read
+its reasoning, found the blind spot, and overruled it with evidence. She
+no longer obeyed the machine. She understood it.</p>
+<p><em>Struttura:</em> Bing = una clinica (Elena) riceve un punteggio di
+rischio opaco e si sente scavalcata da una scatola nera | Bang = inizia
+a chiedersi <em>come</em> l&#39;algoritmo abbia imparato
+(task/dati/successo, classificatori, validazione, i pazienti mai visti
+in training): la scatola si apre capitolo per capitolo | Bongo = davanti
+allo stesso punteggio ne legge il ragionamento, ne trova il punto cieco
+e lo scavalca <em>con evidenza</em> — non obbedisce più, capisce. (100
+parole esatte.)</p>
+<h2 id="course-arc--hook--challenge--resolution--payoff">Course arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio emotivo/visivo</td>
+<td>A red risk score tells Elena to discharge a patient she&#39;s worried
+about. The vendor&#39;s algorithm won&#39;t say why; she&#39;s signing off a
+decision a black box made for her.</td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto, misurabile</td>
+<td>In 240 minutes she must open that box. A model can boast 95%
+accuracy and still be useless on imbalanced data; another fits the
+training set perfectly and fails on new patients. Across 10 chapters:
+what is <em>Task / Performance / Experience</em>, how classifiers
+decide, why models overfit, what deep nets and LLMs actually &quot;see&quot;,
+where ChatGPT and agents help or mislead.</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta, cosa si trova</td>
+<td>Chapter by chapter she learns to interrogate each layer: reframe the
+problem as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>/</mi><mi>P</mi><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">T/P/E</annotation></semantics></math>,
+pick a metric that survives class imbalance, expose overfitting with
+cross-validation, locate a model&#39;s blind spot, and check an LLM&#39;s output
+against evidence.</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta allo studente</td>
+<td>The clinician can now <em>evaluate and use</em> ML with judgement —
+trusting it where the evidence holds, overriding it where it doesn&#39;t —
+without becoming a data scientist.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>A red flag fills Elena&#39;s screen: discharge recommended, and she
+disagrees. The hospital bought the algorithm, but no one can tell her
+how it reached that verdict, and signing off feels like obeying a box
+she cannot see into. Over the following weeks she stops accepting the
+number and starts questioning it. She learns what task the model was
+built for, what &quot;performance&quot; really means when one outcome is rare, and
+which patients it never met during training. She watches a
+flawless-looking model collapse on new data, and learns the test that
+would have caught it. She sees what deep networks and language models
+can and cannot perceive, and where a confident chatbot quietly invents.
+By the end, the same red flag appears — and this time Elena reads its
+reasoning, finds the blind spot, and overrides it with evidence. She
+hasn&#39;t become an engineer. She has become a clinician who understands
+the machine before trusting it.</p>
+<h2 id="expected-student-transformation-course-level">Expected student
+transformation (course level)</h2>
+<ul>
+<li><strong>Before:</strong> subisce gli output del ML come verdetti
+opachi; non sa distinguere un modello valido da uno solo apparentemente
+accurato, né dove i suoi limiti rendano rischioso fidarsi.</li>
+<li><strong>After:</strong> inquadra, interroga e giudica un sistema ML
+rispetto a un compito clinico, riconoscendo metriche ingannevoli,
+overfitting e limiti dei modelli moderni, e decide su base di evidenza
+quando fidarsi e quando scavalcare.</li>
+</ul>
+<p><strong>Course-level objectives (measurable):</strong></p>
+<ol type="1">
+<li>Saper <strong>inquadrare</strong> un problema clinico come problema
+di ML
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>/</mi><mi>P</mi><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">T/P/E</annotation></semantics></math>)
+e <strong>scegliere</strong> una misura di performance adeguata anche
+con classi sbilanciate.</li>
+<li>Saper <strong>diagnosticare</strong> la validità di un modello
+distinguendo buona generalizzazione da overfitting tramite evidenza di
+validazione/selezione.</li>
+<li>Saper <strong>valutare</strong> uso appropriato e limiti degli
+strumenti ML moderni (deep learning, dati non strutturati, LLM, ChatGPT,
+agenti) per un compito clinico dato.</li>
+<li>Saper <strong>argomentare</strong>, con evidenza, quando fidarsi,
+mettere in dubbio o scavalcare l&#39;output di un sistema ML.</li>
+</ol>
+<p><em>Nota di bilanciamento:</em> il filo &quot;Elena&quot; è forte; tenere il
+payoff su <em>understand → evaluate → use</em>, mai su <em>win</em>
+(niente &quot;clinico batte algoritmo&quot;). I 10 capitoli sono molti per un solo
+arco: ciascuno avrà il proprio micro-arco (per-chapter
+<code>narrative.md</code>) agganciato a questa spine, con un pre-hook
+esplicito al capitolo successivo.</p>
+</body>
+</html>
