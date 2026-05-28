@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 03 — Which way does the majority vote move?</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-03--which-way-does-the-majority-vote-move">Item 03 — Which
+way does the majority vote move?</h1>
+<p><strong>ID</strong>: IB-03-algorithm-examples-03 <strong>Learning
+objective</strong>: Predict how the accuracy of a majority vote of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+independent weak classifiers with per-classifier accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+varies with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
+and state why the construction only improves on a single classifier when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>
+(Obj. 3). <strong>Category</strong>: Application <strong>Type</strong>:
+MCQ (scenario) <strong>Difficulty</strong>: medium
+<strong>Chapter</strong>: 03-algorithm-examples</p>
+<h2 id="question">Question</h2>
+<p>Two ensemble configurations are being compared on the same binary
+task. Each ensemble combines its classifiers by <strong>majority
+vote</strong>, and the individual classifiers within each ensemble can
+be assumed independent.</p>
+<ul>
+<li><strong>Configuration X</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+weak classifiers, each with per-classifier accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.55</mn></mrow><annotation encoding="application/x-tex">p = 0.55</annotation></semantics></math>.</li>
+<li><strong>Configuration Y</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+weak classifiers, each with per-classifier accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.45</mn></mrow><annotation encoding="application/x-tex">p = 0.45</annotation></semantics></math>.</li>
+</ul>
+<p>Which statement about the <strong>majority-vote accuracy</strong> of
+these two configurations is correct?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) X&#39;s vote is <strong>more accurate than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.55</mn><annotation encoding="application/x-tex">0.55</annotation></semantics></math></strong>
+(the per-classifier accuracy), and Y&#39;s vote is <strong>less accurate
+than
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.45</mn><annotation encoding="application/x-tex">0.45</annotation></semantics></math></strong>.</li>
+<li>B) Both X&#39;s and Y&#39;s votes are more accurate than their respective
+single classifiers — combining more classifiers always helps.</li>
+<li>C) X&#39;s vote is approximately equal to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.55</mn></mrow><annotation encoding="application/x-tex">p = 0.55</annotation></semantics></math>,
+since the vote averages the classifiers and the average of a constant
+probability is that probability.</li>
+<li>D) Y&#39;s vote is more accurate than X&#39;s vote, because
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.45</mn></mrow><annotation encoding="application/x-tex">p = 0.45</annotation></semantics></math>
+leaves more room for the majority vote to correct mistakes.</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: A.</strong> The chapter&#39;s binomial-vote analysis
+shows that, for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+independent weak classifiers with per-classifier accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
+the <strong>majority-vote accuracy concentrates</strong> as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+grows:</p>
+<ul>
+<li>if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>,
+the vote accuracy goes <strong>up toward
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></strong>
+— the vote is more accurate than any single classifier;</li>
+<li>if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&lt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &lt; 0.5</annotation></semantics></math>,
+the vote accuracy goes <strong>down toward
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></strong>
+— the vote is <em>less</em> accurate than any single classifier.</li>
+</ul>
+<p>So Configuration X
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.55</mn><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p = 0.55 &gt; 0.5</annotation></semantics></math>):
+vote accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&gt;</mo><mn>0.55</mn></mrow><annotation encoding="application/x-tex">&gt; 0.55</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+classifiers it is close to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>.
+Configuration Y
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>0.45</mn><mo>&lt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p = 0.45 &lt; 0.5</annotation></semantics></math>):
+vote accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&lt;</mo><mn>0.45</mn></mrow><annotation encoding="application/x-tex">&lt; 0.45</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+classifiers it is close to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.
+The construction concentrates <em>whichever direction
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+points</em> — <em>toward correctness</em> when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>,
+<em>toward error</em> when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&lt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &lt; 0.5</annotation></semantics></math>.
+Hence the
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>
+requirement</strong> for ensembles to make sense.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>B</strong> misses the
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>
+requirement</strong>. It is true that X&#39;s vote improves, but Y&#39;s vote
+does not — Y&#39;s vote <em>worsens</em> because the majority of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+classifiers, each more likely to be <em>wrong</em> than right, will
+systematically vote for the wrong answer. &quot;More is always better&quot; is
+wrong by symmetry: more classifiers concentrate the vote <em>in
+whichever direction
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+points</em>.</li>
+<li><strong>C</strong> confuses <strong>majority vote with arithmetic
+average</strong>. A majority vote does not return the
+<em>probability</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>;
+it returns the <em>most-voted</em> label. The probability that the
+majority is correct is a <em>binomial tail</em> —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mrow><mi>j</mi><mo>&gt;</mo><mi>m</mi><mi>/</mi><mn>2</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mfrac linethickness="0"><mi>m</mi><mi>j</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>p</mi><mi>j</mi></msup><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>m</mi><mo>−</mo><mi>j</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\sum_{j &gt; m/2} \binom{m}{j} p^j (1-p)^{m-j}</annotation></semantics></math>
+— which is <em>not</em> equal to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+and concentrates away from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+grows.</li>
+<li><strong>D</strong> is the <strong>&quot;underdog correction&quot;</strong>
+intuition: that low-accuracy classifiers somehow have more to gain from
+voting. The opposite is true: voting <em>amplifies whatever signal is
+there</em>, and a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&lt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &lt; 0.5</annotation></semantics></math>
+signal amplifies toward <em>the wrong</em> answer. Y&#39;s vote is
+<em>worse</em> than X&#39;s, not better.</li>
+</ul>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

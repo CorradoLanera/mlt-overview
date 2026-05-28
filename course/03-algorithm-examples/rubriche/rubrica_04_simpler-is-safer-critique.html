@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 04 (Which algorithm fits these data, and
+why?)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-04-which-algorithm-fits-these-data-and-why">Rubric
+— Item 04 (Which algorithm fits these data, and why?)</h1>
+<p><strong>Item</strong>: IB-03-algorithm-examples-04 <strong>Learning
+objective</strong>: Argue, in terms of <em>the shape of decision regions
+each algorithm can produce</em>, which algorithm family fits a given
+dataset and which does not (Obj. 1 + light Obj. 2).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Propose a fitting algorithm and name its boundary
+shape</strong> (Part 1)</td>
+<td>Student picks a chapter-03 algorithm (kernel SVM,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN,
+or RF) but does not explicitly name the <em>shape of boundary</em> it
+produces — only says <em>&quot;it will work&quot;</em> or <em>&quot;it can handle
+complex data&quot;</em>.</td>
+<td>Student picks a chapter-03 algorithm <strong>and</strong> explicitly
+names the <strong>shape</strong> of boundary it produces — <em>wiggly
+piecewise curve following the points</em> for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN,
+<em>smooth curved boundary</em> for kernel SVM, <em>axis-aligned
+staircase</em> for RF — <strong>and</strong> argues that the shape
+matches the data (interlocked half-moons).</td>
+<td>All of Good, plus a <em>mechanism-level</em> connection: for kernel
+SVM, names a specific feature map
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>
+and explains that data become linearly separable in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>-space;
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN,
+ties the wiggly boundary to <em>the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+nearest training points voting</em> on a new point&#39;s label; for RF, ties
+the staircase to <em>the binomial vote concentrating on the right answer
+when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math></em>.</td>
+</tr>
+<tr>
+<td><strong>C2 — Identify a non-fitting algorithm and name its boundary
+shape</strong> (Part 2, first half)</td>
+<td>Student says linear SVM &quot;will not work&quot; but does not name <em>a
+straight cut / single line</em> as the boundary it produces — only says
+<em>&quot;it&#39;s too simple&quot;</em> or <em>&quot;the data are too complex&quot;</em>.</td>
+<td>Student names linear SVM&#39;s boundary as <strong>a single straight
+line</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mtext mathvariant="normal">sgn</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>w</mi><mi>⊤</mi></msup><mi>x</mi><mo>+</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(x) = \text{sgn}(w^\top x + b)</annotation></semantics></math>,
+a hyperplane) and argues that <em>no straight line</em> separates
+interlocked half-moons because every straight line crosses both
+classes.</td>
+<td>All of Good, plus the student observes that the failure is
+<strong>structural</strong> — a straight cut <em>cannot</em> produce the
+curved boundary the data require, regardless of how the line is
+positioned — not a contingent failure of a particular trained line.</td>
+</tr>
+<tr>
+<td><strong>C3 — Concrete consequence via 0/1 risk on the
+sample</strong> (Part 2, second half)</td>
+<td>Student says &quot;linear SVM will misclassify many points&quot; but does not
+invoke the <strong>0/1 risk on the sample</strong> vocabulary from ch.
+02.</td>
+<td>Student names <em>high 0/1 risk on the sample</em> as the
+consequence — the average 0/1 loss over the training patients is large
+because many fall on the wrong side of the straight cut.</td>
+<td>All of Good, plus the student observes that the high risk holds for
+<strong>any</strong> linear SVM trained on these data — even the best
+straight cut achieves only a poor 0/1 risk on interlocked half-moons
+(this is the structural sense of &quot;no straight line works&quot;).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza:</strong> <strong>almeno 2 criteri su 3
+a livello <em>Base</em></strong> (e nessuno sotto Base). Below-Base in
+C1 = picks linear SVM as fitting <em>or</em> picks a non-chapter-03
+algorithm; below-Base in C2 = picks any of the curve-capable families
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN,
+kernel SVM, RF) as the non-fitting one; below-Base in C3 = does not
+connect to risk-on-sample vocabulary at all.</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>Penalizzare il lessico di ch. 04</strong>
+(<em>generalisation, overfitting, cross-validation, model selection,
+regularisation, bias-variance trade-off</em>) <strong>se la sostanza di
+ch. 03 è corretta.</strong> Lo studente che dice <em>&quot;linear SVM
+underfits&quot;</em> sta usando lessico di ch. 04 — corretto in generale ma
+fuori scopo. Tuttavia, se la sostanza (la forma è una retta, non matcha
+la shape, alto risk on sample) è correttamente articolata, vale
+<strong>Good</strong> o <strong>Excellent</strong> allo stesso modo. Non
+penalizzare la <em>conoscenza</em> dello studente; valuta solo la
+<em>sostanza</em> dell&#39;argomento.</li>
+<li><strong>Pretendere il termine &quot;inductive bias&quot;.</strong> Il capitolo
+<em>non lo ha definito formalmente</em> come termine che lo studente
+deve usare; il concetto è &quot;la forma di confine che ogni algoritmo può
+disegnare&quot;. Uno studente che non scrive mai <em>&quot;inductive bias&quot;</em> ma
+parla correttamente di <em>&quot;the shape of boundary&quot;</em> è valutato
+esattamente come uno che usa il termine tecnico — vale solo la
+sostanza.</li>
+<li><strong>Premiare la menzione di più algoritmi in C1 senza una vera
+giustificazione.</strong> Se lo studente elenca <em>&quot;kernel SVM,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN,
+RF — tutti vanno bene&quot;</em> senza spiegare <em>perché</em>, valuta
+sull&#39;argomento <strong>meglio sviluppato</strong>. Una giustificazione
+robusta su un algoritmo vale più di tre nomi senza argomento.</li>
+<li><strong>Dare ragione a chi sceglierebbe linear SVM &quot;perché
+semplice&quot;.</strong> Il capitolo non offre la <em>semplicità</em> come
+criterio di scelta — offre il <em>matching della forma alla shape dei
+dati</em>. Se uno studente sceglie linear SVM su half-moons interlocked
+motivando &quot;è il più semplice&quot;, è <strong>below-Base</strong> su C1:
+linear SVM non produce un confine che separi half-moons,
+<em>qualunque</em> sia il criterio di scelta.</li>
+</ul>
+</body>
+</html>

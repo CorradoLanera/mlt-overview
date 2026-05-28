@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>03 — Algorithm examples · narrative</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="03--algorithm-examples--narrative">03 — Algorithm examples ·
+narrative</h1>
+<blockquote>
+<p>Chapter narrative, hanging off the course <a href="../_global/spine.md">spine</a>. Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Six-word,
+100-word, chapter arc, and an explicit pre-hook to the next chapter
+(<code>04-model-selection</code>).</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Same data; three algorithms, three boundaries.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su 4
+varianti. Mantiene lo <em>stesso ritmo a due clausole con punto e
+virgola</em> di cap. 01 (&quot;Programs follow rules; learners find them.&quot;) e
+cap. 02 (&quot;Draw the line; count the cost.&quot;), trasformando la coerenza
+tipografica in coerenza di serie. Riprende la parola-chiave
+<strong>boundary</strong> dal cap. 02 e la fa esplodere in tre — il
+cuore del capitolo è proprio la <strong>contraddizione
+apparente</strong> &quot;stessi pazienti, decisioni diverse&quot;. E pianta il
+seme per il cap. 04 (&quot;tre confini, ma quale vince?&quot;) senza
+risolverlo.</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>For the first time Elena saw not one classifier but three working on
+the same patients. The k-NN model traced a wiggly boundary that hugged
+every example. The SVM cut a single clean margin; when the classes
+interlocked, it warped the space first and cut there. The random forest
+sliced the plane into small rectangles and let many trees vote on each
+point. Same data; three different carvings. Each algorithm carried its
+own prior idea of what a sensible boundary looks like. All three looked
+reasonable on these twelve patients — but which one would hold on a
+patient never seen?</p>
+<p><em>Struttura:</em> Bing = Elena guarda <strong>tre</strong>
+algoritmi lavorare sullo stesso banco di pazienti | Bang = ognuno
+produce una forma di confine drammaticamente diversa —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+si attorciglia attorno ai punti, SVM taglia con un margine pulito (e
+<em>piega lo spazio</em> col kernel quando serve), Random Forest
+accatasta rettangoli axis-aligned e li fa votare — perché ognuno ha un
+proprio <em>prior</em> su cosa sia un confine sensato | Bongo = sui 12
+pazienti del banco tutti sembrano ragionevoli; ma su un paziente mai
+visto? — cliff-hanger aperto verso il cap. 04. (100 parole esatte.)</p>
+<h2 id="chapter-arc--hook--challenge--resolution--payoff">Chapter arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio</td>
+<td>Elena watches three different algorithms tackle the same scatter of
+patients — and each one draws a strikingly different boundary.</td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto</td>
+<td>She can now <em>judge</em> a boundary by its risk (ch. 02), but not
+yet how a machine actually <em>finds</em> one. The chapter walks through
+three families:
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-Nearest
+Neighbor</strong> (the training data <em>is</em> the classifier — for a
+new point, look at the closest
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+examples and take a majority vote); <strong>linear / Support-Vector
+Machine</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mtext mathvariant="normal">sgn</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>w</mi><mi>⊤</mi></msup><mi>x</mi><mo>+</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(x) = \text{sgn}(w^\top x + b)</annotation></semantics></math>
+— find the hyperplane with the widest margin between the classes, and
+when data are not linearly separable, apply a non-linear feature map
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo>:</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>→</mo><msup><mi>ℝ</mi><mi>D</mi></msup></mrow><annotation encoding="application/x-tex">\phi:\mathbb{R}^d \to \mathbb{R}^D</annotation></semantics></math>
+first — the <strong>kernel trick</strong> — and cut <em>there</em>);
+<strong>ensembles / Random Forest</strong> (train many weak tree
+classifiers on bootstrapped subsets, then combine their predictions by
+majority vote — the binomial vote tightens around the correct answer as
+long as each weak learner has accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>).</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta</td>
+<td>She learns to read each algorithm by the <strong>shape of
+regions</strong> it produces in the feature space — <em>data-defined
+neighbourhoods</em> for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN,
+a <em>(possibly kernel-warped) max-margin hyperplane</em> for SVM, an
+<em>axis-aligned staircase voted by many trees</em> for RF — recognising
+each shape as <strong>what kind of boundary that family is
+<em>capable</em> of producing</strong> in the first place. The kernel
+trick is reframed operationally: not a new algorithm, but a
+re-coordinatisation that turns non-linearly-separable data into
+linearly-separable data without touching the linear classifier.</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta</td>
+<td>Looking at a decision boundary alone, she can name the family of
+algorithm that produced it — and articulate the <em>prior</em> each
+family brings to the same patients. She also accepts that <em>three</em>
+algorithms on the <em>same</em> data are <em>three</em> legitimate
+carvings: the choice is not data-determined.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>Elena had learned, in the previous chapter, how to score a boundary
+against another — counting the misclassified patients, paying for each
+one, calling the total the classifier&#39;s risk. But she had drawn the line
+herself. The natural next question was: <em>who</em> draws it, when
+there is no clinician with a pen? She watched three algorithms answer in
+turn. The first,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-Nearest
+Neighbor, did the simplest thing imaginable: it kept the training
+patients themselves and, for any new one, looked at the closest few and
+copied their label. The boundary it produced was wiggly, hugging every
+example, defined entirely by the data. The second, the Support-Vector
+Machine, looked instead for a single straight cut — the <em>widest</em>
+corridor between the two classes — and when the classes refused to be
+split by a line, it transformed the coordinates first (the famous
+<em>kernel trick</em>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>↦</mo><mo stretchy="false" form="prefix">(</mo><msubsup><mi>y</mi><mn>1</mn><mn>2</mn></msubsup><mo>,</mo><mspace width="0.222em"></mspace><msubsup><mi>y</mi><mn>2</mn><mn>2</mn></msubsup><mo>,</mo><mspace width="0.222em"></mspace><msqrt><mn>2</mn></msqrt><mspace width="0.167em"></mspace><msub><mi>y</mi><mn>1</mn></msub><msub><mi>y</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(y_1, y_2) \mapsto (y_1^2,\ y_2^2,\ \sqrt{2}\,y_1 y_2)</annotation></semantics></math>
+and similar maps), separating the classes cleanly in the new space and
+projecting the cut back. The third, the random forest, gave up on any
+single boundary: it grew many small tree classifiers on bootstrapped
+slices of the data and let them vote — the majority vote, she saw on the
+binomial plot, beats any single one as long as each tree is even
+slightly better than chance
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>).
+On the same scatter, the three algorithms produced three unmistakable
+signatures: piecewise around the points; a smooth margin (curved if
+kernel-warped); axis-aligned rectangles. The data had not chosen any of
+them. Each algorithm had brought its own <em>prior</em> about what a
+boundary should look like, and that prior, more than the data, decided
+what she saw.</p>
+<h2 id="versione-didattica-objectives-recap">Versione didattica
+(objectives recap)</h2>
+<p>Gli obiettivi formali del capitolo vivono in <a href="objectives.md">objectives.md</a>. In sintesi, il payoff narrativo
+li ricalca: <strong>compare</strong> le tre famiglie per <em>forma del
+confine che ciascuna può produrre</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+piecewise / SVM max-margin / RF vote-of-cuts); <strong>explain</strong>
+il kernel trick come feature map che cambia ciò che il classificatore
+vede senza cambiare il classificatore; <strong>predict</strong> la
+direzione di cambiamento del voto di maggioranza di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+classificatori deboli con accuratezza
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>,
+e il <em>perché</em> funzioni solo se
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>.</p>
+<h2 id="pre-hook--04-model-selection--validation">Pre-hook → 04 Model
+selection &amp; validation</h2>
+<blockquote>
+<p>Three algorithms, three different boundaries on the same twelve
+patients — and Elena has no way yet to tell <em>which</em> of them will
+hold up on a patient she has never seen. The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-NN
+boundary, in particular, hugs the training data so tightly that it never
+misclassifies a single example on the banco — and that very perfection,
+she will discover next, is exactly what dooms it on new patients.
+<strong>Model selection</strong> — the trick of separating <em>good
+fits</em> from <em>fakes</em> — comes next.</p>
+</blockquote>
+<p><em>Glossa:</em> il pre-hook regge sul cliff-hanger &quot;tre confini
+ragionevoli, ma quale tiene fuori dal banco?&quot; e nomina esplicitamente il
+<strong>paradosso dell&#39;iperaderenza</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>
+ha errore zero sul training, ma è proprio quello a fregarlo): è il
+gancio operativo dell&#39;<strong>overfitting</strong> (cap. 04). Ponte
+diretto a <code>04-model-selection</code> (via
+<code>manifest.next_enabled</code>). La parola &quot;fake&quot; è deliberata:
+anticipa il vocabolario clinico di &quot;modello che sembra valido ma non lo
+è&quot; che il cap. 04 svilupperà con train/validation/test e
+cross-validation.</p>
+</body>
+</html>

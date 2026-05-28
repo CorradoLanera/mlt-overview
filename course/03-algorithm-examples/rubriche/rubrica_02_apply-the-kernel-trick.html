@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 02 (Apply the kernel trick)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-02-apply-the-kernel-trick">Rubric — Item 02 (Apply
+the kernel trick)</h1>
+<p><strong>Item</strong>: IB-03-algorithm-examples-02 <strong>Learning
+objective</strong>: Explain the kernel trick operationally — a
+non-linear feature map
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>
+can turn a non-linearly-separable dataset into a linearly-separable one
+<em>without changing</em> the linear classifier itself (Obj. 2).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Non-separability argument</strong> (sub-question
+1)</td>
+<td>Student asserts that no straight line works, but the <em>reason</em>
+is intuitive (&quot;the classes overlap&quot; / &quot;they&#39;re mixed&quot;) without explicit
+reference to the concentric geometry.</td>
+<td>Student names the concentric structure — every direction contains
+both a red and a blue at different radii — as the obstruction, so any
+straight line has both classes on the same side.</td>
+<td>All of Good, plus identifies that the boundary the <em>data</em>
+requires is a <em>closed curve</em> (circle) around the origin, which by
+construction no straight line can be.</td>
+</tr>
+<tr>
+<td><strong>C2 — Apply
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>
+correctly to the 8 patients</strong> (sub-question 2)</td>
+<td>At least <strong>5 of 8</strong> transformations correct (i.e.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>=</mo><msubsup><mi>y</mi><mn>1</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">X_1 = y_1^2</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>2</mn></msub><mo>=</mo><msubsup><mi>y</mi><mn>2</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">X_2 = y_2^2</annotation></semantics></math>
+computed correctly), arithmetic visible.</td>
+<td>At least <strong>7 of 8</strong> correct; the symmetry between
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>±</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">\pm 1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>±</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">\pm 3</annotation></semantics></math>
+collapsing to the same
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>-image
+is noticed and reported (reds collapse to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{(1,0), (0,1)\}</annotation></semantics></math>,
+blues to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mo stretchy="false" form="prefix">(</mo><mn>9</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>9</mn><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{(9,0), (0,9)\}</annotation></semantics></math>).</td>
+<td><strong>All 8</strong> correct, <em>and</em> the student explicitly
+notes that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>+</mo><msub><mi>X</mi><mn>2</mn></msub><mo>=</mo><msubsup><mi>y</mi><mn>1</mn><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>y</mi><mn>2</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">X_1 + X_2 = y_1^2 + y_2^2</annotation></semantics></math>
+is the <strong>squared distance from the origin</strong>, so all reds
+share
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>+</mo><msub><mi>X</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">X_1 + X_2 = 1</annotation></semantics></math>
+and all blues share
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>+</mo><msub><mi>X</mi><mn>2</mn></msub><mo>=</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">X_1 + X_2 = 9</annotation></semantics></math>.</td>
+</tr>
+<tr>
+<td><strong>C3 — Provide a linear separator and verify</strong>
+(sub-question 3)</td>
+<td>A linear rule is given (e.g.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>+</mo><msub><mi>X</mi><mn>2</mn></msub><mo>&lt;</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">X_1 + X_2 &lt; c</annotation></semantics></math>
+for some
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+between
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>),
+but the verification is missing or shown only on one class.</td>
+<td>A linear rule with specific values of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>,</mo><mi>b</mi><mo>,</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">a, b, c</annotation></semantics></math>
+is given, <strong>and</strong> verification is shown on at least one red
+and one blue, <strong>and</strong> the arithmetic is correct.</td>
+<td>All of Good, plus the student observes that any
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>9</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">c \in (1, 9)</annotation></semantics></math>
+works — i.e. there is a <em>range</em> of correct separators (a
+&quot;margin&quot;) — and that all reds collapse to the line
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>+</mo><msub><mi>X</mi><mn>2</mn></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">X_1 + X_2 = 1</annotation></semantics></math>,
+all blues to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>+</mo><msub><mi>X</mi><mn>2</mn></msub><mo>=</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">X_1 + X_2 = 9</annotation></semantics></math>,
+making the separation maximally easy.</td>
+</tr>
+<tr>
+<td><strong>C4 — What changed?</strong> (sub-question 4)</td>
+<td>Student says &quot;the data changed&quot; or &quot;the coordinates changed&quot; but
+does not explicitly state that the classifier itself (the straight cut)
+is unchanged.</td>
+<td>Student articulates that <strong>the classifier is unchanged — still
+a straight cut</strong> — and that what changed is the
+<em>coordinates</em> in which the data are expressed; this is enough for
+linear separation in the new space.</td>
+<td>All of Good, plus the student identifies that the linear separator
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>+</mo><msub><mi>X</mi><mn>2</mn></msub><mo>&lt;</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">X_1 + X_2 &lt; c</annotation></semantics></math>
+in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>-space
+corresponds to the <strong>circle</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>y</mi><mn>1</mn><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>y</mi><mn>2</mn><mn>2</mn></msubsup><mo>&lt;</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">y_1^2 + y_2^2 &lt; c</annotation></semantics></math>
+in original space — i.e. <em>a linear cut in the new coordinates is a
+curved boundary in the old</em>. (Bonus: names this as the operational
+content of the kernel trick.)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza:</strong> <strong>almeno 3 criteri su 4
+a livello <em>Base</em></strong> (e nessuno sotto Base). Below-Base in
+C2 = fewer than 5 transformations correct <em>or</em> arithmetic
+invisible; below-Base in C4 = does not address the &quot;what changed&quot;
+question (the conceptual gem — leaving it blank is not Base).</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>Penalizzare la scelta di un
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>
+diverso da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+in C3 se la verifica è corretta.</strong> Qualsiasi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>∈</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>9</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">c \in (1, 9)</annotation></semantics></math>
+funziona; lo studente che sceglie
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">c = 4</annotation></semantics></math>
+o
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">c = 7</annotation></semantics></math>
+ha pienamente compreso il punto. Solo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">c = 1</annotation></semantics></math>
+o
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">c = 9</annotation></semantics></math>
+(sui bordi, non strettamente separatori) o
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>≤</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">c \le 0</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>≥</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">c \ge 10</annotation></semantics></math>
+(separatori inesistenti) sono sbagliati.</li>
+<li><strong>Pretendere notazione specifica per la feature map o per il
+prodotto interno.</strong> Lo studente può chiamare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><msub><mi>X</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">X_1, X_2</annotation></semantics></math>
+con qualsiasi nome (ad es.
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>,</mo><mi>v</mi></mrow><annotation encoding="application/x-tex">u, v</annotation></semantics></math>&quot;
+o &quot;le coordinate trasformate&quot;); l&#39;importante è la sostanza.</li>
+<li><strong>Premiare la lunghezza in C4.</strong> Una risposta
+<em>concisa e corretta</em> (&quot;the classifier is the same straight cut;
+what changed are the coordinates: in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><msub><mi>X</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(X_1, X_2)</annotation></semantics></math>
+space the squared distances make linear separation trivial, and a line
+in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>-space
+is the circle
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>y</mi><mn>1</mn><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>y</mi><mn>2</mn><mn>2</mn></msubsup><mo>=</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">y_1^2+y_2^2=c</annotation></semantics></math>
+in original space&quot;) merita <strong>Excellent</strong> anche in 2 frasi.
+Una risposta lunga ma evasiva su <em>cosa</em> sia rimasto invariato è
+al più Base.</li>
+<li><strong>Penalizzare lo studente che usa l&#39;aritmetica
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>1</mn><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">(-1)^2 = 1</annotation></semantics></math>
+implicitamente in C2.</strong> Vale come arithmetic visible: il punto
+della consegna è applicare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>,
+non scrivere
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">(-1) \cdot (-1) = 1</annotation></semantics></math>.
+Se la tabella mostra i valori corretti, la traccia aritmetica è
+sufficiente.</li>
+<li><strong>Penalizzare lo studente che identifica
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>
+con un kernel polinomiale di grado 2.</strong> Lo studente che dice
+&quot;this is (a simplified) polynomial kernel of degree 2&quot; è
+<strong>corretto</strong> (il chapter&#39;s example
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msubsup><mi>y</mi><mn>1</mn><mn>2</mn></msubsup><mo>,</mo><msubsup><mi>y</mi><mn>2</mn><mn>2</mn></msubsup><mo>,</mo><msqrt><mn>2</mn></msqrt><msub><mi>y</mi><mn>1</mn></msub><msub><mi>y</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\phi(y_1,y_2)=(y_1^2,y_2^2,\sqrt{2}y_1 y_2)</annotation></semantics></math>
+è il kernel polinomiale completo; il nostro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>
+ne è una proiezione che basta per questa geometria). Non è leakage da
+ch. 04 — è connessione corretta al lessico stesso di ch. 03.</li>
+</ul>
+</body>
+</html>

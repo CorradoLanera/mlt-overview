@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 04 — Which algorithm fits these data, and why?</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-04--which-algorithm-fits-these-data-and-why">Item 04 —
+Which algorithm fits these data, and why?</h1>
+<p><strong>ID</strong>: IB-03-algorithm-examples-04 <strong>Learning
+objective</strong>: Argue, in terms of <em>the shape of decision regions
+each algorithm can produce</em>, which algorithm family fits a given
+dataset and which does not (Obj. 1 + light Obj. 2).
+<strong>Category</strong>: Argumentation <strong>Type</strong>:
+argomentativa (open-ended) <strong>Difficulty</strong>: medium
+<strong>Chapter</strong>: 03-algorithm-examples</p>
+<h2 id="question">Question</h2>
+<p>A colleague shows you a 2D scatter of training patients where the two
+classes form <strong>interlocked half-moons</strong> (clearly
+non-linearly separable: every straight line crosses both classes). They
+ask:</p>
+<blockquote>
+<p><em>&quot;Which algorithm should I use on these data, and why?&quot;</em></p>
+</blockquote>
+<p>Argue your answer in two parts, using <strong>only the language of
+this chapter</strong> — namely, <em>what shape of decision regions</em>
+each algorithm family can produce (the wiggly piecewise curve of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-NN,
+the straight cut of linear SVM, the smooth curved boundary of
+kernel-SVM, the axis-aligned staircase of Random Forest). For <em>Part
+2</em> you may also use the <em>0/1 risk on the sample</em> from chapter
+02.</p>
+<ol type="1">
+<li><strong>Propose one algorithm family that would FIT these data
+well.</strong> Name <strong>the shape of boundary it produces</strong>
+and argue why that shape <em>matches the shape of the data</em>.</li>
+<li><strong>Identify one algorithm family that would NOT fit these data
+well.</strong> Name <strong>the shape of boundary it produces</strong>
+and argue why that shape <em>cannot match</em> the data — using the
+<em>0/1 risk on the sample</em> (ch. 02) to name the concrete
+consequence.</li>
+</ol>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Any one of the following is correct for Part 1</strong>,
+provided the student explicitly names the boundary shape and ties it to
+the data:</p>
+<ul>
+<li><strong>SVM with a non-linear kernel</strong> — boundary shape: a
+<em>smooth curve</em> in the original space (obtained by applying a
+non-linear feature map, e.g.,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>y</mi><mn>1</mn></msub><mo>,</mo><msub><mi>y</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msubsup><mi>y</mi><mn>1</mn><mn>2</mn></msubsup><mo>,</mo><msubsup><mi>y</mi><mn>2</mn><mn>2</mn></msubsup><mo>,</mo><msqrt><mn>2</mn></msqrt><mspace width="0.167em"></mspace><msub><mi>y</mi><mn>1</mn></msub><msub><mi>y</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\phi(y_1, y_2) = (y_1^2, y_2^2, \sqrt{2}\,y_1 y_2)</annotation></semantics></math>,
+cutting with a hyperplane in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>-space,
+and projecting back). A smooth curve can enclose one of the
+half-moons.</li>
+<li><strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-Nearest
+Neighbor</strong> (e.g.,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>NN)
+— boundary shape: a <em>wiggly, piecewise curve</em> defined by the
+training points themselves. It naturally follows whatever shape the
+clusters have, including interlocked half-moons.</li>
+<li><strong>Random Forest</strong> — boundary shape: an <em>axis-aligned
+staircase</em> of small rectangular regions, combined by majority vote
+of many tree classifiers. The staircase can carve interlocked half-moons
+into rectangular pieces of the right class; by the chapter&#39;s
+binomial-vote argument, the vote concentrates on the right answer as
+more trees are added (whenever each tree has accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>).</li>
+</ul>
+<p><strong>For Part 2: linear (non-kernel) SVM.</strong> Boundary shape:
+a <strong>single straight cut</strong> (a hyperplane
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mtext mathvariant="normal">sgn</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>w</mi><mi>⊤</mi></msup><mi>x</mi><mo>+</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(x) = \text{sgn}(w^\top x + b)</annotation></semantics></math>).
+On interlocked half-moons, <em>no straight line</em> can put each class
+on one side — every straight cut crosses both half-moons. The concrete
+consequence is <strong>high 0/1 risk on the sample</strong>: many
+patients end up on the wrong side of the boundary, so the average 0/1
+loss is large. The mismatch is structural — a straight cut
+<em>cannot</em> produce the curved boundary the data require.</p>
+<h2 id="rubric">Rubric</h2>
+<p>See <a href="../rubriche/rubrica_04_simpler-is-safer-critique.md">rubriche/rubrica_04_simpler-is-safer-critique.md</a>.</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

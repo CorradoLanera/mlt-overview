@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item bank — 03 Algorithm examples</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-bank--03-algorithm-examples">Item bank — 03 Algorithm
+examples</h1>
+<blockquote>
+<p>Chapter: <code>03-algorithm-examples</code> · MLT course (UBEP,
+biomedical/clinical graduate students). Generated 2026-05-28. Items
+student-facing in English; rubrics 3-level (Base/Good/Excellent).
+Review: <code>assessment-reviewer</code> ✓ <strong>APPROVED</strong>
+(2026-05-28). Anti-leakage check from ch. 04 (overfitting / train-test /
+cross-validation / model selection / regularisation / hyperparameter
+tuning) held cleanly across all 4 items + both rubrics. Vocabulary
+discipline verified: &quot;inductive bias&quot; removed from all student-facing
+artifacts; the single residual mention in <code>rubrica_04</code> is a
+corrector instruction (&quot;do not require this term&quot;). Item 04 remains
+<em>genuine</em> Argumentation after the simplification (the teacher had
+flagged v1 as too complex; v3 keeps the compare+justify cognitive move
+without the meta-epistemic load). Two nice-to-have non-blocking notes:
+(a) &quot;smoothly wiggly&quot; wording in <code>item_01</code> for RF (minor),
+(b) the binomial-sum formula in <code>item_03</code> expected-answer is
+corrector-only, not required of students.</p>
+</blockquote>
+<h2 id="item--objective-map">Item ↔︎ objective map</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Learning objective</th>
+<th>Category</th>
+<th>Type</th>
+<th>Difficulty</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>Obj. 1 — read the algorithm family off the <strong>shape of the
+boundary</strong> (wiggly piecewise / straight cut / smooth curve /
+staircase)</td>
+<td>Comprehension</td>
+<td>MCQ</td>
+<td>low–medium</td>
+<td><a href="items/item_01_boundary-to-family_mcq.md">item_01_boundary-to-family_mcq.md</a></td>
+</tr>
+<tr>
+<td>02</td>
+<td>Obj. 2 — apply a non-linear feature map
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>
+to a non-linearly-separable dataset and find a linear separator in the
+transformed space; explain what changed and what didn&#39;t</td>
+<td>Application</td>
+<td>applicativa</td>
+<td>medium</td>
+<td><a href="items/item_02_apply-the-kernel-trick_applicativa.md">item_02_apply-the-kernel-trick_applicativa.md</a></td>
+</tr>
+<tr>
+<td>03</td>
+<td>Obj. 3 — predict the direction of change of majority-vote accuracy
+when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&lt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &lt; 0.5</annotation></semantics></math>
+(with fixed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>);
+state why
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>
+is necessary</td>
+<td>Application</td>
+<td>MCQ (scenario)</td>
+<td>medium</td>
+<td><a href="items/item_03_majority-vote-direction_mcq.md">item_03_majority-vote-direction_mcq.md</a></td>
+</tr>
+<tr>
+<td>04</td>
+<td>Obj. 1 + light Obj. 2 — argue which algorithm family fits a
+non-linearly-separable dataset and which does not, in terms of <em>the
+shape of boundary each can produce</em>; use the 0/1 risk on the sample
+(ch. 02) to name the concrete consequence of a mismatched choice</td>
+<td>Argumentation</td>
+<td>argomentativa</td>
+<td>medium</td>
+<td><a href="items/item_04_simpler-is-safer-critique_argomentativa.md">item_04_simpler-is-safer-critique_argomentativa.md</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="coverage">Coverage</h2>
+<p><strong>By objective</strong> (all three chapter objectives
+covered):</p>
+<ul>
+<li><strong>Obj. 1</strong> (algorithm family by boundary shape): item
+01 (primary), item 04 (primary in argument form).</li>
+<li><strong>Obj. 2</strong> (kernel trick as re-coordinatisation): item
+02 (primary), item 04 (light, in the alternative-proposal for kernel
+SVM).</li>
+<li><strong>Obj. 3</strong> (majority-vote behaviour,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">p &gt; 0.5</annotation></semantics></math>
+requirement): item 03 (primary).</li>
+</ul>
+<p><strong>By cognitive category</strong> (3 of 4 categories; no
+pure-recall item, appropriate for graduate level):</p>
+<ul>
+<li>Knowledge: 0</li>
+<li>Comprehension: 1</li>
+<li>Application: 2</li>
+<li>Argumentation/evaluation: 1</li>
+</ul>
+<h2 id="rubrics">Rubrics</h2>
+<ul>
+<li><a href="rubriche/rubrica_02_apply-the-kernel-trick.md">rubrica_02_apply-the-kernel-trick.md</a>
+— item 02 (applicativa)</li>
+<li><a href="rubriche/rubrica_04_simpler-is-safer-critique.md">rubrica_04_simpler-is-safer-critique.md</a>
+— item 04 (argomentativa)</li>
+</ul>
+<p><em>(Items 01 and 03 are MCQ — single correct option, no
+rubric.)</em></p>
+<h2 id="pre-hook-to-ch-04--embedded-in-the-chapter-not-in-items">Pre-hook to
+ch. 04 — embedded in the chapter, not in items</h2>
+<p>The pre-hook to ch. 04 (<em>model selection / overfitting</em>) is
+staged in the chapter&#39;s <a href="narrative.md">narrative</a> (&quot;which
+holds on a patient never seen?&quot;) and <a href="storyboard.md">storyboard
+frame 6</a> (the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k=1</annotation></semantics></math>
+wrap that hugs every training point but mislabels the first new patient)
+— <em>not</em> inside the items. The items themselves stay strictly
+within ch. 02–03 vocabulary: they test <em>what shape each algorithm
+produces</em> and <em>whether a chosen algorithm&#39;s shape can match the
+data</em>, not <em>which algorithm generalises best to unseen
+patients</em>.</p>
+<h2 id="vocabulary-discipline">Vocabulary discipline</h2>
+<p>The chapter teaches the <strong>shape of decision regions</strong>
+each algorithm family can produce (<em>wiggly piecewise</em> for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>NN,
+<em>straight cut</em> for linear SVM, <em>smooth curved boundary</em>
+for kernel SVM, <em>axis-aligned staircase</em> for RF). The technical
+term &quot;<em>inductive bias</em>&quot; — used in some textbooks for exactly this
+concept — was <strong>deliberately not promoted</strong> to
+student-facing vocabulary: the items, narrative, storyboard, and rubrics
+use &quot;<em>the kind of boundary the algorithm can produce</em>&quot; / &quot;<em>the
+shape of decision regions</em>&quot; instead. The rubrics explicitly instruct
+correctors <strong>not</strong> to require or reward the term — only the
+substance counts.</p>
+</body>
+</html>
