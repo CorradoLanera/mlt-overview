@@ -3,6 +3,13 @@
 Only chapters with include: true are listed, in manifest order, via Quarto
 include shortcodes. Per-chapter slides/chapters/<slug>.qmd are produced by the
 mlt-quarto-build skill (Fase B2) from each chapter's storyboard.
+
+The master deck also includes two framing minidecks NOT listed in the manifest:
+- chapters/_opening.qmd  — presentation card + credits (before the chapters)
+- chapters/_closing.qmd  — thanks + contacts + reading suggestions (after)
+
+`embed-resources: true` makes the rendered HTML a portable single-file deck
+(images, fonts, MathJax all base64-embedded).
 """
 from __future__ import annotations
 
@@ -14,16 +21,22 @@ def enabled_slugs(m: dict) -> list[str]:
 def build_slides_master(m: dict) -> str:
     course = m.get("course", {})
     title = course.get("title", "Course")
+    # `pagetitle:` populates the HTML <title> for the browser tab without
+    # generating Quarto's auto title slide — the custom title slide lives in
+    # chapters/_opening.qmd and we don't want it duplicated.
     header = (
         "---\n"
-        f'title: "{title}"\n'
+        f'pagetitle: "{title}"\n'
         "format:\n"
         "  revealjs:\n"
         "    theme: [default, theme.scss]\n"
         "    slide-number: true\n"
         "    incremental: false\n"
+        "    embed-resources: true\n"
         "    html-math-method: mathjax\n"
         "---\n\n"
     )
-    body = "\n".join(f"{{{{< include chapters/{s}.qmd >}}}}" for s in enabled_slugs(m))
-    return header + body + "\n"
+    parts = ["{{< include chapters/_opening.qmd >}}"]
+    parts += [f"{{{{< include chapters/{s}.qmd >}}}}" for s in enabled_slugs(m)]
+    parts.append("{{< include chapters/_closing.qmd >}}")
+    return header + "\n".join(parts) + "\n"

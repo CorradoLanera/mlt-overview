@@ -1,0 +1,108 @@
+## Machine <span style="color:#E8741E;">Learning</span> {.center background-image="../img/bg1.png" background-opacity="0.3"}
+
+<p style="text-align:center; margin:0 0 0.8em 0;">
+<img src="../img/DSCTV.png" style="height:60px; margin:0 18px;"/>
+<img src="../img/UBEP.png"  style="height:60px; margin:0 18px;"/>
+<img src="../img/LAIMS.png" style="height:60px; margin:0 18px;"/>
+</p>
+
+<p style="text-align:center; font-size:1.55em; font-weight:700; line-height:1.15; margin:0.2em 0;">
+Overview of machine learning techniques, <span style="color:#E8741E;">algorithms</span>, and <span style="color:#E8741E;">applications</span>
+</p>
+
+<p style="text-align:center; font-size:1.05em; margin:1.4em 0 0.2em 0;">
+<strong>Biostatistics Month 2026</strong>
+</p>
+
+<p style="text-align:center; font-size:0.92em; color:#444; margin:0 0 1em 0;">
+PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em>
+</p>
+
+<p style="text-align:center; font-size:0.92em; margin:0;">
+<strong>2026-05-29</strong> · Aula Cagnetto — Ex Istituto di Anatomia Patologica · Via A. Gabelli 61, Padova
+</p>
+
+<p style="text-align:center; margin:1.2em 0 0 0;">
+<strong>Corrado Lanera</strong> &nbsp;|&nbsp; Unit of Biostatistics, Epidemiology &amp; Public Health
+</p>
+
+::: {.notes}
+Title slide del deck. I tre loghi in alto (DSCTV, UBEP, LAIMS) inquadrano l'istituzione; lo sfondo `bg1.png` a opacità 30% è il marchio di fabbrica del deck che uso da anni. Gli accenti arancio sono *Learning / algorithms / applications* — la stessa gerarchia visiva dell'originale, ritarata sul tema attuale. Sotto: cornice del corso (Biostatistics Month 2026 · PhD G.B. Morgagni), data e sede, e infine firma + affiliazione.
+:::
+
+## Find me at… {.inverse background-color="#1F4257"}
+
+:::: {.columns}
+::: {.column width="36%"}
+<img src="../img/profilo_CL.jpg" style="width:100%; border-radius:8px;"/>
+:::
+::: {.column width="64%"}
+<br/>
+
+**Corrado Lanera**
+
+[`Corrado.Lanera`<span style="color:#E8741E;">`@ubep.unipd.it`](mailto:Corrado.Lanera@ubep.unipd.it)</span>
+
+[`unipd-ubep.it`](https://www.unipd-ubep.it/) — UBEP, University of Padova
+
+<br/>
+
+[`@CorradoLanera`](https://github.com/corradolanera) — GitHub · Telegram
+
+[`@UBESP-DCTV`](https://github.com/UBESP-DCTV) — group on GitHub
+
+[`calendly.com/corradolanera`](https://calendly.com/corradolanera) — book a slot
+:::
+::::
+
+::: {.notes}
+Scheda di presentazione. Email istituzionale + sito UBEP. GitHub e Telegram condividono lo stesso handle `@CorradoLanera` — li accorpo su una riga sola. Calendly come canale per chi vuole prenotare un colloquio.
+:::
+
+## Credits & acknowledgements {.inverse background-color="#1F4257"}
+
+This deck stands on the shoulders of the earlier editions of the course.
+
+- **Built on foundations laid by Paola Berchialla** (Full Professor, University of Turin) — co-author of the first edition of this material, years ago. Most of what works conceptually here started there.
+- **And on collaboration with the UBEP team** — colleagues whose figures, examples and feedback shaped subsequent editions (sources cited in-deck where applicable).
+- **Current edition — content, structure, narrative arc**: *Corrado Lanera*.
+- **Slide redesign & narrative restructuring (this edition)**: built with **Claude** (Anthropic) via Claude Code, driven by the project's MLT toolkit.
+- **Dark-background illustrations** (one "anchor" image per beat): generated with **OpenAI Images 2.0** from each storyboard's visual prompt.
+- Built with **Quarto** · revealjs · MathJax.
+
+::: {.notes}
+Acknowledge storici in cima: Paola in primo piano (autrice della prima stesura — placeholder per il cognome completo, da confermare). Squadra UBEP citata in blocco perché figure/esempi/feedback arrivano da edizioni successive. Solo dopo arrivo a me (edizione corrente) e poi al restyle IA (Claude per le slide, OpenAI Images 2.0 per gli sfondi storyboard) — coerente con quello che insegneremo nei cap. 07-08: si usa l'IA, e si dice quando e come si usa.
+:::
+
+## What we are going to see {.inverse background-color="#1F4257"}
+
+Purpose of this class is to introduce <span style="color:#E8741E;">**what is**</span> Machine Learning — what are the techniques involved, how they work, and how to understand (and <span style="color:#E8741E;">**trust**</span>) their results. We'll also look at <span style="color:#E8741E;">**some examples**</span> and <span style="color:#E8741E;">**best practices**</span> in conducting a machine-learning project.
+
+The class will cover from simple *classical* techniques to large language models, including agents.
+
+<br/>
+
+My principal aim is to give you the tools to start <span style="color:#E8741E;">**understanding**</span> and <span style="color:#E8741E;">**evaluating**</span> the quality of a machine-learning project when used for clinical purposes, possibly regardless of its complexity.
+
+<br/>
+
+> <span style="color:#E8741E;">**Disclaimer:**</span> today I do not show you any code.
+
+::: {.notes}
+Slide-mission dell'originale. La tengo verbatim a parte la sostituzione dell'arancio (theme attuale). Il *disclaimer* sul codice è importante: questo è l'Overview *concettuale*; chi vuole la parte pratica frequenta il corso *Practical AI for Medical Data Analyses with R* (basic + advanced).
+:::
+
+## <span style="color:#E8741E;">Overview</span> {.inverse background-color="#1F4257"}
+
+- **Introduction** — what does "Machine Learning" mean?
+- **Classifiers**
+- **MLT Examples**
+- Model <span style="color:#E8741E;">**selection**</span> and **evaluation**
+- **Neural Networks** and <span style="color:#E8741E;">**Deep** Learning</span>
+- <span style="color:#E8741E;">**Unstructured** data</span> (e.g., images, text)
+- **Large** <span style="color:#E8741E;">**Language Models**</span>, ChatGPT, and Agents
+- **Best practices** for implementing Machine Learning
+
+::: {.notes}
+Indice del corso — stesso ordine del deck originale, tarato sui 10 capitoli del manifest (qui ho 8 voci perché *MLT Examples* copre cap. 03, *Deep Learning* copre cap. 05+06, *LLM/ChatGPT/Agents* copre 07+08+09). Lo cito in 30 secondi: l'orizzonte è 4 ore lorde, distribuite in tre macro-blocchi: *capire come funziona* → *vedere cosa fanno i sistemi moderni* → *usarli con giudizio*.
+:::

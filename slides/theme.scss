@@ -10,6 +10,10 @@ $font-family-monospace: "Source Code Pro", Consolas, monospace;
 $presentation-heading-color: #C75A12; // darker orange for headings
 $code-block-bg: #f4f1ec;
 
+// Dark slide palette (xaringan "blu_gray" of the original deck)
+$inverse-bg: #1F4257;
+$inverse-fg: #f4f1ec;
+
 /*-- scss:rules --*/
 .reveal h1, .reveal h2 { letter-spacing: -0.01em; }
 .reveal .slide-number { color: #E8741E; }
@@ -17,3 +21,17 @@ $code-block-bg: #f4f1ec;
 .reveal blockquote { border-left: 4px solid #E8741E; }
 .reveal .title-slide h1 { color: #E8741E; }
 .reveal table th { background: #E8741E; color: #fff; }
+
+/* Inverse slides — dark background, light text. Headings stay orange. */
+.reveal section.inverse {
+  background-color: $inverse-bg;
+  color: $inverse-fg;
+}
+.reveal section.inverse h1,
+.reveal section.inverse h2,
+.reveal section.inverse h3 { color: #E8741E; }
+.reveal section.inverse a { color: #F9C99B; }
+.reveal section.inverse code { background: rgba(255,255,255,0.08); color: #F9C99B; }
+.reveal section.inverse blockquote { border-left-color: #F9C99B; color: #f4f1ec; }
+.reveal section.inverse table th { background: #E8741E; color: #fff; }
+.reveal section.inverse table td { color: $inverse-fg; }

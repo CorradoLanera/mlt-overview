@@ -1,0 +1,55 @@
+## Further reading — start here {.inverse background-color="#1F4257"}
+
+**Concepts & intuition (free, very accessible)**
+
+- **StatQuest** by Josh Starmer — YouTube channel; the gentlest entry point to most ML ideas.
+- **3Blue1Brown** — *Neural networks* and *Transformers* visual series; canonical intuition for chapters 5–7.
+
+**Textbooks (free PDFs from the authors)**
+
+- **G. James, D. Witten, T. Hastie, R. Tibshirani.** *An Introduction to Statistical Learning* (with R or Python). The default first textbook for clinicians.
+- **T. Hastie, R. Tibshirani, J. Friedman.** *The Elements of Statistical Learning.* Deeper, more mathematical.
+- **I. Goodfellow, Y. Bengio, A. Courville.** *Deep Learning.* The reference for chapters 5–6.
+
+**For the curious — original papers**
+
+- **T. Mitchell** (1997). *Machine Learning.* The $T/P/E$ definition we used throughout.
+- **A. Vaswani et al.** (2017). *Attention Is All You Need.* The Transformer paper behind every modern LLM.
+
+**Practice with code**
+
+- The two companion courses at UBEP — *Practical AI for Medical Data Analyses with R*, **Basic** and **Advanced** — turn these concepts into working pipelines.
+
+::: {.notes}
+Letture suggerite divise per livello d'ingaggio. StatQuest e 3Blue1Brown sono il consiglio numero uno per chi non vuole leggere un libro intero: bastano 4-5 video mirati. ISLR è il "primo libro" per chiunque venga dalla statistica/clinica. Il libro di Goodfellow per chi vuole capire i capitoli 5-6 (DL) oltre quello che ho mostrato. La citazione di Mitchell 1997 chiude l'arco narrativo (è la definizione T/P/E del cap. 01). Per i corsi pratici, rilancio sui due corsi R di UBEP — naturale prosecuzione.
+:::
+
+## Thank <span style="color:#E8741E;">you</span> for the attention! {.inverse .center background-color="#1F4257"}
+
+<p style="text-align:center;">
+<img src="../img/procione.jpeg" style="width:32%; border-radius:8px;"/>
+</p>
+
+<br/>
+
+<p style="text-align:center;">
+[`unipd-ubep.it`](https://www.unipd-ubep.it/)
+&nbsp;·&nbsp;
+[`Corrado.Lanera@ubep.unipd.it`](mailto:Corrado.Lanera@ubep.unipd.it)
+</p>
+
+<p style="text-align:center;">
+[GitHub `@CorradoLanera`](https://github.com/corradolanera)
+&nbsp;·&nbsp;
+[Telegram `@CorradoLanera`](https://telegram.me/CorradoLanera)
+&nbsp;·&nbsp;
+[GitHub `@UBESP-DCTV`](https://github.com/UBESP-DCTV)
+</p>
+
+<p style="text-align:center;">
+[`calendly.com/corradolanera`](https://calendly.com/corradolanera)
+</p>
+
+::: {.notes}
+Slide di chiusura del deck originale. Stesso procione, stessi contatti — email istituzionale, github, telegram, calendly. La uso da anni come saluto finale: tono leggero, foto del procione che è la mia "mascotte" pubblica. Lascio sul tavolo *due* canali di follow-up: calendly per chi vuole prenotare un colloquio, telegram per le domande veloci.
+:::
