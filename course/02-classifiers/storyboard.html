@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>02 — Classifiers · storyboard (6 frames)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="02--classifiers--storyboard-6-frames">02 — Classifiers ·
+storyboard (6 frames)</h1>
+<blockquote>
+<p>Visual plan for the chapter, built from its <a href="narrative.md">arc</a> and <a href="objectives.md">objectives</a>.
+20 min, dual classroom (in-person + remote). On-screen text in
+<strong>English</strong> (≤ 1 sentence/frame, 3-second readable);
+regia/voce docente in <em>italiano</em>. Feeds
+<code>mlt-quarto-build</code>.</p>
+</blockquote>
+<blockquote>
+<p>🎨 La colonna <strong>Visual</strong> è la descrizione sintetica (per
+noi). I <strong>prompt pronti per un generatore di immagini</strong> —
+con lo stesso <em>style-anchor</em> condiviso del cap. 01, per coerenza
+di serie tra capitoli — stanno nella sezione
+<strong><code>## Prompt visivi</code></strong> in fondo.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funzione</th>
+<th>Visual</th>
+<th>Testo a video</th>
+<th>Voce docente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Hook visivo</td>
+<td>A scatter of patient dots in two colours; a single straight line
+slashes across it; a clinician&#39;s silhouette glances at it.</td>
+<td><em>&quot;It decides with a single line.&quot;</em></td>
+<td>Elena chiede <em>come</em> decide il modello: la risposta è una sola
+linea sullo scatter dei pazienti, un lato <em>high-risk</em>.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Contesto (class vs regr)</td>
+<td>Split panel: LEFT a scatter split into two coloured regions
+(classification); RIGHT the same dots with a trend line running
+<em>through</em> them (regression).</td>
+<td><em>&quot;Two outputs: a label, or a number.&quot;</em></td>
+<td>Output discreto = <strong>classificazione</strong> (un&#39;etichetta);
+output continuo = <strong>regressione</strong> (un numero). Questo
+capitolo è sul primo.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sfida / Dati</td>
+<td>A scatter where the two coloured clusters <strong>overlap</strong>
+in the middle; a line is drawn, and a few dots sit clearly on the wrong
+side, circled.</td>
+<td><em>&quot;No line catches them all.&quot;</em></td>
+<td>Su pazienti reali le classi si sovrappongono: nessun confine le
+separa perfettamente, qualcuno resta sempre dal lato sbagliato.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Nodo / Impatto</td>
+<td>The plane carved into two coloured <strong>decision regions</strong>
+by one boundary; every point takes the colour of its region; a label
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">f:\mathbb{R}^d\to\{1,\ldots,K\}</annotation></semantics></math>.</td>
+<td><em>&quot;A classifier splits the space into regions.&quot;</em></td>
+<td>Formalmente il classificatore è una funzione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>:</mo><msup><mi>ℝ</mi><mi>d</mi></msup><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>K</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">f:\mathbb{R}^d \to \{1,\ldots,K\}</annotation></semantics></math>
+che taglia lo spazio in regioni: <strong>il confine È il
+classificatore</strong>.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Metodo / Soluzione</td>
+<td>The same scatter + boundary; each misclassified point carries a
+small &quot;cost&quot; mark; a running total adds them up into one number.</td>
+<td><em>&quot;Count the cost: risk = total loss.&quot;</em></td>
+<td>Si contano gli errori con la 0/1 loss e si sommano: è il
+<strong>rischio</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">risk</mtext><mo stretchy="false" form="prefix">(</mo><mi>f</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>𝔏</mi><mo stretchy="false" form="prefix">(</mo><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\text{risk}(f)=\mathbb{E}[\mathfrak{L}(f(X),Y)]</annotation></semantics></math>.
+Qui gira l&#39;esercizio &quot;Draw the line, count the cost&quot;.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Payoff / Domanda finale</td>
+<td>The lowest-risk boundary highlighted with a small
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">2/10</annotation></semantics></math>&quot;
+tag; behind it, faint icons of different methods (nearest dots, a
+straight cut, a little tree).</td>
+<td><em>&quot;Cheapest mistake found. But who drew it?&quot;</em></td>
+<td>Si sceglie il confine col rischio più basso (mai
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+se le classi si sovrappongono); ma chi <em>trova</em> quella linea? Lo
+vediamo coi veri <strong>algoritmi</strong>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="modalità-duale--dove-si-attiva">Modalità duale — dove si
+attiva</h2>
+<p>Il riquadro <strong>5</strong> è il perno attivo: lì parte
+l&#39;esercizio sommativo &quot;Draw the boundary, count the cost&quot; (vedi <a href="objectives.md">objectives.md</a>). L&#39;artefatto condiviso è
+<strong>una sola scatter</strong> su cui presenza e remoto disegnano il
+proprio confine; un poll raccoglie il rischio
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">0/10</annotation></semantics></math>…<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>/</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">n/10</annotation></semantics></math>
+di ogni gruppo per il confronto immediato. Riquadri 1–4 espositivi
+(~10′), riquadro 5 ospita gli ~8′ di sommativo, riquadro 6 chiude e fa
+ponte (~2′).</p>
+<h2 id="prompt-visivi">Prompt visivi</h2>
+<p>Prompt pronti per un generatore di immagini (Images 2.0 o simili). Lo
+<strong><code>style-anchor</code></strong> è definito <em>una volta</em>
+e va premesso a ogni prompt come un parametro; i riquadri scrivono solo
+<code>style-anchor + &lt;soggetto&gt;</code>, così tutte le tile (e i
+capitoli) restano coerenti. Mai testo dentro l&#39;immagine.</p>
+<p><strong><code>style-anchor</code></strong> = <em>&quot;Coherent image set,
+one shared visual identity: warm orange (#E8741E) as the single accent
+colour on a dark-slate background, soft cinematic lighting, 16:9, crisp
+and high quality, no text, letters or numbers rendered anywhere in the
+image.&quot;</em></p>
+<ul>
+<li><strong>Riquadro 1 (Hook)</strong>: <code>style-anchor</code> +
+<em>flat data-viz scatter of two-colour patient dots on a plane, a
+single straight dividing line slashing across, a faint clinician
+silhouette looking on.</em></li>
+<li><strong>Riquadro 2 (Contesto)</strong>: <code>style-anchor</code> +
+<em>split-panel infographic: left, a scatter divided into two solid
+colour regions; right, the same dots with a smooth trend line passing
+through them.</em></li>
+<li><strong>Riquadro 3 (Sfida/Dati)</strong>: <code>style-anchor</code>
++ <em>scatter where two colour clusters overlap in the middle, a
+straight boundary drawn, a few dots stranded on the wrong side and
+circled.</em></li>
+<li><strong>Riquadro 4 (Nodo)</strong>: <code>style-anchor</code> +
+<em>a 2D plane cleanly carved into two coloured decision regions by one
+curved boundary, each dot taking its region&#39;s colour;
+minimalist.</em></li>
+<li><strong>Riquadro 5 (Metodo)</strong>: <code>style-anchor</code> +
+<em>the same scatter and boundary, each misclassified dot tagged with a
+small coin-like cost marker, the markers gathering into a single stacked
+total.</em></li>
+<li><strong>Riquadro 6 (Payoff)</strong>: <code>style-anchor</code> +
+<em>one highlighted low-error boundary on the scatter, with three faint
+method icons behind it — a cluster of nearest dots, a straight cut, a
+small decision tree.</em></li>
+</ul>
+<h2 id="verifica-post-output-auto-check">Verifica post-output
+(auto-check)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked></input>Riquadro 1 aggancia in 3
+secondi? — sì: linea che taglia i pazienti + &quot;decides with a single
+line&quot;.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 3 il dato chiave
+è VISIBILE? — sì: la sovrapposizione delle classi e i punti dal lato
+sbagliato, non solo nominati.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 4 il nodo è il
+concetto centrale? — sì: il classificatore come funzione che partiziona
+lo spazio (Obj. 2).</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 6 lascia una
+domanda-ponte? — sì: &quot;But who drew it?&quot; → algoritmi (cap.
+03).</label></li>
+<li><label><input type="checkbox" checked></input>Solo i 6 riquadri (senza
+voce) raccontano l&#39;arco? — sì: linea → label-vs-numero → le classi si
+sovrappongono → il confine è una funzione → conta il costo (rischio) →
+il confine più economico, ma chi lo trova?</label></li>
+</ul>
+</body>
+</html>
