@@ -1,0 +1,382 @@
+## Decisions cost data; hold the test. {.center .inverse background-color="#1F4257"}
+
+::: {.notes}
+Cover del capitolo 4 — 30 minuti. Sei-parole approvata: due clausole con punto e virgola, in serie con cap. 01-03. Riprende esplicitamente il verbo *cost* del cap. 02 (lì era il costo della classificazione sbagliata; qui è il costo *informazionale* di ogni decisione presa su una stima). *"Hold the test"* è la regola operativa del capitolo. I 4 item formativi sono in coda; il sommativo live ("Catch the overfitter") gira negli ultimi ~10′.
+:::
+
+<!-- BEAT 1 — Hook -->
+
+## *Perfect on training. Wrong on the first new patient.*
+
+![](../img/storyboard/sb-04_01.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Callback visivo esplicito al cap. 03 frame 6 — il "classificatore migliore" ($k$NN $k=1$, errore zero sul training) sbaglia il primo paziente nuovo. **Il supposto migliore era il peggiore.** Lasciate parlare l'immagine 5 secondi.
+:::
+
+<!-- BEAT 2 — Contesto: fit the seen, miss the unseen -->
+
+## *Fits the seen; misses the unseen.*
+
+![](../img/storyboard/sb-04_02.png){fig-align="center" width="78%"}
+
+::: {.notes}
+L'errore sul training misura *come il modello aderisce ai pazienti già visti*, non come si comporterà su quelli nuovi. È la stessa pushback del cap. 02 (Clinician A, item 04) che torna a chiedere conto.
+:::
+
+## What does training error actually measure?
+
+**Training error** = how well the model fits *the data it was trained on*.
+
+It does **not** tell us how the model will do on patients we have not measured.
+
+The more *flexible* the model, the better it can fit any specific training set — at the cost of fitting *that one set* rather than the underlying pattern.
+
+::: {.notes}
+È il quadro concettuale dell'overfitting prima ancora di nominarlo. Riprendete esplicitamente il cap. 02 item 04 ("but on a different group of patients?") — quella era la stessa domanda, oggi la chiudiamo.
+:::
+
+<!-- BEAT 3 — Sfida / U-curve -->
+
+## *Training error falls. New-data error eventually rises.*
+
+![](../img/storyboard/sb-04_03.png){fig-align="center" width="80%"}
+
+::: {.notes}
+La curva canonica dell'overfitting: training-error scende monotonicamente verso zero; new-data-error scende, tocca un minimo, poi *risale* — la classica U. Il gap si allarga oltre il minimo. **Questo è overfitting:** il modello impara il *campione*, non il *segnale*.
+:::
+
+## Overfitting — the signature
+
+A model is **overfitting** when:
+
+- its **training error is low** (it has memorised the training sample), **and**
+- its **error on new data is much higher** (the gap is large).
+
+It has captured *idiosyncrasies of the sample*, not the underlying signal.
+
+The opposite failure — *underfitting* — is when **both** errors are *high*: the model is too rigid to capture even the training data.
+
+::: {.notes}
+Diagnosi differenziale: overfit ≠ "alto errore", overfit = *basso train + grande gap*. Underfit ≠ "alto errore in generale", underfit = *entrambi alti e vicini*. Item 01 testa proprio questa diagnosi differenziale.
+:::
+
+<!-- BEAT 4 — Nodo: contamination principle -->
+
+## *Every decision spends data.*
+
+![](../img/storyboard/sb-04_04.png){fig-align="center" width="78%"}
+
+::: {.notes}
+**Regola del capitolo: la contamination principle.** Ogni volta che usi un numero per *scegliere*, quel numero è stato *speso* — non vale più come stima onesta. Per questo il test set sta dietro vetro: non si tocca finché la scelta non è fatta.
+:::
+
+## The contamination principle
+
+> Every time you take a decision based on a number from a dataset, **that number is no longer a valid estimate**.
+
+Concretely:
+
+- Use validation error to *choose* between models → that validation error is **spent** as a future estimate.
+- Use test error to *choose* (even just to pick a winner among candidates) → the test set is **spent**.
+
+The only honest number is one *that was not used to decide anything*.
+
+::: {.notes}
+Punto critico — è la lente che unifica train/validation/test. Lo studente medio sa intuitivamente che serve un test set; la sottigliezza qui è *perché*: ogni decisione costa un numero. Insistere sulla frase: *"every decision taken after looking at a number contaminates that number as a future estimate"*. Riprendere il vocabolario sopra al sommativo.
+:::
+
+<!-- BEAT 5 — Metodo: 3-way split + K-fold CV (perno del sommativo) -->
+
+## *Three sets, one job each — and the test stays untouched.*
+
+![](../img/storyboard/sb-04_05.png){fig-align="center" width="84%"}
+
+::: {.notes}
+Si divide in **tre**: *train* fitta, *validation* (qui $K$-fold CV) sceglie, *test* conferma. Sotto, la **4-row table** del sommativo: $M_A$/$M_B$/$M_C$/$M_D$ con training error vs CV error. È il perno del capitolo.
+:::
+
+## Train / Validation / Test — one role each
+
+| Subset | Role | Used to |
+|---|---|---|
+| **Training** | fit | learn the model's parameters |
+| **Validation** | choose | compare candidate models / hyperparameter settings |
+| **Test** | confirm | estimate final performance on truly unseen data |
+
+The same data **cannot** play two roles. Choosing a model on a set spends that set's number as a future estimate.
+
+::: {.notes}
+Il *perché* sono tre, non due: serve un set per *fittare* + un set per *scegliere* (consumato dalla scelta) + un set *intatto* per stimare onestamente. Riprendete la contamination rule del beat precedente.
+:::
+
+## $K$-fold cross-validation — the recipe
+
+The validation step, done practically:
+
+1. Split the (non-test) data into **$K$ equal blocks**.
+2. For $k = 1, \ldots, K$: train on the other $K - 1$ blocks; estimate error on block $k$.
+3. **Average** the $K$ per-fold error rates → the **CV error**.
+
+**Standard $K \in [5, 10]$:** smaller $K$ trains on less data (high bias); larger $K$ has smaller folds (high variance).
+
+The CV error **estimates** the prediction error of the chosen model on *unseen* patients.
+
+::: {.notes}
+$K$-fold CV è la procedura canonica del passo di validation. Notare che dopo la scelta col CV, quel numero è *speso* — è esattamente la pushback dell'item 03 e del sommativo. La regola sui $K$ è la tipica bias-variance del numero di fold; voce docente, non valutato.
+:::
+
+<!-- BEAT 6 — Payoff -->
+
+## *Now I trust the number. But how complex can the model be?*
+
+![](../img/storyboard/sb-04_06.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Callback al cap. 03 frame 5 — le tre colonne ($k$NN · SVM · RF) tornano, ma ora *una* è etichettata con un numero affidabile ("test: $18\%$"). Sullo sfondo, l'orizzonte sfumato di una rete di neuroni: pre-hook al cap. 05.
+:::
+
+## Pre-hook → chapter 5: deep learning
+
+You now have a discipline that works for *any* classifier you can build: fit, cross-validate, hold out a test set, report the honest number.
+
+But what if the **model itself** can be made arbitrarily complex — a network of millions of artificial *neurons* that can, in principle, fit *anything*?
+
+The cross-validation discipline still holds. But the *architecture* of the model becomes a new question. **Deep neural networks** — next.
+
+::: {.notes}
+Pre-hook esplicito al cap. 05. La disciplina del cap. 04 sopravvive — anzi, è ancora più importante. Ma c'è un nuovo asse di scelta: non più *quale algoritmo* né *quale hyperparametro*, ma *quale architettura*. Lasciate aperto il vocabolario *neurons + layers* senza ancora il meccanismo (backprop) — è il gancio narrativo.
+:::
+
+<!-- ============================================================ -->
+<!-- EXERCISES — at end of chapter, summative LAST.               -->
+<!-- ============================================================ -->
+
+## Exercises {.inverse .center background-color="#1F4257"}
+
+::: {.notes}
+Blocco esercizi. I 4 item formativi sono recap/self-study (item 04 è argumentation di livello alto sul cross-technique trap); il sommativo live ("Catch the overfitter") gira negli ultimi ~10′ (min 20-30).
+:::
+
+<!-- Item 01 — MCQ — Diagnose overfitting -->
+
+## Item 01 — Question {.smaller}
+
+Four classifiers evaluated on the same task with **5-fold CV**:
+
+| Classifier | Training error | CV error |
+|:-:|:-:|:-:|
+| $M_1$ | $25\%$ | $28\%$ |
+| $M_2$ | $0\%$  | $32\%$ |
+| $M_3$ | $48\%$ | $50\%$ |
+| $M_4$ | $7\%$  | $9\%$  |
+
+Which **one** shows the clearest signature of **overfitting**?
+
+- **A)** $M_1$ &nbsp;·&nbsp; **B)** $M_2$ &nbsp;·&nbsp; **C)** $M_3$ &nbsp;·&nbsp; **D)** $M_4$
+
+::: {.notes}
+Item 01 — Comprehension / MCQ / low-medium. Obj. 1 (diagnose overfitting). Vedi `course/04-model-selection/items/item_01_diagnose-overfitting_mcq.md`. Distrattore D ("low training = overfit") cattura il misconception "basso training error = overfit"; in realtà richiede *basso train + grande gap*.
+:::
+
+## Item 01 — Solution (write yours)
+
+::: {.notes}
+Lascio 60 secondi. Il misconception più frequente è scegliere C ($M_3$) per "errore alto = sbagliato" — ma quello è underfitting. La sequenza diagnostica giusta: guardare prima il *gap*.
+:::
+
+## Item 01 — Solution
+
+**Correct: B — $M_2$.**
+
+The overfitting signature: **low training error + much higher error on new data** (large gap). $M_2$ has $0\%$ training error but $32\%$ CV — memorised the sample, not the signal.
+
+Why the distractors are wrong:
+
+- **A** ($M_1$, $25/28\%$) — no overfit: small gap, both moderate.
+- **C** ($M_3$, $48/50\%$) — **underfitting** (the opposite): both errors high and near chance. Model too rigid.
+- **D** ($M_4$, $7/9\%$) — **healthy fit**: both low and close. *Low training error alone is not overfit.*
+
+::: {.notes}
+Take-away: il discriminante è il *gap* + la *bassezza* del training. Non l'errore alto generico (underfit), né il basso errore in solitaria (healthy).
+:::
+
+<!-- Item 02 — Applicativa — Compute K-fold CV -->
+
+## Item 02 — Question {.smaller}
+
+A classifier evaluated on $20$ patients with **5-fold CV** (4 patients per fold):
+
+| Fold | Misclassified | Out of | Per-fold error |
+|:-:|:-:|:-:|:-:|
+| 1 | 1 | 4 | $25\%$ |
+| 2 | 1 | 4 | $25\%$ |
+| 3 | 2 | 4 | $50\%$ |
+| 4 | 0 | 4 | $0\%$  |
+| 5 | 2 | 4 | $50\%$ |
+
+1. **Compute** the 5-fold CV error rate. Show your formula.
+2. **State** what number the CV error rate *estimates* (1–2 sentences).
+3. **Describe** what would change with $K = 10$ on the same 20 patients: (a) the procedure, (b) one trade-off.
+
+::: {.notes}
+Item 02 — Application / applicativa / medium. Obj. 3 ($K$-fold CV computation + what it estimates + $K$ trade-off). Rubrica: `course/04-model-selection/rubriche/rubrica_02_compute-kfold-cv.md`.
+:::
+
+## Item 02 — Solution (write yours)
+
+::: {.notes}
+Slide bianca per i calcoli. CV error = $(25+25+50+0+50)/5 = 30\%$. Oppure più direttamente: $6/20 = 30\%$. Punto chiave del sub-2: la CV error stima *l'errore di predizione su pazienti non visti* — NON il training error, NON il test error.
+:::
+
+## Item 02 — Solution {.smaller}
+
+**1.** CV error = average of per-fold rates:
+$$\text{CV error} = \frac{25\% + 25\% + 50\% + 0\% + 50\%}{5} = 30\%.$$
+Equivalent: $(1+1+2+0+2)/20 = 6/20 = 30\%$.
+
+**2.** It **estimates the prediction error of the classifier on unseen patients** drawn from the same population. *Not* the training error (fit on seen data), *not yet* the test error (reserved for after the choice).
+
+**3.** With **$K = 10$** on the same 20 patients:
+
+- **(a)** $10$ folds of $2$ patients each; train on $18$, estimate on $2$, average the $10$ rates.
+- **(b)** Trade-off: more training data per fold → less bias *but* smaller folds → noisier per-fold rates → more variance. Standard $K \in [5, 10]$ balances both.
+
+::: {.notes}
+Reveal: la $K$-fold CV è la procedura canonica del *validation step*. La CV error è una stima onesta della prediction error — ma *solo se non è ancora stata usata per scegliere*. Quella usata per la scelta diventa lo *spent number* dell'item 03.
+:::
+
+<!-- Item 03 — MCQ — After CV: next step -->
+
+## Item 03 — Question {.smaller}
+
+A team uses **5-fold CV** on training+validation to compare four candidates ($M_A, M_B, M_C, M_D$). **$M_B$** wins with CV error $18\%$. They have a separate **test set** untouched since day 1. What is the **correct next step**?
+
+- **A)** Report $M_B$'s CV error ($18\%$) as expected performance on new patients — no further evaluation needed.
+- **B)** Retrain $M_B$ on train+val combined; evaluate **once** on the held-out test set; report that test error.
+- **C)** Re-run 5-fold CV with $K = 10$ to confirm the $18\%$; then report it.
+- **D)** Pool train+val+test into one combined dataset; report $M_B$'s average error on the pool.
+
+::: {.notes}
+Item 03 — Application / MCQ / medium. Obj. 2 (contamination principle applied after a CV winner). A è il distrattore più attraente (sembra una performance number, ma è già *spent* nella scelta); D è quello più dannoso (contamina il test set come training).
+:::
+
+## Item 03 — Solution (write yours)
+
+::: {.notes}
+Lascio 60-90 secondi. Se la classe esita tra A e B, è il momento giusto per richiamare la contamination rule. **A** è sbagliato perché $18\%$ è il numero che ha scelto $M_B$ tra quattro — è ottimisticamente biased.
+:::
+
+## Item 03 — Solution
+
+**Correct: B.**
+
+$M_B$'s CV error ($18\%$) is the very number that *chose* $M_B$ among four candidates. By the **contamination principle**, that number is no longer an unbiased estimate — it is *optimistically biased* (the smallest of four CV errors). The **test set** is the only untouched dataset.
+
+Why the distractors are wrong:
+
+- **A** — classic contamination violation. $18\%$ has been spent.
+- **C** — re-running CV doubles down on the same set; the test set remains the only fresh source.
+- **D** — uses the test set as training data, destroying its role. Worst of all.
+
+::: {.notes}
+Take-away: il discriminante è "is there a dataset that has not yet been used in any decision about $M_B$?" Solo B. Reveal: il test set serve *una volta sola*, dopo *tutte* le scelte.
+:::
+
+<!-- Item 04 — Argomentativa — Cross-technique trap -->
+
+## Item 04 — Question {.smaller}
+
+A colleague compares **3 ML techniques** ($k$-NN, SVM-kernel, RF), each with its own hyperparameters. Their procedure:
+
+| Day | Action |
+|---|---|
+| 1 | Split: train + validation + **test** (locked away on day 1). |
+| 2 | For each technique, use 5-fold CV on train+val to tune its hyperparameters. |
+| 3 | Retrain each tuned candidate on train+val combined. |
+| 4 | Evaluate the 3 candidates on the **test set**; record each one's test error. |
+| 5 | Pick the technique with the **lowest test error**; report that test error. |
+
+*"Each technique was tuned correctly with CV. Test set was never touched during training. What could be wrong?"*
+
+1. **Find the exact flaw**: where (and *how*) is the contamination principle violated?
+2. **Propose the correct procedure** and explain why it has no flaw.
+
+::: {.notes}
+Item 04 — Argumentation / medium-high. Obj. 1 + Obj. 2 (cross-technique trap). Il punto sottile: la *seconda* selezione (al passo 4–5) avviene sul test set. Rubrica: `course/04-model-selection/rubriche/rubrica_04_skip-the-test-critique.md`. Soglia di sufficienza: entrambi C1 *e* C2 a Base.
+:::
+
+## Item 04 — Solution (write yours)
+
+::: {.notes}
+Slide bianca per il ragionamento in 2 parti. È un livello argomentativo alto: lo studente medio coglie che "qualcosa non quadra" ma non sempre nomina la *seconda selezione*. Usare la slide per costruire il "validation chooses among candidate models" come *anche* "chooses among candidate techniques".
+:::
+
+## Item 04 — Solution {.smaller}
+
+**1. Flaw at Steps 4–5.** The test set has been used to *choose* among the three retrained techniques. Picking the technique with the lowest test error among three is a **decision based on test-set numbers** — the contamination principle rules it out. The reported test error of the winner $M_\star$ is no longer unbiased: it is **the minimum of three test errors**, optimistically biased. Each technique's *within-technique* CV tuning at Step 2 was correct, but a **second selection step** has been hidden inside Steps 4–5, turning the test set into a *between-technique validation set*.
+
+**2. Correct procedure.** Do **all** selection at the validation step — both within and between techniques:
+
+- For each technique, CV-tune its hyperparameters on train+val.
+- **Use the same CV to compare the 3 tuned candidates** and pick a single $M_\star$ (the technique-and-setting with lowest CV error overall).
+- Retrain only $M_\star$ on train+val combined.
+- Evaluate $M_\star$ **once** on the held-out test set; report.
+
+When the test set is consulted, no decision is open: it is used *purely* to estimate.
+
+::: {.notes}
+**Bonus per gli studenti curiosi:** la fix non è "più partizioni" — è *disciplina*. Un quarto set introdotto per "schermare" la scelta tra tecniche subirebbe lo stesso problema. La regola è "tutte le selezioni sulla validation, una sola valutazione sul test, mai più di una". *Note*: questo è l'item più tecnicamente sottile del corso finora — premiare la coerenza del ragionamento più del vocabolario.
+:::
+
+<!-- Summative -->
+
+## Summative — *Catch the overfitter* {.inverse .smaller background-color="#1F4257"}
+
+Four $k$-NN candidates ($k = 1, 5, 15, 51$) tuned on $100$ patients with 5-fold CV:
+
+| Model | $k$ | Training error | 5-fold CV error |
+|:-:|:-:|:-:|:-:|
+| $M_A$ | 1 | $0 / 100$ ($0\%$) | $30 / 100$ ($30\%$) |
+| $M_B$ | 5 | $12 / 100$ ($12\%$) | $18 / 100$ ($18\%$) |
+| $M_C$ | 15 | $20 / 100$ ($20\%$) | $22 / 100$ ($22\%$) |
+| $M_D$ | 51 | $40 / 100$ ($40\%$) | $42 / 100$ ($42\%$) |
+
+For each group:
+
+1. **Identify the overfitter** and say *why* (which signature?).
+2. **Pick the winner** by CV error.
+3. *Why* is the winner's CV error **not** a trustworthy estimate of its performance on new patients? What data would you use?
+4. Assign the three subsets: **training** is used to ___, **validation (5-fold CV)** is used to ___, **test** is used to ___.
+
+::: {.notes}
+Sommativo — gira negli ultimi ~10′ (min 20-30). ~2′ leggi+assegna + ~5′ riempi (foto upload *durante*) + ~3′ reveal. Poll Slido sull'**overfitter id** (4 opzioni $M_A$/$M_B$/$M_C$/$M_D$). **Duale:** la tabella + le 4 risposte di gruppo nel doc condiviso. **Reveal cap. 02-03:** *"this is what was at stake when Clinician A asked us in ch. 02 'but on a different group?' — and this is why $1$NN's paper-thin wrap in ch. 03 was a trap."*
+:::
+
+## Summative — Solution (write yours)
+
+::: {.notes}
+Slide bianca per le 4 risposte di gruppo. Riempio la shared board mano a mano. **Teachable moment:** un gruppo che pick $M_C$ "perché ha il gap più piccolo" ha letto male il criterio (è "lowest CV", non "smallest gap") — non penalizzare, usare per il reveal.
+:::
+
+## Summative — Solution {.smaller}
+
+**1. Overfitter: $M_A$.** Signature: $0\%$ training + $30\%$ CV (30-point gap). $k=1$ memorises every training point — perfect on training, bad on new patients.
+
+**2. Winner by CV: $M_B$ ($18\%$).** Lowest CV error.
+
+**3. The CV error has been *used to choose* $M_B$ among four candidates.** Contamination principle: that number is now optimistically biased, not unbiased. Use the **separate held-out test set** (untouched in selection) to get a trustworthy number.
+
+**4. Roles:**
+
+| Subset | Used to |
+|:-:|:--|
+| **TRAINING** | fit the model's parameters |
+| **VALIDATION** (5-fold CV) | choose among candidate models / hyperparameters |
+| **TEST** | estimate final performance on truly unseen patients |
+
+*Take-home:* this chapter's discipline answers both prior cliff-hangers — *"but on a different group of patients?"* (ch. 02) and the $1$NN paper-thin wrap (ch. 03). The architecture question opens at chapter 5.
+
+::: {.notes}
+Reveal pedagogico: **$M_D$** ($k = 51$) è il caso *underfit* — training error alto perché il modello è troppo rigido. Lo proponi dopo come "*e $M_D$? perché ha errore alto sia sul training sia in CV?*" — apre il bias-variance. **$M_C$** ha *no gap* ma comunque non vincente: l'assenza di overfit non basta. **Pre-hook ch. 05** nelle ultime righe.
+:::
