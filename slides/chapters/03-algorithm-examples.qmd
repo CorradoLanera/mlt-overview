@@ -1,0 +1,366 @@
+## Same data; three algorithms, three boundaries. {.center .inverse background-color="#1F4257"}
+
+::: {.notes}
+Cover del capitolo 3 — 35 minuti. Sei-parole approvata: stesso ritmo a due clausole con punto e virgola dei cap. 01-02, ora con il *paradosso apparente* "stessi pazienti, decisioni diverse". Riprende la parola **boundary** dal cap. 02 e la fa esplodere in tre. Pre-hook al cap. 04 (overfitting) seminato nel beat 6. I 4 item formativi sono in coda; il sommativo live ("Three algorithms, one dataset") gira negli ultimi ~10′.
+:::
+
+<!-- BEAT 1 — Hook -->
+
+## *Three algorithms, three boundaries — same patients.*
+
+![](../img/storyboard/sb-03_01.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Stesso banco di pazienti, tre algoritmi diversi: **tre confini diversi**. Lasciate la slide 3-5 secondi. L'occhio dello studente prende subito la contraddizione: stessi dati, decisioni differenti — *perché?* È la domanda del capitolo.
+:::
+
+<!-- BEAT 2 — Contesto: who draws the line, and how -->
+
+## *Who draws the line — and how?*
+
+![](../img/storyboard/sb-03_02.png){fig-align="center" width="76%"}
+
+::: {.notes}
+Nel cap. 02 il confine lo tracciava la mano di Elena. Ora lo traccia *l'algoritmo*. Tre famiglie principali, tre idee diverse di cosa sia una "linea sensata".
+:::
+
+## Three families of algorithms
+
+- **$k$-NN** — the *training data themselves* define the boundary (lazy).
+- **Linear / SVM** — one *global cut* with the widest margin (and *bend the space first* if needed: the **kernel trick**).
+- **Ensembles / Random Forest** — many weak voters; the **majority vote** beats any single one (as long as each is better than chance).
+
+Each family carries its own *prior* on what a sensible boundary looks like.
+
+::: {.notes}
+Tre famiglie, tre prior. Anticipo qui la cifra del capitolo: a parità di dati, la *forma di confine* che ogni algoritmo è capace di produrre è diversa — e quella forma, più ancora del campione, decide cosa lo studente vede sullo schermo.
+:::
+
+<!-- BEAT 3 — Sfida / kNN -->
+
+## *$k$-NN: the data themselves decide.*
+
+![](../img/storyboard/sb-03_03.png){fig-align="center" width="78%"}
+
+::: {.notes}
+$k$NN non costruisce regole: **memorizza** il training. Per un nuovo paziente guarda i $k$ più vicini e copia la classe di maggioranza. Il confine *si incolla ai dati*.
+:::
+
+## $k$-Nearest Neighbor — the recipe
+
+For a new point $x$:
+
+1. Find its $k$ nearest training points (by some distance metric).
+2. Take a **majority vote** among their class labels.
+3. Assign that class to $x$.
+
+**Rule of thumb in this chapter:** $k = 3$.
+
+The decision regions are *defined by the training points themselves* — **piecewise** boundaries that hug each cluster's edge.
+
+::: {.notes}
+Punto critico: $k$NN **non** ha parametri *appresi* nel senso classico — il training set *è* il modello. Per questo si chiama lazy learner. La scelta di $k$ è un *hyper-parametro*: piccolo $k$ → confine sinuoso (overfit prone, è il gancio del cap. 04); grande $k$ → confine smussato.
+:::
+
+<!-- BEAT 4 — Nodo: kernel trick -->
+
+## *One straight cut. The shape is in the folds.*
+
+![](../img/one-cut-star.jpg){fig-align="center" width="72%"}
+
+::: {.notes}
+Analogia fisica del kernel trick. **Teorema fold-and-cut (Demaine–Demaine–Lubiw, 1998):** qualsiasi forma poligonale può essere ritagliata da un foglio con **un singolo taglio dritto**, se piegato opportunamente. Lasciate la slide qualche secondo prima di parlare; gli studenti riconoscono il giochino dell'infanzia (la stella di carta), ma stavolta il punto è la *struttura*. *Il taglio è uno; è la piega che decide la forma.* Stessa mossa del kernel trick: il classificatore lineare non cambia, è la rappresentazione (la "piega") che decide il confine.
+:::
+
+## *Bend the space, not the algorithm.*
+
+![](../img/storyboard/sb-03_04.png){fig-align="center" width="84%"}
+
+::: {.notes}
+Tradotto in dati: quando i dati non sono separabili da una linea, SVM **non** cambia algoritmo (le forbici restano dritte): cambia *coordinate* (piega il foglio). Una feature map $\phi$ porta i dati in alto, lì la linea torna a funzionare, e la riproietti come curva. Il classificatore è sempre lo stesso. Il **kernel trick** è una *re-coordinatizzazione*.
+:::
+
+## Linear SVM and the kernel trick
+
+**Linear SVM**: find the **widest-margin hyperplane** between classes:
+$$f(x) = \text{sgn}(w^\top x + b).$$
+
+When classes are **not** linearly separable, apply a feature map $\phi:\mathbb{R}^d \to \mathbb{R}^D$ first:
+$$\phi(y_1, y_2) \;=\; \bigl(y_1^2,\; y_2^2,\; \sqrt{2}\,y_1 y_2\bigr).$$
+
+Then cut with a hyperplane *in the $\phi$-space*; project back as a **smooth curve** in the original space.
+
+The classifier did *not* change — *what it sees* did.
+
+::: {.notes}
+Take-away operativo: il kernel trick **non è** un nuovo algoritmo. È un cambio di rappresentazione che fa apparire linearmente-separabili dati che non lo erano. Il classificatore lineare resta identico; il *dato che osserva* è diverso. Esempio canonico (item 02): cerchi concentrici → $(y_1, y_2) \mapsto (y_1^2, y_2^2)$ → due rette parallele.
+:::
+
+<!-- BEAT 5 — Metodo: ensembles + 3-column board (perno del sommativo) -->
+
+## *Many weak voters beat one strong.*
+
+![](../img/storyboard/sb-03_05.png){fig-align="center" width="84%"}
+
+::: {.notes}
+Random Forest: tanti alberelli (ciascuno solo *appena* meglio del caso) votano per maggioranza. La probabilità del voto giusto cresce con $m$ — purché ogni albero abbia accuratezza $p > 0.5$. Sotto, il **3-column board** dei confini (kNN · SVM · RF) — è il perno del sommativo a fine capitolo.
+:::
+
+## Random Forest and the majority vote
+
+**Random Forest** = many small decision trees, each trained on a *bootstrapped* slice of the data, combined by **majority vote**.
+
+For $m$ independent weak classifiers each with per-classifier accuracy $p$:
+
+- if $p > 0.5$ → vote accuracy goes **up toward $1$** as $m$ grows;
+- if $p < 0.5$ → vote accuracy goes **down toward $0$** as $m$ grows.
+
+Voting *amplifies whichever direction $p$ points*. Hence the **$p > 0.5$ requirement**.
+
+::: {.notes}
+È il punto quantitativo del capitolo: la binomial-vote intuition. Voto di maggioranza ≠ media aritmetica delle probabilità — è una *binomial tail* che si concentra al crescere di $m$. L'item 03 testa proprio la direzione di concentramento.
+:::
+
+## Three families, three boundary shapes
+
+| Family | Shape of the boundary it produces |
+|---|---|
+| **$k$-NN** | piecewise wiggly curve hugging the training points |
+| **Linear SVM** | one straight cut |
+| **Kernel SVM** | smooth curved boundary (a hyperplane in $\phi$-space, projected back) |
+| **Random Forest** | axis-aligned staircase of small rectangles (voted) |
+
+Same data, different priors → different region shapes.
+
+::: {.notes}
+Slide-tabella riassuntiva — è la *checklist visiva* del sommativo. Ogni colonna del 3-column board ricade in una di queste shape. Voce docente: il termine tecnico per "kind of boundary capable of producing" è *inductive bias*, ma — come da nota assessment-reviewer — NON lo promuoviamo in vocabolario studente.
+:::
+
+<!-- BEAT 6 — Payoff -->
+
+## *Perfect on training. On a new patient?*
+
+![](../img/storyboard/sb-03_06.png){fig-align="center" width="78%"}
+
+::: {.notes}
+$k$NN con $k=1$ azzecca **tutti** i pazienti del training — errore zero. Ma il primo paziente nuovo finisce dal lato sbagliato. Il *paradosso dell'iperaderenza*: il modello che meglio si attacca ai dati visti è quello che peggio generalizza. Cliff-hanger esplicito al cap. 04.
+:::
+
+## Pre-hook → chapter 4: model selection
+
+Three reasonable boundaries on the same twelve patients.
+
+Among them, $k$-NN with $k=1$ *never* misclassifies a single training patient — its risk on the sample is exactly $0$. **And that very perfection is what dooms it on new patients.**
+
+How do we tell *good fits* from *fakes*? That is **model selection** — next.
+
+::: {.notes}
+Pre-hook scriptato al cap. 04. Volutamente uso la parola *"fake"* — è il vocabolario clinico che il cap. 04 svilupperà con train/validation/test e CV. Lasciate aperto il paradosso.
+:::
+
+<!-- ============================================================ -->
+<!-- EXERCISES — at end of chapter, summative LAST.               -->
+<!-- ============================================================ -->
+
+## Exercises {.inverse .center background-color="#1F4257"}
+
+::: {.notes}
+Blocco esercizi. I 4 item formativi sono recap/self-study; il sommativo live ("Three algorithms, one dataset") gira negli ultimi ~10′ (min 24-34).
+:::
+
+<!-- Item 01 — MCQ — boundary to family -->
+
+## Item 01 — Question
+
+A classifier produces a decision boundary that can be described as: a **wiggly, piecewise curve that hugs the training data closely**, with small detours around individual points. The regions look as if *carved by the training points themselves*.
+
+Which algorithm family most likely produced this boundary?
+
+- **A)** $k$-Nearest Neighbor (with small $k$).
+- **B)** Support-Vector Machine, **linear** (non-kernel).
+- **C)** Random Forest.
+- **D)** Support-Vector Machine with a **non-linear kernel**.
+
+::: {.notes}
+Item 01 — Comprehension / MCQ / low-medium. Obj. 1 (read family off boundary shape). Vedi `course/03-algorithm-examples/items/item_01_boundary-to-family_mcq.md`.
+:::
+
+## Item 01 — Solution (write yours)
+
+::: {.notes}
+Lascio 60 secondi. Se la classe esita tra A e D, è il momento di richiamare la tabella shape: $k$NN = *piecewise wiggly*; kernel SVM = *smooth curve*.
+:::
+
+## Item 01 — Solution
+
+**Correct: A — $k$-Nearest Neighbor (small $k$).**
+
+The defining clue is *the boundary follows the data*. $k$NN labels by the majority class of the $k$ nearest training neighbours, so the regions are defined *by the training points themselves* — a piecewise, data-hugging boundary.
+
+Why the distractors are wrong:
+
+- **B** (linear SVM): a single *straight* line — the opposite of wiggly.
+- **C** (RF): an **axis-aligned staircase** of small rectangles — blocky, not smoothly wiggly.
+- **D** (kernel SVM): a **smooth curve**, not piecewise.
+
+::: {.notes}
+Riprendere la tabella shape del beat 5 mentre la classe guarda la soluzione.
+:::
+
+<!-- Item 02 — Applicativa — Kernel trick -->
+
+## Item 02 — Question {.smaller}
+
+Eight patients in 2D: red on the **unit circle** $y_1^2 + y_2^2 = 1$ (A,B,C,D), blue on the circle $y_1^2 + y_2^2 = 9$ (E,F,G,H) — *concentric*.
+
+A non-linear feature map is given:
+$$\phi(y_1, y_2) \;=\; (y_1^2,\; y_2^2) \;=\; (X_1, X_2).$$
+
+1. **Argue** why **no straight line** in $(y_1, y_2)$ separates red from blue (1–2 sentences).
+2. **Tabulate** $(X_1, X_2) = \phi(y_1, y_2)$ for the 8 patients.
+3. **State a linear rule** in $(X_1, X_2)$ — of the form *"red if $aX_1 + bX_2 < c$"* with specific $a, b, c$ — that separates the two classes perfectly. Verify on one red, one blue.
+4. The classifier did *not* change. **What changed**, and why is that enough?
+
+::: {.notes}
+Item 02 — Application / applicativa / medium. Obj. 2 (kernel trick come re-coordinatizzazione). Tempo atteso: ~5′ (con i calcoli). Rubrica: `course/03-algorithm-examples/rubriche/rubrica_02_apply-the-kernel-trick.md`.
+:::
+
+## Item 02 — Solution (write yours)
+
+::: {.notes}
+Slide bianca per la tabella $(X_1, X_2)$: tutti i red mappano in $\{(1,0), (0,1)\}$, tutti i blue in $\{(9,0), (0,9)\}$. La somma $X_1 + X_2$ è $1$ per i red e $9$ per i blue — separazione lineare ovvia con $X_1 + X_2 < 5$.
+:::
+
+## Item 02 — Solution {.smaller}
+
+**1.** Red and blue are *concentric*: every direction from origin contains both a red (distance 1) and a blue (distance 3) patient. Any straight line has *both* classes on the same side.
+
+**2.** $\phi(y_1, y_2) = (y_1^2, y_2^2)$: all reds map to $\{(1,0), (0,1)\}$; all blues map to $\{(9,0), (0,9)\}$. Note **all reds satisfy $X_1 + X_2 = 1$**, all blues $X_1 + X_2 = 9$.
+
+**3.** Linear rule: *"red if $X_1 + X_2 < 5$, blue otherwise"* (any $c \in (1, 9)$ works). Verify: A $\to (1, 0) \to 1 < 5$ ✓ red; E $\to (9, 0) \to 9 \ge 5$ ✓ blue.
+
+**4.** The **data changed** — same 8 patients re-coordinatised by $\phi$ — exposing distance-from-origin info hidden in $(y_1, y_2)$. The classifier is still a straight cut. The boundary $X_1 + X_2 = 5$ in $\phi$-space ↔ **circle** $y_1^2 + y_2^2 = 5$ in the original space — the boundary the data actually wanted.
+
+::: {.notes}
+Il punto pedagogico: cambiando il *dato* (le coordinate), un classificatore lineare risolve un problema non-linearmente-separabile. *Il classificatore non è cambiato.* Questa è la frase chiave da far ripetere alla classe.
+:::
+
+<!-- Item 03 — MCQ — Majority vote direction -->
+
+## Item 03 — Question
+
+Two ensembles, each $100$ weak classifiers combined by majority vote (assume independence).
+
+- **Configuration X**: per-classifier accuracy $p = 0.55$.
+- **Configuration Y**: per-classifier accuracy $p = 0.45$.
+
+Which statement about the majority-vote accuracy is correct?
+
+- **A)** X's vote is **more accurate than $0.55$**, and Y's vote is **less accurate than $0.45$**.
+- **B)** Both votes are more accurate than their single classifiers — more is always better.
+- **C)** X's vote $\approx p = 0.55$ — averaging gives the average.
+- **D)** Y's vote is more accurate than X's, because $p = 0.45$ leaves more room for correction.
+
+::: {.notes}
+Item 03 — Application / MCQ / medium. Obj. 3 (direction of binomial-vote concentration; $p>0.5$ requirement). Vedi `course/03-algorithm-examples/items/item_03_majority-vote-direction_mcq.md`.
+:::
+
+## Item 03 — Solution (write yours)
+
+::: {.notes}
+Punto chiave: il voto di maggioranza non *media*, **concentra**. La direzione di concentramento dipende dal segno di $p - 0.5$. Se la classe esita tra A e B, fermarsi sul *perché* B è sbagliato — è il fraintendimento più comune.
+:::
+
+## Item 03 — Solution
+
+**Correct: A.** The majority-vote accuracy **concentrates** as $m$ grows:
+
+- if $p > 0.5$ → vote accuracy goes **up toward $1$**;
+- if $p < 0.5$ → vote accuracy goes **down toward $0$**.
+
+So X ($p = 0.55$) → vote $\gg 0.55$, close to $1$. Y ($p = 0.45$) → vote $\ll 0.45$, close to $0$.
+
+Why the distractors are wrong:
+
+- **B** misses the $p > 0.5$ requirement. Y's vote actually *worsens*.
+- **C** confuses majority vote with arithmetic average. The vote returns the *most-voted label*, not the probability $p$.
+- **D** is the "underdog correction" intuition — wrong by symmetry: voting amplifies whatever signal is there.
+
+::: {.notes}
+Take-away: $p > 0.5$ NON è cosmetica, è la condizione necessaria perché un ensemble funzioni. Si concentra su quello che c'è — bene se $p > 0.5$, male se no.
+:::
+
+<!-- Item 04 — Argomentativa — Which algorithm fits these data -->
+
+## Item 04 — Question
+
+A 2D scatter shows two classes forming **interlocked half-moons** (clearly non-linearly separable: every straight line crosses both classes).
+
+> *"Which algorithm should I use on these data, and why?"*
+
+Using **only this chapter's language** — *shape of decision regions each family produces* — argue in two parts:
+
+1. **Propose one algorithm family that would FIT.** Name its boundary shape and argue why that shape *matches* the data.
+2. **Identify one algorithm family that would NOT fit.** Name its shape and argue why it *cannot match*. Use the **0/1 risk on the sample** (ch. 02) to name the concrete consequence.
+
+::: {.notes}
+Item 04 — Argumentation / argomentativa / medium. Obj. 1 + light Obj. 2. Rubrica: `course/03-algorithm-examples/rubriche/rubrica_04_simpler-is-safer-critique.md`.
+:::
+
+## Item 04 — Solution (write yours)
+
+::: {.notes}
+Slide bianca: il punto non è "qual è la risposta giusta" (parte 1 ammette ≥ 1 risposta valida) ma *legarla alla shape del confine*. Penalizzare solo la *generica* risposta "kNN è meglio" senza nominare la shape.
+:::
+
+## Item 04 — Solution
+
+**Part 1 — Any one of these fits**, provided the shape is named:
+
+- **Kernel SVM** → *smooth curve* (hyperplane in $\phi$-space, projected back); can enclose a half-moon.
+- **$k$-NN** → *piecewise wiggly curve* defined by the training points; naturally follows half-moon clusters.
+- **Random Forest** → *axis-aligned staircase* voted by many trees; carves half-moons into correctly-coloured rectangles (binomial vote concentrates as long as each tree has $p > 0.5$).
+
+**Part 2 — Linear (non-kernel) SVM does NOT fit.** Boundary: a **single straight cut**. On interlocked half-moons, *no straight line* can put each class on one side. Concrete consequence: **high 0/1 risk on the sample** — many patients on the wrong side, average 0/1 loss is large. The mismatch is structural.
+
+::: {.notes}
+Reveal: il punto chiave è "the shape of decision regions each family can produce". Premiare le risposte che *nominano* la shape, non quelle che semplicemente menzionano l'algoritmo.
+:::
+
+<!-- Summative -->
+
+## Summative — *Three algorithms, one dataset* {.inverse .smaller background-color="#1F4257"}
+
+Three groups, **one** scatter (non-linearly separable). Each group is assigned one algorithm card and a one-sentence question:
+
+- **Group A — $k$-NN ($k = 3$).** Sketch the boundary. Q: *"What happens to the boundary if $k$ is doubled?"*
+- **Group B — SVM** (pick *linear* or *kernel*). Sketch. Q: *"This data is not linearly separable — do you pick linear or kernel, and which feature map?"*
+- **Group C — Random Forest (~50 trees).** Sketch. Q: *"5 trees, each $p = 0.6$, majority vote — more or less accurate than 1 tree with $p = 0.6$? Why?"*
+
+All sketches go on a **3-column board** ($k$NN · SVM · RF), in-person + remote side by side.
+
+::: {.notes}
+Sommativo — gira negli ultimi ~10′ (min 24-34). ~2′ assegnare + ~5′ sketch + 1-liner + ~30″ silent all-class beat (ciascuno scrive sull'objective che non ha toccato) + ~2′30″ reveal. Poll Slido sulla *predicted region shape* (5 opzioni, non 3 — evita matching banale): *piecewise around points · smooth curve enclosing a class · axis-aligned staircase · single straight line · concentric circles*. **Duale:** la lavagna a 3 colonne (foto sketch + drawing tool remoti) è l'unico artefatto. **Non dichiarare vincitori** — la domanda "qual è il migliore su pazienti NUOVI?" resta aperta come gancio al cap. 04.
+:::
+
+## Summative — Solution (write yours)
+
+::: {.notes}
+Slide bianca: io nomino le tre colonne nel reveal — *piecewise · max-margin (or smooth curve) · vote-of-cuts* — e leggo la shape caratteristica direttamente dal board. Poi leggo 3 random "cross-objective" one-liner dei silent-beat per verificare gli obiettivi 2 e 3 anche oltre la riga del gruppo.
+:::
+
+## Summative — Solution {.smaller}
+
+| Family | Shape on the board | One-liner answer |
+|---|---|---|
+| **$k$-NN ($k{=}3$)** | piecewise, hugging individual points | larger $k$ → **smoother** (averages more neighbours) |
+| **SVM** | *if linear*: straight line + must say why it fails ; *if kernel*: smooth curve + name $\phi$ | pick **kernel** (e.g. $\phi(y_1, y_2) = (y_1^2, y_2^2, \sqrt{2}\,y_1 y_2)$) |
+| **RF (~50 trees)** | axis-aligned staircase | **more accurate** — majority vote concentrates on correct answer when $p > 0.5$ |
+
+**Live signal of mastery:** the class can point at the board and say — *unprompted* — *"same data, different algorithms, different region shapes → different carvings"*.
+
+*Take-home challenge:* among these three, which one will hold on **patients never seen**? — Chapter 4.
+
+::: {.notes}
+Reveal pedagogico: chiudere col cliff-hanger del cap. 04. Se un gruppo dichiara "il nostro è il più accurato", rispondere "su questi 12 pazienti, sì — ma su un paziente che non hai mai visto?" Non chiudere. È quel gancio che tiene la classe per il prossimo capitolo.
+:::
