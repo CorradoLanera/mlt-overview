@@ -17,8 +17,13 @@ docs/_*.tmp*
 # Self-contained MLT deck output (~16 MB; rebuilt by `quarto render`)
 slides/slides.html
 slides/*_files/
+# Per-chapter Quarto previews (rebuilt by `quarto render` on each .qmd)
+slides/chapters/*.html
+slides/chapters/*_files/
 # Headless-browser QA screenshots used while authoring the deck
 slides/qa-shots/
+.qa-screenshots/
+dev/*.png
 # Python
 __pycache__/
 .pytest_cache/
