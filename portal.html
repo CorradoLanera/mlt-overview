@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Machine Learning — An Applied Overview — Portal</title>
+  <style>
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "head head"
+    "side reader";
+  color: #1a1a1a;
+  background: #f7f7f8;
+}
+header.portal-head {
+  grid-area: head;
+  padding: 10px 16px;
+  background: #1f2937;
+  color: #f9fafb;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  border-bottom: 1px solid #111827;
+}
+header.portal-head h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+header.portal-head .subtitle {
+  font-size: 12px;
+  color: #9ca3af;
+}
+header.portal-head .meta {
+  margin-left: auto;
+  font-size: 11px;
+  color: #9ca3af;
+}
+aside.sidebar {
+  grid-area: side;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  overflow-y: auto;
+  padding: 8px 6px;
+  font-size: 13px;
+}
+main.reader {
+  grid-area: reader;
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+iframe#reader {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #ffffff;
+}
+.welcome {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 14px;
+  padding: 24px;
+  text-align: center;
+}
+details.chapter {
+  margin: 2px 0;
+  padding: 0;
+  border-radius: 6px;
+}
+details.chapter > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  user-select: none;
+}
+details.chapter > summary::-webkit-details-marker { display: none; }
+details.chapter > summary::before {
+  content: "▸";
+  font-size: 10px;
+  color: #6b7280;
+  width: 10px;
+  display: inline-block;
+  transition: transform 120ms ease;
+}
+details.chapter[open] > summary::before { transform: rotate(90deg); }
+details.chapter > summary:hover { background: #f3f4f6; }
+.ch-num {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  color: #6b7280;
+  min-width: 18px;
+  text-align: right;
+  cursor: help;
+}
+.ch-title { flex: 1; font-weight: 500; line-height: 1.25; }
+.badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+.badge-empty   { color: #9ca3af; border-color: #e5e7eb; background: #f9fafb; }
+.badge-partial { color: #92400e; border-color: #fde68a; background: #fffbeb; }
+.badge-full    { color: #065f46; border-color: #a7f3d0; background: #ecfdf5; }
+.badge-off     { color: #6b7280; border-color: #d1d5db; background: #f3f4f6;
+                 text-transform: uppercase; letter-spacing: 0.4px; }
+details.chapter.disabled > summary .ch-title { color: #9ca3af; font-weight: 400; }
+details.chapter.disabled > summary .ch-num   { color: #cbd5e1; }
+details.chapter.disabled ul.artifact-list a,
+details.chapter.disabled li.missing { opacity: 0.55; }
+ul.artifact-list {
+  list-style: none;
+  margin: 2px 0 6px 22px;
+  padding: 0;
+  font-size: 12.5px;
+}
+ul.artifact-list li { padding: 2px 0; }
+ul.artifact-list a {
+  display: block;
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: #1f2937;
+  text-decoration: none;
+}
+ul.artifact-list a:hover { background: #eef2ff; }
+ul.artifact-list a.active { background: #4f46e5; color: #ffffff; }
+li.missing { color: #9ca3af; padding-left: 6px; font-style: italic; font-size: 11.5px; }
+details.extras {
+  margin: 0 0 6px 22px;
+  font-size: 12px;
+}
+details.extras > summary {
+  cursor: pointer;
+  padding: 2px 6px;
+  color: #6b7280;
+  list-style: none;
+}
+details.extras > summary::-webkit-details-marker { display: none; }
+details.extras > summary::before {
+  content: "▸";
+  font-size: 9px;
+  margin-right: 6px;
+  display: inline-block;
+  transition: transform 120ms ease;
+}
+details.extras[open] > summary::before { transform: rotate(90deg); }
+.extras-list { margin-left: 14px; font-size: 11.5px; }
+.extras-list a { color: #4b5563; }
+@media (prefers-color-scheme: dark) {
+  body { color: #e5e7eb; background: #0f172a; }
+  aside.sidebar { background: #111827; border-right-color: #1f2937; }
+  main.reader, iframe#reader { background: #1e293b; }
+  details.chapter > summary:hover { background: #1f2937; }
+  ul.artifact-list a { color: #e5e7eb; }
+  ul.artifact-list a:hover { background: #1f2937; }
+  .ch-num, .badge-empty { color: #9ca3af; }
+  .badge-empty   { border-color: #374151; background: #1f2937; }
+  .badge-partial { color: #fbbf24; border-color: #78350f; background: #1c1917; }
+  .badge-full    { color: #6ee7b7; border-color: #064e3b; background: #022c22; }
+  .badge-off     { color: #9ca3af; border-color: #374151; background: #1f2937; }
+  details.chapter.disabled > summary .ch-title { color: #6b7280; }
+  details.chapter.disabled > summary .ch-num   { color: #4b5563; }
+  details.extras > summary { color: #9ca3af; }
+  .extras-list a { color: #9ca3af; }
+  .welcome { color: #9ca3af; }
+}
+</style>
+</head>
+<body>
+  <header class="portal-head">
+    <h1>Machine Learning — An Applied Overview</h1>
+    <span class="subtitle">biomedical/clinical graduate students (UBEP, University of Padova)</span>
+    <span class="meta">240 min · coverage 16/24</span>
+  </header>
+  <aside class="sidebar">
+    <details class="chapter global" open><summary><span class="ch-title">Global</span></summary><ul class="artifact-list"><li><a href="course/_global/spine.html" target="reader" data-href="course/_global/spine.html">Narrative spine (global)</a></li>
+<li><a href="slides/slides.html" target="reader" data-href="slides/slides.html">Slide deck (full)</a></li></ul></details><details class="chapter" open>
+<summary><span class="ch-num" title="01-introduction">01</span><span class="ch-title">What is Machine Learning?</span><span class="badge badge-partial">4/6</span></summary>
+<ul class="artifact-list">
+<li><a href="course/01-introduction/objectives.html" target="reader" data-href="course/01-introduction/objectives.html">Objectives</a></li>
+<li><a href="course/01-introduction/narrative.html" target="reader" data-href="course/01-introduction/narrative.html">Narrative</a></li>
+<li><a href="course/01-introduction/storyboard.html" target="reader" data-href="course/01-introduction/storyboard.html">Storyboard</a></li>
+<li class="missing"><span title="not yet generated">Sub-units</span></li>
+<li><a href="course/01-introduction/items_valutativi.html" target="reader" data-href="course/01-introduction/items_valutativi.html">Assessment items</a></li>
+<li class="missing"><span title="not yet generated">Slides</span></li>
+</ul>
+<details class="extras"><summary>Single items &amp; rubrics</summary>
+<ul class="artifact-list extras-list">
+<li><a href="course/01-introduction/items/item_01_ml-vs-programming_mcq.html" target="reader" data-href="course/01-introduction/items/item_01_ml-vs-programming_mcq.html">item_01_ml-vs-programming_mcq</a></li>
+<li><a href="course/01-introduction/items/item_02_tpe-framing_applicativa.html" target="reader" data-href="course/01-introduction/items/item_02_tpe-framing_applicativa.html">item_02_tpe-framing_applicativa</a></li>
+<li><a href="course/01-introduction/items/item_03_learning-paradigm_mcq.html" target="reader" data-href="course/01-introduction/items/item_03_learning-paradigm_mcq.html">item_03_learning-paradigm_mcq</a></li>
+<li><a href="course/01-introduction/items/item_04_critique-framing_argomentativa.html" target="reader" data-href="course/01-introduction/items/item_04_critique-framing_argomentativa.html">item_04_critique-framing_argomentativa</a></li>
+<li><a href="course/01-introduction/rubriche/rubrica_02_tpe-framing.html" target="reader" data-href="course/01-introduction/rubriche/rubrica_02_tpe-framing.html">rubrica_02_tpe-framing</a></li>
+<li><a href="course/01-introduction/rubriche/rubrica_04_critique-framing.html" target="reader" data-href="course/01-introduction/rubriche/rubrica_04_critique-framing.html">rubrica_04_critique-framing</a></li>
+</ul></details>
+</details><details class="chapter" open>
+<summary><span class="ch-num" title="02-classifiers">02</span><span class="ch-title">Classifiers</span><span class="badge badge-partial">4/6</span></summary>
+<ul class="artifact-list">
+<li><a href="course/02-classifiers/objectives.html" target="reader" data-href="course/02-classifiers/objectives.html">Objectives</a></li>
+<li><a href="course/02-classifiers/narrative.html" target="reader" data-href="course/02-classifiers/narrative.html">Narrative</a></li>
+<li><a href="course/02-classifiers/storyboard.html" target="reader" data-href="course/02-classifiers/storyboard.html">Storyboard</a></li>
+<li class="missing"><span title="not yet generated">Sub-units</span></li>
+<li><a href="course/02-classifiers/items_valutativi.html" target="reader" data-href="course/02-classifiers/items_valutativi.html">Assessment items</a></li>
+<li class="missing"><span title="not yet generated">Slides</span></li>
+</ul>
+<details class="extras"><summary>Single items &amp; rubrics</summary>
+<ul class="artifact-list extras-list">
+<li><a href="course/02-classifiers/items/item_01_classification-vs-regression_mcq.html" target="reader" data-href="course/02-classifiers/items/item_01_classification-vs-regression_mcq.html">item_01_classification-vs-regression_mcq</a></li>
+<li><a href="course/02-classifiers/items/item_02_partition-the-plane_applicativa.html" target="reader" data-href="course/02-classifiers/items/item_02_partition-the-plane_applicativa.html">item_02_partition-the-plane_applicativa</a></li>
+<li><a href="course/02-classifiers/items/item_03_count-the-cost_mcq.html" target="reader" data-href="course/02-classifiers/items/item_03_count-the-cost_mcq.html">item_03_count-the-cost_mcq</a></li>
+<li><a href="course/02-classifiers/items/item_04_compare-two-boundaries_argomentativa.html" target="reader" data-href="course/02-classifiers/items/item_04_compare-two-boundaries_argomentativa.html">item_04_compare-two-boundaries_argomentativa</a></li>
+<li><a href="course/02-classifiers/rubriche/rubrica_02_partition-the-plane.html" target="reader" data-href="course/02-classifiers/rubriche/rubrica_02_partition-the-plane.html">rubrica_02_partition-the-plane</a></li>
+<li><a href="course/02-classifiers/rubriche/rubrica_04_compare-two-boundaries.html" target="reader" data-href="course/02-classifiers/rubriche/rubrica_04_compare-two-boundaries.html">rubrica_04_compare-two-boundaries</a></li>
+</ul></details>
+</details><details class="chapter" open>
+<summary><span class="ch-num" title="03-algorithm-examples">03</span><span class="ch-title">Algorithm examples</span><span class="badge badge-partial">4/6</span></summary>
+<ul class="artifact-list">
+<li><a href="course/03-algorithm-examples/objectives.html" target="reader" data-href="course/03-algorithm-examples/objectives.html">Objectives</a></li>
+<li><a href="course/03-algorithm-examples/narrative.html" target="reader" data-href="course/03-algorithm-examples/narrative.html">Narrative</a></li>
+<li><a href="course/03-algorithm-examples/storyboard.html" target="reader" data-href="course/03-algorithm-examples/storyboard.html">Storyboard</a></li>
+<li class="missing"><span title="not yet generated">Sub-units</span></li>
+<li><a href="course/03-algorithm-examples/items_valutativi.html" target="reader" data-href="course/03-algorithm-examples/items_valutativi.html">Assessment items</a></li>
+<li class="missing"><span title="not yet generated">Slides</span></li>
+</ul>
+<details class="extras"><summary>Single items &amp; rubrics</summary>
+<ul class="artifact-list extras-list">
+<li><a href="course/03-algorithm-examples/items/item_01_boundary-to-family_mcq.html" target="reader" data-href="course/03-algorithm-examples/items/item_01_boundary-to-family_mcq.html">item_01_boundary-to-family_mcq</a></li>
+<li><a href="course/03-algorithm-examples/items/item_02_apply-the-kernel-trick_applicativa.html" target="reader" data-href="course/03-algorithm-examples/items/item_02_apply-the-kernel-trick_applicativa.html">item_02_apply-the-kernel-trick_applicativa</a></li>
+<li><a href="course/03-algorithm-examples/items/item_03_majority-vote-direction_mcq.html" target="reader" data-href="course/03-algorithm-examples/items/item_03_majority-vote-direction_mcq.html">item_03_majority-vote-direction_mcq</a></li>
+<li><a href="course/03-algorithm-examples/items/item_04_simpler-is-safer-critique_argomentativa.html" target="reader" data-href="course/03-algorithm-examples/items/item_04_simpler-is-safer-critique_argomentativa.html">item_04_simpler-is-safer-critique_argomentativa</a></li>
+<li><a href="course/03-algorithm-examples/rubriche/rubrica_02_apply-the-kernel-trick.html" target="reader" data-href="course/03-algorithm-examples/rubriche/rubrica_02_apply-the-kernel-trick.html">rubrica_02_apply-the-kernel-trick</a></li>
+<li><a href="course/03-algorithm-examples/rubriche/rubrica_04_simpler-is-safer-critique.html" target="reader" data-href="course/03-algorithm-examples/rubriche/rubrica_04_simpler-is-safer-critique.html">rubrica_04_simpler-is-safer-critique</a></li>
+</ul></details>
+</details><details class="chapter" open>
+<summary><span class="ch-num" title="04-model-selection">04</span><span class="ch-title">Model selection &amp; validation</span><span class="badge badge-partial">4/6</span></summary>
+<ul class="artifact-list">
+<li><a href="course/04-model-selection/objectives.html" target="reader" data-href="course/04-model-selection/objectives.html">Objectives</a></li>
+<li><a href="course/04-model-selection/narrative.html" target="reader" data-href="course/04-model-selection/narrative.html">Narrative</a></li>
+<li><a href="course/04-model-selection/storyboard.html" target="reader" data-href="course/04-model-selection/storyboard.html">Storyboard</a></li>
+<li class="missing"><span title="not yet generated">Sub-units</span></li>
+<li><a href="course/04-model-selection/items_valutativi.html" target="reader" data-href="course/04-model-selection/items_valutativi.html">Assessment items</a></li>
+<li class="missing"><span title="not yet generated">Slides</span></li>
+</ul>
+<details class="extras"><summary>Single items &amp; rubrics</summary>
+<ul class="artifact-list extras-list">
+<li><a href="course/04-model-selection/items/item_01_diagnose-overfitting_mcq.html" target="reader" data-href="course/04-model-selection/items/item_01_diagnose-overfitting_mcq.html">item_01_diagnose-overfitting_mcq</a></li>
+<li><a href="course/04-model-selection/items/item_02_compute-kfold-cv_applicativa.html" target="reader" data-href="course/04-model-selection/items/item_02_compute-kfold-cv_applicativa.html">item_02_compute-kfold-cv_applicativa</a></li>
+<li><a href="course/04-model-selection/items/item_03_after-cv-next-step_mcq.html" target="reader" data-href="course/04-model-selection/items/item_03_after-cv-next-step_mcq.html">item_03_after-cv-next-step_mcq</a></li>
+<li><a href="course/04-model-selection/items/item_04_skip-the-test-critique_argomentativa.html" target="reader" data-href="course/04-model-selection/items/item_04_skip-the-test-critique_argomentativa.html">item_04_skip-the-test-critique_argomentativa</a></li>
+<li><a href="course/04-model-selection/rubriche/rubrica_02_compute-kfold-cv.html" target="reader" data-href="course/04-model-selection/rubriche/rubrica_02_compute-kfold-cv.html">rubrica_02_compute-kfold-cv</a></li>
+<li><a href="course/04-model-selection/rubriche/rubrica_04_skip-the-test-critique.html" target="reader" data-href="course/04-model-selection/rubriche/rubrica_04_skip-the-test-critique.html">rubrica_04_skip-the-test-critique</a></li>
+</ul></details>
+</details><details class="chapter disabled">
+<summary><span class="ch-num" title="05-deep-learning">05</span><span class="ch-title">Deep Learning</span><span class="badge badge-off" title="include: false">off</span></summary>
+<ul class="artifact-list">
+<li><a href="course/05-deep-learning/objectives.html" target="reader" data-href="course/05-deep-learning/objectives.html">Objectives</a></li>
+<li><a href="course/05-deep-learning/narrative.html" target="reader" data-href="course/05-deep-learning/narrative.html">Narrative</a></li>
+<li><a href="course/05-deep-learning/storyboard.html" target="reader" data-href="course/05-deep-learning/storyboard.html">Storyboard</a></li>
+<li class="missing"><span title="not yet generated">Sub-units</span></li>
+<li class="missing"><span title="not yet generated">Assessment items</span></li>
+<li class="missing"><span title="not yet generated">Slides</span></li>
+</ul>
+<details class="extras"><summary>Single items &amp; rubrics</summary>
+<ul class="artifact-list extras-list">
+<li><a href="course/05-deep-learning/items/item_01_neuron-as-generalised-logistic_mcq.html" target="reader" data-href="course/05-deep-learning/items/item_01_neuron-as-generalised-logistic_mcq.html">item_01_neuron-as-generalised-logistic_mcq</a></li>
+<li><a href="course/05-deep-learning/items/item_02_forward-pass-and-weight-count_applicativa.html" target="reader" data-href="course/05-deep-learning/items/item_02_forward-pass-and-weight-count_applicativa.html">item_02_forward-pass-and-weight-count_applicativa</a></li>
+<li><a href="course/05-deep-learning/items/item_03_gradient-descent-step_mcq.html" target="reader" data-href="course/05-deep-learning/items/item_03_gradient-descent-step_mcq.html">item_03_gradient-descent-step_mcq</a></li>
+<li><a href="course/05-deep-learning/rubriche/rubrica_02_forward-pass-and-weight-count.html" target="reader" data-href="course/05-deep-learning/rubriche/rubrica_02_forward-pass-and-weight-count.html">rubrica_02_forward-pass-and-weight-count</a></li>
+</ul></details>
+</details><details class="chapter disabled">
+<summary><span class="ch-num" title="06-unstructured-data">06</span><span class="ch-title">Unstructured data (CNN/RNN)</span><span class="badge badge-off" title="include: false">off</span></summary>
+<ul class="artifact-list">
+<li class="missing"><span title="not yet generated">Objectives</span></li>
+<li class="missing"><span title="not yet generated">Narrative</span></li>
+<li class="missing"><span title="not yet generated">Storyboard</span></li>
+<li class="missing"><span title="not yet generated">Sub-units</span></li>
+<li class="missing"><span title="not yet generated">Assessment items</span></li>
+<li class="missing"><span title="not yet generated">Slides</span></li>
+</ul>
+</details><details class="chapter disabled">
+<summary><span class="ch-num" title="07-llm-transformers">07</span><span class="ch-title">LLMs &amp; Transformers</span><span class="badge badge-off" title="include: false">off</span></summary>
+<ul class="artifact-list">
+<li class="missing"><span title="not yet generated">Objectives</span></li>
+<li class="missing"><span title="not yet generated">Narrative</span></li>
+<li class="missing"><span title="not yet generated">Storyboard</span></li>
+<li class="missing"><span title="not yet generated">Sub-units</span></li>
+<li class="missing"><span title="not yet generated">Assessment items</span></li>
+<li class="missing"><span title="not yet generated">Slides</span></li>
+</ul>
+</details><details class="chapter disabled">
+<summary><span class="ch-num" title="08-chatgpt-usage">08</span><span class="ch-title">Using ChatGPT in practice</span><span class="badge badge-off" title="include: false">off</span></summary>
+<ul class="artifact-list">
+<li class="missing"><span title="not yet generated">Objectives</span></li>
+<li class="missing"><span title="not yet generated">Narrative</span></li>
+<li class="missing"><span title="not yet generated">Storyboard</span></li>
+<li class="missing"><span title="not yet generated">Sub-units</span></li>
+<li class="missing"><span title="not yet generated">Assessment items</span></li>
+<li class="missing"><span title="not yet generated">Slides</span></li>
+</ul>
+</details><details class="chapter disabled">
+<summary><span class="ch-num" title="09-agents">09</span><span class="ch-title">Agents</span><span class="badge badge-off" title="include: false">off</span></summary>
+<ul class="artifact-list">
+<li class="missing"><span title="not yet generated">Objectives</span></li>
+<li class="missing"><span title="not yet generated">Narrative</span></li>
+<li class="missing"><span title="not yet generated">Storyboard</span></li>
+<li class="missing"><span title="not yet generated">Sub-units</span></li>
+<li class="missing"><span title="not yet generated">Assessment items</span></li>
+<li class="missing"><span title="not yet generated">Slides</span></li>
+</ul>
+</details><details class="chapter disabled">
+<summary><span class="ch-num" title="10-best-practices">10</span><span class="ch-title">Best practices for ML projects</span><span class="badge badge-off" title="include: false">off</span></summary>
+<ul class="artifact-list">
+<li class="missing"><span title="not yet generated">Objectives</span></li>
+<li class="missing"><span title="not yet generated">Narrative</span></li>
+<li class="missing"><span title="not yet generated">Storyboard</span></li>
+<li class="missing"><span title="not yet generated">Sub-units</span></li>
+<li class="missing"><span title="not yet generated">Assessment items</span></li>
+<li class="missing"><span title="not yet generated">Slides</span></li>
+</ul>
+</details>
+  </aside>
+  <main class="reader">
+    <div class="welcome" id="welcome">
+      <div>
+        <p style="margin:0 0 8px 0">Select an artifact from the sidebar to read it here.</p>
+        <small>Tip: bookmarkable links use <code>#path/to/file.html</code></small>
+      </div>
+    </div>
+    <iframe id="reader" name="reader" title="Artifact reader"></iframe>
+  </main>
+  <script>
+(function () {
+  var iframe = document.getElementById('reader');
+  var welcome = document.getElementById('welcome');
+  var links = document.querySelectorAll('a[data-href]');
+
+  function setActive(href) {
+    for (var i = 0; i < links.length; i++) {
+      if (links[i].getAttribute('data-href') === href) {
+        links[i].classList.add('active');
+      } else {
+        links[i].classList.remove('active');
+      }
+    }
+  }
+
+  function loadHref(href, push) {
+    if (welcome) welcome.style.display = 'none';
+    iframe.src = href;
+    setActive(href);
+    if (push && window.history && window.history.pushState) {
+      window.history.pushState({ href: href }, '', '#' + encodeURIComponent(href));
+    }
+  }
+
+  for (var i = 0; i < links.length; i++) {
+    links[i].addEventListener('click', function (e) {
+      e.preventDefault();
+      loadHref(this.getAttribute('data-href'), true);
+    });
+  }
+
+  window.addEventListener('popstate', function (e) {
+    if (e.state && e.state.href) loadHref(e.state.href, false);
+  });
+
+  // Deep link via #fragment
+  if (window.location.hash && window.location.hash.length > 1) {
+    var initial = decodeURIComponent(window.location.hash.slice(1));
+    loadHref(initial, false);
+  }
+})();
+</script>
+</body>
+</html>
