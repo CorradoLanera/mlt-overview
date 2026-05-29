@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 03 (Place the gates: sepsis early-warning
+agent)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-03-place-the-gates-sepsis-early-warning-agent">Rubric —
+Item 03 (Place the gates: sepsis early-warning agent)</h1>
+<p><strong>Item</strong>: IB-09-agents-03 <strong>Objective</strong>:
+Apply the chapter&#39;s reversibility + human-in-the-loop test to each step
+of a multi-step clinical agent workflow, classify each step as
+<em>safe-by-default</em> or <em>dangerous-by-default</em>, and propose a
+gate placement that adds a guard exactly where reversibility fails — and
+nowhere else. Justify each gate with the chapter&#39;s operational rule
+(<em>ask before any irreversible action</em>) and explain why
+over-gating is not required (Obj. 3).</p>
+<p>The rubric scores three criteria, one per sub-question, on three
+levels — <em>Base</em> (sufficiency floor), <em>Good</em> (solid
+command), <em>Excellent</em> (operational fluency that generalises
+beyond the specific scenario).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Reversibility + HITL classification (sub-q
+a)</strong></td>
+<td>At least
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+out of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></strong>
+steps correctly classified on <strong>both</strong> axes (reversibility
++ HITL), <strong>and</strong> at least <strong>one</strong> of step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+or step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+correctly identified as <em>dangerous-by-default</em>. Each row&#39;s
+justification names the <em>agent&#39;s action</em> (read / compute /
+send-alert / page), not the <em>data&#39;s sensitivity</em> or <em>the
+consequence on the world</em>. <strong>Below Base</strong>
+<em>(critical)</em>: classifying step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+as <em>irreversible</em> because <em>&quot;it accesses PHI&quot;</em>, classifying
+step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+as <em>irreversible</em> because <em>&quot;it computes a clinical
+score&quot;</em>, or marking <em>both</em> of steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+as <em>reversible</em> — these are the canonical confusions the
+chapter&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-second
+test is designed to surface, and getting them wrong means the test has
+not been internalised.</td>
+<td>All of <em>Base</em>, plus <strong>all four</strong> steps correctly
+classified on <strong>both</strong> axes (4/4 reversibility, 4/4 HITL),
+<strong>and</strong> both of steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+correctly identified as <em>dangerous-by-default</em>. The
+justifications for steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+explicitly distinguish <em>the agent&#39;s action</em> (read; in-memory
+compute) from <em>the world&#39;s record-keeping</em> (the EHR query log;
+nothing) — i.e. they pre-empt the <em>audit-log-feels-permanent</em>
+misreading.</td>
+<td>All of <em>Good</em>, plus the justification for step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+explicitly recognises that the irreversibility of the HL7 alert is
+<strong>simultaneous-broadcast irreversibility</strong>: the agent&#39;s
+<em>write</em> (sending the HL7 message) and the alert&#39;s <em>propagation
+to bedside hardware</em> (the buzz firing on the nurse-call panel, the
+dashboard updating) happen in the <strong>same operation</strong> — the
+agent cannot separate the message-send from the buzz-firing or the
+dashboard-rendering. The student <strong>contrasts this case explicitly
+with item 02 step 3</strong> (CSV-on-shared-drive,
+<em>visible-but-reversible</em>): there the <em>visibility</em> is
+downstream of the action and the action itself (file write) is
+rollback-able by file deletion; here the <em>visibility</em> (bedside
+buzz) <strong>is</strong> the action&#39;s first-order effect and cannot be
+separated from the send. This is the chapter&#39;s <em>visible vs
+consequential</em> distinction sharpened to the
+<em>broadcast-on-write</em> case.</td>
+</tr>
+<tr>
+<td><strong>C2 — Gate placement (sub-q b)</strong></td>
+<td>At least <strong>one</strong> gate placed at the <strong>correct
+position</strong> (before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+<em>or</em> before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>).
+<strong>No</strong> gates placed before steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+— over-gating before a reversible step is a placement error, not a
+<em>safer</em> choice. <strong>Below Base</strong> <em>(critical)</em>:
+gating <strong>all four</strong> steps <em>&quot;for safety&quot;</em> (the
+<em>paralyzingly conservative</em> placement the chapter&#39;s cap. 08
+pre-hook explicitly warns against), or placing <strong>zero</strong>
+gates (the workflow as described would page the on-call without any
+human reading what or why), or placing a gate <strong>only</strong>
+after step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+(i.e. <em>post-hoc</em> review — the chapter&#39;s rule is <em>ask
+before</em>, not <em>review after</em>).</td>
+<td>All of <em>Base</em>, plus <strong>exactly two</strong> gates,
+positioned <strong>before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math></strong>
+and <strong>before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></strong>,
+with <strong>no</strong> gates before steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>.
+The student has applied the rule <strong>once per irreversible
+step</strong>, not once per workflow, and has not collapsed the two
+dangerous steps into a single late gate (which would let the HL7 alert
+broadcast before the SMS is reviewed).</td>
+<td>All of <em>Good</em>, plus a brief one-line note on <strong>what
+each gate must show the human</strong> before the action proceeds — for
+the HL7-alert gate, the <em>qSOFA value + patient identifier + the
+underlying vitals/labs the score is based on</em> (not just <em>&quot;approve
+send?&quot;</em>); for the SMS gate, <em>the patient identifier + the
+threshold-crossing fact</em> (not just <em>&quot;send page?&quot;</em>). This
+signals that the student has understood the gate as a
+<em>render-and-wait</em> operation (the chapter&#39;s <em>&quot;pauses, renders
+the action it is about to take, and waits&quot;</em> formulation), not as a
+generic confirm-button.</td>
+</tr>
+<tr>
+<td><strong>C3 — Justification with the chapter&#39;s rule (sub-q
+c)</strong></td>
+<td>Each gate placed in C2 is justified by <strong>explicit
+reference</strong> to the chapter&#39;s rule — either <em>&quot;safe-by-default
+if reversible <strong>or</strong> human-in-the-loop&quot;</em>, <em>&quot;the
+dangerous quadrant is irreversible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∧</mi><annotation encoding="application/x-tex">\wedge</annotation></semantics></math>
+no-HITL&quot;</em>, or <em>&quot;ask before any irreversible action&quot;</em>. Vague
+justifications such as <em>&quot;to be safe&quot;</em>, <em>&quot;because
+clinical&quot;</em>, <em>&quot;to protect the patient&quot;</em> are <strong>below
+Base</strong> — they may name a <em>true motivation</em> but they are
+<em>not</em> the operational rule the chapter has taught. The
+justification must connect <em>this specific step&#39;s irreversibility</em>
+to <em>the rule that requires a gate here</em>.</td>
+<td>All of <em>Base</em>, plus an <strong>explicit one-sentence</strong>
+on <strong>why no gate is needed before steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></strong>,
+citing the chapter&#39;s <em>safe-by-default if reversible</em> principle
+and naming over-gating as the failure mode the chapter warns against
+(<em>&quot;a gate before a reversible step does not reduce risk; it paralyses
+the agent&quot;</em>, or any equivalent operational formulation). The student
+is reasoning <em>symmetrically</em> — gates go where reversibility fails
+<em>and only there</em>.</td>
+<td>All of <em>Good</em>, plus recognition that the chapter&#39;s rule
+<strong>survives the introduction of a new tool</strong>: a brief
+one-sentence noting that <em>if tomorrow the agent is configured with a
+fifth step</em> (e.g. <em>create a clinical order in the CPOE</em>,
+<em>write a discharge summary</em>, <em>call the rapid-response
+team</em>), the same rule (reversibility test → gate before
+irreversible) places the gate <strong>without rewriting the
+policy</strong>. This signals operational fluency: the student is
+reasoning about the <em>rule</em>, not about the <em>specific
+workflow</em>. The chapter&#39;s claim that the rule <em>&quot;survives any new
+tool added tomorrow&quot;</em> is the chapter-level fluency mark for Obj. 3,
+and naming it here puts the answer at Excellent.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza</strong>: <strong>tutti e tre C1, C2 e
+C3 a livello Base o superiore</strong>. Una classificazione di
+reversibilità sbagliata su step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+o step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+<em>che non corregge nessuno dei due dangerous (3 o 4)</em> è sotto
+Base. Una placement con zero gate o con gate solo su step reversibili è
+sotto Base. Una giustificazione <em>senza riferimento alla regola del
+cap. 09</em> (anche se accurata clinicamente) è sotto Base — l&#39;item
+misura <em>l&#39;applicazione della regola di trust engineering</em>, non la
+sensibilità clinica.</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>CRITICO — non valutare la correttezza clinica del
+qSOFA.</strong> L&#39;item non misura se lo studente sa che il qSOFA è la
+<em>quick SOFA</em>, conosce le sue tre componenti (BP
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≤</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">\leq 100</annotation></semantics></math>,
+RR
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>22</mn></mrow><annotation encoding="application/x-tex">\geq 22</annotation></semantics></math>,
+GCS
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&lt;</mo><mn>15</mn></mrow><annotation encoding="application/x-tex">&lt; 15</annotation></semantics></math>),
+o sa che la soglia
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\geq 2</annotation></semantics></math>
+è la soglia di alert standard. Lo studente che mostra anche fluenza
+clinica sul qSOFA è un bonus <em>fuori rubrica</em>; lo studente che non
+la mostra <strong>non è penalizzato</strong>. La rubrica misura
+<em>placement del gate</em> e <em>applicazione della regola</em>, non
+<em>clinical knowledge of qSOFA</em>. Se uno studente argomenta
+correttamente il gating senza nominare il qSOFA, è a
+Base/Buono/Eccellente sulla <em>trust engineering</em>,
+indipendentemente.</li>
+<li><strong>CRITICO — non premiare la conservatività
+paralizzante.</strong> Uno studente che gata <em>tutti i quattro
+step</em> &quot;per maggiore sicurezza clinica&quot; non sta dando una risposta
+<em>più cauta</em>; sta dando una risposta <em>operativamente
+sbagliata</em>. Il chapter è esplicito (pre-hook di cap. 08): <em>&quot;if
+you want a human reading every step, use a chat-LLM. Agents are the
+thing you reach for when the workflow has steps you don&#39;t need to
+read.&quot;</em> Un gate prima di ogni step <strong>disfa l&#39;agente</strong> —
+è l&#39;errore <em>paralyzingly conservative</em> nominato dal cap. 08, e il
+C2 lo classifica esplicitamente sotto Base. <strong>Non scambiare
+conservatività per rigore.</strong></li>
+<li><strong>Non penalizzare lo studente che ammette ambiguità sullo step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+con argomentazione.</strong> Un EHR write <em>tecnicamente</em> lo si
+può cancellare in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+secondi su alcuni sistemi (il void leaves audit-trail ma l&#39;annotation
+può scomparire dalla vista clinica). Uno studente che scrive <em>&quot;Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+— ambiguous; on systems where &#39;void annotation&#39; is an immediate UI
+action, this could be classified Y by the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-second
+test, but the audit-trail row that records the void itself is permanent
+and visible to anyone reading the chart history, so I classify N&quot;</em>
+sta applicando il test in modo argomentativamente solido.
+<strong>Accettare a Base o Buono se la conclusione finale è
+coerente</strong> (la classificazione <em>N + dangerous</em> è quella
+che il workflow richiede operativamente); se la conclusione è <em>Y +
+safe</em>, è il discriminante che ferma il gate dove servirebbe — sotto
+Base.</li>
+<li><strong>Non confondere <em>clinical risk</em> con
+<em>reversibility</em> in C1.</strong> Lo step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(DB read) accede a PHI; uno studente potrebbe legittimamente argomentare
+che <em>&quot;a read of PHI is a privacy event&quot;</em> e quindi <em>&quot;the agent
+should not read PHI unattended&quot;</em>. Quella è una considerazione di
+<strong>privacy governance</strong>, <strong>non</strong> di
+reversibility. Il cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>
+insegna <em>reversibility</em>, non <em>privacy</em>. Lo studente che
+marca step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+come <em>irreversibile per PHI</em> sta confondendo i due assi (è il
+distrattore A di item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>,
+qui in forma libera). Riportare allo studente che <em>privacy</em> e
+<em>reversibility</em> sono <strong>due axes diversi</strong> che vanno
+ragionati separatamente, e che la rubrica misura <em>reversibility</em>.
+<strong>Sotto Base</strong> per C1 se questa confusione blocca la
+corretta identificazione di step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+o step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>.</li>
+<li><strong>Non premiare le &quot;5 gate variants&quot; o le &quot;smart gate
+compositions&quot; (ask + log + sandbox + ...).</strong> L&#39;item misura
+<em>placement</em>, non <em>gate architecture</em>. Uno studente che
+propone un <em>sandboxing</em> del EHR write o un <em>staging area</em>
+prima del SMS dispatch sta proponendo <em>engineering</em>, non
+<em>trust engineering</em> — è una risposta legittima ma a una
+<em>domanda diversa</em>. <strong>Accettare la risposta come
+bonus</strong> (è segno di competenza ingegneristica), <strong>ma non
+sostituirla al placement della rubrica</strong>: il C2 chiede <em>dove
+va il gate</em>, non <em>come è implementato</em>. Il livello Excellent
+della rubrica resta quello: <em>gate placement + render-and-wait +
+rule-survives-new-tool</em>.</li>
+<li><strong>Non penalizzare la mancanza della <em>giustificazione &quot;rule
+survives new tool&quot;</em> in C3 a Buono.</strong> Quella è la <em>cifra di
+fluenza chapter-level</em> che porta a Excellent, <strong>non</strong>
+una soglia di Buono. Uno studente che giustifica i gate con la regola
+del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>
+e include il <em>no-over-gating</em> di steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+è già a Buono; il <em>survives-new-tool</em> è il passo
+<em>operativo</em> in più (e raro) che porta a Excellent.</li>
+</ul>
+</body>
+</html>

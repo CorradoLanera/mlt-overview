@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>09 — Agents · narrative</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="09--agents--narrative">09 — Agents · narrative</h1>
+<blockquote>
+<p>Chapter narrative, hanging off the course <a href="../_global/spine.md">spine</a>. Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Six-word,
+100-word, chapter arc, narrative prose, objectives recap, and an
+explicit pre-hook to the next chapter
+(<code>10-best-practices</code>).</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Check the answer; gate the act.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su 5
+varianti. <strong>Continua e chiude l&#39;asse imperativo-rivolto-al-clinico
+aperto da ch. 08</strong> (<em>&quot;Structure the ask; check the
+answer.&quot;</em>). La struttura a due clausole con punto e virgola della
+serie è preservata (01 <em>&quot;Programs follow rules; learners find
+them.&quot;</em>, 02 <em>&quot;Draw the line; count the cost.&quot;</em>, 03 <em>&quot;Same
+data; three algorithms, three boundaries.&quot;</em>, 04 <em>&quot;Decisions cost
+data; hold the test.&quot;</em>, 05 <em>&quot;Stack logistic units; descent finds
+weights.&quot;</em>, 06 <em>&quot;Match the structure; share the weights.&quot;</em>,
+07 <em>&quot;Every token attends every; pre-train, fine-tune.&quot;</em>, 08
+<em>&quot;Structure the ask; check the answer.&quot;</em>). <strong>Il pivot
+lessicale è la coppia <em>check ↔︎ act</em></strong> — già piantata nella
+chiusura di ch. 08 (<em>&quot;The box has not changed, again. But now it can
+act.&quot;</em>) e ora resa esplicita come <em>asse semantico del trust
+boundary</em>. La prima clausola <strong>eredita per intero</strong> la
+seconda di ch. 08: <em>check the answer</em> è il <em>check</em> che ch.
+09 deve <em>spazializzare</em>. La seconda clausola, <em>gate the
+act</em>, è il <strong>nuovo verbo del capitolo</strong> in forma
+operativa — <em>gate</em> non è &quot;rallenta&quot;, non è &quot;rivedi&quot;, non è
+&quot;approva&quot;: è <em>piazza la porta</em>, un atto <strong>spaziale</strong>
+di trust engineering. <em>Act</em> è scelto in opposizione frontale a
+<em>answer</em>: una risposta (ch. 08) si legge prima di usarla; un atto
+(ch. 09) ha già abbandonato il sistema quando lo leggi. <strong>Codifica
+Obj. 2 e Obj. 3</strong> (gating + placement basato su reversibilità),
+non Obj. 1 (i tre ingredienti — <em>tools</em>, <em>loop</em>,
+<em>decision points</em> — sono <em>definizione</em>, non
+<em>pratica</em>; la definizione non sta mai nei sei-parole della
+serie). Anti-pattern evitati: <em>&quot;AI agents will act without you&quot;</em>
+(catastrofico, sbaglia il payoff — non è &quot;l&#39;IA ti scavalca&quot;, è
+&quot;l&#39;ingegnere decide dove mettere la guardia&quot;), <em>&quot;Tools, loops,
+decision points&quot;</em> (descrittivo invece di prescrittivo, e
+<em>jargony</em>), <em>&quot;Reversible or human-in-the-loop&quot;</em>
+(tecnicamente preciso ma cerebrale e <em>ricetta</em>, non
+<em>imperativo</em>), <em>&quot;Where it acts, ask first&quot;</em> (più debole su
+Obj. 3: il <em>first</em> non implica il <em>gate</em> spaziale).
+<strong>Eco strutturale con la spine</strong>: il sei-parole del corso è
+<em>&quot;Understand the machine before trusting it.&quot;</em> — <em>understand →
+trust</em> è la sequenza globale; <em>check → gate</em> è la sua
+<strong>forma locale per gli agenti</strong>, dove <em>check</em> è
+&quot;capisco l&#39;output&quot; e <em>gate</em> è &quot;decido dove fidarmi che agisca&quot;.
+Il capitolo 09 è il <strong>primo</strong> in cui la decisione di
+<em>fidarsi</em> assume una forma <strong>spaziale</strong> (un punto in
+un grafo) anziché temporale (un&#39;ispezione prima dell&#39;uso).</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>Wednesday afternoon, three days into the trauma audit. The senior
+showed Elena an agent: search PubMed for delirium-screening guidelines,
+summarise three papers, draft a protocol, email it to the PI. Elena set
+the four steps and went for tea. The PI replied before she had returned.
+She had not read the draft. Reading had been the trust gate on Monday;
+somewhere between <em>draft</em> and <em>send</em>, the trust gate had
+been nowhere. She paused the agent and named the missing test: a step is
+dangerous when it is both irreversible and unread. She placed one gate,
+only before sending the email.</p>
+<p><em>Struttura:</em> Bing = il <em>Wednesday afternoon</em> annunciato
+dal pre-hook di ch. 08 arriva — la stessa scena: senior,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+step (<em>search → summarise → draft → email</em>), Workflow W. Elena,
+<em>fiduciosa per analogia con ch. 08</em>, configura e si allontana |
+Bang = <em>the PI replied before she had returned</em> — il violazione
+operativa dell&#39;invariante <em>&quot;every output reaches a human before it
+becomes anything&quot;</em> del chat (ch. 08). Una sola frase, <em>she had
+not read the draft</em>, contiene la rottura: il <em>check</em> di ch.
+08 si è dimostrato <strong>non sufficiente</strong> quando il flusso non
+passa più per gli occhi del clinico. Il <em>trust gate had been
+nowhere</em> nomina lo spazio di errore (Obj. 2/3) | Bongo = doppio
+movimento: (a) <em>named the missing test</em> — <em>a step is dangerous
+when it is both irreversible and unread</em> (la formulazione operativa
+di Obj. 2: dangerous-by-default
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≡</mo><annotation encoding="application/x-tex">\equiv</annotation></semantics></math>
+irreversibile
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∧</mi><annotation encoding="application/x-tex">\wedge</annotation></semantics></math>
+no-HITL); (b) <em>placed one gate, only before sending the email</em> —
+la placement di Obj. 3, <strong>una sola guardia</strong>, <strong>solo
+dove la reversibilità fallisce</strong>. La parola <em>placed</em> (non
+<em>added</em>, non <em>built</em>) è scelta: il gate non si
+<em>costruisce</em>, si <em>colloca</em> — è una decisione di trust
+engineering, non una decisione di ingegneria software. La chiusura cade
+su <em>sending</em> (gerundio): l&#39;atto è l&#39;atto, non l&#39;email; il gate
+sta <em>davanti all&#39;azione</em>, non <em>davanti all&#39;oggetto</em>.
+(Verificato
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+parole esatte.)</p>
+<h2 id="chapter-arc--hook--challenge--resolution--payoff">Chapter arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio operativo / continuità Elena</td>
+<td><em>Wednesday afternoon, three days into the trauma audit of ch.
+08.</em> The senior pops in with what he calls &quot;the new toy&quot;: the same
+ChatGPT Elena spent Monday wrestling with, now configured to
+<strong>search the web</strong>, <strong>write files</strong>, and
+<strong>send mail</strong> on its own. He demonstrates on a small
+follow-up: a delirium-screening protocol the PI has been asking about.
+Four steps — <em>fetch the latest guidelines</em>, <em>summarise three
+papers</em>, <em>draft a one-page protocol</em>, <em>email it to the
+PI</em>. Elena sets it up and goes for tea. By the time she returns, the
+PI&#39;s <em>&quot;Thanks, looks good&quot;</em> is already in her inbox. She had not
+read the draft. ChatGPT, on Monday, had answered. This <em>had
+done</em>.</td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto</td>
+<td>Three operational questions in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>15</mn><mo>′</mo></msup><annotation encoding="application/x-tex">15&#39;</annotation></semantics></math>:
+<strong>(i)</strong> <em>What was added</em> between the chat of ch. 08
+and the agent of ch. 09 that made the email leave the building without
+Elena reading it? <strong>(ii)</strong> <em>Which actions</em> in a
+multi-step workflow are <em>safe by default</em> for the agent to
+perform on its own, and which are <em>dangerous by default</em>?
+<strong>(iii)</strong> <em>Where, exactly,</em> in a four-step chain,
+does the trust gate go — not everywhere (the agent becomes a
+slower-than-manual chat), not nowhere (the PI gets an unread email), but
+<em>exactly where reversibility fails</em>? The chapter&#39;s promise: by
+the end of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>15</mn><mo>′</mo></msup><annotation encoding="application/x-tex">15&#39;</annotation></semantics></math>,
+Elena (and the class) can label any agent-workflow&#39;s steps with one of
+<em>four interaction modes</em>, mark each step&#39;s <em>reversibility</em>
+and <em>human-in-the-loop</em> status on a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+grid, and <strong>place a single gate</strong> in the right place — and
+justify it with one sentence.</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta</td>
+<td><strong>(i) Three ingredients name the difference.</strong>
+<em>Tools</em> = the typed capabilities the model can call (web search,
+file write, mail client, calculator, API endpoint). <em>Loop</em> = the
+policy that, after every model reply, picks the next tool to invoke or
+stops. <em>Decision points</em> = moments in the loop at which the agent
+enters one of four <strong>interaction modes</strong>: <em>autonomous
+search</em> (gathers information on its own, no human prompt), <em>ask
+for interaction</em> (stops and asks the human a disambiguating
+question), <em>ask for sharing</em> (asks the human for a credential, an
+access, a resource), <em>do stuff</em> (performs an action with external
+effect). The operational consequence: in a chat-LLM, <em>every output
+reaches a human before it becomes an action</em>; in an agent, <em>some
+outputs become actions without a human reading them first</em> — and
+that is the whole engineering problem of the chapter. <strong>(ii) Two
+axes draw the trust boundary.</strong> <em>Reversibility</em> (Y/N): can
+the action be undone in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>
+seconds by closing a tab, deleting a file, or rolling back a draft?
+<em>Human-in-the-loop</em> (Y/N): did a human read the agent&#39;s reasoning
+<strong>before</strong> the action happened? The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+grid has three safe-by-default quadrants — <em>reversible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∧</mi><annotation encoding="application/x-tex">\wedge</annotation></semantics></math>
+HITL</em>, <em>reversible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∧</mi><annotation encoding="application/x-tex">\wedge</annotation></semantics></math>
+no-HITL</em>, <em>irreversible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∧</mi><annotation encoding="application/x-tex">\wedge</annotation></semantics></math>
+HITL</em> — and exactly one <strong>dangerous-by-default</strong>
+quadrant: <em>irreversible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∧</mi><annotation encoding="application/x-tex">\wedge</annotation></semantics></math>
+no-HITL</em>. The rule, in one sentence: <em>a step is safe by default
+if it is reversible <strong>or</strong> human-in-the-loop</em>.
+<strong>(iii) The placement is a single rule applied to a single
+workflow.</strong> Run <strong>Workflow W</strong> — <em>(1) search
+PubMed; (2) download three papers + summarise; (3) draft a protocol; (4)
+email the PI</em> — through the test. Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>:
+reversible (the query has no external effect; a search log can be
+discarded). Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>:
+reversible (PDFs and a summary live on disk, deletable). Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>:
+reversible (a draft is a file). Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>:
+<strong>irreversible</strong> the moment the SMTP socket closes — no
+follow-up email <em>undoes</em> a sent message; an apology is not a
+rollback. The rule says: <strong>one gate, before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></strong>.
+Not three (the agent stops being faster than manual work). Not zero (the
+PI gets an unread email). <em>Exactly</em> one — <em>exactly</em> there.
+The agent runs steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+on its own, fast; before <em>do-stuff</em>, it pauses, renders the email
+body, and waits for Elena to read it. The check of ch. 08 is back in the
+loop — but only where reading matters.</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta</td>
+<td>An agent is not &quot;smarter than a chat-LLM&quot;; it is a chat-LLM with the
+<strong>ability to act</strong>. The clinician&#39;s job is no longer to
+read <em>every</em> output — that does not scale to four-step workflows,
+and that is the entire reason agents exist — but to <strong>place the
+guard</strong> where reversibility fails. The operational rule: <em>ask
+before any irreversible action</em>. One sentence, derived from one
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-second
+test, that survives any new tool added to the kit tomorrow (a database
+write, a calendar create, a payment, a clinical-system update). Two days
+separated the Monday of ch. 08 from the Wednesday of ch. 09. The
+discipline did not change: <strong>trust is calibrated, not
+assumed</strong>. The <em>unit</em> of trust did change: on Monday it
+was a <em>read</em> (temporal — <em>I check the output before I use
+it</em>); on Wednesday it is a <em>gate</em> (spatial — <em>I place the
+guard where the action becomes irreversible</em>). For the first time in
+the course, the clinician&#39;s role is <strong>architectural</strong>, not
+interpretive: she <em>designs</em> where the agent may run on its own
+and where it must pause for her. The chapter title is <em>Agents</em>;
+the chapter is, in fact, about <strong>trust boundaries</strong>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>By Wednesday afternoon of the trauma-audit week the rhythm was set:
+Elena had her
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>-slot
+prompt, her API call, her CSV of <em>trauma</em> / <em>non-trauma</em>
+labels filling up letter by letter. The discipline of ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+had become almost mechanical — the seven slots, the competence rule for
+the two letters she would not delegate, the token budget for the rest.
+She was on her way to a quick coffee when the senior caught her in the
+corridor with that particular smile he had when he wanted to show a new
+tool.</p>
+<p><em>&quot;Have you seen the new toy?&quot;</em> he said.</p>
+<p>It looked, at first, like the same chat window she had been using all
+morning. Same input box, same model, same conversational tone. He
+typed:</p>
+<blockquote>
+<p><em>&quot;Find the latest delirium-screening guidelines published in the
+last
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+years on PubMed. Pick the three most-cited. Summarise their inclusion
+criteria into a one-page table. Draft a one-page audit protocol for our
+ward based on the summary. Email the protocol to Dr. R. for
+review.&quot;</em></p>
+</blockquote>
+<p>Then he pressed Enter — and instead of one paragraph of text, the
+model said: <em>&quot;I&#39;ll start by searching PubMed.&quot;</em> A small status
+indicator spun. A line appeared: <em>Tool called:
+web.search(query=&quot;delirium screening guidelines 2021..2026
+PubMed&quot;)</em>. The model returned a list of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+results, picked three by citation count, said <em>&quot;I&#39;ll download them
+now&quot;</em>, and a second line appeared: <em>Tool called:
+web.fetch(url=...)</em> — three times. Then <em>&quot;Summarising&quot;</em>, and
+a one-page table appeared on screen. Then <em>&quot;Drafting the
+protocol&quot;</em>, and a one-page document appeared on screen. Then
+<em>&quot;Sending the email to Dr. R.&quot;</em>, and a fourth tool call: <em>Tool
+called: mail.send(to=&quot;r@...&quot;, subject=...)</em>. Within
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+seconds the model returned: <em>&quot;Done. The protocol has been emailed to
+Dr. R.&quot;</em></p>
+<p>The senior turned to Elena, pleased.</p>
+<p><em>&quot;This,&quot;</em> he said, <em>&quot;is the agent. Same chat-LLM. But now
+it has tools — a web search, a file writer, a mail client — and a small
+loop around it: after every reply, the model decides which tool to call
+next, or whether to stop.&quot;</em> He pointed at the four small tool-call
+lines on the screen. <em>&quot;Those four were the loop. The model picked
+them itself.&quot;</em></p>
+<p>Elena watched the email arrive — <em>delivered</em> — in his inbox
+copy. <em>&quot;He&#39;ll have it on his phone now,&quot;</em> the senior said.</p>
+<p><em>&quot;And what if it had picked something wrong?&quot;</em> Elena
+asked.</p>
+<p>The senior shrugged. <em>&quot;Then the email would still have left. Try
+it.&quot;</em></p>
+<p>She did. Back at her desk, she opened the same agent on a different
+small task she had been meaning to do — a follow-up on the same
+delirium-screening question, but for her own ward. She typed the same
+kind of four-step request:</p>
+<blockquote>
+<p><em>&quot;Search for the most recent delirium-screening guidelines on
+PubMed. Pick three. Summarise. Draft a one-page audit protocol. Email it
+to my PI, with the subject &#39;Delirium screening — draft protocol for
+review&#39;.&quot;</em></p>
+</blockquote>
+<p>She pressed Enter. The status indicator spun. <em>I&#39;ll start by
+searching PubMed.</em> She watched the first tool call land, glanced at
+her watch, and stood up to refill her tea. By the time she sat back
+down, the model had said <em>Done</em> and the email-sent confirmation
+was on her screen. So was a reply from the PI: <em>&quot;Thanks, looks good —
+will read tonight.&quot;</em></p>
+<p>She stared at it for a long minute.</p>
+<p>The PI had thanked her. For a protocol she had not written. Drafted
+from papers she had not read. Sent in an email body she had not seen.
+The thread now lived in her PI&#39;s inbox, half-read on a phone somewhere
+in the hospital. <em>She had not been on the path.</em></p>
+<p>It was not, she realised, that the model had done anything
+<em>wrong</em>. The protocol, when she opened it, was perfectly
+reasonable. The summary was accurate. The email was professional.
+<em>Nothing in the chain had failed</em>. What had failed was something
+she did not have a word for yet — the path of trust had no human on it,
+and she had only noticed this <em>after</em> the irreversible step.</p>
+<p>She paused the agent and started to think.</p>
+<p>In a chat-LLM, she said to herself, <em>every output reaches me
+before it becomes anything</em>. The chat says <em>&quot;the patient seems to
+have a fragility fracture&quot;</em>; I read it; I decide whether to record
+that, ignore it, or push back. Reading <strong>is</strong> the trust
+gate. It happens, by default, between every output and any action that
+uses it. On Monday she had spent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>
+minutes per letter precisely because <em>every</em> output had passed
+through her eyes; <em>that was the friction, and that was the
+safety.</em></p>
+<p>In an agent, some outputs <em>become actions</em> without anyone
+reading them first. The model&#39;s reply <em>&quot;I&#39;ll send the email now&quot;</em>
+is not a sentence she reads; it is a tool call she sees flash by.
+<em>Reading is no longer the gate by default — because there is no
+default place for it to happen.</em> The trust gate, for the agent, is
+<em>somewhere she has to place</em>. Not somewhere that <em>exists</em>
+because of the medium.</p>
+<p>So where?</p>
+<p>Not everywhere. She tested that mentally: if she gated <em>every</em>
+tool call, the agent would pause four times in a four-step workflow, and
+she would be back to clicking through pages of paragraphs the way she
+did on Monday — except slower, because each pause would also wait for
+her to come back from tea. <em>That defeats the entire reason agents
+exist.</em> If you want a human reading every step, use a chat-LLM.
+Agents are the thing you reach for <em>when the workflow has steps you
+don&#39;t need to read.</em></p>
+<p>Not nowhere. She had just tried that, and the PI was reading a
+protocol she hadn&#39;t seen.</p>
+<p>The right answer, she realised, had a <em>shape</em>. Some steps in
+the workflow could safely run without her — and <em>some</em> steps
+could not. The work was to tell them apart. She tried out a test.</p>
+<p><em>A step is safe to run without me if I can undo it cheaply.</em>
+Searching PubMed: a query has no external effect — even the search
+history can be cleared in a tab. Downloading three papers: the PDFs live
+on her disk; she can delete them in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+seconds. Drafting the protocol: a file on her disk; same. Sending the
+email: <em>this</em> she could not undo. No second email &quot;recalls&quot; the
+first; an <em>&quot;apologies, please ignore&quot;</em> is a new message, not an
+erasure. The PI had already read part of it on his phone. <em>Send was
+the line.</em></p>
+<p>She wrote down the test, in two pieces.</p>
+<p><strong>Reversibility.</strong> Can the action be undone in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>
+seconds by closing a tab, deleting a file, or rolling back a draft? If
+yes, the agent can run it on its own — the cost of a wrong run is
+<em>cheap</em>. If no, the action <em>leaves the system she
+controls</em> — and once outside, it cannot be unmade by her.</p>
+<p><strong>Human-in-the-loop.</strong> Did a human read the agent&#39;s
+reasoning <em>before</em> the action happened? Reading after is
+<em>post-mortem</em>; reading before is a <em>gate</em>.</p>
+<p>A step is <em>safe by default</em> — she could let the agent run it
+on its own — if it is <strong>reversible</strong> <em>or</em>
+<strong>human-in-the-loop</strong>. A step is <em>dangerous by
+default</em> only when it is <em>neither</em>: irreversible and unread.
+That single quadrant of a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+grid was the answer to <em>where the gate goes</em>. Not three steps;
+not zero steps. <em>Exactly the steps in the dangerous
+quadrant.</em></p>
+<p>She applied it to her workflow. Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+<em>search</em> — reversible, no HITL — <em>safe by default</em> (the
+agent may run it). Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+<em>download + summarise</em> — reversible (file artefact), no HITL —
+<em>safe by default</em>. Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>,
+<em>draft a protocol</em> — reversible (a file), no HITL — <em>safe by
+default</em>. Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>,
+<em>email the PI</em> — irreversible, no HITL — <em>dangerous by
+default</em>. <strong>One gate. Before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>.
+Only there.</strong></p>
+<p>She re-configured the agent. Three steps autonomous, fast, the way
+the senior had advertised. Before <em>do-stuff</em> — before any tool
+call labelled <em>mail.send</em>, or <em>db.write</em>, or
+<em>calendar.create</em>, or anything that wrote to a system outside her
+laptop — the agent paused, rendered the action it was about to take (the
+full email body; the SQL statement; the calendar invite), and waited.
+She read; she edited where she wanted; she clicked <em>send</em>. The
+agent resumed.</p>
+<p>The email to the PI, this time, was an email Elena had read.</p>
+<p>She did not, she noticed, work <em>slower</em>. The first three steps
+still ran on their own. <em>She had not slowed the agent down; she had
+decided which work waited for her.</em> The reversible work — search,
+download, summary, draft — kept going at agent speed. The irreversible
+work waited at her speed. The rule that produced the partition had been
+written in a single sentence: <em>ask before any irreversible
+action.</em> It was operational. It did not depend on <em>what</em> the
+agent had been built to do; it depended on <em>what each step would do
+to the world.</em> Tomorrow the agent might be configured to write
+directly to the hospital&#39;s clinical-records system. The same rule would
+still tell her where to put the gate.</p>
+<p>She wrote one more sentence in her notebook, the one she would
+remember the chapter by: <em>An agent is not smarter than a chat-LLM; it
+is a chat-LLM that can act. The engineering question is which actions to
+gate. Reversibility is the test. The gate goes exactly where
+reversibility fails.</em></p>
+<p>She glanced up at the four interaction modes the senior had named on
+the corridor. <em>Autonomous search</em> — that was steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+the agent gathering information. <em>Do stuff</em> — that was step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>,
+the agent doing something with an external effect. <em>Ask for
+interaction</em> — a mode she had not used yet, but could imagine for a
+step like <em>&quot;which of these three guidelines applies to your
+ward?&quot;</em>. <em>Ask for sharing</em> — a mode that would come if the
+agent ever needed her hospital&#39;s database login. Each mode was a
+<em>different relationship between the agent and her trust</em>. The new
+discipline — the discipline of ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+— was deciding <em>which mode each step took</em>, <em>whether that mode
+crossed the trust boundary</em>, and <em>placing the gate at the
+crossing</em>.</p>
+<p>She did not change a line of code. She did not learn a framework. She
+did not write a planner. She wrote one sentence (&quot;<em>ask before any
+irreversible action</em>&quot;) and applied it once. That, the chapter was
+about.</p>
+<p>By the end of the afternoon she had drafted a second protocol with
+the agent — <em>with</em> a gate before send — and the PI had replied,
+this time on a thing she had read. <em>&quot;Looks good&quot;</em>, again, except
+now the <em>&quot;good&quot;</em> was about her judgement.</p>
+<p>The box had not changed, again. But now she had decided what it was
+allowed to do.</p>
+<h2 id="versione-didattica-objectives-recap">Versione didattica
+(objectives recap)</h2>
+<p>Gli obiettivi formali del capitolo vivono in <a href="objectives.md">objectives.md</a>. In sintesi, il payoff narrativo
+li ricalca: <strong>distinguish</strong> un <em>agent</em> da un
+<em>chat-LLM</em> nominandone i tre ingredienti operativi — <strong>(a)
+tools</strong> invocabili (web search, file write, mail client,
+calculator, API endpoint), <strong>(b) control loop</strong> che dopo
+ogni risposta del modello sceglie <em>quale tool chiamare o se
+fermarsi</em>, <strong>(c) decision points</strong> in cui il loop entra
+in una delle quattro <strong>interaction modes</strong> (<em>autonomous
+search</em> / <em>ask for interaction</em> / <em>ask for sharing</em> /
+<em>do stuff</em>); enunciare la conseguenza operativa: nel chat
+<em>every output reaches a human before it becomes an action</em>,
+nell&#39;agent <em>some outputs become actions without a human reading them
+first</em> (Obj. 1); <strong>map</strong> le quattro modes ai due assi
+del <strong>trust boundary</strong> — <strong>(i) reversibility</strong>
+(può essere disfatta in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>
+secondi chiudendo una tab o cancellando un file?) e <strong>(ii)
+human-in-the-loop</strong> (un umano ha letto il reasoning dell&#39;agente
+<em>prima</em> dell&#39;azione?) — con la regola operativa: <em>safe by
+default
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≡</mo><annotation encoding="application/x-tex">\equiv</annotation></semantics></math>
+reversible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∨</mi><annotation encoding="application/x-tex">\vee</annotation></semantics></math>
+HITL</em>; <em>dangerous by default
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≡</mo><annotation encoding="application/x-tex">\equiv</annotation></semantics></math>
+irreversible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∧</mi><annotation encoding="application/x-tex">\wedge</annotation></semantics></math>
+no-HITL</em> (Obj. 2); <strong>place</strong> la trust boundary in un
+mini-workflow di ricerca clinica (Workflow W: <em>search → summarise →
+draft → email</em>), decidendo per ogni step se l&#39;agente può agire
+autonomamente, deve chiedere, deve condividere, o deve restituire al
+clinico — e <em>giustificare il placement</em> con la singola regola
+<em>ask before any irreversible action</em> (Obj. 3). La narrativa
+attraversa esattamente questi tre passaggi nello stesso ordine, sullo
+stesso Workflow W del sommativo — la versione narrativa qui sopra e
+l&#39;esercizio in <a href="objectives.md">objectives.md</a> condividono
+<em>deliberatamente</em> il caso clinico (<em>delirium-screening
+audit</em>), in modo che la prosa, gli obiettivi e il sommativo lavorino
+in coppia.</p>
+<h2 id="pre-hook--10-best-practices-for-ml-projects">Pre-hook → 10 Best
+practices for ML projects</h2>
+<blockquote>
+<p>By Friday the trauma audit was on the senior&#39;s desk, the
+delirium-screening protocol was on the PI&#39;s, and Elena had installed
+exactly <em>one</em> gate in two different workflows — both before
+<em>send</em>, none anywhere else. The toolkit was finally complete. In
+nine chapters she had walked through ten ingredients: a clinical
+question expressed as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>/</mi><mi>P</mi><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">T/P/E</annotation></semantics></math>,
+a classifier and its decision boundary, three different boundary shapes
+for the same data, the validation discipline that keeps a model honest,
+a deep network as stacked logistic units, a CNN that matches the
+structure of the input, a Transformer that attends every token to every
+other, a structured prompt with a competence rule, and now an agent with
+a gate where reversibility fails. The unit of the question had moved
+three times in one course. On Monday of ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+the unit was a <em>prompt</em> (the seven slots). On Wednesday of ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+the unit was a <em>gate</em> (the one placement). On Monday of ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+— three days from now — the unit will become a <em>project</em>: a thing
+that lives for <em>months</em>, not minutes; that touches four
+stakeholders, not one PI; that ends in a publication, not an audit row.
+Elena&#39;s first real one — a hospital-wide audit on sepsis recognition in
+the ED — starts Monday. <em>&quot;Most ML projects, the same five
+places,&quot;</em> the senior had said when she told him about it. He did not
+name them. He said, <em>&quot;That&#39;s the next chapter.&quot;</em> The next chapter
+is what the same <em>five</em> are, and — operationally, with the same
+discipline that placed the gate on Wednesday — how not to fall into
+them.</p>
+</blockquote>
+<p><em>Glossa:</em> il pre-hook <strong>non ritira</strong> nulla di ch.
+09 — la regola operativa (<em>ask before any irreversible action</em>),
+il test della reversibilità
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+secondi), il placement <em>exactly one gate where reversibility
+fails</em>, <em>restano</em> e sono nominati come <em>acquisiti</em>
+(<em>&quot;both before send, none anywhere else&quot;</em> è il <em>fatto</em>
+della disciplina ormai installata). <strong>Riformula la <em>unit of the
+question</em> in scala</strong>: ch. 08 = <em>prompt</em>, ch. 09 =
+<em>gate</em>, ch. 10 = <em>project</em>. È la <strong>terza
+espansione</strong> della stessa idea (calibrare la fiducia,
+posizionarla, ora progettarla per un tempo lungo), e codifica
+esplicitamente la traiettoria della spine globale <em>understand →
+evaluate → use</em>: dopo ch. 09 il <em>use</em> è &quot;uso bene un singolo
+tool&quot;; dopo ch. 10 sarà &quot;porto a casa un progetto intero senza
+rompermi&quot;. <strong>Cliff-hanger lessicali piantati per ch. 10</strong>,
+ognuno sul registro che il capitolo finale userà:</p>
+<ul>
+<li><em>project</em> (la <em>nuova unità</em>, distinta da
+<em>prompt</em> di ch. 08 e da <em>gate</em> di ch. 09): un&#39;entità con
+<em>durata</em>, <em>stakeholder</em>, <em>deliverable</em> (l&#39;audit
+ospedaliero sulla sepsi è il nuovo <em>Workflow W</em>);</li>
+<li><em>five places</em> (la <strong>numerologia preannunciata</strong>,
+à la <em>&quot;five common pitfalls&quot;</em> — è esattamente la cifra che la
+slide finale del corso userà): tenuta deliberatamente <em>non
+rivelata</em> nel pre-hook, perché il <em>cosa sono</em> è la materia di
+ch. 10;</li>
+<li><em>Monday morning</em> / <em>months</em> / <em>stakeholders</em> /
+<em>publication</em> — il <strong>registro temporale lungo</strong> che
+ch. 10 abita (ch. 09 era <em>Wednesday afternoon</em>, ch. 08 era
+<em>Monday morning</em> della stessa settimana; ch. 10 è <em>Monday
+morning</em> di una settimana che diventa un <em>trimestre</em>);</li>
+<li><em>trap</em> / <em>fall into</em> (non ancora nominati
+esplicitamente nel pre-hook, lasciati al senior che dice <em>&quot;the same
+five places&quot;</em> — il lessico <em>trap/fall</em> è quello del cliché
+<em>&quot;common pitfalls of ML projects&quot;</em> che ch. 10 dovrà riconoscere e
+operazionalizzare).</li>
+</ul>
+<p><strong>Due eco strutturali ed espliciti col resto della
+serie:</strong></p>
+<ul>
+<li>la frase di chiusura <strong>&quot;The box has not changed, again. But
+now she had decided what it was allowed to do.&quot;</strong> chiude la
+sequenza di chiusure box-non-changed di ch. 05 (<em>&quot;only the rule of
+repetition does&quot;</em>), ch. 06 (<em>&quot;only the rules of
+repetition&quot;</em>), ch. 07 (<em>&quot;the rule of repetition had changed; this
+time it had dropped entirely&quot;</em>), ch. 08 (<em>&quot;The box has not
+changed, again. But now it can act.&quot;</em>) — qui per la prima volta il
+pivot non è sul <em>modello</em> (cosa fa la scatola) ma sulla
+<em>clinica</em> (cosa lei decide). È il <strong>completamento
+dell&#39;asse</strong> del corso: <em>understand → trust</em> della spine si
+chiude in <em>decidere cosa è permesso</em> della clinica, <em>non</em>
+in <em>capire meglio il modello</em>. La transizione cap 09 → cap 10 è
+quindi la transizione <em>dalla decisione architetturale di un singolo
+workflow</em> (gate) <em>alla disciplina operativa di un progetto
+intero</em> (best practices). Era il pivot pedagogico mancante;</li>
+<li>la sequenza temporale <strong>Monday (ch. 08) → Wednesday (ch. 09) →
+Monday (ch. 10)</strong> è la <strong>prima settimana di lavoro reale di
+Elena</strong> nel corso, con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+giornate di calendario coperte (Mon trauma audit → Wed agent demo → Fri
+trauma + delirium delivered → Mon sepsis project start). È deliberato:
+l&#39;overview è entrata in un <em>calendario operativo</em>, non più in una
+sequenza espositiva; ch. 10 ne è il punto di arrivo (il primo
+<em>progetto</em>, non il primo <em>task</em>). La spine globale
+<em>&quot;trusting it where the evidence holds, overriding it where it
+doesn&#39;t&quot;</em> trova qui la sua <strong>scala temporale propria</strong>:
+i progetti vivono per mesi, le evidenze vivono per anni, le decisioni di
+fidarsi/scavalcare si distribuiscono nel tempo lungo.</li>
+</ul>
+<p>Ponte deterministico a <code>10-best-practices</code> (per
+<code>manifest.next_enabled</code> il capitolo non è ancora
+<em>enabled</em> — entrambi ch. 09 e ch. 10 hanno
+<code>include: false</code> — ma l&#39;ordine naturale del corso è esplicito
+nello spine e in tutti i capitoli precedenti, e questa convenzione è
+ormai consolidata da ch. 05 in poi).</p>
+</body>
+</html>

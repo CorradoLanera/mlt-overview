@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 04 — Critique a mis-gated agent: the trial-coordination
+agent</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-04--critique-a-mis-gated-agent-the-trial-coordination-agent">Item
+04 — Critique a mis-gated agent: the trial-coordination agent</h1>
+<p><strong>ID</strong>: IB-09-agents-04 <strong>Learning
+objective</strong>: Synthesise the chapter&#39;s three objectives on a
+single colleague-built agent design that <em>appears</em> responsible
+but applies the wrong axis to gate placement. Identify (i) which axis
+the colleague has substituted for the chapter&#39;s <em>reversibility</em>
+axis (Obj. 2), (ii) which steps are <em>safe-by-default</em> and which
+<em>dangerous-by-default</em> in the colleague&#39;s design (Obj. 1 + Obj.
+2), and (iii) the <em>corrected</em> gate placement with one-sentence
+justifications citing the chapter&#39;s operational rule (Obj. 3).</p>
+<p><strong>Category</strong>: Argumentation/evaluation
+<strong>Type</strong>: argomentativa (open-format argumentative)
+<strong>Difficulty</strong>: high <strong>Chapter</strong>:
+09-agents</p>
+<h2 id="question">Question</h2>
+<p>A colleague on your team has built a <strong>clinical-trial
+coordination agent</strong> and is presenting the design at next week&#39;s
+lab meeting. Here is the colleague&#39;s setup.</p>
+<p><strong>Workflow</strong> (runs every Monday at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>09</mn><mo>:</mo><mn>00</mn></mrow><annotation encoding="application/x-tex">09{:}00</annotation></semantics></math>,
+fully automated, no human reads any output between steps):</p>
+<ol type="1">
+<li><strong>Read</strong> the enrolled-patients list from the trial
+database.</li>
+<li><strong>Generate</strong> a weekly status report (text + tables) in
+memory.</li>
+<li><strong>Save</strong> the report as a PDF in the agent&#39;s local
+working directory on the team&#39;s analysis laptop,
+<strong>overwriting</strong> last week&#39;s file in the same directory.
+(The operating system keeps the previous version in the local Trash /
+Recycle Bin by default; restoring it is a two-click action.)</li>
+<li><strong>Send</strong> the PDF as an attachment via email to all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+centre coordinators of the multi-centre trial.</li>
+<li><strong>Update</strong> the patient-enrolment counter on the trial&#39;s
+<em>public registry website</em> — the public dashboard visible to any
+external visitor (the public, sponsors, regulators, journalists).</li>
+</ol>
+<p><strong>Colleague&#39;s safety reasoning, verbatim</strong>: <em>&quot;I&#39;ve
+designed this with safety in mind. I&#39;ve put a confirmation gate before
+step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>,
+because <strong>overwriting</strong> the previous week&#39;s PDF is
+destructive — if the new report is wrong, last week&#39;s data is gone. The
+other four steps run unattended; that&#39;s the whole point of using an
+agent.&quot;</em></p>
+<p><strong>Write a structured critique of this design</strong> (target
+length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>300</mn></mrow><annotation encoding="application/x-tex">\sim 300</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>500</mn><annotation encoding="application/x-tex">500</annotation></semantics></math>
+words). Your critique must contain <strong>three parts</strong>:</p>
+<p><strong>(1)</strong> <strong>Identify the conceptual error</strong>
+in the colleague&#39;s safety reasoning — name the <em>axis</em> the
+colleague is using to decide where gates go, and contrast it with the
+<em>axis</em> the chapter teaches. <em>(Obj. 2 — what the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+trust-boundary test measures, and what it does not.)</em></p>
+<p><strong>(2)</strong> <strong>Diagnose the operational
+consequences</strong> of the colleague&#39;s design — for <em>each</em> of
+the five steps, classify it as <em>safe-by-default</em> or
+<em>dangerous-by-default</em> by the chapter&#39;s rule, and explicitly
+identify (a) which step the colleague&#39;s design <strong>protects
+unnecessarily</strong> (over-gated), and (b) which steps it
+<strong>leaves exposed</strong> (under-gated). <em>(Obj. 1 — three
+ingredients of an agent and what &quot;do stuff&quot; mode does to the trust
+boundary.)</em></p>
+<p><strong>(3)</strong> <strong>Propose a corrected gate
+placement</strong>, with <strong>one sentence per gate</strong>
+justifying its position by citing the chapter&#39;s operational rule
+(<em>ask before any irreversible action</em>). State the number of gates
+you would keep, remove, and add. <em>(Obj. 3 — placement of the
+guard.)</em></p>
+<h2 id="expected-answer">Expected answer</h2>
+<p>A response that earns a passing mark on this item makes three
+argumentative moves, in this order.</p>
+<p><strong>(1) Conceptual error — the wrong axis.</strong> The colleague
+has substituted <strong>destructiveness</strong> (does this step delete
+or overwrite data?) for <strong>reversibility</strong> (can this action
+be undone in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>
+seconds by closing a tab, deleting a file, or rolling back a draft?).
+The chapter&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+grid has only two axes — <em>reversibility</em> and
+<em>human-in-the-loop</em> — and <em>destructiveness</em> appears on
+neither. The substitution is plausible because destructive operations
+<em>are one kind</em> of irreversible action (deleting an unrecoverable
+file is both destructive and irreversible), but the two axes are
+<em>not</em> the same: a step can be <em>destructive but reversible</em>
+(overwriting a file in a local working directory where the operating
+system keeps the previous version in the Trash / Recycle Bin — a
+&quot;rolling back a draft&quot; case at the OS level), and a step can be
+<em>non-destructive but irreversible</em> (sending an email — nothing is
+&quot;destroyed&quot;, yet the message cannot be recalled once notifications have
+fired). The colleague&#39;s reasoning works only for the small subset of
+cases where <em>destructiveness
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≡</mo><annotation encoding="application/x-tex">\equiv</annotation></semantics></math>
+irreversibility</em>; the chapter&#39;s rule covers the <em>full</em>
+operational space, including the case of <em>send</em> operations,
+<em>publish</em> operations, and <em>broadcast</em> operations, all of
+which can be irreversible without being destructive.</p>
+<p><strong>(2) Operational diagnosis — step by step.</strong></p>
+<ul>
+<li><strong>Step 1</strong> (DB read): <em>reversible</em> (a read
+leaves no external effect; the DB looks the same after as before),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>o</mi></mrow><annotation encoding="application/x-tex">no</annotation></semantics></math>-HITL
+→ <strong>safe-by-default</strong>. The colleague&#39;s design correctly
+leaves it unattended.</li>
+<li><strong>Step 2</strong> (in-memory generation): <em>reversible</em>
+(no external state changes),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>o</mi></mrow><annotation encoding="application/x-tex">no</annotation></semantics></math>-HITL
+→ <strong>safe-by-default</strong>. Correctly unattended.</li>
+<li><strong>Step 3</strong> (PDF overwrite in local working directory):
+<strong>reversible</strong> by the chapter&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-second
+test — the previous week&#39;s PDF goes to the laptop&#39;s local Trash /
+Recycle Bin when overwritten, and restoring it is a two-click action
+well within the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>-second
+window (exactly the kind of action the chapter&#39;s <em>&quot;rolling back a
+draft&quot;</em> example covers — the new write <em>looks</em> destructive
+but its effect can be <strong>rolled back</strong> at the
+operating-system level). The colleague&#39;s gate gates a step that is
+<strong>already safe-by-default</strong>; the gate is <strong>cosmetic
+and decelerative</strong> — it slows the agent without reducing risk.
+<strong>Over-gated</strong>.</li>
+<li><strong>Step 4</strong> (email to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+coordinators): <strong>irreversible</strong> — the email has already
+left the SMTP socket the moment it is sent; even where &quot;recall&quot; is
+supported, the notifications have pinged
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+phones and previews may have been read on mobile.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>o</mi></mrow><annotation encoding="application/x-tex">no</annotation></semantics></math>-HITL
+by design → <strong>dangerous-by-default</strong>. The colleague&#39;s
+design <strong>leaves this exposed</strong>. <em>Under-gated</em>.</li>
+<li><strong>Step 5</strong> (public registry update):
+<strong>irreversible</strong> in the strongest sense — the moment the
+counter updates on the <em>public</em> dashboard, <em>any external
+visitor</em> can see it (sponsors, regulators, journalists, the public).
+This is not just a write; it is a <em>broadcast to the world outside the
+trust boundary</em>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>o</mi></mrow><annotation encoding="application/x-tex">no</annotation></semantics></math>-HITL
+by design → <strong>dangerous-by-default</strong>. The colleague&#39;s
+design <strong>leaves this exposed</strong>, and at the highest stakes
+in the workflow. <em>Under-gated</em>.</li>
+</ul>
+<p>The colleague&#39;s design protects <em>exactly the wrong step</em> (step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>,
+which is safe-by-default) and leaves <em>exactly the wrong two
+steps</em> unattended (steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>,
+both dangerous-by-default). This is the operational consequence of the
+axis substitution in part (1).</p>
+<p><strong>(3) Corrected placement.</strong></p>
+<ul>
+<li><strong>Remove</strong> the gate before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+— <em>step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+is reversible by the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-second
+test (the previous PDF lives in the local Trash / Recycle Bin and is two
+clicks away to restore — the chapter&#39;s &quot;rolling back a draft&quot; case in OS
+form), and the chapter&#39;s rule asks for a gate where reversibility fails,
+not where data is overwritten.</em></li>
+<li><strong>Add</strong> a gate before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+— <em>email is irreversible the moment it leaves the SMTP socket; the
+chapter&#39;s rule <strong>ask before any irreversible action</strong>
+places the gate exactly here, so a human can read the report and the
+recipient list before
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+coordinators receive it.</em></li>
+<li><strong>Add</strong> a gate before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+— <em>a public-dashboard update cannot be un-published in any meaningful
+sense; this is the strongest irreversibility in the workflow (it crosses
+the trust boundary into the public world), and the gate is
+mandatory.</em></li>
+</ul>
+<p>Net:
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+gate removed,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+gates added</strong>, total
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+gates</strong> in the final design — both at the <em>do stuff</em>
+points that cross the trust boundary into the external world.</p>
+<p><strong>At excellent level</strong>, a response also makes a fourth
+argumentative move: the colleague&#39;s confusion is not just about
+<em>where the line goes</em> (placement) but about <em>what the line is
+for</em> (the trust boundary). The chapter teaches that the boundary
+marks where the agent&#39;s action <em>escapes the system the clinician
+controls</em> — and <em>escape</em>, not <em>destruction</em>, is the
+operational test. Email and public-registry updates escape; local file
+overwrites do not. A student who frames the critique in these terms has
+internalised the chapter&#39;s payoff: <em>an agent is not &quot;smarter than a
+chat-LLM&quot;; it is a chat-LLM with the ability to act — and the
+engineering question is which actions escape the trust
+boundary</em>.</p>
+<p>A typical wrong critique under-corrects: a student who <em>adds</em>
+gates to steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+but <em>does not remove</em> the gate from step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+has fixed the under-gating problem but has missed the over-gating
+critique — they have not internalised the <em>exactly where
+reversibility fails</em> discipline. Another typical wrong critique
+gates <em>every</em> step <em>&quot;to be doubly safe&quot;</em> (the
+<em>paralyzingly conservative</em> placement the chapter explicitly
+warns against), reproducing the cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>-to-cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+error in mirror form. Both miss the chapter&#39;s core: <em>gates go where
+reversibility fails, and only there</em>.</p>
+<h2 id="associated-rubric">Associated rubric</h2>
+<p><a href="../rubriche/rubrica_04_critique-mis-gated-agent.md">rubrica_04_critique-mis-gated-agent.md</a>
+— 3 criteria × 3 levels (Base / Good / Excellent).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

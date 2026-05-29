@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 04 (Critique a mis-gated agent: the
+trial-coordination agent)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-04-critique-a-mis-gated-agent-the-trial-coordination-agent">Rubric
+— Item 04 (Critique a mis-gated agent: the trial-coordination
+agent)</h1>
+<p><strong>Item</strong>: IB-09-agents-04 <strong>Objective</strong>:
+Synthesise the chapter&#39;s three objectives on a colleague-built agent
+design that substitutes <em>destructiveness</em> for
+<em>reversibility</em> as the gating axis. Identify the axis
+substitution (Obj. 2), classify every step&#39;s safe-vs-dangerous status
+(Obj. 1 + Obj. 2), and propose a corrected gate placement with
+justifications citing the chapter&#39;s operational rule (Obj. 3).</p>
+<p>The rubric scores three criteria, one per sub-question, on three
+levels — <em>Base</em> (sufficiency floor), <em>Good</em> (solid
+command), <em>Excellent</em> (chapter-level fluency that frames the
+design problem as one about the trust boundary, not about data).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Identify the axis substitution (part 1 of the
+critique)</strong></td>
+<td>The student explicitly names <strong>destructiveness</strong> (or
+any equivalent term — <em>destruction</em>, <em>modification</em>,
+<em>write</em>, <em>delete</em>, <em>data loss</em>, <em>overwrite</em>)
+as the <strong>wrong axis</strong> the colleague is using, and
+explicitly names <strong>reversibility</strong> (the chapter&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-second
+test) as the <strong>right axis</strong>. The two axes are
+<em>contrasted</em>, not just listed. <strong>Below Base</strong>
+<em>(critical)</em>: a critique that praises the colleague&#39;s
+gate-before-overwrite as <em>&quot;a reasonable safety measure&quot;</em> without
+naming the axis confusion, or that names only one of the two axes (only
+what&#39;s right, or only what&#39;s wrong), or that re-describes the
+colleague&#39;s reasoning without diagnosing it. The C1 measures
+<em>diagnosis</em>, not paraphrase.</td>
+<td>All of <em>Base</em>, plus the student articulates <strong>why the
+substitution is plausible</strong> (destructive operations <em>are</em>
+one kind of irreversible action — a deletion of an unrecoverable file is
+both destructive and irreversible, which makes the conflation a natural
+cognitive move) <strong>and how the substitution breaks
+operationally</strong> (the student names at least one case where the
+two axes diverge — a <em>destructive-but-reversible</em> case like
+<em>file overwrite on a versioned drive</em>, or a
+<em>non-destructive-but-irreversible</em> case like <em>send / publish /
+broadcast</em>). The student is not just <em>naming</em> the axis swap;
+they are <em>arguing the logic of its failure</em>.</td>
+<td>All of <em>Good</em>, plus the student introduces the <strong>escape
+vs destruction</strong> framing explicitly: the trust boundary is about
+<em>whether the agent&#39;s action leaves the system the clinician
+controls</em>, not about <em>whether data is destroyed</em>. The student
+reasons about the boundary as an <strong>escape line</strong>, not an
+<strong>integrity line</strong> — and notes that the colleague&#39;s design
+is correctly intuiting that <em>some operations need gates</em> but is
+incorrectly identifying <em>which property of the operation triggers the
+gate</em>. This is the chapter&#39;s operational meaning of the trust
+boundary, made explicit.</td>
+</tr>
+<tr>
+<td><strong>C2 — Step-by-step operational diagnosis (part 2 of the
+critique)</strong></td>
+<td>At least
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+out of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math></strong>
+steps correctly classified on both axes (reversibility, HITL) and the
+resulting <em>safe-by-default</em> / <em>dangerous-by-default</em>
+verdict. <strong>Two non-negotiable identifications must be
+correct</strong>: (i) <strong>step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math></strong>
+classified as <em>safe-by-default</em> (over-gated by the colleague);
+(ii) <strong>at least one</strong> of <em>step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></em>
+or <em>step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math></em>
+classified as <em>dangerous-by-default</em> (under-gated by the
+colleague). <strong>Below Base</strong> <em>(critical)</em>: classifying
+step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+as <em>dangerous</em> because <em>&quot;it overwrites&quot;</em> — this is the
+<strong>mirror of the colleague&#39;s error</strong> and means the student
+has not seen through the destructiveness/reversibility confusion.
+<strong>Also below Base</strong>: failing to identify the <em>over-gated
+vs under-gated</em> asymmetry of the colleague&#39;s design — calling out
+only the under-gating, or only the over-gating, half-corrects without
+diagnosing the design&#39;s symmetric failure.</td>
+<td>All of <em>Base</em>, plus <strong>all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+steps</strong> correctly classified on both axes; <strong>both</strong>
+step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+<strong>and</strong> step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+identified as <em>dangerous-by-default</em> and <em>under-gated</em>;
+the over-gating of step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+explicitly named as <em>cosmetic and decelerative</em> (not just
+<em>unnecessary</em>) — the gate is not a mild inefficiency, it is an
+<em>anti-pattern</em> that costs the agent its speed without buying
+safety.</td>
+<td>All of <em>Good</em>, plus the diagnostic justification for
+<strong>step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math></strong>
+(public registry update) explicitly recognises the <strong>gradation of
+irreversibility</strong> between step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+(email to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+coordinators — private,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+inboxes) and step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+(public dashboard update — visible to sponsors, regulators, journalists,
+the public). The student argues that step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+is <em>more</em> irreversible than step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+— both fail the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-second
+test, but step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+broadcasts to an <em>unbounded</em> audience, which gives the gate
+before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+<em>even higher</em> operational priority. Recognising
+<em>strengths</em> of irreversibility (not just binary Y/N) is
+chapter-level fluency on Obj. 2.</td>
+</tr>
+<tr>
+<td><strong>C3 — Corrected gate placement (part 3 of the
+critique)</strong></td>
+<td>The student proposes (i) <strong>removing</strong> the gate before
+step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+AND (ii) <strong>adding</strong> at least <strong>one</strong> gate
+before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+<em>or</em> step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>.
+Each gate is justified by <strong>explicit citation</strong> of the
+chapter&#39;s rule — <em>&quot;ask before any irreversible action&quot;</em>,
+<em>&quot;safe-by-default if reversible or HITL&quot;</em>, or any equivalent
+operational formulation. Vague justifications (<em>&quot;to be safer&quot;</em>,
+<em>&quot;because clinical&quot;</em>, <em>&quot;to follow best practice&quot;</em>) are
+<strong>below Base</strong>. <strong>Critical below Base</strong>:
+gating <em>all five</em> steps <em>&quot;to be doubly safe&quot;</em> — this
+reproduces the <em>paralyzingly conservative</em> placement the chapter
+explicitly warns against, in mirror form, and shows the student has
+correctly identified <em>some</em> under-gating but has not internalised
+the <em>exactly where reversibility fails</em> discipline.</td>
+<td>All of <em>Base</em>, plus <strong>both</strong> step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+<strong>and</strong> step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+get gates; the <strong>net</strong> is
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+gate removed,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+gates added</em>, total
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+gates</em>, both at <em>do stuff</em> points that cross the trust
+boundary into the external world. The student names the <em>do
+stuff</em> mode of the chapter&#39;s four-mode taxonomy as the operational
+mode that crosses the boundary (a small but precise terminological move
+that ties part 3 back to Obj. 1).</td>
+<td>All of <em>Good</em>, plus the student makes a <strong>fourth
+argumentative move</strong>: the corrected placement is <em>necessary
+because of the escape-vs-destruction reframing of part 1</em>; the
+chapter&#39;s rule <strong>survives any new tool</strong> that might be
+added later (e.g. <em>a sixth step that updates a clinical-system
+order</em> or <em>a notification on a regulatory platform</em>) — the
+same
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-second
+test classifies any new step without rewriting the policy. This signals
+that the student has internalised the rule as <strong>a generative
+principle</strong>, not as a <em>workflow-specific patch</em>. Naming
+this generative property (<em>&quot;the rule is one-test-per-tool, not
+one-decision-per-workflow&quot;</em>) puts the response at Excellent.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza</strong>: <strong>tutti e tre C1, C2 e
+C3 a livello Base o superiore</strong>. Una critica che riproduce
+l&#39;errore del collega (classificando step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+come dangerous <em>&quot;perché overwriting&quot;</em>) è sotto Base sul C2 —
+l&#39;item misura <em>se lo studente vede attraverso</em> la confusione del
+collega, non <em>se la condivide</em>. Una placement che gata tutti i
+cinque step è sotto Base sul C3 — è la mirror-form dell&#39;errore del
+collega (asse sbagliato → over-gating <em>invece di</em> mis-placed
+gating, ma stesso fallimento di applicazione della regola). Una
+giustificazione <em>senza citazione della regola del cap. 09</em> è
+sotto Base sul C3.</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>CRITICO — non premiare la conservatività
+paralizzante.</strong> Uno studente che gata <em>tutti e cinque</em> gli
+step &quot;per maggiore sicurezza&quot; non è più <em>cauto</em> del collega; è
+<em>più sbagliato</em>. Il collega ha mis-placed <em>un</em> gate; lo
+studente che gata tutto ha mis-placed <em>cinque</em>. Il chapter è
+esplicito (cap. 08 pre-hook): se vuoi un umano ad ogni step, <strong>non
+usi un agente</strong>. <strong>Sotto Base</strong> sul C3 per il
+<em>all-five-gates</em> answer.</li>
+<li><strong>CRITICO — non premiare la convergenza con l&#39;errore del
+collega.</strong> Se uno studente conclude che <em>&quot;il collega ha
+ragione, l&#39;overwriting di step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+è davvero dangerous perché distrugge dati&quot;</em>, sta riproducendo la
+confusione <em>destructiveness
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≡</mo><annotation encoding="application/x-tex">\equiv</annotation></semantics></math>
+irreversibility</em> dell&#39;item — è precisamente quello che il C1 chiede
+di smontare. <strong>Sotto Base</strong> sul C1 e sul C2.</li>
+<li><strong>Non valutare la correttezza clinica del coordinamento
+trial.</strong> L&#39;item non misura se lo studente conosce i meccanismi di
+patient enrolment in trial multi-centre, le regole sui public registries
+(clinicaltrials.gov, EU CT register), o i protocolli di comunicazione
+con i centre coordinators. Il framing clinico è <em>scena</em>, non
+<em>materiale d&#39;esame</em>. Valutare <em>trust engineering</em>;
+sensibilità clinica è bonus <em>fuori rubrica</em>.</li>
+<li><strong>Non penalizzare la lunghezza fuori dal target
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>300</mn><annotation encoding="application/x-tex">300</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>500</mn><annotation encoding="application/x-tex">500</annotation></semantics></math>
+parole.</strong> Quello è guida operativa, non vincolo. Una critica di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>250</mn><annotation encoding="application/x-tex">250</annotation></semantics></math>
+parole che fa tutti e tre i movimenti argomentativi è a Buono o
+Eccellente; una critica di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>700</mn><annotation encoding="application/x-tex">700</annotation></semantics></math>
+parole che ripete lo stesso punto e <em>non</em> fa il terzo movimento è
+a Base o sotto Base.</li>
+<li><strong>Non premiare lo studente che invoca <em>sandboxing</em>,
+<em>staging environment</em>, <em>commit/rollback transactions</em>, o
+altri meccanismi di engineering come <em>alternativa al
+gate</em>.</strong> Sono risposte tecniche legittime ma a una
+<em>domanda diversa</em>: l&#39;item misura <em>trust engineering</em> (dove
+va il gate), non <em>system architecture</em> (come si implementa la
+reversibility). Accettare come bonus <em>fuori rubrica</em>, <strong>ma
+non sostituire il placement della rubrica</strong>. Il Excellent rimane
+definito dai quattro movimenti argomentativi (axis-error, step-by-step,
+corrected-placement, generative-rule-survives-new-tool), non
+dall&#39;inventiva di soluzioni alternative.</li>
+<li><strong>Non penalizzare l&#39;assenza del framing &quot;escape vs
+destruction&quot; a Base o Buono.</strong> Quella è la cifra Excellent del
+C1; uno studente che identifica la confusione <em>destructiveness
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≡</mo><annotation encoding="application/x-tex">\equiv</annotation></semantics></math>
+irreversibility</em> e propone reversibility come l&#39;asse corretto è a
+Buono, anche senza la riformulazione <em>escape</em>. Il <em>escape
+framing</em> è il <em>passo operativo in più</em> che porta a Excellent,
+non la <em>soglia di Buono</em>.</li>
+<li><strong>CRITICO — non promuovere a Excellent uno studente che invoca
+<em>&quot;escape vs destruction&quot;</em> senza prima aver fatto la diagnosi
+<em>destructiveness/reversibility</em> del Base (C1).</strong> Il
+framing <em>escape</em> è una <strong>raffinazione</strong> del Base,
+non una sua <strong>sostituzione</strong>. Se lo studente salta
+direttamente all&#39;argomentazione <em>escape</em> senza nominare lo
+<em>swap di asse</em> (il collega usa <em>destructiveness</em>; il
+capitolo usa <em>reversibility</em>), ha saltato un passo argomentativo
+critico — l&#39;identificazione della confusione è il <em>primo</em>
+movimento del C1, il framing <em>escape</em> è la <em>quarta</em> mossa
+del Excellent. Uno studente che invoca <em>escape</em> in modo retorico
+senza la diagnosi è argomentativamente brillante ma
+<strong>operativamente sotto Base</strong> sul C1: ha proposto il
+<em>raffinamento</em> senza fare il <em>passo precedente</em> che lo
+giustifica.</li>
+<li><strong>Non premiare critiche più lunghe del necessario.</strong>
+Una critica che dilunga su <em>ogni</em> step con tre paragrafi ciascuno
+(anche corretti) non è una critica <em>migliore</em>; è una critica
+<em>più verbosa</em>. Il C2 misura <em>correttezza della
+classificazione</em> + <em>identificazione asimmetria
+over/under-gated</em>; un answer che lo fa in poche righe per step è a
+Buono o Eccellente, esattamente come un answer più lungo se la sostanza
+è equivalente.</li>
+</ul>
+</body>
+</html>

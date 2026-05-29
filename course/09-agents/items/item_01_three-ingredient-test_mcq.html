@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 01 — Agent or not-agent: the three-ingredient test</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-01--agent-or-not-agent-the-three-ingredient-test">Item 01 —
+Agent or not-agent: the three-ingredient test</h1>
+<p><strong>ID</strong>: IB-09-agents-01 <strong>Learning
+objective</strong>: Distinguish an <em>agent</em> from a plain
+<em>chat-LLM</em> by applying the three operational ingredients
+introduced in the chapter — <strong>tools</strong> the model can invoke,
+a <strong>control loop</strong> that picks the next tool after every
+model reply, and <strong>decision points</strong> at which the agent
+enters one of the four interaction modes (<em>autonomous search</em> /
+<em>ask for interaction</em> / <em>ask for sharing</em> / <em>do
+stuff</em>). Recognise the operational consequence: in a chat, <em>every
+output reaches a human before it becomes an action</em>; in an agent,
+<em>some outputs become actions without a human reading them first</em>
+(Obj. 1).</p>
+<p><strong>Category</strong>: Comprehension <strong>Type</strong>: MCQ
+<strong>Difficulty</strong>: medium <strong>Chapter</strong>:
+09-agents</p>
+<h2 id="question">Question</h2>
+<p>A clinician on your research team has been browsing AI-assisted tools
+that other colleagues have set up over the last few months. She wants to
+know which of the four setups below counts as an <strong>agent</strong>,
+by the chapter&#39;s three-ingredient definition (<em>tools + control loop +
+decision points</em>, such that <em>some outputs become actions without
+a human reading them first</em>).</p>
+<p>Among the four setups below, <strong>which one is an
+agent</strong>?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) A chat-LLM running in a browser tab. The user types each query,
+the model responds, and the user copies the response into a Word
+document. The model has access to a built-in web-search tool, but the
+model only invokes it when the user explicitly types
+<code>search:</code> at the start of the query.</li>
+<li>B) A clinical-note autocomplete integrated in the EHR&#39;s note-editor.
+As the clinician writes the note, the model suggests the next sentence
+based on what has been written so far; the clinician accepts, rejects,
+or edits each suggestion before it appears in the note. The model has no
+other capability beyond producing the next-sentence suggestion.</li>
+<li>C) A research helper configured as follows: the user types a goal in
+natural language (e.g., <em>&quot;summarise the latest delirium-screening
+guidelines and email the one-page summary to me&quot;</em>); the system then
+calls a search tool, reads results, calls a summariser, drafts an email,
+and sends it — each step picked by the model itself after reading the
+previous step&#39;s output, with no human input between steps until
+completion.</li>
+<li>D) A scheduled job that, every Monday at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+AM, queries the EHR data warehouse for the previous week&#39;s incident
+reports, calls an LLM once to write a short summary paragraph, assembles
+the paragraph into a PDF template, and uploads the PDF to the team&#39;s
+shared drive. The sequence of steps is fixed by the script; the LLM is
+invoked exactly once, to produce the summary text.</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: C.</strong> Setup C is the only one that carries all
+three of the chapter&#39;s defining ingredients:</p>
+<ul>
+<li><strong>Tools</strong>: the system can invoke a search tool, a
+summariser, a drafter, and a mail client.</li>
+<li><strong>Control loop</strong>: after every model reply, the model
+itself picks which tool to call next (or whether to stop) — the loop is
+the model&#39;s loop, not a human&#39;s and not a script&#39;s.</li>
+<li><strong>Decision points</strong>: at several points the agent is in
+<em>autonomous search</em> (gathering information on its own), and at
+the final step it is in <em>do stuff</em> mode (sending the email — an
+action with external effect).</li>
+</ul>
+<p>The operational test confirms the diagnosis: <strong>some outputs
+become actions without a human reading them first</strong> —
+specifically, the email&#39;s body is drafted and sent before any human has
+read it. That is the boundary the chapter draws around the agent
+category.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A</strong> is wrong because <strong>only the first
+ingredient (tools) is present</strong>: the web-search tool exists, but
+the <em>control loop</em> and the <em>decision points</em> are still
+entirely human-driven (the user types each query; the user types
+<code>search:</code> to invoke the tool; the user copies the answer;
+<em>every</em> output reaches the user before it becomes anything). A
+student who picks A has read <em>&quot;has tools&quot;</em> as sufficient for
+agency, missing that the chapter&#39;s definition requires <strong>all
+three</strong> ingredients together. The operational test — <em>do any
+outputs become actions without a human reading them first?</em> —
+returns <strong>no</strong> for setup A: nothing the model produces
+leaves the chat window without the user reading it.</li>
+<li><strong>B</strong> is wrong on <strong>two ingredients</strong>: the
+autocomplete has <em>no tools</em> (it produces text only) and <em>no
+control loop</em> (each suggestion is independent — there is no
+model-driven sequence). The clinician&#39;s hand-on-the-keyboard sits
+<em>between</em> every model output and any consequence of that output
+(the note is updated only if the clinician accepts the suggestion). A
+student who picks B has confused <em>&quot;the model is doing something on
+its own continuously&quot;</em> (it is generating predictions) with <em>&quot;the
+model is taking actions on the world&quot;</em> (it is not). The operational
+test — <em>do any outputs become actions without a human reading them
+first?</em> — returns <strong>no</strong> for setup B: the clinician is
+in the loop on every suggestion.</li>
+<li><strong>D</strong> is the <strong>subtlest distractor</strong>,
+because the setup <em>looks like</em> an agent at first glance — a
+scheduled pipeline that runs autonomously, uses tools (database, file
+write, shared drive), calls an LLM, and produces an external artefact
+(the PDF on a shared drive) without a human reading the summary first.
+But the chapter&#39;s definition is <em>operationally specific</em> about
+what counts as the loop: <strong>the loop is the policy that, after
+every model reply, picks the next tool to invoke or stops</strong> —
+that is, the <em>model</em> picks the next step based on what it just
+produced. In setup D, the <em>cron script</em> picks every step in a
+fixed order, regardless of what the model says; the LLM is invoked
+<strong>exactly once</strong>, as a single text-generation step embedded
+in a deterministic pipeline. This is <strong>automation with an LLM
+inside</strong>, not an agent. The model never decides anything — it
+returns one paragraph, and the script does the rest. A student who picks
+D has confused <em>&quot;the pipeline runs without me&quot;</em> (automation) with
+<em>&quot;the model decides what runs next&quot;</em> (agency). <strong>Important
+precision:</strong> the chapter&#39;s <em>operational consequence</em>
+(<em>some outputs become actions without a human reading them
+first</em>) does technically <em>describe</em> D — the PDF reaches the
+shared drive without anyone reading it — but the chapter presents this
+consequence as the <strong>diagnostic test of agency</strong>, not as
+its <strong>definition</strong>. The three-ingredient definition
+(<em>tools
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∧</mi><annotation encoding="application/x-tex">\wedge</annotation></semantics></math>
+loop
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∧</mi><annotation encoding="application/x-tex">\wedge</annotation></semantics></math>
+decision-points</em>, with the loop being the <strong>model&#39;s</strong>
+loop) is the <strong>gating criterion</strong>; the operational
+consequence is what <em>follows</em> from satisfying all three. D
+satisfies the consequence by <em>accident</em> (a scheduled script with
+an LLM call inside also produces external effects without human reading)
+but fails the <em>loop</em> ingredient — and so D is
+<em>automation</em>, not an <em>agent</em>. The distinction is the same
+one as between a self-driving car (the <em>car</em> does not read the
+road; the <em>driving model</em> does — a model-driven loop) and a
+Roomba on a timer (no model, just a schedule — a script-driven loop).
+Both run without human reading; only one is an agent.</li>
+</ul>
+<p>The single discriminator across A/B/C/D is whether the student reads
+the chapter&#39;s definition <strong>conjunctively</strong> (<em>all
+three</em> ingredients required, <em>and</em> the loop must be the
+model&#39;s loop) — which selects C — or <strong>partially</strong> (any one
+ingredient suffices, <em>or</em> &quot;the model produces text autonomously&quot;
+is enough) — which leads to A, B, or D depending on which ingredient the
+student over-weighs. Only C passes the full three-ingredient test.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

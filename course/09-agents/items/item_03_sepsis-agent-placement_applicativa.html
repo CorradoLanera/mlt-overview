@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 03 — Place the gates: a sepsis early-warning agent</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-03--place-the-gates-a-sepsis-early-warning-agent">Item 03 —
+Place the gates: a sepsis early-warning agent</h1>
+<p><strong>ID</strong>: IB-09-agents-03 <strong>Learning
+objective</strong>: Apply the chapter&#39;s reversibility +
+human-in-the-loop test to each step of a multi-step clinical agent
+workflow, classify each step as <em>safe-by-default</em> or
+<em>dangerous-by-default</em>, and <strong>propose a gate placement that
+adds a guard exactly where reversibility fails — and nowhere
+else</strong>. Justify each gate with the chapter&#39;s operational rule
+(<em>ask before any irreversible action</em>) and explain why
+over-gating (a gate before a reversible step) is not required (Obj.
+3).</p>
+<p><strong>Category</strong>: Application <strong>Type</strong>:
+applicativa (open-format short answer) <strong>Difficulty</strong>:
+medium–high <strong>Chapter</strong>: 09-agents</p>
+<h2 id="question">Question</h2>
+<p>A clinical-safety team has built an agent that monitors all
+post-operative patients on a surgical ward for early signs of sepsis.
+Once configured, every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+minutes the agent runs the following four steps on its own — <strong>no
+human reads any output between steps</strong>:</p>
+<ol type="1">
+<li><strong>Read</strong> the latest vital signs and lab values for each
+patient from the EHR (read-only access; the EHR generates a standard
+query-log entry, as for every read by any system).</li>
+<li><strong>Compute</strong> the qSOFA score for each patient, in
+memory.</li>
+<li><strong>Submit an HL7 alert message to the bedside monitoring
+system</strong>, which immediately fires a buzz on the patient&#39;s
+nurse-call panel and posts a colour-coded alert on the central
+nurses-station dashboard (the buzz fires and the dashboard updates the
+moment the message is sent; even if the message is later retracted, the
+nurse has already heard the buzz and the alert has already appeared on
+the dashboard for anyone watching).</li>
+<li><strong>Page the on-call physician via SMS</strong> if any patient&#39;s
+qSOFA has crossed the alert threshold of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\geq 2</annotation></semantics></math>.</li>
+</ol>
+<p>Answer the following <strong>three</strong> parts in order:</p>
+<p><strong>(a) Reversibility + HITL table.</strong> For each of the four
+steps, state whether it is <strong>reversible</strong> (<em>Y</em> /
+<em>N</em>) by the chapter&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>-second
+test, whether it is <strong>human-in-the-loop</strong> (<em>Y</em> /
+<em>N</em>) as the workflow is currently described, and whether it is
+<strong>safe-by-default</strong> or
+<strong>dangerous-by-default</strong>. Give <em>one to two
+sentences</em> of justification for each row — keep steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+short; for steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+name precisely what makes the action fail the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-second
+test.</p>
+<p><strong>(b) Gate placement.</strong> Propose where you would place
+the gate(s) to make the agent safely usable. State the <em>number</em>
+of gates and the <em>exact</em> position of each (e.g., <em>&quot;before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>&quot;</em>).</p>
+<p><strong>(c) Justification.</strong> Write <strong>one sentence per
+gate</strong> explaining why each gate is needed (citing the chapter&#39;s
+rule), and <strong>one sentence</strong> explaining why no gate is
+needed before the reversible steps (citing the chapter&#39;s caveat against
+over-gating).</p>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>(a) Reversibility + HITL table.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Reversible?</th>
+<th>HITL?</th>
+<th>Verdict</th>
+<th>One-sentence justification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 — Read EHR</td>
+<td>Y</td>
+<td>N</td>
+<td>safe-by-default</td>
+<td>The agent&#39;s action is <em>reading</em>; the EHR is unchanged by a
+read, and the query-log entry is a side-effect of the EHR&#39;s
+record-keeping, not an action the agent took on the world.</td>
+</tr>
+<tr>
+<td>2 — Compute qSOFA</td>
+<td>Y</td>
+<td>N</td>
+<td>safe-by-default</td>
+<td>In-memory computation; no external state is changed by the
+calculation.</td>
+</tr>
+<tr>
+<td>3 — HL7 alert to bedside</td>
+<td>N</td>
+<td>N</td>
+<td><strong>dangerous-by-default</strong></td>
+<td>The HL7 message broadcasts to bedside hardware the moment it is sent
+— the buzz fires on the nurse-call panel and the central dashboard
+updates simultaneously; retracting the message does not undo the buzz
+that has sounded or the alert that has appeared — the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-second
+test fails.</td>
+</tr>
+<tr>
+<td>4 — Page on-call</td>
+<td>N</td>
+<td>N</td>
+<td><strong>dangerous-by-default</strong></td>
+<td>The SMS notification has already reached the on-call&#39;s phone the
+moment the page is sent; deletion at the agent&#39;s end does not recall the
+page.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>(b) Gate placement.</strong> <strong>Two gates: one before
+step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>,
+one before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>.</strong>
+No gate before steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>.</p>
+<p><strong>(c) Justification.</strong></p>
+<ul>
+<li><em>Gate before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+is needed because the HL7 alert is irreversible the moment it is sent
+(the buzz has fired on the nurse-call panel, the dashboard has updated —
+neither can be recalled in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>
+seconds), and at this point no human has read the qSOFA or the
+underlying vital signs — irreversible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>∧</mi><annotation encoding="application/x-tex">\wedge</annotation></semantics></math>
+no-HITL = dangerous-by-default, and the chapter&#39;s rule is <strong>ask
+before any irreversible action</strong>.</em></li>
+<li><em>Gate before step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+is needed because the SMS page is irreversible (the page has already
+buzzed the on-call&#39;s phone the moment it is sent), and at this point no
+human has reviewed which patient is being flagged or why — same
+dangerous quadrant, same rule.</em></li>
+<li><em>No gate is needed before steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+because both are reversible (read-only EHR access; in-memory
+computation), and the chapter&#39;s rule asks for a gate where reversibility
+<strong>fails</strong>, not at every step — adding gates before
+reversible steps would paralyse the agent without reducing risk (the
+rule is <strong>ask before any irreversible action</strong>, not
+<strong>ask before every action</strong>).</em></li>
+</ul>
+<p>A complete answer applies the chapter&#39;s rule
+<strong>disjunctively</strong> (safe-by-default if reversible
+<em>or</em> HITL) and <strong>once per irreversibility</strong>, not
+once per step. The structure of the answer mirrors the structure of the
+rule: identify reversibility on each step, identify HITL on each step,
+mark the dangerous quadrant, place exactly the gates the dangerous
+quadrant requires.</p>
+<p>A typical wrong answer over-gates: a student gating <em>all four</em>
+steps has read the safe-by-default rule conjunctively (mistakenly
+requiring <em>both</em> reversibility <em>and</em> HITL to be safe) and
+has reproduced the <em>paralyzingly conservative</em> placement the
+chapter&#39;s pre-hook from cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+explicitly warns against. Another typical wrong answer under-gates: a
+student gating <em>only</em> step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+has identified the SMS as the most &quot;noisy&quot; action but has missed that
+the EHR write is irreversible too (the <em>visible vs consequential</em>
+distinction in reverse — the EHR write is <em>less audibly noisy</em>
+than an SMS but <em>more clinically consequential</em>, since it enters
+the patient&#39;s permanent record).</p>
+<h2 id="associated-rubric">Associated rubric</h2>
+<p><a href="../rubriche/rubrica_03_sepsis-agent-placement.md">rubrica_03_sepsis-agent-placement.md</a>
+— 3 criteria × 3 levels (Base / Good / Excellent).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

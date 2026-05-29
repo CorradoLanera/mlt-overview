@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>09 — Agents · Learning objectives &amp; summative
+exercise</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="09--agents--learning-objectives--summative-exercise">09 — Agents
+· Learning objectives &amp; summative exercise</h1>
+<blockquote>
+<p>Chapter: <strong>Agents</strong> · 15 min · biomedical/clinical
+graduate students (UBEP). Student-facing text in English; teacher design
+notes (<em>nota docente</em>) in Italian.</p>
+</blockquote>
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>By the end of this chapter, students can:</p>
+<ol type="1">
+<li><strong>Distinguish</strong> an <strong>agent</strong> from a plain
+chat-LLM by naming the three additional ingredients an agent has:
+<strong>(a) tools</strong> the model can invoke (web search, calculator,
+file-system access, mail client, browser, API call, ...); <strong>(b) a
+control loop</strong> that, after every model response, decides
+<em>which tool to call next, or whether to stop</em>; <strong>(c)
+decision points</strong> at which the agent either <strong>acts
+autonomously</strong>, <strong>asks the human for input</strong>, or
+<strong>shares state with the human</strong>. State the operational
+consequence: in a chat, <em>every output reaches a human before it
+becomes an action</em>; in an agent, <em>some outputs become actions
+without a human reading them first</em>.</li>
+<li><strong>Map</strong> the <strong>four interaction modes</strong>
+introduced in the slides — <em>autonomous search</em> (the agent gathers
+information on its own), <em>ask for interaction</em> (the agent stops
+and asks the human a question to disambiguate), <em>ask for sharing</em>
+(the agent asks the human to provide credentials, access, or a
+resource), <em>do stuff</em> (the agent performs an action with external
+effect) — to the two axes that define the <strong>trust
+boundary</strong>: <strong>(i) reversibility</strong> — <em>can this
+action be undone in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+seconds by closing a tab, or does it persist (email sent, file deleted,
+record written to an EHR)?</em>; and <strong>(ii)
+human-in-the-loop</strong> — <em>did a human read the agent&#39;s reasoning
+<strong>before</strong> the action happened?</em>. A mode is &quot;safe by
+default&quot; if it is either reversible <em>or</em> human-in-the-loop; it is
+&quot;dangerous by default&quot; if it is neither (i.e. <em>do stuff</em> on an
+irreversible target without a confirm step).</li>
+<li><strong>Place the trust boundary</strong> in a small
+clinical-research workflow: given a multi-step task (e.g. <em>&quot;find the
+latest guidelines, summarise them, draft a one-page protocol, email it
+to the PI&quot;</em>), decide for each step whether the agent may act
+autonomously, must ask, must share, or must hand back — and
+<strong>justify the boundary using the reversibility criterion</strong>
+(&quot;<em>I let the agent search, summarise, and draft autonomously because
+all three are reversible; I require an ask-step before sending the email
+because email is irreversible</em>&quot;).</li>
+</ol>
+<p><em>Nota docente:</em> tre obiettivi per 15′ — il limite.
+<strong>L&#39;arco di ch 09 non è &quot;spiegare come si costruisce un
+agente&quot;</strong> (frameworks, planner/executor patterns, ReAct, function
+calling, tool schemas): in 15′ non si fa, e non è l&#39;angolazione utile
+per UBEP. Ciò che il capitolo aggiunge — e che gli obiettivi codificano
+— è la <strong>smitizzazione di &quot;AI agent&quot;</strong> come termine di
+marketing: un agente è un LLM con <strong>tool + loop +
+decisione</strong>, e la cosa veramente nuova non è la tecnologia ma il
+<strong>trust boundary</strong>. Obj. 1 fissa il <em>cosa è</em> (tre
+ingredienti operativi). Obj. 2 fissa il <em>come pensiamo</em> il
+rischio: due assi (reversibilità, human-in-the-loop) e una griglia
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+in cui il quadrante <em>irreversibile + senza umano</em> è quello da cui
+un clinico deve uscire prima possibile. Obj. 3 fissa il <em>come
+decidiamo</em> dove mettere la guardia — la regola operativa è <em>&quot;asks
+before any irreversible action&quot;</em>. Tutto il capitolo è un esercizio
+di <em>trust engineering</em> travestito da introduzione tecnica.
+<strong>Voce docente — non valutato:</strong> il dettaglio di function
+calling / tool use (API), ReAct / planner-executor / multi-agent
+orchestration, MCP (Model Context Protocol) e tool ecosystems,
+Operator/Computer Use come prodotti specifici, sandboxing e contenimento
+delle azioni (è importante ma è ingegneria), il dibattito su <em>AI
+agency</em> in senso filosofico, la safety research su deceptive
+alignment (cita ma non valutare). Il pre-hook a ch 10 (<em>&quot;abbiamo
+coperto modelli, deep learning, LLM, agenti — ma su Monday morning, come
+si fa un progetto ML che non vada fuori strada?&quot;</em>) va in
+<code>narrative.md</code>, non qui.</p>
+<h2 id="summative-live-exercise--where-do-you-put-the-guard">Summative
+live exercise — &quot;Where do you put the guard?&quot;</h2>
+<p><em>Nota docente:</em> sommativo, gira negli <strong>ultimi
+~7′</strong> (min 8–15) dopo i quattro screenshot dell&#39;Operator
+(<em>autonomous search</em> / <em>ask for interaction</em> / <em>ask for
+sharing</em> / <em>do stuff</em>) e dopo la discussione su
+reversibilità. <strong>Banco unico, condiviso da tutta la
+classe</strong> (presenza + remoto): un <strong>mini-workflow di ricerca
+clinica</strong> proiettato e stampato come quattro step numerati —</p>
+<blockquote>
+<p><strong>Workflow W:</strong> <em>You are setting up a small audit on
+post-operative delirium. You ask an AI agent to: <strong>(1)</strong>
+search PubMed for the latest delirium-screening guidelines from the last
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+years; <strong>(2)</strong> download the three most-cited papers and
+summarise their inclusion criteria into a one-page table;
+<strong>(3)</strong> draft a one-page audit protocol based on the
+summary; <strong>(4)</strong> send the protocol by email to your PI for
+review.</em></p>
+</blockquote>
+<p>A fianco, una <strong>trust-boundary table</strong> già stampata con
+cinque colonne — <em>Step</em> / <em>Interaction mode</em> (one of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>)
+/ <em>Reversible? (Y/N)</em> / <em>Human-in-the-loop? (Y/N)</em> /
+<em>Boundary verdict</em> (one of: <em>autonomous OK</em> / <em>ask
+before acting</em> / <em>hand back to human</em>) — e quattro righe
+vuote (una per step).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objective verified</td>
+<td>Obj. 1 (tool + loop + decision) — verified implicitly across the
+whole workflow (each row uses tools, the column <em>interaction
+mode</em> names the decision). Obj. 2 (4 modes mapped to reversibility +
+HITL) — verified in sub-tasks (i) and (ii). Obj. 3 (boundary placement)
+— verified in sub-task (iii) and the 1-sentence justification.</td>
+</tr>
+<tr>
+<td>In-person action</td>
+<td>Table groups receive Workflow W + the trust-boundary table. They:
+<strong>(i)</strong> <strong>label each step with one of the four
+interaction modes</strong> — Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+= <em>autonomous search</em> (PubMed query is a tool call, no human
+input needed); Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+= <em>autonomous search</em> (download + summarise are tool calls on
+reversible artefacts); Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+= <em>autonomous search</em> (drafting is a tool call producing text);
+Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+= <em>do stuff</em> (sending an email is an external irreversible
+action); <strong>(ii)</strong> <strong>for each step, mark
+<em>reversible?</em> and <em>human-in-the-loop?</em></strong> — Steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+are reversible (the agent&#39;s artefacts live on disk, you can throw them
+away) and not human-in-the-loop yet (no human reads each one), Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+is irreversible (an email leaves the trust boundary the moment it is
+sent) and at this draft has <strong>no</strong> human-in-the-loop;
+<strong>(iii)</strong> <strong>for each step, write the boundary
+verdict</strong> — Steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+= <em>autonomous OK</em> (reversible, low risk of harm), Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+= <em>ask before acting</em> (the agent must stop, show the email body
+to the user, and wait for confirmation before sending) — <em>and write
+one sentence justifying the boundary</em>: &quot;<em>I gate Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+because email is irreversible; the other steps are reversible so the
+agent may run them without a confirm-step.</em>&quot; <strong>(iv)</strong>
+<strong>post-class only — answer offline in the shared doc within
+24h</strong>: <em>&quot;What additional ask-step would you add for the agent
+to be safely usable in your research group?&quot;</em> — expected pattern:
+e.g. &quot;<em>ask before adding any PubMed ID to the protocol that has not
+been read by a human</em>&quot; (i.e. ask before introducing a
+<em>citation</em>, because hallucinated citations are irreversible
+reputationally even if the email is gated). Each group photographs its
+trust-boundary table and drops it into the shared doc.</td>
+</tr>
+<tr>
+<td>Remote equivalent</td>
+<td>Same Workflow W + same trust-boundary table on a shared doc. Remote
+groups type the four rows directly into their slot of the shared doc,
+type the 1-sentence boundary justification, and type the 1-sentence
+additional ask-step. Two Slido polls run live, capturing
+<strong>all</strong> students individually: <strong>Poll 1 — &quot;Which step
+in Workflow W is irreversible?&quot;</strong> (single-select, options
+<em>Step 1 (PubMed search)</em> / <em>Step 2 (download + summarise)</em>
+/ <em>Step 3 (draft protocol)</em> / <em>Step 4 (send email)</em>);
+<strong>Poll 2 — &quot;Where do you put the FIRST mandatory ask-before-acting
+gate?&quot;</strong> (options <em>before Step 1</em> / <em>before Step 2</em>
+/ <em>before Step 3</em> / <em>before Step 4</em>). The polls make the
+remote signal on Obj. 2 (reversibility identification) and Obj. 3
+(boundary placement) visible <em>next to</em> the in-person sheets.</td>
+</tr>
+<tr>
+<td>Shared artifact</td>
+<td>A single shared doc / whiteboard with one row per group containing:
+<em>the four labelled steps</em> · <em>reversible? + HITL? marks
+(pre-boundary)</em> · <em>the four boundary verdicts</em> ·
+<em>1-sentence boundary justification</em> · (<em>added within 24h,
+post-class</em>) <em>1-sentence additional ask-step</em>. The two Slido
+bar charts (Poll 1 and Poll 2) are projected next to it, visible to
+in-person and remote at once.</td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>7 min, minutes 8–15 (end of chapter): ~1′ read Workflow W + open the
+polls, ~2′ label each step&#39;s interaction mode, ~1′ mark reversibility +
+HITL (Poll 1 closes at min 11 <em>or</em> at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\geq 80\%</annotation></semantics></math>
+votes, whichever is later; hard cap
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>90</mn><annotation encoding="application/x-tex">90</annotation></semantics></math>″),
+~1′30″ write the four boundary verdicts + 1-sentence justification (Poll
+2 closes at min 13 <em>or</em> at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\geq 80\%</annotation></semantics></math>,
+same floor), ~1′30″ instructor-led reveal — the four mode-labels are
+read off the board, <em>Poll 1</em> histogram is shown (the wrong
+distractors are <em>named</em>: <em>Step 1</em> = &quot;ha pensato che
+&#39;cercare online&#39; sia irreversibile perché traccia metadati —
+concettualmente onesto ma operativamente la ricerca non <em>produce</em>
+effetto esterno&quot;, <em>Step 2</em> = &quot;ha pensato che scaricare un PDF sia
+irreversibile — ma il file vive in locale, puoi cestinarlo&quot;, <em>Step
+3</em> = &quot;ha pensato che generare testo sia irreversibile — ma il draft
+è un file, idem&quot;), <em>Poll 2</em> histogram is shown (the wrong
+distractors are <em>named</em>: <em>before Step 1</em> = &quot;agente troppo
+conservativo — paralizzato, nessun valore aggiunto rispetto a fare tutto
+a mano&quot;, <em>before Step 2</em> = &quot;ha messo la guardia sull&#39;azione
+<em>successiva</em> che vede ma irreversibile non lo è — l&#39;errore tipico
+di chi confonde <em>consequential</em> con <em>visible</em>&quot;, <em>before
+Step 3</em> = &quot;stessa logica del Step 2 — il draft non lascia il
+sistema, non è irreversibile; la guardia qui ti rallenta senza ridurre
+il rischio&quot;), <strong>and the instructor explicitly closes the chapter&#39;s
+cliff-hanger with the spine beat to ch 10</strong>: <em>&quot;you now have
+the ingredients — classifiers, deep nets, LLMs, agents — but on Monday
+morning you start a real project: how do you actually do it without
+falling into one of the same five traps everybody else falls into? That
+is ch 10.&quot;</em></td>
+</tr>
+<tr>
+<td>Success criterion</td>
+<td>The class produces, on the shared artifact: <strong>(i)</strong> all
+four steps labelled, with Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+being the only <em>do stuff</em> (a group that labels Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+as <em>do stuff</em> has confused <em>the agent doing work</em> with
+<em>the agent doing externally-visible irreversible work</em> —
+corrected in the reveal); <strong>(ii)</strong> the reversibility column
+is <em>Y, Y, Y, N</em>; the HITL column is <em>N, N, N, N</em>
+<strong>pre-boundary</strong> (i.e. as the workflow is described, no
+human review is built in), and <em>N, N, N, Y</em>
+<strong>post-boundary</strong> (Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+becomes HITL=Y precisely because the verdict adds the ask-gate) — a
+group that marks Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+as reversible <em>&quot;because you can send a follow-up email&quot;</em> is
+corrected (an <em>additional</em> email does not undo the first one —
+that is precisely the reversibility test); <em>Poll 1</em> shows the
+modal answer at <em>Step 4</em>; <strong>(iii)</strong> the boundary
+verdicts are <em>autonomous OK, autonomous OK, autonomous OK, ask before
+acting</em> — with a 1-sentence justification that names <strong>email
+is irreversible</strong> and <strong>the other steps are
+reversible</strong>; <em>Poll 2</em> shows the modal answer at
+<em>before Step 4</em>; <strong>(iv)</strong> the 1-sentence additional
+ask-step names a <em>plausible irreversible-by-omission</em> failure —
+typically <em>hallucinated citations</em>, <em>fabricated quotes from
+the guidelines</em>, or <em>PII leakage into the email body</em> (any of
+the three is accepted as correct). <strong>Live signal of
+mastery:</strong> the class can read off the board, without prompting,
+that <em>an agent is not &quot;more powerful than a chatbot&quot; — it is a
+chatbot with the ability to take actions, and the engineering question
+is <strong>which actions</strong> to gate, using
+<strong>reversibility</strong> as the operational test</em>.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Nota docente — perché duale funziona qui:</em> l&#39;artefatto è
+<strong>uno solo</strong> (Workflow W + trust-boundary table), tutto il
+sommativo è categorizzazione (mode), Y/N (reversibility, HITL), verdict
+(4 opzioni), e due frasi singole — niente da disegnare ex novo, niente
+asimmetria presenza/remoto. I due poll Slido danno il segnale immediato
+e individuale sui due punti diagnosticabili: l&#39;identificazione dello
+step irreversibile e la collocazione del gate. Il workflow è scelto
+perché <em>tutti</em> possono leggere la frase clinica (audit su
+delirium post-operatorio) e ragionare sui passaggi senza prerequisiti
+tecnici.</p>
+<p><em>Nota docente — sulla scelta di Workflow W e dei distrattori:</em>
+la sequenza <em>cerca → riassumi → bozza → invia</em> è il canonical
+pattern del <em>research agent</em> in clinica (e ovunque). È costruita
+esplicitamente con <strong>3 step reversibili + 1 irreversibile</strong>
+per costringere lo studente a <em>non</em> mettere la guardia su tutto
+(errore conservativo, Obj. 3 fallirebbe) e <em>non</em> sotto lo Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+(errore catastrofico, Obj. 3 fallirebbe a sua volta). I distrattori del
+<em>Poll 1</em> sono diagnostici: <strong>Step 1</strong> = ha confuso
+<em>traccia digitale</em> con <em>effetto esterno</em>; <strong>Step
+2</strong> = ha confuso <em>download persistente in locale</em> con
+<em>azione irreversibile esterna</em>; <strong>Step 3</strong> = stessa
+logica (draft = file locale, non azione). I distrattori del <em>Poll
+2</em> coprono i tre errori di placement: <em>Step 1</em> (troppo
+conservativo, paralizzante), <em>Step 2</em> (gate su un&#39;azione
+<em>visible</em> ma reversibile — errore <em>visible ≠
+consequential</em>), <em>Step 3</em> (idem). La risposta corretta
+<em>prima di Step 4</em> è l&#39;unica che applica la regola
+<em>reversible-or-HITL</em>.</p>
+<p><em>Nota docente — anti-trabocchetto su &quot;ma allora anche Step 3
+dovrebbe essere ask, perché il draft potrebbe avere errori&quot;:</em> uno
+studente attento può obiettare che il draft del protocollo <em>contiene
+contenuto clinico</em>, e che lasciare l&#39;agente generarlo senza
+supervisione introduce errori che poi propagano allo Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>.
+La risposta — <strong>voce docente nel reveal, non parte della
+valutazione</strong> — è duplice: (a) <strong>operativamente</strong> lo
+Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+è reversibile (il draft è un file locale, puoi cestinarlo), e quindi
+<em>l&#39;agente</em> può farlo senza guardia <em>purché tu legga il draft
+prima di Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></em>;
+(b) <strong>questo è precisamente il motivo per cui Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+è <em>ask before acting</em></strong>: la guardia su Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+implica che il draft venga letto da te <em>prima</em> di partire, e
+quindi <em>la guardia su Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+sarebbe ridondante</em>. Premia lo studente che fa l&#39;osservazione: ha
+capito il principio. Se invece volesse anche una guardia &quot;interna&quot;
+<em>durante</em> la generazione (es. un check anti-allucinazione sulle
+citazioni), quello è il <em>next-level</em> del design — lo segnali come
+direzione, non come materiale d&#39;esame.</p>
+</body>
+</html>
