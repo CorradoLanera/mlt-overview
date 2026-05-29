@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 01 — The neuron as a generalised logistic</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-01--the-neuron-as-a-generalised-logistic">Item 01 — The
+neuron as a generalised logistic</h1>
+<p><strong>ID</strong>: IB-05-deep-learning-01 <strong>Learning
+objective</strong>: Describe an artificial neuron as a <em>generalised
+non-linear logistic unit</em> —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">out</mtext><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{out} = g(\sum_i a_i w_i)</annotation></semantics></math>
+— i.e. a logistic regression in which the sigmoid has been replaced by
+any non-linear, differentiable activation function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+(Obj. 1). <strong>Category</strong>: Comprehension
+<strong>Type</strong>: MCQ <strong>Difficulty</strong>: low–medium
+<strong>Chapter</strong>: 05-deep-learning</p>
+<h2 id="question">Question</h2>
+<p>A clinical colleague has been reading about &quot;deep learning&quot; and tells
+you over coffee: <em>&quot;an artificial neuron is just a fancy version of
+logistic regression.&quot;</em> Among the following descriptions, which one
+identifies the <strong>single mathematical change</strong> that turns a
+logistic regression into an artificial neuron, as covered in this
+chapter?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) The sigmoid activation of logistic regression is replaced by
+<strong>any non-linear, differentiable function</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+— e.g. ReLU, tanh, or sigmoid itself as one special case. The
+weighted-sum-of-inputs structure
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sum_i a_i w_i</annotation></semantics></math>
+is unchanged.</li>
+<li>B) The <strong>input features</strong> themselves are squared
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>a</mi><mi>i</mi><mn>2</mn></msubsup><annotation encoding="application/x-tex">a_i^2</annotation></semantics></math>
+instead of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mi>i</mi></msub><annotation encoding="application/x-tex">a_i</annotation></semantics></math>),
+so the neuron can model curved decision boundaries that a logistic
+regression cannot.</li>
+<li>C) The neuron carries <strong>many weight vectors in
+parallel</strong> instead of one, so it can produce multiple outputs at
+once from the same inputs.</li>
+<li>D) The activation function is <strong>removed entirely</strong>, so
+the neuron computes the bare weighted sum
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sum_i a_i w_i</annotation></semantics></math>
+— a <em>purely linear</em> version of logistic regression.</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: A.</strong> The chapter defines an artificial neuron
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">out</mtext><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{out} = g(\sum_i a_i w_i)</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>:</mo><mi>ℝ</mi><mo>→</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">g:\mathbb{R}\to\mathbb{R}</annotation></semantics></math>
+is non-linear and differentiable. The logistic regression of chapter 02
+is the special case
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>=</mo><mi>σ</mi></mrow><annotation encoding="application/x-tex">g = \sigma</annotation></semantics></math>
+(sigmoid); the artificial neuron <em>frees</em> the choice of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+to any function satisfying the two requirements (ReLU, tanh, sigmoid,
+etc.). Nothing else changes: the input layer, the weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>i</mi></msub><annotation encoding="application/x-tex">w_i</annotation></semantics></math>,
+and the weighted sum structure are identical to logistic regression.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>B</strong> confuses non-linearity <em>in the activation
+function</em> with non-linearity <em>in the input features</em>.
+Squaring the inputs is the <strong>kernel trick of chapter 03</strong>,
+a completely different mechanism (it lives in the input pre-processing,
+not in the activation), and it does not turn a logistic regression into
+an artificial neuron. A student who picks B is replaying ch. 03 instead
+of reading ch. 05.</li>
+<li><strong>C</strong> is a description of a <strong>layer of
+neurons</strong>, not of a single neuron. A layer is a
+<em>collection</em> of neurons in parallel, each with its own single
+weight vector. The student who has skimmed an MLP diagram in a hurry can
+fall here. The chapter&#39;s neuron is the <em>atom</em>; what C describes
+is the <em>molecule</em> (Obj. 2).</li>
+<li><strong>D</strong> drops the activation entirely. This is the
+<em>worst</em> possible answer because removing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+— making the neuron purely linear — is exactly what the chapter&#39;s first
+requirement on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+(non-linearity) rules out. Stacking purely linear units would collapse
+the whole network into one big linear map, undoing the point of being
+&quot;deep&quot; (see Obj. 3). A student who picks D has missed the central
+pedagogical insight of the chapter.</li>
+</ul>
+<p>The single discriminator is the <strong>swap of the
+activation</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
+→ any non-linear differentiable
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>),
+with the rest of the equation left intact. Only A captures this.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item bank — 05 Deep Learning</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-bank--05-deep-learning">Item bank — 05 Deep Learning</h1>
+<blockquote>
+<p>Chapter: <code>05-deep-learning</code> · MLT course (UBEP,
+biomedical/clinical graduate students). Generated 2026-05-29. Items
+student-facing in <strong>English</strong>; rubrics 3-level
+(Base/Good/Excellent). Review: <code>assessment-reviewer</code> ✓
+<strong>APPROVED</strong> (2026-05-29) after applying one fix: orphan
+cross-reference to &quot;item 04&quot; in <a href="items/item_02_forward-pass-and-weight-count_applicativa.md">item
+02</a> sub-q 3 expected-answer paragraph removed (item 04 was dropped by
+teacher&#39;s call, see set-size note below). Anti-leakage check from ch.
+06+ (convolution, kernel, filter, stride, weight sharing, recurrent,
+CNN, RNN, transformer, attention, LLM, agent, dropout, regularization,
+batch norm) held cleanly across all 3 items + the one rubric. Numerical
+verification on item 02
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup></mrow><annotation encoding="application/x-tex">W^{[1]} a^{[0]}</annotation></semantics></math>
+component-wise, ReLU on the negative pre-activation) and item 03
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>−</mo><mi>η</mi><mi>∇</mi><mi>L</mi></mrow><annotation encoding="application/x-tex">W - \eta \nabla L</annotation></semantics></math>
+for all four candidate updates) passed. No further fixes required.</p>
+</blockquote>
+<blockquote>
+<p><strong>Set size note:</strong> chapter 5 closes at <strong>3
+items</strong> (not 4 as in chapters 01–04). The
+Argumentation/evaluation item originally drafted (a critique of choosing
+the Heaviside step function as activation, linking Obj. 1 and Obj. 3)
+was dropped in conversation with the teacher: too complex for the
+chapter&#39;s 25′ budget and for the cognitive load already carried by item
+02 (a numerical forward pass) and item 03 (a numerical descent step).
+The Argumentation category is <em>intentionally absent</em> from this
+chapter&#39;s item bank; the chapter still verifies all three learning
+objectives across two distinct cognitive categories (Comprehension +
+Application). Chapter 5 leans heavily <em>applicativa</em>, which is
+appropriate for a chapter whose core insight is <em>operational</em> —
+&quot;you can write the equation and take the step yourself&quot;.</p>
+</blockquote>
+<blockquote>
+<p><strong>Note on numbers:</strong> the items use architectures and
+weight matrices <strong>different</strong> from those in the chapter&#39;s
+summative exercise
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+weights, in <a href="objectives.md">objectives.md</a>). Item 02 uses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>4</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 4 \to 2 \to 1</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>22</mn><annotation encoding="application/x-tex">22</annotation></semantics></math>
+weights and a concrete
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mrow><mn>4</mn><mo>×</mo><mn>3</mn></mrow></msup></mrow><annotation encoding="application/x-tex">W^{[1]} \in \mathbb{R}^{4 \times 3}</annotation></semantics></math>;
+item 03 uses a toy 2-weight network with a concrete gradient
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mi>−</mi><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(2, -4)</annotation></semantics></math>
+and learning rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\eta = 0.5</annotation></semantics></math>.
+The items measure the <em>procedure</em> — &quot;can you compose, count,
+descend?&quot; — not the student&#39;s memory of the summative-exercise rows.
+Same convention as ch. 04.</p>
+</blockquote>
+<h2 id="item--objective-map">Item ↔︎ objective map</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Learning objective</th>
+<th>Category</th>
+<th>Type</th>
+<th>Difficulty</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>Obj. 1 — describe the neuron as a generalised non-linear logistic
+unit
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">out</mtext><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{out} = g(\sum_i a_i w_i)</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+non-linear and differentiable), recognising the swap of activation as
+the <em>single</em> mathematical change relative to logistic
+regression</td>
+<td>Comprehension</td>
+<td>MCQ</td>
+<td>low–medium</td>
+<td><a href="items/item_01_neuron-as-generalised-logistic_mcq.md">item_01_neuron-as-generalised-logistic_mcq.md</a></td>
+</tr>
+<tr>
+<td>02</td>
+<td>Obj. 2 — compose the forward pass of a small fully-connected network
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[l]} = g^{[l]}(W^{[l]} a^{[l-1]})</annotation></semantics></math>):
+write the equations with explicit matrix dimensions, count the total
+weights decomposed by layer, and operate one forward pass
+numerically</td>
+<td>Application</td>
+<td>applicativa</td>
+<td>medium</td>
+<td><a href="items/item_02_forward-pass-and-weight-count_applicativa.md">item_02_forward-pass-and-weight-count_applicativa.md</a></td>
+</tr>
+<tr>
+<td>03</td>
+<td>Obj. 3 — apply the gradient-descent update
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>←</mo><mi>W</mi><mo>−</mo><mi>η</mi><mspace width="0.167em"></mspace><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W \leftarrow W - \eta \, \nabla_W L(W)</annotation></semantics></math>
+for one step: pick the correct
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mtext mathvariant="normal">next</mtext></msub><annotation encoding="application/x-tex">W_{\text{next}}</annotation></semantics></math>
+given
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><annotation encoding="application/x-tex">W_{\text{now}}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nabla_W L(W_{\text{now}})</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>,
+with distractors isolating sign-flip (ascent) and
+forgotten-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+misconceptions</td>
+<td>Application</td>
+<td>MCQ (scenario)</td>
+<td>medium</td>
+<td><a href="items/item_03_gradient-descent-step_mcq.md">item_03_gradient-descent-step_mcq.md</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="coverage">Coverage</h2>
+<p><strong>By objective</strong> (all three chapter objectives covered,
+one item per objective):</p>
+<ul>
+<li><strong>Obj. 1</strong> (neuron as generalised non-linear logistic
+unit): item 01 (Comprehension).</li>
+<li><strong>Obj. 2</strong> (forward pass + weight count, composition of
+layers): item 02 (Application, applicativa).</li>
+<li><strong>Obj. 3</strong> (gradient descent on a loss landscape,
+requirements on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>):
+item 03 (Application, MCQ scenario). Note: the <em>requirements on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math></em>
+half of Obj. 3 (non-linearity + differentiability) is verified at
+<em>teaching</em> time (frame 4 of <a href="storyboard.md">storyboard.md</a> + the in-class summative
+<em>&quot;Open the box:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>&quot;</em>
+in <a href="objectives.md">objectives.md</a>) and is <em>not</em> a
+separate evaluative item — the Argumentation item that would have done
+this was deliberately dropped (see set-size note above).</li>
+</ul>
+<p><strong>By cognitive category</strong> (2 of 4 categories, no
+pure-recall item; Argumentation absent by design):</p>
+<ul>
+<li>Knowledge: 0</li>
+<li>Comprehension: 1</li>
+<li>Application: 2</li>
+<li>Argumentation/evaluation: 0</li>
+</ul>
+<h2 id="rubrics">Rubrics</h2>
+<ul>
+<li><a href="rubriche/rubrica_02_forward-pass-and-weight-count.md">rubrica_02_forward-pass-and-weight-count.md</a>
+— item 02 (applicativa)</li>
+</ul>
+<p><em>(Items 01 and 03 are MCQ — single correct option, no
+rubric.)</em></p>
+<h2 id="internal-coherence--items-02-and-03-build-the-operational-fluency-the-chapter-requires">Internal
+coherence — items 02 and 03 build the operational fluency the chapter
+requires</h2>
+<p>The two Application items are deliberately staged so the student must
+<em>operate</em> the two halves of the chapter&#39;s mechanism:</p>
+<ul>
+<li><strong>Item 02</strong> asks the student to <em>operate the forward
+pass</em>: given an architecture and a concrete weight matrix, compute
+the first hidden layer&#39;s output. The teachable beat is the fourth
+pre-activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>z</mi><mn>4</mn><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mo>=</mo><mi>−</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">z^{[1]}_4 = -2</annotation></semantics></math>
+being killed by ReLU to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+— the non-linearity <em>doing visible work</em>.</li>
+<li><strong>Item 03</strong> asks the student to <em>operate the
+backward pass at one point</em>: given the current weights and the
+gradient at that point, compute the next weights. The teachable beat is
+the sign of the update
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>−</mi><annotation encoding="application/x-tex">-</annotation></semantics></math>,
+not
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>+</mi><annotation encoding="application/x-tex">+</annotation></semantics></math>)
+and the role of the learning rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+(step size, not magic).</li>
+</ul>
+<p>Together, items 02 and 03 cover one <em>full training iteration</em>
+— forward (input → hidden activations) and backward (gradient → updated
+weights) — without ever invoking backpropagation by name. The student
+who masters both items has <em>operated</em> the chapter&#39;s central
+machinery; item 01 then anchors the <em>recognition</em> that the atom
+of that machinery is the generalised logistic unit they already met in
+ch. 02.</p>
+<h2 id="anti-leakage--vocabulary-boundary-with-ch-06">Anti-leakage —
+vocabulary boundary with ch. 06</h2>
+<p>The items stay strictly within ch. 05 vocabulary: <em>neuron</em>,
+<em>weight</em>, <em>layer</em>, <em>activation</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>,
+<em>non-linear</em>, <em>differentiable</em>, <em>loss landscape</em>,
+<em>gradient</em>, <em>gradient descent</em>, <em>learning rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math></em>.
+They do <strong>not</strong> presuppose any concept from ch. 06+
+(convolution, kernel, filter, stride, weight sharing, recurrent
+connection, time-step, CNN, RNN, transformer, attention, LLM, agents).
+The chapter&#39;s pre-hook to ch. 06 (chest X-ray, ECG/BP trace as data
+shapes too large for a 12-weight fully-connected first layer) is staged
+in the chapter&#39;s <a href="narrative.md">narrative</a> and <a href="storyboard.md">storyboard frame 6</a>, <em>not</em> inside the
+items.</p>
+<h2 id="pre-hook-to-ch-06--left-to-the-chapter-not-embedded-in-items">Pre-hook
+to ch. 06 — left to the chapter, not embedded in items</h2>
+<p>Same convention as ch. 04 (whose pre-hook to ch. 05 was in narrative
++ storyboard, never in items). The items measure what <em>this</em>
+chapter has taught, with no forward references; the <em>narrative</em>
+of the chapter carries the bridge to the next one.</p>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 02 (Forward pass and weight count of a small
+fully-connected network)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-02-forward-pass-and-weight-count-of-a-small-fully-connected-network">Rubric
+— Item 02 (Forward pass and weight count of a small fully-connected
+network)</h1>
+<p><strong>Item</strong>: IB-05-deep-learning-02
+<strong>Objective</strong>: Compose the forward pass of a small
+fully-connected network — write the per-layer equations, identify the
+activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+at each layer, count the total weights decomposed by layer, and operate
+one forward pass numerically (Obj. 2).</p>
+<p>The rubric scores three criteria, one per sub-question, on three
+levels — <em>Base</em> (sufficiency floor), <em>Good</em> (solid
+command), <em>Excellent</em> (effortless command + notational
+hygiene).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Forward-pass composition (sub-q 1)</strong></td>
+<td>Writes the three per-layer equations in any consistent form (matrix
+or component-wise) <strong>and</strong> names the activations correctly
+(ReLU at hidden layers, sigmoid at output). Sequencing of the layers is
+right; no jump from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">a^{[0]}</annotation></semantics></math>
+directly to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">a^{[3]}</annotation></semantics></math>.
+May omit explicit matrix dimensions.</td>
+<td>All of <em>Base</em>, plus the <strong>dimensions of every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">W^{[l]}</annotation></semantics></math>
+are stated correctly</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">4 \times 3</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">2 \times 4</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">1 \times 2</annotation></semantics></math>).</td>
+<td>All of <em>Good</em>, plus the equation is written <strong>with no
+notational slips</strong> (consistent indexing, layer superscripts
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[l]</annotation></semantics></math>
+never confused with input subscripts) <strong>and</strong> the output is
+recognised as a <em>scalar</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>∈</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">a^{[3]} \in \mathbb{R}</annotation></semantics></math>
+— the student notes that the network produces a single probability, not
+a vector.</td>
+</tr>
+<tr>
+<td><strong>C2 — Weight count (sub-q 2)</strong></td>
+<td>Arrives at the <strong>correct total
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>22</mn><annotation encoding="application/x-tex">22</annotation></semantics></math></strong>
+and shows the count <strong>decomposed by layer</strong> (the three
+terms
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>⋅</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">3 \cdot 4</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>⋅</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">4 \cdot 2</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>⋅</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2 \cdot 1</annotation></semantics></math>
+— or equivalent — visible). A bare
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>22</mn><annotation encoding="application/x-tex">22</annotation></semantics></math>&quot;
+without the decomposition is <strong>below Base</strong> (it might be
+the right answer reached by the wrong route, or a guess that happens to
+land).</td>
+<td>All of <em>Base</em>, plus the <strong>dimensions of each layer
+drive the count explicitly</strong> — i.e. the student writes the count
+in the form
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">(inputs of layer)</mtext><mo>⋅</mo><mtext mathvariant="normal">(outputs of layer)</mtext></mrow><annotation encoding="application/x-tex">\text{(inputs of layer)} \cdot \text{(outputs of layer)}</annotation></semantics></math>,
+which makes it generalisable to any other architecture.</td>
+<td>All of <em>Good</em>, plus the student <strong>anticipates the bias
+case</strong> — notes spontaneously that with biases there would be
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>+</mi><mn>7</mn></mrow><annotation encoding="application/x-tex">+ (4 + 2 + 1) = + 7</annotation></semantics></math>
+additional parameters, for a total of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>29</mn><annotation encoding="application/x-tex">29</annotation></semantics></math>.</td>
+</tr>
+<tr>
+<td><strong>C3 — Operate one forward pass (sub-q 3)</strong></td>
+<td>Computes the pre-activation vector
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mi>−</mi><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">z^{[1]} = (1, 2, 1, -2)</annotation></semantics></math>
+<strong>and</strong> applies ReLU correctly to arrive at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[1]} = (1, 2, 1, 0)</annotation></semantics></math>.
+The student does <em>not</em> skip the pre-activation step (a bare
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1, 2, 1, 0)</annotation></semantics></math>&quot;
+without showing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>z</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">z^{[1]}</annotation></semantics></math>
+is below Base — it conceals whether ReLU was applied or whether the
+negative was simply ignored).</td>
+<td>All of <em>Base</em>, plus the student <strong>explicitly
+remarks</strong> that the fourth pre-activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>z</mi><mn>4</mn><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mo>=</mo><mi>−</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">z^{[1]}_4 = -2</annotation></semantics></math>
+is <strong>set to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+by ReLU</strong> (i.e. they <em>notice</em> the non-linearity doing
+work, in plain text — even one sentence is enough).</td>
+<td>All of <em>Good</em>, plus the student <strong>connects the
+observation to Obj. 3</strong> — notes that <em>if ReLU were replaced by
+the identity</em> (a linear
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>),
+the fourth output would stay at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">-2</annotation></semantics></math>
+<strong>and</strong> the whole layer would become a linear function of
+the inputs (a one-sentence link to the chapter&#39;s requirement on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza</strong>: <strong>entrambi C1 e C2 a
+Base, e C3 a Base</strong> (i.e. tutti e tre a livello <em>Base</em> o
+superiore). Saltare la scomposizione dei pesi in C2, o saltare il
+passaggio della pre-attivazione in C3, equivale a non aver svolto
+l&#39;esercizio: il <em>processo</em> è oggetto di misurazione almeno tanto
+quanto il <em>risultato</em>.</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>Premiare la lunghezza.</strong> Una soluzione che riempie
+due pagine ripetendo le stesse equazioni in tre notazioni diverse non è
+migliore di una soluzione in cinque righe corrette. Conta la
+<em>correttezza</em> + il <em>processo visibile</em>, non la prosa.</li>
+<li><strong>Penalizzare la notazione &quot;non canonica&quot; se è internamente
+consistente.</strong> Uno studente che usa
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mn>1</mn></msub><annotation encoding="application/x-tex">W_1</annotation></semantics></math>
+invece di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">W^{[1]}</annotation></semantics></math>,
+o che scrive il forward pass in forma component-wise invece che matrix
+form, <strong>non va penalizzato</strong> purché la convenzione che ha
+scelto sia applicata in modo coerente in tutte e tre le equazioni.</li>
+<li><strong>Non confondere &quot;ha dato il numero giusto&quot; con &quot;ha capito il
+processo&quot;.</strong> Un
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>22</mn><annotation encoding="application/x-tex">22</annotation></semantics></math>&quot;
+nudo senza scomposizione <strong>non è Base in C2</strong>, anche se è
+la risposta corretta — questo è il punto pedagogico dell&#39;item (chiedere
+il <em>come</em>, non solo il <em>cosa</em>). Lo stesso vale per
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[1]} = (1, 2, 1, 0)</annotation></semantics></math>
+senza
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>z</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">z^{[1]}</annotation></semantics></math>
+in C3.</li>
+<li><strong>Non penalizzare per &quot;non ha calcolato anche
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">a^{[2]}</annotation></semantics></math>
+e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">a^{[3]}</annotation></semantics></math>&quot;.</strong>
+La sub-question 3 chiede <em>esplicitamente</em> solo il primo hidden
+layer. Uno studente che continua per &quot;completezza&quot; non guadagna nulla;
+uno studente che si ferma a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">a^{[1]}</annotation></semantics></math>
+ha fatto il compito.</li>
+<li><strong>CRITICO — non scambiare <em>ReLU applicato
+correttamente</em> per <em>coincidenza numerica</em>.</strong> Lo
+studente che scrive direttamente
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>1</mn><mo>,</mo><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[1]} = (1, 2, 1, 0)</annotation></semantics></math>
+senza mostrare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>z</mi><mn>4</mn><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mo>=</mo><mi>−</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">z^{[1]}_4 = -2</annotation></semantics></math>
+può aver applicato ReLU <strong>oppure</strong> aver guardato il pattern
+dei pesi e ignorato la quarta componente per qualche altra ragione
+(errore di calcolo che si compensa, o convinzione che &quot;il quarto neurone
+non si attiva&quot;). Senza
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>z</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">z^{[1]}</annotation></semantics></math>
+esplicito non si può sapere — e in C3 il livello <em>Base</em> richiede
+esplicitamente
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>z</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">z^{[1]}</annotation></semantics></math>
+visibile prima di ReLU per questo motivo.</li>
+</ul>
+</body>
+</html>

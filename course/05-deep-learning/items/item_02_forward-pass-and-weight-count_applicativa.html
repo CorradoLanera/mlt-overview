@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 02 — Forward pass and weight count of a small
+fully-connected network</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-02--forward-pass-and-weight-count-of-a-small-fully-connected-network">Item
+02 — Forward pass and weight count of a small fully-connected
+network</h1>
+<p><strong>ID</strong>: IB-05-deep-learning-02 <strong>Learning
+objective</strong>: Compose the forward pass of a small fully-connected
+network — given an architecture spec, write the per-layer equations
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[l]} = g^{[l]}(W^{[l]} a^{[l-1]})</annotation></semantics></math>,
+identify the activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+at each layer, count the total number of weights, and <em>operate</em>
+one forward pass numerically (Obj. 2). <strong>Category</strong>:
+Application <strong>Type</strong>: applicativa
+<strong>Difficulty</strong>: medium <strong>Chapter</strong>:
+05-deep-learning</p>
+<h2 id="question">Question</h2>
+<p>Consider the following fully-connected neural network, with no bias
+terms:</p>
+<ul>
+<li>Input layer:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+features, written as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub><mo>,</mo><msub><mi>x</mi><mn>3</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>∈</mo><msup><mi>ℝ</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">a^{[0]} = (x_1, x_2, x_3) \in \mathbb{R}^3</annotation></semantics></math>.</li>
+<li>Hidden layer 1:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+neurons, activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext></mrow><annotation encoding="application/x-tex">g^{[1]} = \text{ReLU}</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{ReLU}(z) = \max(0, z)</annotation></semantics></math>.</li>
+<li>Hidden layer 2:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+neurons, activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext></mrow><annotation encoding="application/x-tex">g^{[2]} = \text{ReLU}</annotation></semantics></math>.</li>
+<li>Output layer:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+neuron, activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mi>σ</mi></mrow><annotation encoding="application/x-tex">g^{[3]} = \sigma</annotation></semantics></math>
+(sigmoid), where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>1</mn><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><msup><mi>e</mi><mrow><mi>−</mi><mi>z</mi></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\sigma(z) = 1 / (1 + e^{-z})</annotation></semantics></math>.</li>
+</ul>
+<p>Answer the three sub-questions below in order.</p>
+<h3 id="sub-question-1--write-the-forward-pass">Sub-question 1 — write
+the forward pass</h3>
+<p>Write the three forward-pass equations of this network in matrix
+form,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[l]} = g^{[l]}(W^{[l]} a^{[l-1]})</annotation></semantics></math>,
+naming the activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">g^{[l]}</annotation></semantics></math>
+at each layer. State the <em>dimensions</em> of each weight matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">W^{[l]}</annotation></semantics></math>
+explicitly (number of rows × number of columns).</p>
+<h3 id="sub-question-2--count-the-weights">Sub-question 2 — count the
+weights</h3>
+<p>Compute the <strong>total number of weights</strong> that this
+network has to learn, showing the calculation <strong>decomposed by
+layer</strong> (one term per layer), not just the final number.</p>
+<h3 id="sub-question-3--operate-one-forward-pass">Sub-question 3 —
+operate one forward pass</h3>
+<p>Given the concrete input vector
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>2</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[0]} = (1,\ 2,\ 0)</annotation></semantics></math>
+and the concrete weight matrix
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mi>−</mi><mn>1</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>−</mi><mn>1</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mn>2</mn></mtd><mtd columnalign="center" style="text-align: center"><mi>−</mi><mn>2</mn></mtd><mtd columnalign="center" style="text-align: center"><mn>0</mn></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">W^{[1]} = \begin{pmatrix} 1 &amp; 0 &amp; -1 \\ 0 &amp; 1 &amp; 1 \\ -1 &amp; 1 &amp; 0 \\ 2 &amp; -2 &amp; 0 \end{pmatrix},</annotation></semantics></math>
+compute the <strong>first hidden layer&#39;s output vector</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[1]} = \text{ReLU}(W^{[1]} a^{[0]})</annotation></semantics></math>.
+Show the intermediate pre-activation vector
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup></mrow><annotation encoding="application/x-tex">z^{[1]} = W^{[1]} a^{[0]}</annotation></semantics></math>
+explicitly <em>before</em> applying ReLU.</p>
+<h2 id="expected-answer">Expected answer</h2>
+<h3 id="sub-question-1">Sub-question 1</h3>
+<p>The three forward-pass equations, with explicit matrix
+dimensions:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[1]} = \text{ReLU}(W^{[1]} a^{[0]})</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mrow><mn>4</mn><mo>×</mo><mn>3</mn></mrow></msup></mrow><annotation encoding="application/x-tex">W^{[1]} \in \mathbb{R}^{4 \times 3}</annotation></semantics></math>,
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">a^{[1]} \in \mathbb{R}^4</annotation></semantics></math>.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[2]} = \text{ReLU}(W^{[2]} a^{[1]})</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mrow><mn>2</mn><mo>×</mo><mn>4</mn></mrow></msup></mrow><annotation encoding="application/x-tex">W^{[2]} \in \mathbb{R}^{2 \times 4}</annotation></semantics></math>,
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">a^{[2]} \in \mathbb{R}^2</annotation></semantics></math>.</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[3]} = \sigma(W^{[3]} a^{[2]})</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mrow><mn>1</mn><mo>×</mo><mn>2</mn></mrow></msup></mrow><annotation encoding="application/x-tex">W^{[3]} \in \mathbb{R}^{1 \times 2}</annotation></semantics></math>,
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>∈</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">a^{[3]} \in \mathbb{R}</annotation></semantics></math>
+— this is the final scalar output
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>y</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{y}</annotation></semantics></math>.</li>
+</ul>
+<p>A component-wise statement is also acceptable, e.g.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>a</mi><mi>j</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mn>3</mn></msubsup><msubsup><mi>W</mi><mrow><mi>j</mi><mi>i</mi></mrow><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mspace width="0.167em"></mspace><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">a^{[1]}_j = \text{ReLU}\!\left(\sum_{i=1}^{3} W^{[1]}_{ji} \, x_i\right)</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">j = 1, \ldots, 4</annotation></semantics></math>.
+ReLU at the two hidden layers, sigmoid at the output, must be
+<strong>named explicitly</strong>.</p>
+<h3 id="sub-question-2">Sub-question 2</h3>
+<p>The decomposition by layer:</p>
+<ul>
+<li>Layer 1
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">3 \to 4</annotation></semantics></math>):
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>⋅</mo><mn>4</mn><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">3 \cdot 4 = 12</annotation></semantics></math>
+weights.</li>
+<li>Layer 2
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>→</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">4 \to 2</annotation></semantics></math>):
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>⋅</mo><mn>2</mn><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">4 \cdot 2 = 8</annotation></semantics></math>
+weights.</li>
+<li>Layer 3
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2 \to 1</annotation></semantics></math>):
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>⋅</mo><mn>1</mn><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \cdot 1 = 2</annotation></semantics></math>
+weights.</li>
+</ul>
+<p><strong>Total</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mo>+</mo><mn>8</mn><mo>+</mo><mn>2</mn><mo>=</mo><mn>𝟐𝟐</mn></mrow><annotation encoding="application/x-tex">12 + 8 + 2 = \mathbf{22}</annotation></semantics></math>
+weights.</p>
+<p>(With no bias terms — as specified in the problem. If the problem had
+introduced biases, there would be
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>1</mn><mo>=</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">4 + 2 + 1 = 7</annotation></semantics></math>
+additional bias parameters, for a total of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>29</mn><annotation encoding="application/x-tex">29</annotation></semantics></math>.)</p>
+<h3 id="sub-question-3">Sub-question 3</h3>
+<p>Compute the pre-activation vector
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup></mrow><annotation encoding="application/x-tex">z^{[1]} = W^{[1]} a^{[0]}</annotation></semantics></math>
+component by component:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>z</mi><mn>1</mn><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mo>=</mo><mn>1</mn><mo>⋅</mo><mn>1</mn><mo>+</mo><mn>0</mn><mo>⋅</mo><mn>2</mn><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mn>0</mn><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">z^{[1]}_1 = 1 \cdot 1 + 0 \cdot 2 + (-1) \cdot 0 = 1</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>z</mi><mn>2</mn><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mo>=</mo><mn>0</mn><mo>⋅</mo><mn>1</mn><mo>+</mo><mn>1</mn><mo>⋅</mo><mn>2</mn><mo>+</mo><mn>1</mn><mo>⋅</mo><mn>0</mn><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">z^{[1]}_2 = 0 \cdot 1 + 1 \cdot 2 + 1 \cdot 0 = 2</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>z</mi><mn>3</mn><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mn>1</mn><mo>+</mo><mn>1</mn><mo>⋅</mo><mn>2</mn><mo>+</mo><mn>0</mn><mo>⋅</mo><mn>0</mn><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">z^{[1]}_3 = (-1) \cdot 1 + 1 \cdot 2 + 0 \cdot 0 = 1</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>z</mi><mn>4</mn><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mo>=</mo><mn>2</mn><mo>⋅</mo><mn>1</mn><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo>⋅</mo><mn>2</mn><mo>+</mo><mn>0</mn><mo>⋅</mo><mn>0</mn><mo>=</mo><mi>−</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">z^{[1]}_4 = 2 \cdot 1 + (-2) \cdot 2 + 0 \cdot 0 = -2</annotation></semantics></math></li>
+</ul>
+<p>So
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>z</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>2</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">z^{[1]} = (1,\ 2,\ 1,\ -2)</annotation></semantics></math>.</p>
+<p>Apply ReLU element-wise —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{ReLU}(z) = \max(0, z)</annotation></semantics></math>:</p>
+<ul>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\text{ReLU}(1) = 1</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">\text{ReLU}(2) = 2</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\text{ReLU}(1) = 1</annotation></semantics></math></li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\text{ReLU}(-2) = 0</annotation></semantics></math>
+← the negative pre-activation is <em>killed</em> by the
+non-linearity.</li>
+</ul>
+<p>Final:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>2</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>0</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[1]} = (1,\ 2,\ 1,\ 0)</annotation></semantics></math>.</p>
+<p>The <strong>teachable beat</strong> of this sub-question is the last
+component: the pre-activation is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">-2</annotation></semantics></math>,
+the post-activation is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.
+This is the <strong>non-linearity of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">g^{[1]}</annotation></semantics></math>
+doing actual work</strong> — a student who writes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>a</mi><mn>4</mn><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mo>=</mo><mi>−</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">a^{[1]}_4 = -2</annotation></semantics></math>
+has applied a linear function, not the ReLU specified in the
+architecture, and has implicitly turned the layer into a linear map (the
+very thing the chapter&#39;s requirement on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+rules out — see Obj. 3).</p>
+<h2 id="rubric">Rubric</h2>
+<p>See <a href="../rubriche/rubrica_02_forward-pass-and-weight-count.md">rubrica_02_forward-pass-and-weight-count.md</a>.</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

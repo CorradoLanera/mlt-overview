@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>05 — Deep Learning · Learning objectives &amp; summative
+exercise</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="05--deep-learning--learning-objectives--summative-exercise">05 —
+Deep Learning · Learning objectives &amp; summative exercise</h1>
+<blockquote>
+<p>Chapter: <strong>Deep Learning</strong> · 25 min ·
+biomedical/clinical graduate students (UBEP). Student-facing text in
+English; teacher design notes (<em>nota docente</em>) in Italian.</p>
+</blockquote>
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>By the end of this chapter, students can:</p>
+<ol type="1">
+<li><strong>Describe</strong> an artificial neuron as a <em>generalised
+non-linear logistic unit</em>: given a vector of inputs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>a</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>a</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a = (a_1, \ldots, a_n)</annotation></semantics></math>
+and weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>w</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>w</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">w = (w_1, \ldots, w_n)</annotation></semantics></math>,
+the neuron computes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">out</mtext><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></msubsup><msub><mi>a</mi><mi>i</mi></msub><mspace width="0.167em"></mspace><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{out} = g\!\left(\sum_{i=1}^{n} a_i \, w_i\right)</annotation></semantics></math>,
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>:</mo><mi>ℝ</mi><mo>→</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">g:\mathbb{R}\to\mathbb{R}</annotation></semantics></math>
+is a <strong>non-linear</strong> and <strong>differentiable</strong>
+activation function — i.e. an old logistic regression in which the
+sigmoid has been replaced by <em>any</em> such
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>.</li>
+<li><strong>Compose</strong> the forward pass of a small fully-connected
+(MLP) network: given an architecture spec — number of inputs, number of
+hidden layers and neurons per layer, output neuron — write the per-layer
+equations
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">a^{[l]} = g\!\left(W^{[l]} \, a^{[l-1]}\right)</annotation></semantics></math>,
+identify the activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+at each layer, and <strong>count the total number of weights</strong>
+the network has to learn.</li>
+<li><strong>Explain</strong> how the network <em>learns</em>: the
+weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+are the parameters; each combination of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+yields a single loss value
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L(W)</annotation></semantics></math>
+— <em>the height</em> on an error landscape; gradient descent updates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>←</mo><mi>W</mi><mo>−</mo><mi>η</mi><mspace width="0.167em"></mspace><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W \leftarrow W - \eta \, \nabla_W L(W)</annotation></semantics></math>
+to walk <em>downhill</em> — and state why the activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+must be <strong>differentiable</strong> (so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi></mrow><annotation encoding="application/x-tex">\nabla_W L</annotation></semantics></math>
+exists at every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+and descent is well-defined) <em>and</em> <strong>non-linear</strong>
+(so a stack of layers can do more than one big linear map).</li>
+</ol>
+<p><em>Nota docente:</em> tre obiettivi per 25′. <strong>L&#39;arco di ch 05
+non è &quot;scoprire il deep learning come tecnologia nuova&quot;</strong>: lo
+studente UBEP arriva avendo già un&#39;intuizione di cosa sia una rete
+neurale (&quot;una scatola che indovina&quot;). Ciò che il capitolo aggiunge — e
+che gli obiettivi codificano — è la <strong>smitizzazione
+meccanicistica</strong>: una rete profonda <strong>è</strong> una pila
+di regressioni logistiche generalizzate, addestrata facendo scendere
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+lungo il paesaggio della loss. Obj. 1 fissa il <em>componente
+atomico</em> (il neurone come logistica generalizzata, non come metafora
+del cervello); Obj. 2 fissa la <em>composizione</em> (so scrivere quante
+equazioni e contare i pesi — la rete non è più opaca, è solo
+<em>grossa</em>); Obj. 3 fissa il <em>meccanismo di apprendimento</em>
+(discesa del gradiente sulla loss). I tre vincoli matematici su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+(non-linearità + differenziabilità) sono dentro Obj. 1 + Obj. 3, ma sono
+<strong>prerequisiti operativi</strong> della discesa, non un quarto
+obiettivo separato. <strong>Voce docente — non valutato:</strong> il
+problema della loss non-convessa, il dettaglio di SGD vs gradient
+descent, la struttura di backpropagation (la <em>regola della
+catena</em> applicata strato per strato), la scelta di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+come hyper-parametro, la storia/biologia del perceptron, il confronto
+fra famiglie di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+(ReLU / sigmoid / tanh). Il pre-hook a ch 06 (CNN/RNN — <em>&quot;questa pila
+funziona, ma su una radiografia di torace cosa <strong>guarda</strong>
+davvero?&quot;</em>) va in <code>narrative.md</code>, non qui.</p>
+<h2 id="summative-live-exercise--open-the-box-3-to-2-to-2-to-1">Summative
+live exercise — &quot;Open the box:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>&quot;</h2>
+<p><em>Nota docente:</em> sommativo, gira negli <strong>ultimi
+~9′</strong> (min 16–25) dopo il neurone, l&#39;esempio MLP scritto a mano e
+il paesaggio di loss + discesa. <strong>Banco unico, condiviso da tutta
+la classe</strong> (presenza + remoto): una rete fully-connected con
+architettura <strong>3 → 2 → 2 → 1</strong>, proiettata su slide e
+stampata sui banchi —</p>
+<ul>
+<li>Input layer:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><msub><mi>x</mi><mn>2</mn></msub><mo>,</mo><msub><mi>x</mi><mn>3</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[0]} = (x_1, x_2, x_3)</annotation></semantics></math>
+— <em>p. es.</em> età, BMI, un marker di laboratorio.</li>
+<li>Hidden layer 1: 2 neuroni, activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext></mrow><annotation encoding="application/x-tex">g^{[1]} = \text{ReLU}</annotation></semantics></math>.</li>
+<li>Hidden layer 2: 2 neuroni, activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext></mrow><annotation encoding="application/x-tex">g^{[2]} = \text{ReLU}</annotation></semantics></math>.</li>
+<li>Output: 1 neurone, activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mi>σ</mi></mrow><annotation encoding="application/x-tex">g^{[3]} = \sigma</annotation></semantics></math>
+(sigmoid) — probabilità dell&#39;evento.</li>
+<li>(per semplicità: <strong>niente bias</strong> in questo esercizio —
+sarà voce docente nel reveal).</li>
+</ul>
+<p>A fianco della rete, una <strong>piccola slide della loss
+landscape</strong> (proiezione 2D su due dei pesi,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mn>1</mn></msub><annotation encoding="application/x-tex">w_1</annotation></semantics></math>
+e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mn>2</mn></msub><annotation encoding="application/x-tex">w_2</annotation></semantics></math>):
+un <em>paesaggio di colline</em> con la posizione corrente
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><annotation encoding="application/x-tex">W_{\text{now}}</annotation></semantics></math>
+marcata da un puntino. Quattro frecce candidate sono pre-stampate ai
+quattro lati del puntino (etichettate <em>A, B, C, D</em>) — una sola
+punta in direzione di discesa più ripida.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objective verified</td>
+<td>Obj. 1 (neuron as generalised non-linear logistic unit) — verificato
+nella sub-task (i), quando lo studente scrive
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[l]} = g^{[l]}(W^{[l]} a^{[l-1]})</annotation></semantics></math>
+e <em>riconosce</em> che è la stessa forma di una logistica con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+al posto della sigmoide. Obj. 2 (forward pass + parameter count) —
+verificato nelle sub-task (i) e (ii). Obj. 3 (gradient descent as
+walking downhill, properties of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>)
+— verificato nelle sub-task (iii) e (iv).</td>
+</tr>
+<tr>
+<td>In-person action</td>
+<td>Table groups received the printed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+scheme. They: <strong>(i)</strong> <strong>write the forward
+pass</strong>: the equation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">a^{[l]} = g^{[l]}\!\left(W^{[l]} a^{[l-1]}\right)</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>l</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">l = 1, 2, 3</annotation></semantics></math>,
+naming
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><annotation encoding="application/x-tex">g^{[l]}</annotation></semantics></math>
+at each layer; <strong>(ii)</strong> <strong>count the total number of
+weights</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>⋅</mo><mn>2</mn><mo>+</mo><mn>2</mn><mo>⋅</mo><mn>2</mn><mo>+</mo><mn>2</mn><mo>⋅</mo><mn>1</mn><mo>=</mo><mn>6</mn><mo>+</mo><mn>4</mn><mo>+</mo><mn>2</mn><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">3 \cdot 2 + 2 \cdot 2 + 2 \cdot 1 = 6 + 4 + 2 = 12</annotation></semantics></math>
+— they write the calculation, not just the number;
+<strong>(iii)</strong> <strong>on the loss landscape sketch</strong>,
+<strong>circle the arrow</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>)
+corresponding to the next gradient-descent step starting from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><annotation encoding="application/x-tex">W_{\text{now}}</annotation></semantics></math>,
+and write <strong>one sentence</strong> justifying it;
+<strong>(iv)</strong> <strong>answer in one sentence</strong>: <em>&quot;What
+two mathematical properties must the activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+have, and why does each one matter for the procedure you just performed
+in sub-task (iii)?&quot;</em> — the answer must name
+<strong>non-linearity</strong> (otherwise the stack collapses to one big
+linear map) <strong>and</strong> <strong>differentiability</strong>
+(otherwise
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi></mrow><annotation encoding="application/x-tex">\nabla_W L</annotation></semantics></math>
+does not exist and there is no descent direction to pick). Each group
+photographs its sheet and drops it into the shared doc.</td>
+</tr>
+<tr>
+<td>Remote equivalent</td>
+<td>Same scheme + same loss-landscape slide on a shared doc. Remote
+groups type their forward-pass equations and the weight-count
+calculation directly into their row of the shared doc, and answer
+sub-task (iv) as text. Two Slido polls run live, capturing
+<strong>all</strong> students individually: <strong>Poll 1 — &quot;Total
+weights in this network?&quot;</strong> (options
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>17</mn><annotation encoding="application/x-tex">17</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>24</mn><annotation encoding="application/x-tex">24</annotation></semantics></math>);
+<strong>Poll 2 — &quot;Next gradient-descent step?&quot;</strong> (options
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>,
+the four arrows on the landscape). The polls make the remote signal on
+Obj. 2 and Obj. 3 visible <em>next to</em> the in-person sketches.</td>
+</tr>
+<tr>
+<td>Shared artifact</td>
+<td>A single shared doc / whiteboard with a 4-column row per group:
+<em>forward-pass equations</em> · <em>weight-count calculation =
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math></em>
+· <em>chosen arrow
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>/</mi><mi>B</mi><mi>/</mi><mi>C</mi><mi>/</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">A/B/C/D</annotation></semantics></math>
++ 1-sentence why</em> · <em>1-sentence on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math></em>.
+Two Slido bar charts (poll 1 and poll 2) projected next to it, visible
+to in-person and remote at once.</td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>9 min, minutes 16–25 (end of chapter): ~1′ read the spec + open the
+polls, ~3′ write the forward pass + count the weights (poll 1 closes
+when ≥80% have voted), ~2′ pick the arrow on the landscape + 1-sentence
+why (poll 2 closes the same way), ~1′ 1-sentence on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>,
+~2′ instructor-led reveal — the 12-weight count is read off the board,
+<em>Poll 1</em> histogram is shown (the wrong distractors are
+<em>named</em>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8</mn><mo>=</mo><mn>6</mn><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">8 = 6 + 2</annotation></semantics></math>
+= ha contato solo i due strati estremi e dimenticato lo strato
+intermedio
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>→</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \to 2</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+pesi),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>17</mn><mo>=</mo><mn>12</mn><mo>+</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">17 = 12 + 5</annotation></semantics></math>
+= ha <strong>incluso i bias</strong> (uno per neurone non-input:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>1</mn><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">2 + 2 + 1 = 5</annotation></semantics></math>
+bias) — è la risposta dello studente che ha già visto le reti neurali
+&quot;complete&quot;,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>24</mn><mo>=</mo><mn>2</mn><mo>⋅</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">24 = 2 \cdot 12</annotation></semantics></math>
+= ha contato ogni connessione due volte (una per direzione: in-bound e
+out-bound — errore di doppio-conteggio direzionale)), the correct arrow
+is revealed on the landscape and the <em>Poll 2</em> histogram is shown,
+the two properties of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+are named together, <strong>and the instructor explicitly closes the
+chapter&#39;s cliff-hanger with the spine beat</strong>: <em>&quot;this stack of
+generalised logistic units <strong>is</strong> what &#39;deep&#39; means — there
+is no magic inside, only
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+weights walking downhill — Elena can now look inside the box she used to
+obey.&quot;</em></td>
+</tr>
+<tr>
+<td>Success criterion</td>
+<td>The class produces, on the shared artifact: <strong>(i)</strong> the
+three forward-pass equations correctly composed —
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[1]} = \text{ReLU}(W^{[1]} \, a^{[0]})</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[2]} = \text{ReLU}(W^{[2]} \, a^{[1]})</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[3]} = \sigma(W^{[3]} \, a^{[2]})</annotation></semantics></math></em>
+(or the equivalent written component-wise, e.g.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>a</mi><mi>j</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mn>3</mn></msubsup><msubsup><mi>W</mi><mrow><mi>j</mi><mi>i</mi></mrow><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msubsup><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[1]}_j = \text{ReLU}(\sum_{i=1}^{3} W^{[1]}_{ji} x_i)</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">j = 1, 2</annotation></semantics></math>);
+<strong>(ii)</strong> the weight count
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mo>=</mo><mn>6</mn><mo>+</mo><mn>4</mn><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">12 = 6 + 4 + 2</annotation></semantics></math>
+shown <strong>as a sum</strong>, not just as a number — a group that
+writes only &quot;12&quot; without the per-layer decomposition has reached the
+right answer by the wrong route and is corrected in the reveal; <em>Poll
+1</em> shows the modal answer at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>;
+<strong>(iii)</strong> the arrow chosen is the one pointing in the
+<strong>direction of steepest descent</strong> (i.e. opposite to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi></mrow><annotation encoding="application/x-tex">\nabla_W L</annotation></semantics></math>
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><annotation encoding="application/x-tex">W_{\text{now}}</annotation></semantics></math>),
+and the 1-sentence justification names <em>&quot;opposite of the
+gradient&quot;</em> or <em>&quot;the direction where the loss decreases
+fastest&quot;</em>; <em>Poll 2</em> shows the modal answer on the correct
+arrow; <strong>(iv)</strong> the 1-sentence on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+names <strong>both</strong> properties — <strong>non-linear</strong>
+<em>and</em> <strong>differentiable</strong> (a student who writes
+<em>&quot;piecewise differentiable&quot;</em> is <strong>accepted as
+correct</strong> and praised — it is the technically sharper statement,
+see <em>Nota docente — anti-trabocchetto su ReLU</em> below) —
+<em>and</em> matches each property to its role (non-linearity → the
+stack is not equivalent to one linear neuron; differentiability → the
+gradient exists and descent has a well-defined direction). <strong>Live
+signal of mastery:</strong> the class can read off the board, without
+prompting, that <em>the network is a composition of generalised
+non-linear logistic units, has a finite (and small!) parameter count,
+and learns by walking down the loss landscape</em> — i.e. it is
+<strong>not</strong> a black box, it is a <em>big</em> box whose pieces
+have all been named.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Nota docente — perché duale funziona qui:</em> l&#39;artefatto è
+<strong>uno solo</strong> (la rete
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
++ la slide del landscape) e tutto il sommativo è verbale / numerico /
+&quot;metti un cerchio sulla freccia&quot; — niente da disegnare ex novo, niente
+asimmetria presenza/remoto. I due poll Slido danno al docente un segnale
+immediato e individuale anche dai remoti su Obj. 2 (conta dei pesi) e
+Obj. 3 (direzione di discesa) — sono i due punti del capitolo dove
+l&#39;errore tipico è secco e diagnosticabile in 30″. Le risposte testuali
+nel doc condiviso danno la traccia osservabile per Obj. 1 (la frase su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>)
+e per la <em>giustificazione</em> di Obj. 3 (la sentenza sull&#39;opposto
+del gradiente). Se la classe è piccola (&lt; 3 gruppi), tieni tutti come
+un unico gruppo collettivo: l&#39;esercizio resta valido e accorcia il
+reveal.</p>
+<p><em>Nota docente — sulla scelta dei numeri e dei distrattori:</em>
+l&#39;architettura
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+è la più piccola che mostri <strong>tutti e tre i meccanismi</strong>
+(composizione su più strati nascosti, mix di attivazioni ReLU+sigmoid,
+conteggio dei pesi non banale).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+pesi è basso quanto basta per essere contabile a mente in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>30</mn><mo>″</mo></msup></mrow><annotation encoding="application/x-tex">\sim 30&#39;&#39;</annotation></semantics></math>,
+alto abbastanza per scoraggiare il conteggio per enumerazione. I
+distrattori del <em>Poll 1</em> sono diagnostici:
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8</mn><mo>=</mo><mn>6</mn><mo>+</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">8 = 6 + 2</annotation></semantics></math></strong>
+= ha contato solo i due strati estremi (ingresso
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>⋅</mo><mn>2</mn><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">3 \cdot 2 = 6</annotation></semantics></math>
++ uscita
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>⋅</mo><mn>1</mn><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \cdot 1 = 2</annotation></semantics></math>)
+e ha dimenticato lo strato nascosto intermedio
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>→</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \to 2</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+pesi) — è il <em>salto visivo</em> dello studente che guarda &quot;input +
+output&quot; e non conta i passaggi in mezzo;
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>17</mn><mo>=</mo><mn>12</mn><mo>+</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">17 = 12 + 5</annotation></semantics></math></strong>
+= ha incluso i bias (uno per ogni neurone non-input:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+sull&#39;hidden 1 +
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+sull&#39;hidden 2 +
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+sull&#39;output =
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+bias) — è la risposta dello studente che ha <em>già visto</em> le reti
+neurali &quot;complete&quot;, e qui andrà <em>premiato per l&#39;osservazione</em> nel
+reveal (&quot;hai ragione, normalmente ci sono i bias; oggi li abbiamo tolti
+per semplicità — sarebbero
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+parametri in più, e arriveremmo a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>17</mn><annotation encoding="application/x-tex">17</annotation></semantics></math>&quot;);
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>24</mn><mo>=</mo><mn>2</mn><mo>⋅</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">24 = 2 \cdot 12</annotation></semantics></math></strong>
+= ha contato ogni connessione due volte (errore di doppio-conteggio
+direzionale: la connessione <em>neurone
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+→ neurone
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math></em>
+è <strong>una</strong> sola, non una &quot;in-bound&quot; + una &quot;out-bound&quot;). Per
+il <em>Poll 2</em> le quattro frecce
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>,</mo><mi>B</mi><mo>,</mo><mi>C</mi><mo>,</mo><mi>D</mi></mrow><annotation encoding="application/x-tex">A, B, C, D</annotation></semantics></math>
+ruotano attorno a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><annotation encoding="application/x-tex">W_{\text{now}}</annotation></semantics></math>:
+una sola punta in <em>direzione anti-gradiente</em> (Poll 2 risposta
+corretta), una in <em>direzione del gradiente</em> (sbagliato — sale
+invece di scendere), una <em>tangente</em> alla curva di livello
+(sbagliato — non scende), una <em>random in salita laterale</em>
+(sbagliato — terreno più alto).</p>
+<p><em>Nota docente — anti-trabocchetto su &quot;ReLU non è differenziabile
+in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>&quot;:</em>
+uno studente attento può obiettare che ReLU <strong>non è
+differenziabile in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></strong>,
+e quindi sembrerebbe violare il requisito di Obj. 3. La risposta —
+<strong>voce docente nel reveal, non parte della valutazione</strong> —
+è duplice: (a) in pratica si usa il <em>sub-gradiente</em> in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+(convenzionalmente
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>),
+e in tutti i punti
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>≠</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">w \ne 0</annotation></semantics></math>
+il gradiente esiste; (b) la <strong>differenziabilità a tratti</strong>
+è sufficiente per la discesa numerica. Premia lo studente che solleva
+l&#39;osservazione: è esattamente il livello di precisione che il corso
+vuole costruire — <em>capire la macchina prima di fidarsi</em>. Ma non
+chiederlo all&#39;esame: in 25′ è scopo collaterale.</p>
+</body>
+</html>

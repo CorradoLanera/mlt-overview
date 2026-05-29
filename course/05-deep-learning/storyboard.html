@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>05 — Deep Learning · storyboard (6 frames)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="05--deep-learning--storyboard-6-frames">05 — Deep Learning ·
+storyboard (6 frames)</h1>
+<blockquote>
+<p>Visual plan for the chapter, built from its <a href="narrative.md">arc</a> and <a href="objectives.md">objectives</a>.
+25 min, dual classroom (in-person + remote). On-screen text in
+<strong>English</strong> (≤ 1 sentence/frame, 3-second readable);
+regia/voce docente in <em>italiano</em>. Feeds
+<code>mlt-quarto-build</code>.</p>
+</blockquote>
+<blockquote>
+<p>🎨 La colonna <strong>Visual</strong> è la descrizione sintetica (per
+noi). I <strong>prompt pronti per un generatore di immagini</strong> —
+con lo stesso <em>style-anchor</em> condiviso dei cap. 01–04 — stanno
+nella sezione <strong><code>## Prompt visivi</code></strong> in fondo.
+Eventuali label numeriche / matematiche (es.
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math></em>,
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math></em>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><annotation encoding="application/x-tex">W_{\text{now}}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>/</mi><mi>B</mi><mi>/</mi><mi>C</mi><mi>/</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">A/B/C/D</annotation></semantics></math>)
+si aggiungono <strong>come overlay</strong> in slide-editor.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funzione</th>
+<th>Visual</th>
+<th>Testo a video</th>
+<th>Voce docente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Hook visivo</td>
+<td>A monstrous matte-black box hovers in the centre, <strong>densely
+larger than the frame can comfortably hold</strong>. From its inside, a
+soft cascade of countless unreadable tiny floating tokens spills out
+(the weights — <em>many</em>). A small clinician silhouette stands
+below, looking up — neutral, not afraid, <em>interrogative</em>. The box
+is <strong>sealed-looking but not glowing</strong>: dark, dense,
+ordinary.</td>
+<td><em>&quot;A million weights. No verdict explained.&quot;</em></td>
+<td>Elena ha imparato a verificare un modello <em>qualsiasi</em> col
+cap. 04. Ma davanti a una rete profonda — milioni di pesi, ovunque
+chiamata <em>black box</em> — sente il riflesso del cap. 01: <em>avrà
+ancora ragione la macchina?</em></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Contesto</td>
+<td>Split panel — <strong>LEFT</strong> a clean ch. 02-style logistic
+regression: a 2D scatter with a sigmoid curve threading through the
+points, labelled visually as <em>the classifier of ch. 02</em>.
+<strong>RIGHT</strong> the canonical artificial-neuron diagram:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+input nodes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+a weighted sum bubble
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>∑</mo><annotation encoding="application/x-tex">\sum</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+a non-linear activation function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+(drawn as a ReLU &quot;ramp&quot; + tanh &quot;S&quot; + sigmoid alternatives stacked behind
+it)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+one output node. A <strong>bright equality bracket</strong> spans the
+two panels, indicating <em>same machinery</em>.</td>
+<td><em>&quot;One neuron is one logistic — with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+free to be anything.&quot;</em></td>
+<td>Il neurone delle reti profonde <strong>non</strong> è una creatura
+nuova: è la stessa logistica di cap. 02, con la sigmoide <em>sostituita
+da una qualsiasi</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+non-lineare differenziabile. Niente magia.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sfida / Dati</td>
+<td>The <strong>whole
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+network</strong> drawn cleanly across the frame:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+input nodes on the left, two hidden layers of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+neurons each,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+sigmoid output node on the right; <strong>every connection (weight) is
+individually drawn as a thin line, and each line carries a small
+overlaid number
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">1, 2, \ldots, 12</annotation></semantics></math></strong>.
+In the bottom-right corner, a <strong>large numeric badge</strong>
+displays the count:
+<strong>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>&quot;</strong>.</td>
+<td><em>&quot;This is a deep network. Count them: twelve.&quot;</em></td>
+<td>Lo &quot;stack&quot; è l&#39;unico ingrediente <em>deep</em>. Una rete giocattolo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+ha esattamente
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+pesi — uno per ciascuna freccia che state vedendo. Non un milione:
+dodici. Lo <em>stesso</em> ragionamento scala.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Nodo / Impatto</td>
+<td>A <strong>stylised 3D loss landscape</strong>: a smooth rolling
+surface (hills + valleys), with two horizontal axis labels
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mn>1</mn></msub><mo>,</mo><msub><mi>w</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">w_1, w_2</annotation></semantics></math>
+(the weights as coordinates) and a vertical axis labelled by an upward
+arrow toward &quot;higher loss&quot;. A small bright marker
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><annotation encoding="application/x-tex">W_{\text{now}}</annotation></semantics></math>
+sits on a hillside. A clean arrow tangent to the surface departs from it
+pointing <strong>downslope</strong>, with a faint trail of dotted
+footsteps continuing toward a basin. Two small floating side-notes:
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+non-linear → surface is curved, not flat&quot;</em> and
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+differentiable → surface has a slope at every point&quot;</em>.</td>
+<td><em>&quot;Weights are coordinates. Loss is the height. Walk
+downhill.&quot;</em></td>
+<td>Il training di una rete profonda <strong>è</strong> discesa di
+gradiente su un paesaggio: ogni combinazione di pesi è un punto,
+l&#39;errore è l&#39;<em>altezza</em>, e si cammina in giù. Le due proprietà di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+servono qui — non come algebra, come <em>forma</em> del terreno.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Metodo / Soluzione (forward pass + descent step — summative
+perno)</td>
+<td><strong>Top half:</strong> the <strong>same
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+network</strong> from frame 3, with the four forward-pass equations
+overlaid on the right
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[1]} = \text{ReLU}(W^{[1]} a^{[0]})</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mtext mathvariant="normal">ReLU</mtext><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[2]} = \text{ReLU}(W^{[2]} a^{[1]})</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><mi>σ</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[3]} = \sigma(W^{[3]} a^{[2]})</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>y</mi><mo accent="true">̂</mo></mover><mo>=</mo><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mn>3</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\hat{y} = a^{[3]}</annotation></semantics></math>).
+<strong>Bottom half:</strong> a 2D top-down <strong>contour map of a
+loss landscape</strong> — the contour rings are clearly
+<strong>elliptical (not circular)</strong> with a visible major-axis
+along one direction, suggesting an anisotropic basin with a single
+minimum <strong>inside the central ellipse</strong>. A single bright
+marker
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><annotation encoding="application/x-tex">W_{\text{now}}</annotation></semantics></math>
+sits <strong>on one of the outer contour rings, well off-centre</strong>
+(i.e. <strong>not</strong> at the minimum). From that marker, exactly
+<strong>four straight arrows</strong> depart, each with the <strong>same
+visible length</strong>, in four geometrically distinct directions
+designed so each one isolates a single misconception (labels
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>/</mi><mi>B</mi><mi>/</mi><mi>C</mi><mi>/</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">A/B/C/D</annotation></semantics></math>
+are added as slide-editor overlay, not in the image): one arrow points
+<strong>perpendicular to the local contour toward the minimum</strong>
+(the correct anti-gradient, <em>steepest descent</em>); one points
+<strong>perpendicular to the local contour away from the
+minimum</strong> (the gradient itself — <em>sign-flip</em>); one runs
+<strong>tangent to the local contour</strong> (along the ring, neither
+up nor down — <em>perpendicular ≠ descent</em>); one points
+<strong>diagonally at ~45° to the tangent</strong>, crossing several
+contour rings at an oblique angle (<em>descent direction, but not
+steepest</em>). A small caption: <em>&quot;pick one — and say why&quot;</em>.</td>
+<td><em>&quot;Forward pass on the left. Descent step on the right. Both yours
+to read.&quot;</em></td>
+<td>È qui che gira il sommativo <strong>&quot;Open the box:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>&quot;</strong>
+(vedi <a href="objectives.md">objectives.md</a>). I gruppi (presenza +
+remoto) scrivono il forward pass, <strong>contano i pesi</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">= 12</annotation></semantics></math>
+archi senza bias;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>17</mn></mrow><annotation encoding="application/x-tex">= 17</annotation></semantics></math>
+se aggiungiamo i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+bias — vedi sotto), e scelgono la <strong>freccia</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>/</mi><mi>B</mi><mi>/</mi><mi>C</mi><mi>/</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">A/B/C/D</annotation></semantics></math>)
+in direzione anti-gradiente. Due poll Slido aprono live. <strong>Nota
+geometrica:</strong> la <em>contour ellittica</em> + il <em>marker
+off-centre</em> sono pedagogicamente non-negoziabili: con contour
+circolari simmetriche qualunque arrow radiale sarebbe perpendicolare ai
+contour e il quiz collassa; col marker al minimo, <em>nessuna</em>
+direzione è downhill. Le <strong>4 arrows isolano 4 misconception
+distinte</strong> (correct / sign-flip / tangent /
+oblique-but-descending), in modo che il poll 2 sia diagnostico.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Payoff / Domanda finale</td>
+<td>The monstrous black box of frame 1 <strong>dissolves</strong>: where
+it stood is now the same lattice pattern of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>,
+but <strong>scaled up to many more layers and many more nodes</strong> —
+the same atoms, <em>just more of them</em>. A small tag floats beside
+it: <em>&quot;same atoms · more of them&quot;</em>. <strong>On the
+horizon</strong>, two new shapes have appeared, <strong>deliberately too
+big for the lattice</strong>: a <strong>chest X-ray</strong> image
+(clearly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>6</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^6</annotation></semantics></math>
+pixels, suggested by a fine grain) and a <strong>wavy signal
+trace</strong> of varying length (an ECG / blood-pressure rhythm strip).
+Both carry small floating question marks.</td>
+<td><em>&quot;It&#39;s not magic — it&#39;s just bigger. But what about a chest
+X-ray?&quot;</em></td>
+<td>La scatola era <em>grande</em>, non <em>sigillata</em>. Ma le
+immagini cliniche e i segnali non sono vettori da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>:
+la stessa macchina sopravvive solo con una <em>regola sui pesi
+condivisi</em>. Capitolo 6.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="modalità-duale--dove-si-attiva">Modalità duale — dove si
+attiva</h2>
+<p>Il riquadro <strong>5</strong> è il perno attivo: lì gira il
+sommativo &quot;<strong>Open the box:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math></strong>&quot;
+(vedi <a href="objectives.md">objectives.md</a>). L&#39;artefatto condiviso
+è <strong>uno solo</strong> — la rete + la landscape sketch — proiettato
+e distribuito su carta. Tutta la classe lavora sullo <strong>stesso
+banco</strong> (presenza + remoto), niente group cards diverse: capitolo
+da 25′ troppo breve per la struttura a tre-card di ch. 03/04. Due
+<strong>poll Slido individuali</strong> corrono in parallelo: <em>Poll 1
+&quot;Total weights in this network?&quot;</em> (opzioni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8</mn><mi>/</mi><mn>12</mn><mi>/</mi><mn>17</mn><mi>/</mi><mn>24</mn></mrow><annotation encoding="application/x-tex">8 / 12 / 17 / 24</annotation></semantics></math>
+— diagnostici:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>=strato
+intermedio dimenticato,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>17</mn><annotation encoding="application/x-tex">17</annotation></semantics></math>=incluso
+i bias,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>24</mn><annotation encoding="application/x-tex">24</annotation></semantics></math>=doppio
+conteggio direzionale) e <em>Poll 2 &quot;Next gradient-descent step?&quot;</em>
+(opzioni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>/</mi><mi>B</mi><mi>/</mi><mi>C</mi><mi>/</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">A/B/C/D</annotation></semantics></math>
+— solo una in direzione anti-gradiente; le altre tre sono
+<em>sign-flip</em> / <em>tangente al contour</em> / <em>obliqua a
+45°</em>, vedi prompt visivo riquadro 5). Il doc condiviso raccoglie 4
+colonne: forward-pass equations · weight count
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">= 12</annotation></semantics></math>
+· arrow + 1-sentence why · 1-sentence on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>.
+Riquadri 1–4 espositivi (~16′), riquadro 5 ospita i ~9′ di sommativo
+(min 16–25), riquadro 6 chiude e fa ponte (~1′ alla fine, sovrapposto al
+min 25).</p>
+<h3 id="nota-meta--12-nel-titolo-17-nel-badge-di-sb-05_03">Nota meta —
+<em>&quot;12&quot; nel titolo, &quot;17&quot; nel badge di sb-05_03</em></h3>
+<p>L&#39;immagine <strong>sb-05_03</strong> (BEAT 3) mostra il badge
+&quot;<strong>17 TOTAL PARAMETERS</strong>&quot;, mentre il <em>testo a video</em>
+della stessa slide dice <em>&quot;Count them: twelve.&quot;</em>. È un
+<strong>accidente felice del generatore AI</strong> (che ha incluso
+anche i bias nel conteggio invece di limitarsi alle
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+arches richieste dal prompt), e va <strong>tenuto e sfruttato come
+teachable moment</strong>, non corretto:</p>
+<ul>
+<li><strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math></strong>
+= numero di <strong>pesi</strong> propriamente detti = numero di archi
+(connessioni) della rete =
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>⋅</mo><mn>2</mn><mo>+</mo><mn>2</mn><mo>⋅</mo><mn>2</mn><mo>+</mo><mn>2</mn><mo>⋅</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3\cdot 2 + 2\cdot 2 + 2\cdot 1</annotation></semantics></math>.
+È la grandezza che chiediamo nel summative (&quot;no biases&quot;), e la risposta
+corretta del Poll 1.</li>
+<li><strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>17</mn><annotation encoding="application/x-tex">17</annotation></semantics></math></strong>
+= numero di <strong>parametri totali</strong> = pesi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>+</mi><annotation encoding="application/x-tex">+</annotation></semantics></math>
+bias =
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mo>+</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">12 + 5</annotation></semantics></math>,
+con un bias per ciascun neurone non-input
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2 + 2 + 1</annotation></semantics></math>).
+È il distrattore del Poll 1, e l&#39;autorità visiva dell&#39;immagine di BEAT 3
+lo rende un&#39;opzione &quot;convincente&quot; — il che è esattamente il tipo di
+trappola che il poll deve catturare.</li>
+<li><strong>Voce docente al reveal del Poll 1:</strong> <em>&quot;Avete visto
+&#39;17&#39; nell&#39;immagine quando ho introdotto la rete. È un altro modo di
+contare, e non è sbagliato: include i bias, uno per neurone non-input.
+Nel summative ho chiesto i <strong>pesi</strong> — gli archi — e sono
+dodici. La distinzione <strong>pesi vs parametri</strong> la rivedremo
+nel cap. 06: con weight sharing, due reti con lo stesso numero di archi
+possono avere numeri di parametri molto diversi.&quot;</em></li>
+</ul>
+<p>Quindi la slide del summative deve <strong>mantenere</strong> la
+dicitura &quot;no biases&quot; e contare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>,
+ma la voce docente apre il <em>bridge</em> a &quot;pesi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≠</mo><annotation encoding="application/x-tex">\ne</annotation></semantics></math>
+parametri&quot; sul reveal — sfruttando l&#39;immagine BEAT 3 come prova visiva
+dell&#39;altro regime.</p>
+<h2 id="prompt-visivi">Prompt visivi</h2>
+<p>Prompt pronti per un generatore di immagini. Lo
+<strong><code>style-anchor</code></strong> è definito <em>una volta</em>
+(stesso dei cap. 01–04, per coerenza di serie tra capitoli) e va
+premesso a ogni prompt come parametro. Mai testo / lettere / numeri
+dentro l&#39;immagine — le label matematiche e le frecce
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>/</mi><mi>B</mi><mi>/</mi><mi>C</mi><mi>/</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">A/B/C/D</annotation></semantics></math>
+si aggiungono come overlay in slide-editor.</p>
+<p><strong><code>style-anchor</code></strong> = <em>&quot;Coherent image set,
+one shared visual identity: warm orange (#E8741E) as the single accent
+colour on a dark-slate background, soft cinematic lighting, 16:9, crisp
+and high quality, no text, letters or numbers rendered anywhere in the
+image.&quot;</em></p>
+<ul>
+<li><strong>Riquadro 1 (Hook)</strong>: <code>style-anchor</code> +
+<em>a massive matte-black cube hovering at the centre of the frame,
+oversized so its edges nearly touch the frame, its surface dense and
+slightly textured, evidently sealed; a soft cascade of countless tiny
+abstract floating tokens spills downward from inside it like a slow rain
+of unreadable symbols (no actual letters or numbers visible); a small
+human silhouette stands at the bottom of the frame looking up at the
+cube — neutral, calm, attentive; lighting from above, the silhouette in
+soft warm rim-light.</em></li>
+<li><strong>Riquadro 2 (Contesto — same neuron as ch. 02
+logistic)</strong>: <code>style-anchor</code> + <em>split-panel diagram,
+two halves separated by a thin glowing bracket symbol indicating
+equality. Left half: a 2D scatter of two-colour patient dots with a
+smooth S-shaped sigmoid curve threading through them, labelled visually
+as a classifier line. Right half: a clean artificial neuron diagram —
+three input circular nodes on the far left, three thin lines converging
+into a small summation bubble in the middle, then a single arrow exiting
+through a stylised non-linear activation shape (a ramp / kink / curve,
+suggesting ReLU and sigmoid stacked subtly behind each other), then one
+output node on the far right.</em> <strong>(Continuity callback to ch.
+02 frame 4.)</strong></li>
+<li><strong>Riquadro 3 (Sfida / Dati — the 3→2→2→1 net)</strong>:
+<code>style-anchor</code> + <em>a clean side-on diagram of a small
+fully-connected neural network: three input circular nodes on the far
+left arranged vertically, then a hidden layer of two nodes, then a
+second hidden layer of two nodes, then one output node on the far right;
+every node is connected to every node of the next layer by a thin clean
+orange line, each line clearly visible and uncrowded; in the
+bottom-right corner, a single large glowing rounded numeric badge stands
+out as a focal accent (the badge itself is the only luminous element
+apart from the network).</em></li>
+<li><strong>Riquadro 4 (Nodo / loss landscape)</strong>:
+<code>style-anchor</code> + <em>a stylised three-dimensional loss
+landscape rendered as a smooth rolling terrain with rounded hills and
+valleys, two horizontal axes suggested at the base of the figure, and a
+vertical axis suggested by a single upward arrow on the side; a small
+bright orange spherical marker sits on the upper slope of one hill; a
+clean curved arrow departs from the marker tangent to the surface and
+points downslope toward a nearby basin, with a faint dotted trail of
+footsteps continuing the path along the surface; lighting suggests
+altitude — peaks slightly brighter, valleys in soft shadow.</em></li>
+<li><strong>Riquadro 5 (Metodo + summative perno)</strong>:
+<code>style-anchor</code> + <em>the frame is split into two halves by a
+thin horizontal divider line. <strong>Top half:</strong> the same small
+fully-connected network as frame 3 — three input circular nodes on the
+far left arranged vertically, then a hidden layer of two nodes, then a
+second hidden layer of two nodes, then one output node on the far right;
+every node connected to every node of the next layer by a thin clean
+orange line, each line clearly visible and uncrowded (the <strong>twelve
+weight-arches</strong>, individually countable). <strong>Bottom
+half:</strong> a top-down contour map of a loss landscape — concentric
+closed contour rings that are <strong>clearly elliptical, not
+circular</strong> (longer along a visible major axis than along the
+orthogonal minor axis), suggesting an anisotropic basin with a single
+minimum at the centre of the innermost ellipse. A single bright orange
+spherical marker is placed <strong>on one of the outer contour rings,
+well off-centre (NOT at the minimum)</strong> — its position should sit
+on the upper-right slope of the basin. From that marker, exactly
+<strong>four straight arrows of equal visible length</strong> depart, in
+four geometrically distinct directions, each chosen to read as a
+separate candidate path: (1) <strong>perpendicular to the local contour
+ring at the marker, pointing inward toward the central minimum</strong>
+— this is the steepest-descent direction; (2) <strong>perpendicular to
+the local contour ring, pointing outward away from the minimum</strong>
+— the opposite direction; (3) <strong>tangent to the local contour ring
+at the marker, sliding along the same ring</strong> — neither toward nor
+away from the minimum; (4) <strong>diagonal at roughly forty-five
+degrees relative to the tangent direction</strong>, crossing several
+contour rings at an oblique angle and gently moving toward the minimum
+but not perpendicularly. The four arrows must be <strong>visually
+unambiguous in their geometric role</strong> (one clearly
+perpendicular-inward, one perpendicular-outward, one tangent, one
+oblique), arranged so a viewer can immediately tell them apart. The
+marker position and the four arrow tip positions must be unobstructed by
+contour lines crossing through them. No text, letters or numbers
+rendered anywhere in the image — the labels
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>/</mi><mi>B</mi><mi>/</mi><mi>C</mi><mi>/</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">A/B/C/D</annotation></semantics></math>
+are added as slide-editor overlay on top of each arrow.</em></li>
+<li><strong>Riquadro 6 (Payoff + pre-hook ch. 06)</strong>:
+<code>style-anchor</code> + <em>in the centre, the same small
+fully-connected network pattern as frame 3 scaled up dramatically — many
+more layers and many more nodes per layer, the lattice extending toward
+the edges of the central area, but each node and connection still
+distinct and uncrowded; on the horizon at the back of the frame, two new
+visual elements emerge softly out of focus — on one side, the silhouette
+of a chest X-ray image with the suggestion of a very fine pixel grain,
+and on the other side, a long wavy rhythm-trace signal of varying
+amplitude extending horizontally; both horizon shapes look noticeably
+larger than what the central lattice could comfortably ingest.</em>
+<strong>(Pre-hook to ch. 06 unstructured data.)</strong></li>
+</ul>
+<h2 id="verifica-post-output-auto-check">Verifica post-output
+(auto-check)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked></input>Riquadro 1 aggancia in 3
+secondi? — sì: la <em>scatola monstrous</em> + i pesi che colano + &quot;A
+million weights. No verdict explained.&quot; è un trigger immediato del
+riflesso &quot;obey-the-machine&quot; del cap. 01.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 3 il dato chiave
+è VISIBILE? — sì: <em>ogni</em> connessione disegnata individualmente,
+una per una, <strong>contabili</strong> dallo studente (1, 2, ..., 12),
+e il badge
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>&quot;
+finale fissa il dato in un solo gesto. È la <em>dimostrazione
+visiva</em> che &quot;deep&quot; significa
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+(o
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>6</mn></msup><annotation encoding="application/x-tex">10^6</annotation></semantics></math>)
+pesi&quot;, non &quot;magia&quot;.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 4 il nodo è il
+concetto centrale del capitolo? — sì: il <strong>paesaggio di loss +
+discesa</strong> è la traduzione visiva del meccanismo unico di
+apprendimento delle reti profonde (gradient descent), e i due side-note
+esplicitano <em>operativamente</em> il ruolo delle due proprietà di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+(non-linearità → terreno curvo; differenziabilità → pendenza ovunque). I
+tre obiettivi del capitolo sono coperti: Obj. 1 in frame 2, Obj. 2 in
+frame 3 + 5 (top), Obj. 3 in frame 4 + 5 (bottom).</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 6 lascia una
+domanda-ponte? — sì: <em>&quot;It&#39;s not magic — it&#39;s just bigger. But what
+about a chest X-ray?&quot;</em> + l&#39;orizzonte con RX torace + segnale ECG →
+cliff-hanger lessicale e visivo a ch. 06 (CNN/RNN). La frase ha
+<strong>due beat</strong> in una riga: prima rassicura sul payoff di ch.
+05 (<em>non è magia</em>), poi sposta il problema
+(<em>ma…</em>).</label></li>
+<li><label><input type="checkbox" checked></input>Solo i 6 riquadri (senza
+voce) raccontano l&#39;arco? — sì: scatola nera intimidatoria → un neurone =
+una logistica con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+qualsiasi → la rete è uno <em>stack</em> di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+pesi numerabili → si addestra scendendo un paesaggio di loss → forward
+pass + freccia di discesa = mestiere appreso → la scatola si svela come
+<em>grande</em>, non sigillata, ma davanti a una RX serve un nuovo
+trucco.</label></li>
+<li><label><input type="checkbox" checked></input>Stile coerente coi cap.
+01–04? — sì: stesso <code>style-anchor</code> (#E8741E, dark-slate,
+16:9, no text). Riquadro 2 fa <strong>callback esplicito a ch. 02 frame
+4</strong> (la sigmoide come classificatore) — il primo ponte visivo
+&quot;indietro nell&#39;arco&quot; della serie con valenza <em>strutturale</em> (non
+solo emotiva); riquadro 6 fa <strong>forward-hook visivo a ch.
+06</strong> (RX + segnale) — il primo cliff-hanger con due <em>referenti
+clinici concreti</em>, non solo lessicali.</label></li>
+</ul>
+</body>
+</html>

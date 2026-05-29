@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 03 — One step of gradient descent</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-03--one-step-of-gradient-descent">Item 03 — One step of
+gradient descent</h1>
+<p><strong>ID</strong>: IB-05-deep-learning-03 <strong>Learning
+objective</strong>: Explain how a fully-connected network
+<em>learns</em> — weights as coordinates, loss as height, gradient
+descent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>←</mo><mi>W</mi><mo>−</mo><mi>η</mi><mspace width="0.167em"></mspace><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W \leftarrow W - \eta \, \nabla_W L(W)</annotation></semantics></math>
+as walking the model downhill (Obj. 3, the procedural half).
+<strong>Category</strong>: Application <strong>Type</strong>: MCQ
+(scenario) <strong>Difficulty</strong>: medium <strong>Chapter</strong>:
+05-deep-learning</p>
+<h2 id="question">Question</h2>
+<p>A toy neural network has only two weights,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mn>1</mn></msub><annotation encoding="application/x-tex">w_1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mn>2</mn></msub><annotation encoding="application/x-tex">w_2</annotation></semantics></math>.
+At the current weights
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>w</mi><mn>1</mn></msub><mo>,</mo><mspace width="0.222em"></mspace><msub><mi>w</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">W_{\text{now}} = (w_1,\ w_2) = (3,\ 1),</annotation></semantics></math>
+the loss-landscape gradient has been computed (no need to redo the
+computation) and equals
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">\nabla_W L(W_{\text{now}}) = (2,\ -4).</annotation></semantics></math>
+The training procedure is <strong>gradient descent with learning
+rate</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">\eta = 0.5</annotation></semantics></math>.</p>
+<p>After <strong>one</strong> update step, the new weight vector
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mtext mathvariant="normal">next</mtext></msub><annotation encoding="application/x-tex">W_{\text{next}}</annotation></semantics></math>
+is:</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mtext mathvariant="normal">next</mtext></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W_{\text{next}} = (2,\ 3)</annotation></semantics></math></li>
+<li>B)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mtext mathvariant="normal">next</mtext></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W_{\text{next}} = (4,\ -1)</annotation></semantics></math></li>
+<li>C)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mtext mathvariant="normal">next</mtext></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W_{\text{next}} = (1,\ 5)</annotation></semantics></math></li>
+<li>D)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mtext mathvariant="normal">next</mtext></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>5</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W_{\text{next}} = (5,\ -3)</annotation></semantics></math></li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: A.</strong> Gradient descent updates the weights
+against the gradient, scaled by the learning rate:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mtext mathvariant="normal">next</mtext></msub><mo>=</mo><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><mo>−</mo><mi>η</mi><mspace width="0.167em"></mspace><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mtext mathvariant="normal">now</mtext></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mn>0.5</mn><mo>⋅</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>3</mn><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">W_{\text{next}} = W_{\text{now}} - \eta \, \nabla_W L(W_{\text{now}}) = (3,\ 1) - 0.5 \cdot (2,\ -4) = (3,\ 1) - (1,\ -2) = (2,\ 3).</annotation></semantics></math></p>
+<p>That is, the update <em>subtracts</em> a small fraction of the
+gradient (a fraction set by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>)
+from the current weights — so the model moves <em>downhill</em> on the
+loss landscape, <em>not too far in one step</em>.</p>
+<p>Each distractor isolates one specific misconception about the update
+rule:</p>
+<ul>
+<li><strong>B
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mtext mathvariant="normal">next</mtext></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W_{\text{next}} = (4,\ -1)</annotation></semantics></math>)
+— sign-flip error.</strong> The student has <strong>added</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mi>∇</mi><mi>L</mi></mrow><annotation encoding="application/x-tex">\eta \nabla L</annotation></semantics></math>
+instead of subtracting it:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mn>0.5</mn><mo>⋅</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,\ 1) + 0.5 \cdot (2,\ -4) = (4,\ -1)</annotation></semantics></math>.
+This is <strong>gradient <em>ascent</em></strong> — it walks the model
+<em>uphill</em> on the loss landscape, <em>increasing</em> the error at
+every step. A student who picks B has reversed the central insight of
+Obj. 3 (descent goes <em>opposite</em> to the gradient).</li>
+<li><strong>C
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mtext mathvariant="normal">next</mtext></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W_{\text{next}} = (1,\ 5)</annotation></semantics></math>)
+— forgot the learning rate.</strong> The student has subtracted the full
+gradient with no
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,\ 1) - (2,\ -4) = (1,\ 5)</annotation></semantics></math>.
+The <em>direction</em> is correct (downhill), but the <em>step size</em>
+is wrong. In practice this is the most pedagogical mistake — it asks
+&quot;what is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+for?&quot;, and the answer is exactly: to control <em>how far</em> you move
+along the descent direction at each step (a step too big can overshoot
+the minimum, oscillate, or diverge).</li>
+<li><strong>D
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mtext mathvariant="normal">next</mtext></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>5</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W_{\text{next}} = (5,\ -3)</annotation></semantics></math>)
+— both errors at once.</strong> The student has added the full gradient
+with no learning rate:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo>,</mo><mspace width="0.222em"></mspace><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>5</mn><mo>,</mo><mspace width="0.222em"></mspace><mo>−</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3,\ 1) + (2,\ -4) = (5,\ -3)</annotation></semantics></math>.
+Direction wrong <strong>and</strong> step size wrong — both the sign and
+the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+have been lost. This is the option chosen by a student who is operating
+&quot;by analogy&quot; without having read the chapter&#39;s update rule at all.</li>
+</ul>
+<p>The single discriminator is the <strong>update rule itself</strong>:
+subtract a fraction
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+of the gradient. The sign decides whether you descend or ascend; the
+learning rate decides how far you step. Only A applies both
+correctly.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

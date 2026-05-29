@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>05 — Deep Learning · narrative</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="05--deep-learning--narrative">05 — Deep Learning ·
+narrative</h1>
+<blockquote>
+<p>Chapter narrative, hanging off the course <a href="../_global/spine.md">spine</a>. Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Six-word,
+100-word, chapter arc, and an explicit pre-hook to the next chapter
+(<code>06-unstructured-data</code>).</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Stack logistic units; descent finds weights.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su 5
+varianti. Mantiene la struttura a due clausole con punto e virgola della
+serie (01 <em>&quot;Programs follow rules; learners find them.&quot;</em>, 02
+<em>&quot;Draw the line; count the cost.&quot;</em>, 03 <em>&quot;Same data; three
+algorithms, three boundaries.&quot;</em>, 04 <em>&quot;Decisions cost data; hold
+the test.&quot;</em>) — la coerenza tipografica è ormai cifra della serie e
+va rispettata. <strong>&quot;Stack logistic units&quot;</strong> è il primo dei
+due beat del capitolo: il neurone <em>è</em> una logistica generalizzata
+(eco esplicito a ch. 02 dove la logistica era già stata vista come
+<em>classificatore</em>), e <em>stack</em> è l&#39;unico ingrediente &quot;deep&quot;
+— niente magia, solo composizione. <strong>&quot;Descent finds
+weights&quot;</strong> è il secondo beat: gradient descent come meccanismo
+unico di apprendimento, <em>finds</em> per insistere che i pesi
+<em>non</em> vengono progettati ma trovati (gem pedagogico contro la
+lettura &quot;AI = programma di regole&quot;). Lessico-perno
+<strong>weights</strong> seminato come gancio a ch. 06: gli stessi pesi
+diventeranno <em>kernel/filter</em> nelle convoluzionali (weight sharing
+è proprio la modifica strutturale che ch. 06 introduce).</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>The first deep network on Elena&#39;s screen carried millions of weights,
+and every paper she read called it a &quot;black box&quot;. She braced herself:
+this time she would have to obey. Then she opened it. Each neuron was a
+logistic regression in disguise — a sigmoid swapped for any non-linear,
+differentiable function. Stacks of those, layer on layer, made a &quot;deep&quot;
+network. Training was gravity: the weights were coordinates, the loss
+was the height, and gradient descent walked the model downhill. By dusk
+she had drawn a network on a napkin and counted its weights. Nothing
+magic, just a bigger box.</p>
+<p><em>Struttura:</em> Bing = Elena affronta la deep network: milioni di
+pesi, &quot;black box&quot;, l&#39;aspettativa di doverla <em>subire</em> | Bang = la
+apre. Un neurone <em>è</em> una logistica con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+qualsiasi al posto della sigmoide; impilarli <em>è</em> il &quot;deep&quot;;
+l&#39;addestramento <em>è</em> la discesa di un gradiente su un paesaggio di
+perdita | Bongo = a fine pomeriggio ha disegnato la rete su un
+tovagliolo e ha <em>contato</em> i suoi pesi. La scatola non era
+<em>chiusa</em>, era solo <em>più grande</em>. (100 parole esatte — la
+chiusura <em>&quot;nothing magic, just a bigger box&quot;</em> è il payoff
+narrativo: l&#39;opacità del deep è di <em>scala</em>, non di
+<em>natura</em>.)</p>
+<h2 id="chapter-arc--hook--challenge--resolution--payoff">Chapter arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio</td>
+<td>The cross-validation discipline of chapter 4 has armed Elena to
+interrogate <em>any</em> classifier — but the first deep network she
+sees has somewhere between thousands and millions of weights, and the
+literature unanimously calls it a <em>black box</em>. For a moment she
+expects to have to take its outputs on faith.</td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto</td>
+<td>How do you <em>read</em> a model with a million parameters? Is
+&quot;deep&quot; a name for some new kind of computation she hasn&#39;t seen before —
+or is it the same machinery, scaled up? Three questions in one: (i) what
+does <em>one neuron</em> actually compute? (ii) what happens when you
+connect many of them into <em>layers</em>? (iii) how does the network
+<em>learn</em> — i.e. how are the millions of weights chosen?</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta</td>
+<td>One neuron is a <em>generalised non-linear logistic regression</em>:
+given a vector of inputs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>a</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>a</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a = (a_1, \ldots, a_n)</annotation></semantics></math>
+and weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>w</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>w</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">w = (w_1, \ldots, w_n)</annotation></semantics></math>,
+it computes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">out</mtext><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><mspace width="0.167em"></mspace><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{out} = g(\sum_{i} a_i \, w_i)</annotation></semantics></math>,
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo>:</mo><mi>ℝ</mi><mo>→</mo><mi>ℝ</mi></mrow><annotation encoding="application/x-tex">g:\mathbb{R}\to\mathbb{R}</annotation></semantics></math>
+is any <strong>non-linear</strong> and <strong>differentiable</strong>
+activation function (ReLU, tanh, sigmoid). A <em>fully-connected</em>
+network is just neurons stacked in layers:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[l]} = g^{[l]}(W^{[l]} \, a^{[l-1]})</annotation></semantics></math>.
+Learning is gradient descent on a loss landscape: each combination of
+weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+assigns a single loss value
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L(W)</annotation></semantics></math>
+— <em>the height</em> on a high-dimensional surface — and the update
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>←</mo><mi>W</mi><mo>−</mo><mi>η</mi><mspace width="0.167em"></mspace><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W \leftarrow W - \eta \, \nabla_W L(W)</annotation></semantics></math>
+walks the model downhill. The two conditions on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+have operational meaning: <em>non-linearity</em> prevents the stack from
+collapsing to one big linear map (without it, no number of layers would
+add capacity); <em>differentiability</em> ensures the gradient
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi></mrow><annotation encoding="application/x-tex">\nabla_W L</annotation></semantics></math>
+exists, so the descent step has a direction at all.</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta</td>
+<td>A deep network is <strong>not</strong> a <em>new</em> kind of
+computation; it is a <em>composition</em> of objects Elena already knew
+(logistic units), trained by a <em>mechanism</em> she can write down
+(gradient descent). A toy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+network has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+weights — she counts them on a napkin and writes its forward pass in
+four equations. The opacity of a <em>real</em> network is the opacity of
+<strong>scale</strong>, not of <em>kind</em>: a million weights instead
+of twelve is a quantitative jump, not a categorical one. The black box
+is <em>bigger</em> than the boxes of chapters 2–4, but it is no more
+<em>sealed</em>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>The screen showed a deep neural network — the kind every textbook
+calls a <em>black box</em>, with somewhere between thousands and
+millions of weights — and for a moment Elena felt she was back at
+chapter one, about to obey a verdict whose reasoning she could not read.
+The cross-validation discipline she had built in chapter four would
+still hold: she would test it before she trusted it. But how do you even
+<em>describe</em> a model with a million parameters? Could she look
+inside, the way she had looked inside a decision boundary?</p>
+<p>She started small. One neuron. Forget the brain analogy; the equation
+was a familiar one. Given a vector of inputs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>a</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>a</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a = (a_1, \ldots, a_n)</annotation></semantics></math>
+and a vector of weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>w</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>w</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">w = (w_1, \ldots, w_n)</annotation></semantics></math>,
+a neuron computed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">out</mtext><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><mspace width="0.167em"></mspace><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{out} = g(\sum_{i} a_i \, w_i)</annotation></semantics></math>.
+That was a logistic regression with the sigmoid swapped out for
+<em>any</em> non-linear, differentiable function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+— the ReLUs and tanhs the literature kept naming. Nothing she had not
+met before. The neuron of &quot;deep learning&quot; was the <em>first
+classifier</em> of chapter two, with one mathematical freedom added: the
+shape of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>.</p>
+<p>The <em>deep</em> part was composition: stack the units in layers,
+feed the outputs of one layer as the inputs to the next, formally
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[l]} = g^{[l]}(W^{[l]} \, a^{[l-1]})</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>l</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">l = 1, 2, \ldots, L</annotation></semantics></math>.
+A toy network with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+inputs, two hidden layers of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+neurons each, and one sigmoid output — call it
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+— had exactly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>⋅</mo><mn>2</mn><mo>+</mo><mn>2</mn><mo>⋅</mo><mn>2</mn><mo>+</mo><mn>2</mn><mo>⋅</mo><mn>1</mn><mo>=</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">3 \cdot 2 + 2 \cdot 2 + 2 \cdot 1 = 12</annotation></semantics></math>
+weights. <em>Twelve.</em> She could draw it on a napkin. The forward
+pass was four equations long. A network with a million weights was
+<em>the same idea</em>, with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>5</mn></msup><annotation encoding="application/x-tex">10^5</annotation></semantics></math>
+more rows.</p>
+<p>How did the thing <em>learn</em>? Each combination of weights
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+assigned the model an error
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L(W)</annotation></semantics></math>
+on its training data: the weights were coordinates in a high-dimensional
+space, and the error was a <em>height</em>. Picture a landscape —
+endless in dimension, but real enough. Random initial weights placed the
+model somewhere on a hillside. Gradient descent —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>←</mo><mi>W</mi><mo>−</mo><mi>η</mi><mspace width="0.167em"></mspace><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W \leftarrow W - \eta \, \nabla_W L(W)</annotation></semantics></math>
+— walked it downhill, one small step at a time, repeatedly. The network
+&quot;learned&quot; because it kept finding lower ground.</p>
+<p>That was when the two conditions on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+— <em>non-linear</em> and <em>differentiable</em> — clicked into place.
+<em>Non-linearity</em>, because if every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+were linear the whole stack would collapse to one large linear map (no
+stacking would buy any new capacity, and twelve weights or twelve
+million would describe the same family of functions).
+<em>Differentiability</em>, because without a gradient at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+there is no direction in which to step, and the procedure stops being a
+procedure at all.</p>
+<p>By the end of that afternoon the deep network was no longer a black
+box. It was a <em>big</em> one — with parts whose names she could now
+say: <em>neuron</em>, <em>activation</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>,
+<em>layer</em>, <em>weights</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>,
+<em>loss</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L(W)</annotation></semantics></math>,
+<em>gradient descent</em>. The opacity people kept invoking was the
+opacity of <em>scale</em>, not the opacity of <em>mystery</em>. A
+million weights was a quantitative jump from twelve, not a categorical
+one. Elena did not yet know which patient features a particular network
+would pay attention to, or which it would ignore — that question was the
+next one, on her list for the morning. But she had stopped expecting
+magic. The atoms had been familiar all along.</p>
+<h2 id="versione-didattica-objectives-recap">Versione didattica
+(objectives recap)</h2>
+<p>Gli obiettivi formali del capitolo vivono in <a href="objectives.md">objectives.md</a>. In sintesi, il payoff narrativo
+li ricalca: <strong>describe</strong> il neurone come <em>generalised
+non-linear logistic unit</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">out</mtext><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>a</mi><mi>i</mi></msub><mspace width="0.167em"></mspace><msub><mi>w</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{out} = g(\sum_{i} a_i \, w_i)</annotation></semantics></math>
+con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+non-lineare e differenziabile (una logistica con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+qualsiasi al posto della sigmoide); <strong>compose</strong> il forward
+pass di una piccola rete fully-connected
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="prefix">(</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo stretchy="false" form="postfix">]</mo></mrow></msup><msup><mi>a</mi><mrow><mo stretchy="false" form="prefix">[</mo><mi>l</mi><mo>−</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{[l]} = g^{[l]}(W^{[l]} a^{[l-1]})</annotation></semantics></math>,
+conta i pesi) — l&#39;esempio canonico è
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+pesi; <strong>explain</strong> come la rete <em>impara</em>: pesi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+come coordinate di un paesaggio, loss
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">L(W)</annotation></semantics></math>
+come altezza, gradient descent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mo>←</mo><mi>W</mi><mo>−</mo><mi>η</mi><mspace width="0.167em"></mspace><msub><mi>∇</mi><mi>W</mi></msub><mi>L</mi><mo stretchy="false" form="prefix">(</mo><mi>W</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">W \leftarrow W - \eta \, \nabla_W L(W)</annotation></semantics></math>
+come <em>cammino in discesa</em> — e ruolo operativo dei due vincoli su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>
+(non-linearità → lo stack non collassa a una mappa lineare;
+differenziabilità → il gradiente esiste e la direzione di discesa è ben
+definita).</p>
+<h2 id="pre-hook--06-unstructured-data-cnnrnn">Pre-hook → 06
+Unstructured data (CNN/RNN)</h2>
+<blockquote>
+<p>Elena&#39;s stack of neurons can chew on any <em>vector</em> of inputs —
+age, BMI, a lab value — and learn from it. But the data she actually
+sees in clinic does not arrive as a tidy vector of length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>.
+A chest X-ray is an image of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+pixels: feed it raw to a fully-connected layer and the first weight
+matrix alone would hold over a million parameters <em>per neuron</em>. A
+blood-pressure trace is a sequence, varying in length: where do you even
+start? The same logistic-stack-plus-descent machinery can survive the
+jump — but only with a clever rule about <em>which weights are
+shared</em>. That rule is the subject of the next chapter:
+<strong>convolutional</strong> networks for images,
+<strong>recurrent</strong> networks for sequences — the same atoms,
+organised to respect the structure of the data.</p>
+</blockquote>
+<p><em>Glossa:</em> il pre-hook <strong>non ritira</strong> nulla di ciò
+che ch. 05 ha appena costruito (neurone come logistica generalizzata,
+stack, discesa) — al contrario, lo riafferma esplicitamente <em>&quot;the
+same logistic-stack-plus-descent machinery can survive the jump&quot;</em> —
+e introduce il <strong>nuovo vincolo strutturale</strong>: i pesi non
+possono essere <em>tutti diversi</em>. Cliff-hanger lessicale
+<strong>convolutional / recurrent / weight sharing</strong> (il
+vocabolario di ch. 06) senza ancora rivelare il meccanismo (kernel,
+stride, time-step). Il problem framing è dato in forma di <em>due dati
+clinici concreti</em> (RX torace + traccia di pressione arteriosa), così
+la motivazione &quot;perché non basta la fully-connected&quot; è clinica prima
+ancora che matematica — Elena ha già visto la matematica, e adesso la
+<em>misura del problema reale</em> la costringe a stringere il modello.
+Ponte deterministico a <code>06-unstructured-data</code> (per
+<code>manifest.next_enabled</code> il capitolo non è ancora
+<em>enabled</em>, ma l&#39;ordine naturale del corso è esplicito nello spine
+e nei capitoli precedenti).</p>
+</body>
+</html>
