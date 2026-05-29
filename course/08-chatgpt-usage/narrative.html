@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>08 — Using ChatGPT in practice · narrative</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="08--using-chatgpt-in-practice--narrative">08 — Using ChatGPT in
+practice · narrative</h1>
+<blockquote>
+<p>Chapter narrative, hanging off the course <a href="../_global/spine.md">spine</a>. Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Six-word,
+100-word, chapter arc, and an explicit pre-hook to the next chapter
+(<code>09-agents</code>).</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Structure the ask; check the answer.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su 5
+varianti. Mantiene la struttura a due clausole con punto e virgola della
+serie (01 <em>&quot;Programs follow rules; learners find them.&quot;</em>, 02
+<em>&quot;Draw the line; count the cost.&quot;</em>, 03 <em>&quot;Same data; three
+algorithms, three boundaries.&quot;</em>, 04 <em>&quot;Decisions cost data; hold
+the test.&quot;</em>, 05 <em>&quot;Stack logistic units; descent finds
+weights.&quot;</em>, 06 <em>&quot;Match the structure; share the weights.&quot;</em>,
+07 <em>&quot;Every token attends every; pre-train, fine-tune.&quot;</em>).
+<strong>Per la prima volta nella serie, le due clausole sono entrambe
+imperative e — più importante — il loro <em>soggetto implicito</em> non
+è la scatola, è il clinico.</strong> Sette capitoli di seguito hanno
+descritto <em>cosa fa il modello</em> (six-word con soggetto:
+&quot;<em>programs</em>&quot;, &quot;<em>learners</em>&quot;, &quot;<em>units</em>&quot;,
+&quot;<em>tokens</em>&quot;); ch. 08 è il primo che descrive <em>cosa fa lo
+studente</em> (six-word con verbo all&#39;imperativo rivolto al clinico). È
+il <strong>pivot d&#39;asse pedagogico</strong> del corso, codificato nella
+tipografia del six-word. <strong>&quot;Structure the ask&quot;</strong> è Obj. 1:
+il 7-slot template (role / context / task / instructions / output /
+style / examples) — qui sintetizzato in <em>struttura un&#39;interrogazione
+invece di sparare una domanda</em>. <em>Ask</em> è scelto sotto-tecnico
+(non <em>prompt</em>, non <em>query</em>) perché il pubblico è Elena
+lunedì mattina, non un ML engineer. <strong>&quot;Check the answer&quot;</strong>
+è Obj. 2, la <em>regola della competenza</em>, in forma operativa:
+l&#39;unica cosa che permette di delegare è la capacità di
+<em>verificare</em> indipendentemente. <em>Check</em> è il verbo-chiave,
+e — non a caso — è esattamente il verbo che ch. 09 metterà a rischio
+(l&#39;agente <em>agisce prima che tu checki</em>); il <em>check</em> di ch.
+08 è la <em>cosa</em> che ch. 09 minaccerà. <strong>Obj. 3</strong> (Web
+/ Prompt design / API + token cost) non sta nel six-word: è importante
+operativamente ma non è il <em>cuore pedagogico</em> del capitolo (è una
+decisione tattica, non un&#39;etica), e i six-word della serie hanno sempre
+privilegiato i due beat <em>strutturali</em> sopra gli altri. Eco
+esplicito a ch. 06 e ch. 07: <em>Match the structure</em> (ch. 06,
+struttura <em>del dato</em>) → <em>Structure the ask</em> (ch. 08,
+struttura <em>della domanda</em>) — la parola <em>structure</em>
+attraversa il corso lungo assi diversi (architettura, dato, prompt); è
+un <em>signature word</em> della serie. Anti-pattern evitati:
+<em>&quot;Prompt engineering&quot;</em> (jargon), <em>&quot;Use AI carefully&quot;</em>
+(generico), <em>&quot;Web, prompt, API&quot;</em> (descrittivo invece di
+prescrittivo), <em>&quot;Don&#39;t trust ChatGPT&quot;</em> (sbaglia il payoff, che è
+<em>trust calibrato</em>, non <em>sfiducia</em>).</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>Monday after the lecture:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+anonymised ED letters on the audit drive, trauma versus non-trauma, due
+Friday. Elena opened a chat window and typed her ask; the answer was
+unusable. She rewrote, this time with seven slots: role, context, task,
+instructions, output, style, examples. Better — but for two letters with
+unusual phrasing she stopped, because she could not independently check
+the model&#39;s verdict. By noon she had moved the prompt to an API call,
+sized the input in tokens not words, and let it run. She closed the chat
+without confusing delegating well with delegating everything. That was
+the rule.</p>
+<p><em>Struttura:</em> Bing = il <em>Monday morning</em> annunciato dal
+pre-hook di ch. 07 arriva nei termini esatti del sommativo
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere ED, <em>trauma vs non-trauma</em>, scadenza Friday) — Elena
+prova <em>come si tratta una persona</em>, una domanda piatta, e la
+risposta è <em>unusable</em> (la prima delle tre discipline manca) |
+Bang = tre mosse correttive in cascata: (a) <strong>struttura</strong>
+la richiesta nei sette slot — <em>role, context, task, instructions,
+output, style, examples</em> (Obj. 1); (b) <strong>trattiene</strong>
+due lettere perché non saprebbe <em>verificare</em> il verdetto del
+modello — la regola della competenza in forma operativa (Obj. 2); (c)
+<strong>sposta il canale</strong>: per
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+chiamate il chat browser non è strumento — API, e l&#39;unità di costo è il
+<strong>token</strong>, non la parola (Obj. 3) | Bongo = chiude la chat
+<em>senza confondere delegating well with delegating everything</em> —
+<em>that was the rule</em>. (Verificato
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+parole esatte.) La chiusura <em>&quot;That was the rule&quot;</em> è
+l&#39;<strong>enunciazione narrativa</strong> della normatività che la
+regola di competenza richiede: non <em>&quot;a useful guideline&quot;</em>, non
+<em>&quot;a tip&quot;</em> — <em>the rule</em>, in punto, in articolo
+determinativo. Anche il ritmo è cambiato: dopo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+capitoli di narrazione descrittiva, ch. 08 ha frasi corte, dichiarative,
+organizzate come un protocollo — <em>show don&#39;t tell</em> della
+disciplina che il capitolo insegna.</p>
+<h2 id="chapter-arc--hook--challenge--resolution--payoff">Chapter arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio operativo</td>
+<td>Lunedì mattina, dopo la lezione del ch. 07. Elena conosce <em>cosa
+è</em> ChatGPT — <em>Transformer</em>, <em>Pre-trained</em>,
+<em>Generative</em>, in <em>Chat</em>. Non sa ancora <em>come
+usarlo</em>. Sul drive condiviso del suo gruppo trovano
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere di dimissione ED anonimizzate; il senior chiede una triage
+<em>trauma</em> vs <em>non-trauma</em> per un audit di qualità, entro
+venerdì. Apre <code>chat.openai.com</code>, digita <em>&quot;classify these
+as trauma or non-trauma&quot;</em>. La risposta è inutilizzabile. <em>Sapere
+cos&#39;è la scatola non era sapere come parlarci.</em></td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto</td>
+<td>Tre domande operative che il capitolo deve risolvere in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>15</mn><mo>′</mo></msup><annotation encoding="application/x-tex">15&#39;</annotation></semantics></math>:
+<strong>(i) Come si struttura una richiesta</strong> in modo che il
+modello produca <em>l&#39;output che serve</em> invece di una risposta
+<em>generica</em>? Una <em>one-liner</em> non basta; serve
+un&#39;architettura della domanda. <strong>(ii) Quando <em>non</em> si
+delega</strong>? Alcune lettere hanno fraseggio non standard (es. una
+<em>fragility fall</em> in
+un&#39;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>92</mn><annotation encoding="application/x-tex">92</annotation></semantics></math>-yo
+descritta in linguaggio geriatrico, dove la regola clinica &quot;caduta da
+fragilità = trauma&quot; non è evidente dal lessico). Se Elena non sapesse
+<em>catturare</em> l&#39;errore del modello su quelle lettere,
+<em>delegare</em> sarebbe delegare <em>l&#39;ignoranza</em>. <strong>(iii)
+Su quale canale?</strong> Web (chat.openai.com) ha senso per
+<em>una</em> domanda; <em>prompt design in chat</em> ha senso per una
+manciata; ma per
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere copy-paste si rompe — serve <em>programmabilità</em>. Quale
+soglia? E con quale unità di costo?</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta</td>
+<td><strong>(i) 7-slot prompt.</strong> Una richiesta robusta ha sette
+pezzi nominati: <em>role</em> (chi impersona il modello),
+<em>context</em> (la situazione del task), <em>task</em>
+(l&#39;<strong>unico</strong> verbo da eseguire), <em>instructions</em> (la
+procedura), <em>output</em> (la forma esatta del deliverable —
+<em>&quot;return only one token: &#39;trauma&#39; or &#39;non-trauma&#39;&quot;</em>),
+<em>style</em> (vincoli su tono, formato, <em>e su cosa NON
+aggiungere</em>), <em>examples</em> (1–3 coppie I/O lavorate). Ogni slot
+<em>sopprime un failure mode specifico</em>: assenza di <em>role</em> →
+tono indeciso; assenza di <em>output</em> → il modello <em>spiega</em>
+invece di <em>classificare</em>; assenza di <em>examples</em> → drift
+sui casi al margine. <strong>(ii) Regola della competenza.</strong>
+<em>Delegare solo task il cui risultato sai giudicare
+indipendentemente.</em> Operativamente: per ogni candidato-task
+identifica (a) un failure mode <em>plausibile</em> (citazione inventata,
+dosaggio arrotondato a un numero verosimile, linea-guida allucinata);
+(b) la <em>competenza</em> che ti serve per <em>catturarlo</em>. Se non
+hai la competenza (b), <em>non delegare</em>. La regola è normativa, non
+opzionale. <strong>(iii) Web / Prompt design / API + token.</strong> Il
+<em>token</em> è l&#39;unità:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+token
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\approx \dfrac{3}{4}</annotation></semantics></math>
+word (i.e.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>750</mn></mrow><annotation encoding="application/x-tex">\sim 750</annotation></semantics></math>
+parole
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>1</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\approx 1\,000</annotation></semantics></math>
+token,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>750</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 750\,000</annotation></semantics></math>
+parole
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><msup><mn>10</mn><mn>6</mn></msup></mrow><annotation encoding="application/x-tex">\approx 10^6</annotation></semantics></math>
+token). Per
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>200</mn><mo>×</mo><mn>300</mn><mo>=</mo><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">200 \times 300 = 60\,000</annotation></semantics></math>
+parole di input,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>×</mo><mstyle displaystyle="true"><mfrac><mn>4</mn><mn>3</mn></mfrac></mstyle><mo>=</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">60\,000 \times \dfrac{4}{3} = 80\,000</annotation></semantics></math>
+token, più
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">\sim 200</annotation></semantics></math>
+token di output (un label per lettera):
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 80\,000</annotation></semantics></math>
+token totali. Regola operativa di canale: <em>Web</em> per la one-shot
+ad-hoc; <em>Prompt design (in chat)</em> per una manciata di task
+strutturati fatti a mano; <em>API</em> per qualunque workflow che debba
+essere <em>ripetibile</em>, <em>integrato</em> in altro software, o
+<em>applicato a volume</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≳</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">\gtrsim 100</annotation></semantics></math>
+items). Per le
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere la risposta è <em>API</em>.</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta</td>
+<td>ChatGPT è <em>operativamente accessibile lunedì mattina</em>, ma
+solo dopo tre discipline: una <strong>struttura</strong> della richiesta
+(7 slot, ogni slot sopprime un errore noto), una <strong>regola di
+onestà</strong> rispetto alla propria competenza (non delego ciò che non
+saprei controllare), un <strong>canale</strong> dimensionato sul volume
+del compito (web
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+prompt design
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+API, con il token come unità di costo). La scatola del ch. 07 non è
+cambiata; è cambiato dove Elena si posiziona rispetto a essa: non più
+<em>davanti</em> a chiedersi cos&#39;è, ma <em>accanto</em> a usarla — e a
+<em>non</em> usarla, nei casi giusti. Il payoff del capitolo non è &quot;ora
+sai prompt engineering&quot;; è <em>&quot;non confondere delegare bene con
+delegare tutto&quot;</em>. Quella distinzione — <em>delegating well vs
+delegating everything</em> — è il <strong>livello minimo di
+pragmatismo</strong> che la spine del corso aveva promesso
+(&quot;<em>trusting it where the evidence holds, overriding it where it
+doesn&#39;t</em>&quot;). Per la prima volta nel corso, Elena non ha imparato un
+meccanismo; ha imparato una <strong>disciplina</strong>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>Monday after the lecture. The slides of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+had named the parts of ChatGPT — <em>Transformer</em>,
+<em>Pre-trained</em>, <em>Generative</em>, <em>Chat</em> — and Elena had
+walked out feeling, for the first time in months, that the box at the
+centre of every conversation was a <em>nameable</em> object. By Monday
+morning the box had ceased to be a curiosity. On the shared drive of her
+research group,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+anonymised emergency-department discharge letters had been waiting for
+her since Friday, with a one-line request from her senior at the top of
+the folder: <em>&quot;Triage these into trauma vs non-trauma by Friday for
+the QI audit.&quot;</em> Each letter ran to about three hundred words; some
+were neatly templated, some were typed by tired residents at three in
+the morning. She opened <code>chat.openai.com</code>, pasted the first
+letter, and wrote her question the way a clinician asks a colleague over
+coffee:</p>
+<blockquote>
+<p><em>&quot;Is this trauma or non-trauma?&quot;</em></p>
+</blockquote>
+<p>The model replied with a paragraph that was almost helpful. It
+explained that <em>trauma</em> could refer to physical injury,
+psychological distress, or — in the context of the letter — a fall, and
+that the letter she had pasted <em>appeared to describe</em> a fall in
+an elderly patient <em>but that further information would be needed to
+classify it definitively</em>. She read the paragraph twice. It
+contained no error, and no answer. She tried again, slightly more
+crisply, and got a slightly more crisp non-answer. By the third attempt
+she had stopped rewriting the <em>question</em> and was rewriting the
+<em>prompt itself</em>. There was, she realised — and this was the small
+private discovery that the chapter would be built around — <em>structure
+one could put inside a prompt</em>.</p>
+<p>She started over. <em>Role</em>: <em>&quot;You are a clinical-coding
+assistant for an internal hospital QI audit.&quot;</em> <em>Context</em>:
+<em>&quot;You are reading anonymised emergency-department discharge letters
+from a teaching hospital; the audit is internal and not
+patient-facing.&quot;</em> <em>Task</em>: <em>&quot;Classify each letter as trauma
+or non-trauma.&quot;</em> That was the <strong>one verb</strong>; she
+resisted the temptation to chain it with <em>&quot;and explain why&quot;</em> —
+explaining was a different task. <em>Instructions</em>: <em>&quot;Read the
+chief complaint and the mechanism-of-injury fields; if either names an
+external traumatic event — fall, MVA, assault, fracture from external
+force — classify trauma.&quot;</em> <em>Output</em>: <em>&quot;Return only one
+token: &#39;trauma&#39; or &#39;non-trauma&#39;. Do not return any other text, any
+explanation, any preamble.&quot;</em> <em>Style</em>: <em>&quot;No reasoning
+shown, no qualifications, no caveats.&quot;</em> <em>Examples</em>: two short
+worked cases, one <em>trauma</em> (a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>34</mn><annotation encoding="application/x-tex">34</annotation></semantics></math>-yo
+MVA), one <em>non-trauma</em> (a urinary tract infection). Seven slots,
+each one suppressing a specific failure mode the previous attempts had
+displayed: <em>role</em> killed the <em>helpful-paragraph</em> reflex;
+<em>task</em> killed the <em>and-also-explain</em> drift;
+<em>output</em> killed the <em>qualified-non-answer</em>;
+<em>examples</em> anchored the edge cases.</p>
+<p>The next ten letters classified cleanly. Then she hit a letter that
+gave her pause. An
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>92</mn><annotation encoding="application/x-tex">92</annotation></semantics></math>-year-old
+woman, brought in by family, with <em>a fall at home</em> described in a
+register Elena recognised as <em>geriatric fragility framing</em> —
+vague mechanism, no obvious external force, the kind of letter that
+names <em>frailty</em> and <em>home environment</em> before it names
+<em>fall</em>. The model returned <em>non-trauma</em>. Elena, who had
+read enough geriatric medicine to know that fragility fractures
+<em>are</em> trauma in any sensible audit, marked the answer wrong. She
+flagged the letter for manual review. So far, so good — the failure had
+been caught.</p>
+<p>But then a quieter thing happened, and it was the part that would
+change how she thought about LLM use forever. The next letter described
+what seemed, at first read, an unremarkable urinary tract infection in a
+middle-aged man. The model returned <em>non-trauma</em>. Elena nodded
+and moved on. Then — three letters later, by chance — she went back and
+noticed a single phrase mid-letter she had not registered the first
+time: <em>&quot;presented after a workplace incident involving a chemical
+exposure&quot;</em>. <em>That</em> was trauma, by the audit&#39;s own definition.
+The model had missed it. So had she, the first time. The model had been
+<em>wrong in a way that looked right to a non-expert</em>, and only the
+<em>second reading by a clinician</em> had caught it.</p>
+<p>She put the API down — figuratively, since she had not yet moved to
+the API — and wrote down a sentence the chapter would be remembered for:
+<em>&quot;I should only delegate to this model tasks whose answer I can
+independently judge.&quot;</em> For the two-letter geriatric fragility case
+she had used clinical knowledge; for the chemical-exposure case she had
+used a <em>second careful reading</em> of the letter. Both were
+<em>competencies she possessed</em>. For the letters in the corpus that
+turned on, say, an obscure psychiatric inclusion criterion — a
+competency she did <em>not</em> possess — <em>the rule said no</em>. Not
+&quot;no, never use the model&quot;; not &quot;no, never delegate&quot; — <em>no, not this
+delegation, because I cannot check it</em>. The rule was operational,
+not philosophical: <em>if a plausible-looking failure mode of the model
+would slip past me, I am not the right person to delegate this task in
+the first place.</em></p>
+<p>Then there was the matter of <em>channel</em>. Twenty letters in, the
+copy-paste-and-read rhythm of the chat was costing her about a minute
+per letter, and at that rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+letters would consume more than three hours and produce no
+machine-readable artefact for the audit — only a screen full of
+<em>&quot;trauma&quot;</em> and <em>&quot;non-trauma&quot;</em> tokens she would have to
+transcribe by hand. She switched. The same prompt — <em>the same seven
+slots, the same prohibition on explanation</em> — was wrapped in an API
+call that read the letters from disk and wrote the labels to a CSV. The
+economy of the call was reckoned in <em>tokens</em>, not in words:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+token
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\approx \dfrac{3}{4}</annotation></semantics></math>
+word;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+letters times
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>300</mn><annotation encoding="application/x-tex">300</annotation></semantics></math>
+words per letter was
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">60\,000</annotation></semantics></math>
+words;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>×</mo><mstyle displaystyle="true"><mfrac><mn>4</mn><mn>3</mn></mfrac></mstyle><mo>=</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">60\,000 \times \dfrac{4}{3} = 80\,000</annotation></semantics></math>
+tokens of input, plus a negligible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+tokens of output. The whole audit ran for less than the price of a
+coffee, and produced exactly the artefact the senior had asked for.</p>
+<p>What Elena had assembled, by lunchtime, was the chapter&#39;s three-piece
+kit. <strong>First</strong>, a way to <em>ask</em> — the seven slots,
+each one targeted at a failure mode she had seen herself.
+<strong>Second</strong>, a way to <em>say no</em> — the competence rule,
+in its operational form: <em>delegate only what you can independently
+check</em>. <strong>Third</strong>, a way to <em>deliver</em> — <em>Web
+chat</em> for the ad-hoc one-shot; <em>Prompt design in chat</em> for
+the small batch done by hand; <em>API</em> for the repeatable,
+integrated, volume workload; the <em>token</em>, not the word, as the
+unit of cost. Each piece on its own was easy. The discipline was in
+putting all three together, <em>and</em> in refusing to delegate the two
+cases on which the rule said no. Delegating <em>well</em> was not
+delegating <em>everything</em>. That was the chapter&#39;s payoff, and it
+was the first time in the course Elena had learned a <em>practice</em>
+rather than a mechanism.</p>
+<p>By Friday afternoon the audit was on the senior&#39;s desk, with the two
+non-delegated cases manually flagged and reviewed.</p>
+<h2 id="versione-didattica-objectives-recap">Versione didattica
+(objectives recap)</h2>
+<p>Gli obiettivi formali del capitolo vivono in <a href="objectives.md">objectives.md</a>. In sintesi, il payoff narrativo
+li ricalca: <strong>construct</strong> un prompt strutturato per un task
+clinico dato usando il <strong>7-slot template</strong> — <em>role</em>
+(chi impersona il modello), <em>context</em> (la situazione),
+<em>task</em> (l&#39;<strong>unico</strong> verbo), <em>instructions</em>
+(la procedura), <em>output</em> (la forma esatta del deliverable),
+<em>style</em> (vincoli e <em>cosa non aggiungere</em>),
+<em>examples</em> (1–3 coppie I/O lavorate) — <em>e giustifica</em> per
+ciascun slot usato quale <em>failure mode</em> sopprime (Obj. 1);
+<strong>state and apply</strong> la <strong>regola della
+competenza</strong> in forma operativa — <em>delega solo task il cui
+risultato sai giudicare indipendentemente</em> — identificando per ogni
+candidato-task (a) un failure mode plausibile del modello e (b) la
+competenza necessaria a catturarlo; in assenza di (b), il task <em>non è
+delegabile</em> (Obj. 2); <strong>choose</strong> il canale di accesso
+(<em>Web chat</em> / <em>Prompt design</em> / <em>API</em>) per un
+workflow dato e <strong>stimane</strong> il costo in token con la regola
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+token
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\approx \dfrac{3}{4}</annotation></semantics></math>
+word — <em>Web</em> per la one-shot, <em>Prompt design</em> per il
+piccolo batch a mano, <em>API</em> per il workflow ripetibile /
+integrato / a volume
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≳</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">\gtrsim 100</annotation></semantics></math>
+items (Obj. 3). La narrativa attraversa esattamente gli stessi tre
+passaggi nello stesso ordine, sullo stesso scenario
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere ED, trauma vs non-trauma) — la versione narrativa qui sopra e il
+sommativo in <a href="objectives.md">objectives.md</a> condividono
+<em>deliberatamente</em> il caso clinico, in modo che la prosa, gli
+obiettivi e il sommativo lavorino in coppia.</p>
+<h2 id="pre-hook--09-agents">Pre-hook → 09 Agents</h2>
+<blockquote>
+<p>For all of Monday morning, every output the model produced passed
+through Elena&#39;s eyes before it became anything. The label
+<em>trauma</em> did not reach the audit spreadsheet until she had read
+it. The non-delegated cases did not become decisions until she had
+reviewed them. <em>Reading was the trust gate.</em> Wednesday afternoon,
+her senior asked the same model to do four things in sequence: (1)
+<em>fetch</em> the latest delirium-screening guidelines from PubMed; (2)
+<em>summarise</em> their inclusion criteria into a one-page table; (3)
+<em>draft</em> a one-page audit protocol based on the summary; (4)
+<em>email</em> it to the PI. By the end of the fourth step, no human was
+scheduled to read <em>between</em> the model&#39;s reasoning and the email
+leaving. Something had been added to the box that had not been there on
+Monday: a way for it to <em>look up the world</em> (a search tool), a
+way for it to <em>act</em> on the world (a mail client), and a
+<em>loop</em> that decided, after each step, which of those to do next.
+The chat had become an <strong>agent</strong>. And the question Elena
+had been so careful with on Monday — <em>which output do I check before
+it becomes anything?</em> — had become spatial: <em>where, exactly, in a
+four-step chain, does the gate go?</em> Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+is reversible; step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+is irreversible the moment the SMTP socket closes. The next chapter is
+exactly that placement: the <em>trust boundary</em>. The box has not
+changed, again. But now it can act.</p>
+</blockquote>
+<p><em>Glossa:</em> il pre-hook <strong>non ritira</strong> nulla di ch.
+08 — le tre discipline (struttura del prompt, regola della competenza,
+scelta del canale) <em>restano</em> e <em>sono nominate come
+acquisite</em>. Riformula la regola della competenza nella sua forma
+<em>spaziale</em>: in ch. 08 il <em>check</em> era <em>un evento
+temporale</em> (leggo l&#39;output, poi lo uso); in ch. 09 diventa <em>una
+posizione in un grafo</em> (dove metto il gate?). È la stessa idea
+esatta, vista da un asse diverso — il pivot lessicale è
+<strong>gate</strong> (la &quot;porta&quot; del check), che ch. 08 aveva piantato
+implicitamente (&quot;<em>Reading was the trust gate</em>&quot;). Cliff-hanger
+lessicali piantati per ch. 09, ognuno sugli ingredienti di Obj. 1 di ch.
+09 (<em>tools + loop + decision points</em>): <strong>tool</strong>
+(<em>search tool</em>, <em>mail client</em>), <strong>loop</strong>
+(<em>&quot;a loop that decided, after each step, which of those to do
+next&quot;</em>), <strong>agent</strong> (il nome dell&#39;oggetto, dato
+esplicitamente), <strong>trust boundary</strong> (l&#39;<em>assetto
+pedagogico</em> di Obj. 2/3 di ch. 09) — niente <em>reversibility</em>,
+niente <em>human-in-the-loop</em>, niente <em>autonomous search / ask
+for interaction / ask for sharing / do stuff</em> ancora rivelati:
+vivono in objectives.md di ch. 09 e nella sua narrativa. Tre eco
+strutturali ed espliciti:</p>
+<ul>
+<li>il <strong>workflow a 4 step</strong> (fetch / summarise / draft /
+email) è <em>esattamente</em> il <strong>Workflow W</strong> del
+sommativo di ch. 09 — il sommativo dataset è di nuovo annunciato <em>un
+capitolo prima</em>, in continuità con la convenzione che ch. 07 ha
+esteso da ch. 06. Ponte di scenario.</li>
+<li>la frase di chiusura <strong>&quot;The box has not changed, again. But
+now it can act.&quot;</strong> è la <strong>chiusura-serie</strong> che fa
+risuonare ch. 05 <em>&quot;only the rule of repetition does&quot;</em>, ch. 06
+<em>&quot;only the rules of repetition&quot;</em>, ch. 07 <em>&quot;the rule of
+repetition had changed; this time it had dropped entirely&quot;</em>.
+Stavolta il pivot non è sulla <em>ripetizione</em> — è
+sull&#39;<em>agency</em>: il modello non solo <em>dice</em>, ma <em>fa</em>.
+Lessicalmente, la parola <strong>act</strong> è il complemento e la
+nemesi del <strong>check</strong> del six-word di ch. 08: <em>check ↔︎
+act</em> è l&#39;asse semantico del trust boundary.</li>
+<li><em>Monday</em> (ch. 08) → <em>Wednesday afternoon</em> (ch. 09) è
+la <strong>prima volta nel corso</strong> che la narrazione ha un
+<em>avanzamento temporale a giorni</em> invece che a
+<em>capitoli/situazioni</em>. È deliberato: il pivot a <em>use</em>
+della spine globale (&quot;<em>understand → evaluate → use</em>&quot;) ha portato
+Elena dentro un calendario di lavoro, non più dentro una sequenza
+espositiva. Ch. 09 e ch. 10 (best practices) abiteranno quel
+calendario.</li>
+</ul>
+<p>Ponte deterministico a <code>09-agents</code> (per
+<code>manifest.next_enabled</code> il capitolo non è ancora
+<em>enabled</em> — entrambi <code>include: false</code> — ma l&#39;ordine
+naturale del corso è esplicito nello spine e in tutti i capitoli
+precedenti, e questa convenzione è ormai consolidata da ch. 05 in
+poi).</p>
+</body>
+</html>

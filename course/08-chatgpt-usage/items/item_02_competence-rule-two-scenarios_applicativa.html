@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 02 — Apply the competence rule to two clinical
+scenarios</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-02--apply-the-competence-rule-to-two-clinical-scenarios">Item
+02 — Apply the competence rule to two clinical scenarios</h1>
+<p><strong>ID</strong>: IB-08-chatgpt-usage-02 <strong>Learning
+objective</strong>: State and apply the competence rule — <em>only
+delegate to an LLM tasks whose answer you can independently judge as
+correct or wrong</em>. Given a candidate clinical-research task,
+identify (a) a <em>plausible-looking</em> failure mode the model could
+produce, (b) the expertise the user must already have to
+<strong>catch</strong> that failure, and (c) the verdict (delegable or
+not), with a justification that names <em>why</em> — including the
+special case in which the task is <strong>not delegable regardless of
+the user&#39;s expertise</strong> (Obj. 2).</p>
+<p><strong>Category</strong>: Application <strong>Type</strong>:
+applicativa <strong>Difficulty</strong>: medium
+<strong>Chapter</strong>: 08-chatgpt-usage</p>
+<h2 id="question">Question</h2>
+<p>Two distinct clinical-research tasks are described below. For
+<strong>each</strong> of them, apply the competence rule of this
+chapter.</p>
+<blockquote>
+<p><strong>Scenario A — Oncology trial summarisation.</strong> Your
+group has just received a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>14</mn><annotation encoding="application/x-tex">14</annotation></semantics></math>-page
+peer-reviewed paper reporting a Phase II randomised trial of a novel
+KRAS-G12C inhibitor in advanced lung adenocarcinoma. The PI asks you to
+use an LLM to produce a <strong>five-bullet abstract</strong> suitable
+for tumour-board prep — primary endpoint, control arm, effect size on
+the primary endpoint, the most important subgroup finding, and any
+toxicity that altered protocol. You are an oncology fellow in your
+second year, with formal training in clinical-trials methodology.</p>
+<p><strong>Scenario B — Drug–drug interaction screening.</strong> A
+junior colleague is reviewing the medication list of a patient who is
+<strong>on long-term warfarin</strong> (for prosthetic mitral valve,
+INR-stable) and has just been <em>newly prescribed</em> <strong>oral
+amiodarone</strong> for paroxysmal atrial fibrillation. The colleague
+asks an LLM: <em>&quot;Given this patient&#39;s full medication list of eight
+drugs, is there any clinically significant drug–drug interaction I
+should flag before the patient leaves the clinic?&quot;</em> The colleague is
+an internal-medicine resident in their first year.</p>
+</blockquote>
+<p>Answer the three sub-questions below in order. For each sub-question,
+give a <strong>separate answer</strong> for Scenario A and Scenario
+B.</p>
+<h3 id="sub-question-1--plausible-looking-failure-mode">Sub-question 1 —
+plausible-looking failure mode</h3>
+<p>For each scenario, <strong>name one plausible-looking failure
+mode</strong> the LLM could produce — i.e. an output that is
+<em>clinically plausible at first read</em> but materially wrong. The
+failure mode must be <strong>concrete and namable</strong>, not the
+generic &quot;the model could hallucinate&quot;.</p>
+<h3 id="sub-question-2--expertise-needed-to-catch-the-failure">Sub-question
+2 — expertise needed to catch the failure</h3>
+<p>For each scenario, <strong>name the specific expertise</strong> the
+user must already possess to <em>catch</em> the failure mode you
+described in sub-question 1. State the expertise as a
+<em>capability</em>, not as a credential (e.g. &quot;ability to distinguish
+hazard ratio from relative risk&quot; rather than &quot;an MD degree&quot;).</p>
+<h3 id="sub-question-3--verdict-delegable-or-not--justification">Sub-question
+3 — verdict (delegable or not) + justification</h3>
+<p>For each scenario, give a <strong>verdict</strong> —
+<em>delegable</em> or <em>not delegable</em> — and justify in one
+sentence. The justification must follow the chapter&#39;s rule:
+<em>delegable iff the user can independently judge the answer</em>.</p>
+<p><strong>Pay attention to the special case</strong> in which a task is
+<strong>not delegable regardless of the user&#39;s expertise</strong>,
+because the only way to <em>check</em> the LLM&#39;s output is to consult a
+different authoritative source that the user could have consulted
+<em>instead of</em> the LLM in the first place. In such a case, the
+rule&#39;s verdict is <em>not delegable</em> — <em>even if the user happens
+to know the topic well</em>. Name this case explicitly if one of the two
+scenarios is an instance of it.</p>
+<h2 id="expected-answer">Expected answer</h2>
+<h3 id="sub-question-1--failure-modes">Sub-question 1 — failure
+modes</h3>
+<p><strong>Scenario A.</strong> A plausible-looking failure mode is:
+<strong>the LLM reports the <em>response rate</em> as the primary
+endpoint when the actual primary endpoint of the trial was
+<em>progression-free survival</em></strong>, and gives a numerically
+plausible effect-size figure (&quot;<em>hazard ratio
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.68</mn><annotation encoding="application/x-tex">0.68</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+CI
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.51</mn><annotation encoding="application/x-tex">0.51</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.91</mn><annotation encoding="application/x-tex">0.91</annotation></semantics></math></em>&quot;)
+that is in fact the <em>secondary</em> endpoint&#39;s effect size, not the
+primary&#39;s. The bullet reads correctly to a non-trialist — clinical
+terms, plausible numbers, internally coherent — but materially
+misrepresents what the trial concluded. A variant: the LLM correctly
+identifies <em>progression-free survival</em> as the primary endpoint
+but <strong>conflates <em>hazard ratio</em> with <em>relative
+risk</em></strong>, citing the HR figure as if it were a relative-risk
+reduction. Either variant is acceptable.</p>
+<p><strong>Scenario B.</strong> A plausible-looking failure mode is:
+<strong>the LLM reports &quot;no clinically significant interaction&quot; or lists
+<em>minor</em> interactions while <em>missing</em> the major
+amiodarone–warfarin interaction</strong> (amiodarone inhibits CYP2C9 and
+P-glycoprotein, potentiating warfarin&#39;s anticoagulant effect, with INR
+rising significantly over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+weeks — a <em>well-known, guideline-level</em> interaction that requires
+INR re-checking and warfarin dose reduction). The output looks
+reassuringly clean — <em>&quot;reviewed; no major interactions noted&quot;</em> —
+and a clinician who trusted it would discharge the patient without the
+INR-monitoring schedule the interaction demands.</p>
+<h3 id="sub-question-2--expertise-needed-to-catch">Sub-question 2 —
+expertise needed to catch</h3>
+<p><strong>Scenario A.</strong> The expertise needed to catch the
+failure is <strong>clinical-trials methodology</strong> — specifically,
+the ability to (i) locate and read the <em>primary endpoint</em>
+statement in the methods section, (ii) distinguish <em>hazard ratio</em>
+from <em>relative risk</em> and from <em>odds ratio</em>, and (iii)
+match each reported effect size in the LLM&#39;s bullets back to the
+table/figure of the paper that produced it. <strong>Oncology expertise
+alone is not sufficient</strong> — a clinician who knows lung
+adenocarcinoma but does not read trials methodologically can be misled
+by a plausibly-worded summary that misattributes effect size.</p>
+<p><strong>Scenario B.</strong> The expertise needed to catch the
+failure is <strong>knowledge of the specific amiodarone–warfarin
+interaction</strong>, or more generally <strong>the discipline of
+cross-checking every LLM drug-interaction output against a maintained
+drug-interaction reference (UpToDate, Lexicomp, BNF, the EMA
+SmPC)</strong>. Either capability is sufficient <em>to catch the
+failure</em>, but only the second is sufficient <em>to know whether the
+failure has been caught</em> (the LLM might also miss interactions the
+clinician does not happen to remember).</p>
+<h3 id="sub-question-3--verdicts">Sub-question 3 — verdicts</h3>
+<p><strong>Scenario A: <em>delegable</em> — with the stated
+expertise.</strong> You are an oncology fellow with formal
+clinical-trials methodology training. You can read the primary-endpoint
+statement, distinguish HR from RR, and match each LLM-produced bullet
+back to the source table. The delegation rule is satisfied: you can
+independently judge the output. The LLM saves you the <em>first
+pass</em> of reading and structuring the paper; you spend the saved time
+on the <em>checking</em> pass — which is the pass that needs your
+expertise anyway.</p>
+<p><strong>Scenario B: <em>not delegable, regardless of expertise</em> —
+and this is the special case the chapter wants named.</strong> <em>Even
+if</em> the junior colleague happened to know the amiodarone–warfarin
+interaction (some internal-medicine first-year residents do), the only
+way to <strong>verify</strong> that the LLM has not missed <em>any</em>
+of the other interactions in an
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>-drug
+list is to <strong>consult a maintained drug-interaction
+database</strong> — i.e. the source the colleague <em>should have
+consulted instead of the LLM</em> in the first place. The
+competence-rule check (<em>&quot;can the user <strong>independently</strong>
+judge?&quot;</em>) is yes <em>for the one failure mode the user happens to
+know about</em>, but the rule asks whether the user can judge
+<strong>the output as a whole</strong> — and that requires excluding
+<em>every</em> missed interaction in the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>-drug
+list, not just the one the user remembers. So the <em>delegation</em>
+fails operationally because the <em>verification step</em> is <em>the
+same effort as the original task</em>. <strong>A task is not delegable
+when the only honest way to check the LLM&#39;s answer is to <em>re</em>-do
+the task with the authoritative source.</strong> Drug-interaction
+screening on a multi-drug patient is the textbook instance of this
+special case. The correct workflow is the database, not the chatbot —
+<em>even if the chatbot happens to get it right</em>.</p>
+<p>(A student who concludes Scenario B is <em>delegable</em> on the
+grounds that an experienced clinician would catch the failure is missing
+the chapter&#39;s deeper rule: <em>delegating well</em> is not the same as
+<em>getting lucky and catching the error</em>. The chapter&#39;s last
+paragraph of <a href="../narrative.md">the narrative</a> makes exactly
+this distinction — &quot;<em>delegating well is not delegating
+everything</em>&quot;.)</p>
+<h2 id="rubric">Rubric</h2>
+<p>See <a href="../rubriche/rubrica_02_competence-rule-two-scenarios.md">rubrica_02_competence-rule-two-scenarios.md</a>.</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

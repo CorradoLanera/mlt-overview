@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>08 — Using ChatGPT in practice · storyboard (6 frames)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="08--using-chatgpt-in-practice--storyboard-6-frames">08 — Using
+ChatGPT in practice · storyboard (6 frames)</h1>
+<blockquote>
+<p>Visual plan for the chapter, built from its <a href="narrative.md">arc</a> and <a href="objectives.md">objectives</a>.
+15 min, dual classroom (in-person + remote). On-screen text in
+<strong>English</strong> (≤ 1 sentence/frame, 3-second readable);
+regia/voce docente in <em>italiano</em>. Feeds
+<code>mlt-quarto-build</code>.</p>
+</blockquote>
+<blockquote>
+<p>🎨 La colonna <strong>Visual</strong> è la descrizione sintetica (per
+noi). I <strong>prompt pronti per un generatore di immagini</strong> —
+con lo stesso <em>style-anchor</em> condiviso dei cap. 01–07 — stanno
+nella sezione <strong><code>## Prompt visivi</code></strong> in fondo.
+Eventuali label testuali (es. i nomi dei sette slot <em>role / context /
+task / instructions / output / style / examples</em>, le voci
+<em>Failure mode / Expertise</em>,
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">80\,000</annotation></semantics></math>
+tokens</em>, <em>Web / Prompt design / API</em>) si aggiungono
+<strong>come overlay</strong> in slide-editor — mai dentro l&#39;immagine
+generata.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funzione</th>
+<th>Visual</th>
+<th>Testo a video</th>
+<th>Voce docente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Hook visivo (Monday morning — unusable answer)</td>
+<td>A clinician&#39;s desk, top-down framed. On the desk, a <strong>tall
+organised stack of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">\sim 200</annotation></semantics></math>
+anonymised paper letters</strong> on the right (same pile teased at the
+end of ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>,
+now centre of attention). To the left of the stack, a laptop screen
+displays a chat-window silhouette with <strong>two stacked speech-bubble
+shapes</strong>: one <strong>short and crisp</strong> (a one-line user
+ask), one <strong>long, dense and rambling</strong> (a verbose,
+qualified, non-committal model reply). Beside the laptop, a CSV-shape
+with rows clearly empty — <em>the audit not yet filled</em>. A clock
+badge in the corner suggests <em>Friday</em> as the deadline. The
+composition reads as <em>frustration without drama</em>: the answer
+happened, it just did not <em>decide</em>.</td>
+<td><em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+letters. A one-line ask. An answer that decided nothing.&quot;</em></td>
+<td>Lunedì mattina dopo la lezione del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>.
+Elena conosce <em>cosa è</em> ChatGPT; non sa ancora come parlarci. Apre
+la chat, digita una domanda piatta, ottiene una risposta che è quasi
+utile e completamente non-attivabile.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Contesto (7-slot prompt template)</td>
+<td>A <strong>clean structured prompt card</strong> floats centred — a
+rounded vertical rectangle, divided into <strong>seven horizontal
+slot-rows</strong> stacked top to bottom. Each slot-row is an empty
+labelled field (the seven labels <em>role / context / task /
+instructions / output / style / examples</em> are added as slide-editor
+overlay; in the image they are seven distinct empty-band rectangles, the
+third and the fifth subtly brighter than the others — preview of the two
+<em>load-bearing</em> slots highlighted in frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>).
+To the <strong>left</strong> of the card, the unstructured one-line ask
+of frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+is shown faded and crossed out by a thin diagonal stroke. The visual
+relation reads: <em>out of one line, into seven slots</em>.</td>
+<td><em>&quot;Seven slots. Each kills a different failure mode.&quot;</em></td>
+<td>La richiesta non è prosa, è <strong>architettura</strong>. Sette
+slot — <em>role</em>, <em>context</em>, <em>task</em>,
+<em>instructions</em>, <em>output</em>, <em>style</em>,
+<em>examples</em> — ciascuno sopprime un <em>failure mode
+specifico</em>: assenza di <em>role</em> → tono indeciso; assenza di
+<em>output</em> → spiegazione invece di classificazione; assenza di
+<em>examples</em> → drift sui casi al margine.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sfida / Dati (competence rule — two letters held back)</td>
+<td>The same
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>-letter
+stack</strong> of frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+but now redrawn so that <strong>two individual letters are pulled out of
+the stack</strong> and float beside it, slightly elevated,
+<strong>marked with a small luminous question-mark hovering over
+each</strong>. On the right side of the frame, two icons stand side by
+side: (i) a <strong>stylised brain shape</strong>, soft-lit in warm
+orange (= clinical expertise <em>the user has</em>); (ii) a
+<strong>stylised question-mark inside an empty circle</strong>, dark and
+matte (= clinical expertise <em>the user does not have</em>). A faint
+horizontal arrow points from the brain icon back to the bulk of the
+stack (= <em>those letters are delegable</em>); a faint horizontal arrow
+from the empty-question-mark icon points to the <strong>two pulled-out
+letters</strong> (= <em>these two are not delegable, regardless of how
+good the model is</em>).</td>
+<td><em>&quot;If you cannot check the answer, you cannot delegate the
+task.&quot;</em></td>
+<td>Due lettere si fermano. Hanno fraseggio non standard (es.
+<em>fragility fall</em> in
+un&#39;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>92</mn><annotation encoding="application/x-tex">92</annotation></semantics></math>-yo
+descritta in linguaggio geriatrico). Se non saprei <em>catturare</em>
+l&#39;errore del modello su quelle, <em>non delego</em>. La regola è
+<strong>normativa</strong>: la competenza propria è la condizione di
+delega.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Nodo / Impatto (three channels mapped to volume + token unit)</td>
+<td><strong>Three large channel-tiles arranged horizontally</strong>,
+left to right: (i) <strong>Web chat</strong> — a single small
+chat-window silhouette with one short ask and one short reply (one-shot,
+ad-hoc); (ii) <strong>Prompt design</strong> — the same chat-window
+silhouette but enlarged, containing the seven-slot card of frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+visible inside (the structured prompt, delivered <em>by hand</em>
+through chat); (iii) <strong>API</strong> — a stylised pipeline: a
+file-shape on the left, a thin orange flow-line into a server-shape in
+the middle, a CSV-shape on the right filled with rows
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">\sim 200</annotation></semantics></math>
+output rows visible as horizontal lines), with a small <em>gear</em> on
+top of the server indicating <em>programmatic / repeatable</em>.
+<strong>Below</strong> the three tiles, a horizontal number-axis runs
+left to right, divided into three coloured regions: a <em>short</em>
+leftmost region under the Web tile (volume
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\sim 1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>),
+a <em>medium</em> central region under the Prompt-design tile (volume
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">\sim 10</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>),
+a <em>long</em> rightmost region under the API tile (volume
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≳</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">\gtrsim 100</annotation></semantics></math>);
+a single luminous marker sits squarely in the API region, at the
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math></em>
+position (the marker is luminous orange, the position label
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math></em>
+is added in slide-editor overlay). To the side, a small badge shows the
+<em>token unit</em>: a chain of three tiny token-pill shapes glued to a
+slightly larger word-shape — the visual ratio
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>:</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">3 : 4</annotation></semantics></math>
+encoded geometrically (the rule of thumb
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+token
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\approx \dfrac{3}{4}</annotation></semantics></math>
+word).</td>
+<td><em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>:
+Web.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>:
+prompt design.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≳</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">\gtrsim 100</annotation></semantics></math>:
+API.&quot;</em></td>
+<td><em>Match the channel to the volume.</em> Il <strong>token</strong>
+è l&#39;unità di costo:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+token
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\approx \dfrac{3}{4}</annotation></semantics></math>
+parola. Per
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>×</mi><mn>300</mn></mrow><annotation encoding="application/x-tex">\times 300</annotation></semantics></math>
+parole
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">= 60\,000</annotation></semantics></math>
+parole
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇒</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\Rightarrow 80\,000</annotation></semantics></math>
+token di input. Sotto i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">\sim 10</annotation></semantics></math>
+item, Web. Fino al centinaio, prompt design a mano. Oltre, API. Per
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>,
+API.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Metodo / Soluzione (Monday-morning card — summative perno)</td>
+<td><strong>Composite layout</strong> of the <em>entire</em> sommativo
+artefact, organised as a single sheet of paper / clean panel.
+<strong>Top band:</strong> a textual scenario panel (rendered as a
+horizontal banner shape, with no actual text — the scenario lives in
+slide-editor overlay). <strong>Centre-left:</strong> the seven-slot
+prompt card of frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+drawn larger; <strong>slot
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+(task) and slot
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+(output) are marked with a small luminous circle each</strong> — the two
+<em>load-bearing</em> slots of the sommativo.
+<strong>Centre-right:</strong> two small labelled blank-line boxes
+stacked vertically (= <em>Failure mode: ___</em> / <em>Expertise needed
+to catch it: ___</em>) — both empty, labels in slide-editor overlay.
+<strong>Bottom-left:</strong> a stylised pocket-calculator shape with
+three multiplication-row shapes inside
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+×
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>300</mn><annotation encoding="application/x-tex">300</annotation></semantics></math>
+×
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mstyle displaystyle="true"><mfrac><mn>4</mn><mn>3</mn></mfrac></mstyle><annotation encoding="application/x-tex">\dfrac{4}{3}</annotation></semantics></math>),
+all empty number-fields in the image — display blank, numbers added as
+overlay; the result-row at the bottom of the calculator glows in warm
+accent orange. <strong>Bottom-right:</strong> the <em>tre modi</em> box
+— three horizontal option-cells stacked vertically (Web / Prompt design
+/ API), with the third option-cell (API) marked with a small luminous
+circle. To the far right, a sketched <strong>bar-chart pair</strong>
+previews the two Slido poll histograms
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>o</mi><mi>l</mi><mi>l</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">Poll 1</annotation></semantics></math>
+on token estimate,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>o</mi><mi>l</mi><mi>l</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">Poll 2</annotation></semantics></math>
+on access mode) as ghosted vertical bars — the modal bars in each chart
+are taller and warmer than the rest.</td>
+<td><em>&quot;Circle two slots. Name one failure. Estimate the tokens. Pick
+the channel.&quot;</em></td>
+<td>Riquadro perno del <strong>sommativo &quot;Monday morning: rank the ED
+letters&quot;</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>7</mn><mo>′</mo></msup></mrow><annotation encoding="application/x-tex">\sim 7&#39;</annotation></semantics></math>,
+min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>,
+vedi <a href="objectives.md">objectives.md</a>). Un&#39;unica scheda
+condivisa — presenza e remoto. I gruppi: <strong>(i)</strong> riempiono
+i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+slot e cerchiano <em>task</em> + <em>output</em>; <strong>(ii)</strong>
+nominano un <em>failure mode</em> clinicamente plausibile +
+l&#39;<em>expertise</em> per catturarlo; <strong>(iii)</strong> stimano il
+costo in token; <strong>(iv)</strong> cerchiano <em>API</em> + 1-frase
+di <em>perché non gli altri</em>. Due Slido in parallelo: token estimate
++ access mode.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Payoff / Domanda finale (Wednesday — the agent — where does the gate
+go?)</td>
+<td>The Monday set-up of frames
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+has <strong>dissolved</strong>. In its place, a <strong>four-step
+horizontal workflow</strong> runs left-to-right across the frame: (1) a
+small <strong>magnifying-glass / search icon</strong> (= <em>fetch
+PubMed guidelines</em>); (2) a <strong>stylised summary-page
+shape</strong> (= <em>summarise the inclusion criteria</em>); (3) a
+<strong>draft-document shape</strong> (= <em>draft the audit
+protocol</em>); (4) an <strong>envelope flying outward with an arrow
+leaving the frame edge</strong> (= <em>email the PI</em>). All four
+steps are connected by orange arrows. <strong>Between Elena&#39;s
+silhouette</strong> (suggested on the far left, at her desk, smaller
+than in frames
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>)
+<strong>and step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></strong>,
+there is <strong>no visible eye / check icon</strong> — the chain runs
+<em>without a human reading between the model&#39;s reasoning and the email
+leaving</em>. A <strong>faint dashed vertical line</strong> sits
+<em>floating, unanchored</em>, hovering somewhere between step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+and step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+— <em>waiting to be placed</em>. The composition reads: <em>the chain
+exists, the gate is missing, where does it go?</em></td>
+<td><em>&quot;Monday: you read every output. Wednesday: it acts. Where does
+the gate go?&quot;</em></td>
+<td>La regola di competenza diventa <strong>spaziale</strong>. Il
+modello acquista <em>strumenti</em> (search, mail), un <em>loop</em> che
+decide cosa chiamare dopo, e punti di decisione. Da <em>chat</em> a
+<em>agent</em>. Il <em>check</em> del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+è il <em>gate</em> del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+— e la domanda non è più <em>&quot;check?&quot;</em> ma <em>&quot;where?&quot;</em>.
+Capitolo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>:
+il trust boundary.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="modalità-duale--dove-si-attiva">Modalità duale — dove si
+attiva</h2>
+<p>Il riquadro <strong>5</strong> è il perno attivo: lì gira il
+sommativo <strong>&quot;Monday morning: rank the ED letters&quot;</strong> (vedi
+<a href="objectives.md">objectives.md</a>). L&#39;artefatto condiviso è
+<strong>uno solo</strong> — lo scenario clinico, la scheda 7-slot, i due
+<em>blanks</em> <em>Failure mode / Expertise</em>, il mini-calcolatore
+di token, il box <em>tre modi</em> — proiettato e distribuito su carta.
+Tutta la classe lavora sullo <strong>stesso banco</strong> (presenza +
+remoto), niente group cards differenziate: capitolo da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>15</mn><mo>′</mo></msup><annotation encoding="application/x-tex">15&#39;</annotation></semantics></math>
+troppo breve per la struttura a tre-card di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>.
+Due <strong>poll Slido individuali</strong> corrono in parallelo:</p>
+<ul>
+<li><strong>Poll 1 — &quot;Token estimate for the input
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+letters ×
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>300</mn><annotation encoding="application/x-tex">300</annotation></semantics></math>
+words)&quot;</strong> (opzioni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 60\,000</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 80\,000</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>200</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 200\,000</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>600</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 600\,000</annotation></semantics></math>)
+— diagnostico sull&#39;<strong>errore di unità</strong> (parole anziché
+token,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>×</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">\times 10</annotation></semantics></math>,
+etc.; vedi distrattori in <a href="objectives.md">objectives.md</a>).</li>
+<li><strong>Poll 2 — &quot;Best access mode for this task&quot;</strong> (opzioni
+<em>Web chat</em> / <em>Prompt design in chat</em> / <em>API</em> /
+<em>&quot;do it by hand without an LLM&quot;</em>) — diagnostico sui tre archetipi
+sbagliati (non-sa-il-volume / sa-il-prompt-non-la-delivery / <em>do it
+by hand</em> è risposta <em>seria</em>).</li>
+</ul>
+<p>Il doc condiviso raccoglie cinque colonne per gruppo: i sette slot
+riempiti · <em>task</em> + <em>output</em> cerchiati con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>-frase
+ciascuno · <em>Failure mode + Expertise</em> · <em>token estimate (con
+calcolo mostrato)</em> · <em>access mode cerchiato +
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>-frase
+di why-not-the-others</em>. Riquadri
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+espositivi
+(~<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>7</mn><mo>′</mo></msup><annotation encoding="application/x-tex">7&#39;</annotation></semantics></math>),
+riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+ospita i
+~<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>7</mn><mo>′</mo></msup><annotation encoding="application/x-tex">7&#39;</annotation></semantics></math>
+di sommativo (min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>),
+riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+chiude e fa ponte
+(~<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>15</mn><mo>″</mo></msup><annotation encoding="application/x-tex">15&#39;&#39;</annotation></semantics></math>
+alla fine, sovrapposto al min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>).</p>
+<h3 id="nota-meta--la-dashed-gate-line-del-riquadro-6">Nota meta — la
+<em>dashed gate-line</em> del riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math></h3>
+<p>Il prompt visivo del riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+chiede una <em>&quot;faint dashed vertical line, floating, unanchored,
+hovering somewhere between step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+and step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>&quot;</em>.
+Pedagogicamente: la linea <strong>non deve essere ancorata</strong> a
+una posizione precisa — deve leggersi come <em>&quot;qualcuno deve metterla
+qui, ma chi e dove?&quot;</em>. È il <em>correlato visivo</em> della domanda
+di apertura del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+(&quot;<em>where does the gate go?</em>&quot;). Se il generatore produce una linea
+solida o chiaramente posizionata fra due step, va richiesto un
+<em>re-roll</em>: l&#39;ambiguità della posizione <strong>è il punto
+pedagogico</strong> del frame. In alternativa, il post-processing in
+slide-editor può sostituire la linea con una versione tratteggiata +
+un&#39;icona di <em>cursore</em> o <em>gripper</em> per rinforzare il
+&quot;drag-and-drop, not placed yet&quot;.</p>
+<h2 id="prompt-visivi">Prompt visivi</h2>
+<p>Prompt pronti per un generatore di immagini. Lo
+<strong><code>style-anchor</code></strong> è definito <em>una volta</em>
+(stesso dei cap. 01–07, per coerenza di serie tra capitoli) e va
+premesso a ogni prompt come parametro. Mai testo / lettere / numeri
+dentro l&#39;immagine — le label dei sette slot, i nomi dei tre canali, i
+numeri della scala di volume, le voci <em>Failure mode / Expertise</em>,
+i numeri del calcolatore di token si aggiungono <strong>come overlay in
+slide-editor</strong>.</p>
+<p><strong><code>style-anchor</code></strong> = <em>&quot;Coherent image set,
+one shared visual identity: warm orange (#E8741E) as the single accent
+colour on a dark-slate background, soft cinematic lighting, 16:9, crisp
+and high quality, no text, letters or numbers rendered anywhere in the
+image.&quot;</em></p>
+<ul>
+<li><strong>Riquadro 1 (Hook — Monday morning unusable answer)</strong>:
+<code>style-anchor</code> + <em>a top-down view of a clinician&#39;s desk
+surface. On the right of the desk, a tall organised stack of
+approximately two hundred sheets of paper, neatly aligned, each sheet
+evoking medical-letter formatting with a clear header band and body-text
+suggested by horizontal lines (no actual readable text). To the left of
+the stack, a laptop screen displays a chat-window silhouette containing
+two stacked speech-bubble shapes — the upper bubble small, crisp and
+short (a user query), the lower bubble large, soft, dense and rambling
+(a verbose model reply that flows for many lines without any sharp
+internal structure). Beside the laptop, a CSV-shape — a small grid of
+rows and columns drawn as horizontal lines — with all rows visibly
+empty. In the upper corner, a small circular clock-badge with one of its
+arms pointing in a way that suggests an approaching deadline. Soft warm
+rim-light on the stack and on the laptop&#39;s edge; no human visible in
+this frame.</em></li>
+<li><strong>Riquadro 2 (Contesto — the 7-slot prompt card)</strong>:
+<code>style-anchor</code> + <em>centred in the frame, a clean rounded
+vertical rectangle representing a structured prompt card. The card is
+divided into seven horizontal stacked slot-rows, each slot-row drawn as
+a horizontal band with a small empty input-field shape inside, the seven
+bands stacked top to bottom with thin dividers between them. The third
+band from the top and the fifth band from the top are subtly brighter
+than the others — same warm orange accent, used only on those two bands
+to mark them as load-bearing without yet revealing their identity. To
+the left of the structured card, the silhouette of an old chat-window
+with a single short user bubble inside is shown faded out and crossed by
+a thin diagonal stroke through it, indicating the unstructured one-line
+ask has been discarded. A subtle thin arrow points from the discarded
+chat to the structured card.</em></li>
+<li><strong>Riquadro 3 (Sfida / Dati — two letters held back)</strong>:
+<code>style-anchor</code> + <em>the same tall organised stack of
+approximately two hundred sheets of paper from the opening frame, but
+now two individual sheets are pulled out of the stack and float beside
+it, slightly elevated, each sheet with a small glowing question-mark
+symbol hovering above it in warm accent orange. To the right of the
+stack, two icon-objects are placed side by side. The left icon is a
+stylised brain shape, soft and warmly lit, glowing gently in the same
+accent orange. The right icon is an empty circle outline with a
+question-mark inside it, dark and matte in the dark-slate base colour. A
+faint horizontal arrow runs from the brain icon back toward the bulk of
+the stack, suggesting that those letters are within the user&#39;s
+competence. A second faint horizontal arrow runs from the
+empty-question-mark icon toward the two pulled-out floating letters,
+suggesting that those two are outside the user&#39;s competence and must be
+held back.</em></li>
+<li><strong>Riquadro 4 (Nodo — three channels + volume axis +
+token-as-unit)</strong>: <code>style-anchor</code> + <em>three large
+tiles arranged horizontally side by side. Leftmost tile contains a
+single small chat-window silhouette holding one short query bubble and
+one short answer bubble — a one-shot interaction. Centre tile contains a
+larger chat-window silhouette with a structured seven-slot prompt card
+visible inside it — the same vertical card with seven stacked slot-rows
+as the previous frame, drawn smaller to fit inside the tile. Rightmost
+tile contains a stylised programmatic pipeline: a file-icon on the far
+left, a thin warm-orange flow-line running rightward into a server-shape
+in the middle (a small rack icon), a small gear-shape sitting on top of
+the server, and then another thin flow-line running rightward out of the
+server into a CSV-icon on the far right, the CSV-icon containing many
+horizontal output-row lines suggesting bulk output. Below the three
+tiles, running horizontally across the full width, a clean number-axis
+with tick-marks and three coloured-region bands: the leftmost band short
+and narrow (under the chat tile), a medium central band (under the
+structured-prompt tile), a long rightmost band (under the API tile). A
+single luminous orange spherical marker sits squarely in the rightmost
+band, well into the API region. To the side of the axis, a small
+subordinate badge shows a chain of three small token-pill shapes
+attached side by side to a slightly larger word-shape — the visible
+length ratio of three to four is encoded geometrically in the badge
+itself.</em></li>
+<li><strong>Riquadro 5 (Metodo + summative perno — full Monday
+card)</strong>: <code>style-anchor</code> + <em>a composite single-sheet
+layout filling most of the frame, organised like a clean paperwork
+artefact. Across the very top of the sheet, a thin horizontal
+banner-shape stretches edge to edge (an empty scenario header — no text
+in the image). On the centre-left of the sheet, the structured
+seven-slot prompt card from earlier is drawn larger, with the third
+slot-row and the fifth slot-row each marked by a small luminous orange
+circle drawn around them (signalling that these two are the load-bearing
+slots). On the centre-right of the sheet, two small labelled blank-line
+boxes are stacked vertically, each box a thin horizontal rectangle with
+a single blank line inside it (the labels Failure mode and Expertise are
+added in slide-editor overlay). On the bottom-left of the sheet, a
+stylised pocket-calculator shape contains three multiplication-row
+inputs stacked vertically inside its body, all input fields empty, and a
+single result-row at the bottom of the calculator glowing in warm orange
+accent. On the bottom-right of the sheet, three horizontal option-cells
+stacked vertically form a &quot;three modes&quot; selection box; the third
+option-cell from the top is marked with a small luminous orange circle
+around it. On the far right edge of the frame, beside the sheet, two
+small sketched bar-chart shapes are stacked vertically, each chart a row
+of four vertical bars with one bar in each chart noticeably taller and
+warmer in tone than the others (ghosted Slido poll previews). No text,
+letters or numbers rendered anywhere in the image — all labels added in
+slide-editor overlay.</em></li>
+<li><strong>Riquadro 6 (Payoff + pre-hook ch. 09 — Wednesday agent, gate
+not yet placed)</strong>: <code>style-anchor</code> + <em>the Monday
+setup has dissolved. Across the frame runs a horizontal four-step
+workflow, left to right. Step one is a small magnifying-glass icon
+glowing softly in warm orange. Step two is a stylised summary-page
+shape, a small document with a few horizontal lines suggesting
+summarised content. Step three is a draft-document shape, a slightly
+larger page with horizontal lines suggesting a written draft. Step four
+is an envelope shape, drawn mid-flight with motion-lines, leaving the
+right edge of the frame with an arrow projecting outward beyond the
+frame boundary (the email has left the system). The four steps are
+connected by orange arrows running left to right. On the far left, a
+small human silhouette is seated at a desk, head slightly bowed, in a
+working-clinician posture, smaller and more peripheral than in earlier
+frames. Between the human silhouette and step four, conspicuously, there
+is no eye-icon, no check-mark icon, no human-in-the-loop marker visible
+in the chain. Hovering somewhere between step three and step four, a
+faint dashed vertical line is drawn — the line is short, drawn in soft
+warm orange tone, deliberately unanchored and hovering as if floating,
+not snapped to a precise position; its location reads as &quot;to be placed
+by the viewer, but not placed yet&quot;.</em> <strong>(Pre-hook to ch. 09 —
+the trust boundary as a position waiting to be chosen.)</strong></li>
+</ul>
+<h2 id="verifica-post-output-auto-check">Verifica post-output
+(auto-check)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked></input>Riquadro 1 aggancia in 3
+secondi? — sì: il <strong>top-down della scrivania</strong> + i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+fogli + la chat-bolla-lunga-e-rambling + il CSV vuoto + l&#39;orologio
+&quot;venerdì&quot; mettono in scena <em>l&#39;esperienza concreta</em> del lunedì
+mattina — fallita.
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+letters. A one-line ask. An answer that decided nothing.&quot;</em> è la
+<em>summary frame</em> di quell&#39;esperienza in una riga. Il riquadro non
+promette tecnica, promette <em>riconoscimento</em>: lo studente che ha
+già provato a chiedere qualcosa di operativo a un chatbot si ritrova
+subito.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 3 il dato chiave
+è VISIBILE? — sì: la <em>normatività</em> della regola della competenza
+è resa <strong>spaziale</strong>: i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>198</mn><annotation encoding="application/x-tex">198</annotation></semantics></math>
+rimangono nella pila (delegabili), i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+sono <em>fisicamente fuori</em> (non delegabili). I due icon-objects
+(cervello = competenza posseduta, question-mark = competenza mancante)
+sono il <em>correlato simbolico</em> della regola in forma operativa. La
+frase a video <em>&quot;if you cannot check the answer, you cannot delegate
+the task&quot;</em> è meno densa della scena visiva — <em>show</em> davvero
+precede <em>tell</em>.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 4 il nodo è il
+concetto centrale del capitolo? — il riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+è il <em>nodo operativo</em> del capitolo: la <strong>decisione di
+canale</strong> (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>).
+I tre tile + la scala di volume + il marker su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+in zona API + il <em>token-badge</em> col rapporto geometrico
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>:</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">3 : 4</annotation></semantics></math>
+comprimono in una sola scena (a) la matrice canale-volume, (b) la
+posizione del compito del giorno, (c) l&#39;unità di costo. È
+<em>quello</em> che nessun studente uscirà dal capitolo senza aver
+visto.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 5 il sommativo è
+ospitato correttamente? — sì: tutti gli elementi del <em>Field
+&quot;In-person action&quot;</em> in <a href="objectives.md">objectives.md</a>
+sono visivamente presenti — scenario banner,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>-slot
+card con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+slot cerchiati, <em>Failure mode</em> / <em>Expertise</em> blanks,
+calcolatore
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>200</mn><mo>×</mo><mn>300</mn><mo>×</mo><mn>4</mn><mi>/</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">200 \times 300 \times 4/3</annotation></semantics></math>,
+<em>tre modi</em> box con API cerchiato, due poll-bar ghostate.
+L&#39;artefatto è <em>uno solo</em>; le quattro sub-task del sommativo
+trovano tutte un <em>correlato visivo</em> su questa singola scena. È
+<em>show don&#39;t tell</em> nel senso pieno: lo schermo <em>mostra il
+foglio</em> su cui la classe lavora, non un meta-diagramma del
+sommativo.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 6 lascia una
+domanda-ponte? — sì: <em>&quot;Monday: you read every output. Wednesday: it
+acts. Where does the gate go?&quot;</em> è una domanda <em>spaziale</em>, non
+<em>deontologica</em>, e il workflow a quattro step + la <em>gate-line
+tratteggiata fluttuante</em> la rendono <em>visualmente irrisolta</em>.
+La gate-line <strong>fluttuante</strong> è la traduzione visiva esatta
+della domanda di apertura del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+(Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>:
+<em>&quot;place the trust boundary&quot;</em>). Lo studente esce dal cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+con un <em>task visivo</em> preciso da fare nel cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>:
+<em>placiamo quella linea</em>.</label></li>
+<li><label><input type="checkbox" checked></input>Solo i 6 riquadri (senza
+voce) raccontano l&#39;arco? — sì:
+scrivania-con-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>-lettere-e-chat-fallita
+→ scheda strutturata a sette slot che soppianta la one-liner → due
+lettere fuori dalla pila con cervello/dubbio → tre canali su una scala
+di volume con marker su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+in API → composito del foglio del sommativo → workflow di quattro step
+con gate-line fluttuante. L&#39;arco <em>Hook → Challenge → Resolution →
+Payoff + pre-hook</em> è leggibile senza una sola riga di prosa,
+<strong>e la pila di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere è il filo visivo continuo</strong> dei riquadri
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+(e indirettamente
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>).</label></li>
+<li><label><input type="checkbox" checked></input>Stile coerente coi cap.
+01–07? — sì: stesso <code>style-anchor</code> (#E8741E, dark-slate,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn><mo>:</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">16{:}9</annotation></semantics></math>,
+no text). Continuity callback visivo <strong>al ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math></strong>
+(la stessa pila di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere e la stessa chat-window di tool-size aprono il ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+— il ponte di scenario diventa ponte visivo, <em>deliberato</em>).
+Continuity callback <strong>al ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></strong>
+(la posa della silhouette nel riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+riprende la posa &quot;<em>piccola, lavorante, davanti alla macchina</em>&quot; —
+è il marker visivo della <em>clinica al lavoro</em>, che il ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+erediterà). Forward-hook al <strong>ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math></strong>
+(workflow a 4 step + gate-line fluttuante = <em>l&#39;icona aperta</em> di
+ciò che il cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+chiuderà). <strong>Asse tonale del capitolo:</strong> dopo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+capitoli di <em>visualizzazione di meccanismi</em>, il ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+è il <strong>primo capitolo i cui visuals mostrano una
+scrivania</strong> (frames
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>)
+— non più un&#39;astrazione, ma il <em>teatro operativo</em> del clinico. È
+la cifra visiva del <strong>pivot a <em>use</em></strong> della spine
+globale.</label></li>
+</ul>
+</body>
+</html>

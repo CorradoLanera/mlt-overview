@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item bank — 08 Using ChatGPT in practice</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-bank--08-using-chatgpt-in-practice">Item bank — 08 Using
+ChatGPT in practice</h1>
+<blockquote>
+<p>Chapter: <code>08-chatgpt-usage</code> · MLT course (UBEP,
+biomedical/clinical graduate students). Generated 2026-05-29. Items
+student-facing in <strong>English</strong>; rubrics 3-level
+(Base/Good/Excellent). Review: <code>assessment-reviewer</code> ✓
+<strong>APPROVED</strong> (2026-05-29) after applying two cosmetic
+fixes: <strong>SI-1</strong> (item 03 prompt) — replaced <em>&quot;For
+order-of-magnitude reasoning, use the chapter&#39;s rule of thumb...&quot;</em>
+with <em>&quot;For an estimate to within
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>±</mi><mn>20</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\sim \pm 20\%</annotation></semantics></math>,
+use the chapter&#39;s rule of thumb...&quot;</em>. Rationale: the distractor A
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>7</mn><mspace width="0.167em"></mspace><mn>500</mn></mrow><annotation encoding="application/x-tex">\sim 7\,500</annotation></semantics></math>
+tokens, a <em>parole-vs-token</em> unit error) and the correct answer C
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>13</mn><mspace width="0.167em"></mspace><mn>300</mn></mrow><annotation encoding="application/x-tex">\sim 13\,300</annotation></semantics></math>
+tokens) are in the <em>same</em> order of magnitude
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>4</mn></msup><annotation encoding="application/x-tex">10^4</annotation></semantics></math>);
+the diagnostic is on the <em>direction</em> of the conversion factor
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mi>/</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">4/3</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mi>/</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">3/4</annotation></semantics></math>),
+not on the order, so the <em>&quot;order-of-magnitude&quot;</em> claim was
+slightly over-claiming. <strong>SI-2</strong> (item 02 expected-answer
+scenario B) — replaced the slightly weak <em>&quot;is technically yes for the
+catch-the-amiodarone-warfarin case&quot;</em> with <em>&quot;is yes for the one
+failure mode the user happens to know about, but the rule asks whether
+the user can judge <strong>the output as a whole</strong> — and that
+requires excluding <strong>every</strong> missed interaction in the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>-drug
+list, not just the one the user remembers.&quot;</em> This makes the
+<em>not-delegable-regardless-of-expertise</em> logic load-bearing on the
+<em>systematic</em> nature of the check, not on rhetorical concession.
+<strong>Numerical verification</strong> on item 03:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>40</mn><mo>×</mo><mn>250</mn><mo>×</mo><mstyle displaystyle="true"><mfrac><mn>4</mn><mn>3</mn></mfrac></mstyle><mo>=</mo><mn>13</mn><mspace width="0.167em"></mspace><mn>333</mn></mrow><annotation encoding="application/x-tex">40 \times 250 \times \dfrac{4}{3} = 13\,333</annotation></semantics></math>
+tokens of input
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>13</mn><mspace width="0.167em"></mspace><mn>300</mn></mrow><annotation encoding="application/x-tex">\approx 13\,300</annotation></semantics></math>);
+distractor A&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mspace width="0.167em"></mspace><mn>500</mn></mrow><annotation encoding="application/x-tex">7\,500</annotation></semantics></math>
+=
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>40</mn><mo>×</mo><mn>250</mn><mo>×</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">40 \times 250 \times \dfrac{3}{4}</annotation></semantics></math>
+(inverted conversion factor). <strong>Clinical verification</strong> on
+item 02 scenario B: amiodarone inhibition of CYP2C9 + P-gp, INR rise
+over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+weeks, ACCP guideline-level dose-reduction recommendation, all
+confirmed. <strong>Anti-leakage check</strong> from ch. 09+ (agent,
+tool, control loop, decision points, trust boundary, reversibility,
+human-in-the-loop, autonomous search, ask for interaction, ask for
+sharing, do stuff, gate as spatial reformulation of check) held cleanly
+across all three items + both rubrics. <strong>Distractor
+design</strong> verified diagnostic on all three MCQ options of item 03
+(A = unit-error, B = conjunctive-rule-reading, D = recurrence-blind
+pragmatism); confirmed coherent with the chapter&#39;s
+<em>anti-trabocchetto</em> note (D rewarded as a <em>principled
+question</em>, then corrected on recurrence). <strong>Mono-categorial
+item bank</strong> (3 × Application) confirmed appropriate for a chapter
+teaching a <em>practice</em> rather than a <em>mechanism</em>. No
+further fixes required.</p>
+</blockquote>
+<blockquote>
+<p><strong>Set size note:</strong> chapter 8 closes at <strong>3
+items</strong>, following the same teacher&#39;s-call applied to <a href="../05-deep-learning/items_valutativi.md">chapter 5</a> and <a href="../07-llm-transformers/items_valutativi.md">chapter 7</a>. The
+chapter&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>15</mn><mo>′</mo></msup><annotation encoding="application/x-tex">15&#39;</annotation></semantics></math>
+budget is the tightest in the course so far, and the three items
+together already carry a substantial cognitive load — <em>fill seven
+slots and reason about which two are most and least load-bearing</em>
+(item 01), <em>apply the competence rule to two contrasting
+scenarios</em> including the
+<em>not-delegable-regardless-of-expertise</em> special case (item 02),
+<em>compute tokens and pick the channel against a
+recurrence-flips-the-rule MCQ</em> (item 03). The Argumentation move
+most natural to this chapter — <em>&quot;argue whether to delegate a
+borderline task&quot;</em> — is operationally tested by item 02&#39;s scenario B
+verdict (the <em>not delegable, regardless of expertise</em> special
+case is itself an argumentative claim, internalised in the rubric
+criterion C3-Excellent). The Argumentation category is <em>intentionally
+absent</em> from this chapter&#39;s item bank; the chapter still verifies
+all three learning objectives — and item 02 alone forces an
+argumentative move on the chapter&#39;s most distinctive normative rule.</p>
+</blockquote>
+<blockquote>
+<p><strong>Note on numbers and scenarios:</strong> the items use
+<strong>clinical tasks, sample sizes, and word counts different</strong>
+from those of the chapter&#39;s summative exercise
+(<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+ED letters, trauma vs non-trauma triage,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>300</mn></mrow><annotation encoding="application/x-tex">\sim 300</annotation></semantics></math>
+words/letter,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">80\,000</annotation></semantics></math>
+tokens, API</em> — see <a href="objectives.md">objectives.md</a>). Item
+01 uses a <strong>different extraction task</strong> (primary surgical
+procedure from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">\sim 100</annotation></semantics></math>
+operative notes), aimed at <em>output</em> and <em>style</em> slots that
+the summative does not specifically focus on. Item 02 uses <strong>two
+new clinical scenarios</strong> (oncology trial summarisation for
+tumour-board prep + drug-interaction screening on a warfarin-amiodarone
+patient), neither of which appears in the chapter; the second is
+designed to surface the <em>not delegable regardless of expertise</em>
+special case that the summative&#39;s fragility-fall example does not
+exercise. Item 03 uses a <strong>recurring ophthalmology
+workflow</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+notes/month ×
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+months,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>250</mn></mrow><annotation encoding="application/x-tex">\sim 250</annotation></semantics></math>
+words/note,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>13</mn><mspace width="0.167em"></mspace><mn>300</mn></mrow><annotation encoding="application/x-tex">\sim 13\,300</annotation></semantics></math>
+tokens/run) chosen to test channel-rule reading:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+items alone would land in <em>Prompt design in chat</em>, but
+<em>recurrence + integration</em> push to <em>API</em> — a
+discrimination the summative does not directly test (the summative
+scenario sits squarely in API territory by <em>volume</em> alone). The
+items measure the <em>procedure</em> and the <em>rule</em>, never the
+recall of the summative&#39;s specific instances. Same convention as ch. 04,
+ch. 05 and ch. 07.</p>
+</blockquote>
+<h2 id="item--objective-map">Item ↔︎ objective map</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Learning objective</th>
+<th>Category</th>
+<th>Type</th>
+<th>Difficulty</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>Obj. 1 — construct a 7-slot prompt for a clinical task different
+from the summative (surgical-procedure extraction from operative notes),
+justify which failure mode each of <em>role / style / examples</em>
+suppresses, and identify the <em>most</em> and <em>least</em>
+load-bearing slot for this specific task with task-aware reasoning</td>
+<td>Application</td>
+<td>applicativa</td>
+<td>medium</td>
+<td><a href="items/item_01_seven-slot-prompt_applicativa.md">item_01_seven-slot-prompt_applicativa.md</a></td>
+</tr>
+<tr>
+<td>02</td>
+<td>Obj. 2 — apply the competence rule to two contrasting clinical
+scenarios (oncology trial summarisation, <em>delegable with
+expertise</em>; drug-interaction screening, <em>not delegable regardless
+of expertise</em>). For each scenario name a plausible failure mode, the
+expertise needed to catch it, and the verdict — surfacing the
+<em>not-delegable-regardless-of-expertise</em> special case as the
+rule&#39;s higher-order form</td>
+<td>Application</td>
+<td>applicativa</td>
+<td>medium–high</td>
+<td><a href="items/item_02_competence-rule-two-scenarios_applicativa.md">item_02_competence-rule-two-scenarios_applicativa.md</a></td>
+</tr>
+<tr>
+<td>03</td>
+<td>Obj. 3 — choose the right channel (Web / Prompt design / API) and
+estimate the input-token cost for a recurring ophthalmology
+classification workflow
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+notes ×
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+months) where the <em>per-run volume</em> would suggest <em>Prompt
+design in chat</em> but the <em>recurrence + downstream integration</em>
+properties flip the rule to <em>API</em>. Discriminates students who
+read the API-trigger rule <strong>disjunctively</strong> (volume OR
+recurrence OR integration) from students who read it
+<strong>conjunctively</strong></td>
+<td>Application</td>
+<td>MCQ (scenario)</td>
+<td>medium</td>
+<td><a href="items/item_03_channel-and-tokens_mcq.md">item_03_channel-and-tokens_mcq.md</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="coverage">Coverage</h2>
+<p><strong>By objective</strong> (all three chapter objectives covered,
+one item per objective):</p>
+<ul>
+<li><strong>Obj. 1</strong> (construct 7-slot prompt + justify failure
+modes): item 01 (Application, applicativa). Focuses on <em>role / style
+/ examples</em> — the three slots the summative does <em>not</em>
+foreground — and on the <em>most vs least load-bearing</em>
+discrimination that is <em>task-relative</em>, not slot-intrinsic.</li>
+<li><strong>Obj. 2</strong> (competence rule + apply it): item 02
+(Application, applicativa). The two scenarios are deliberately
+contrastive — one <em>delegable with expertise</em> (oncology trial
+summarisation), one <em>not delegable regardless of expertise</em>
+(drug-interaction screening), to test the rule&#39;s full form, not just its
+first reading.</li>
+<li><strong>Obj. 3</strong> (channel choice + token cost): item 03
+(Application, MCQ scenario). The discriminating distractor is option B
+(correct token count, wrong channel) — the student who picks B reads the
+API-trigger rule conjunctively; only option C reads it disjunctively, as
+the chapter states it.</li>
+</ul>
+<p><strong>By cognitive category</strong> (1 of 4 categories —
+<em>Application</em> — covers all three items; Knowledge, Comprehension
+and Argumentation absent by design — see set-size note above):</p>
+<ul>
+<li>Knowledge: 0</li>
+<li>Comprehension: 0</li>
+<li>Application: 3</li>
+<li>Argumentation/evaluation: 0</li>
+</ul>
+<p>This is a <strong>mono-categorial item bank</strong>,
+<em>intentionally so</em>. The chapter&#39;s three objectives are themselves
+all in the <em>Application</em> category — they are about
+<em>constructing</em>, <em>applying</em> and <em>choosing</em>
+(operational verbs). Adding a Comprehension item (&quot;<em>define the
+competence rule</em>&quot;) would test whether the student remembers a
+sentence, <em>not</em> whether the student can use it; adding a
+Knowledge item (&quot;<em>name the seven slots</em>&quot;) would degrade the item
+bank from <em>operational</em> to <em>recall</em> on a chapter whose
+payoff is explicitly operational. The chapter teaches a
+<strong>practice</strong>, not a <strong>mechanism</strong> (<a href="narrative.md">narrative.md</a>, penultimate paragraph) — the items
+mirror that.</p>
+<h2 id="rubrics">Rubrics</h2>
+<ul>
+<li><a href="rubriche/rubrica_01_seven-slot-prompt.md">rubrica_01_seven-slot-prompt.md</a>
+— item 01 (applicativa).</li>
+<li><a href="rubriche/rubrica_02_competence-rule-two-scenarios.md">rubrica_02_competence-rule-two-scenarios.md</a>
+— item 02 (applicativa).</li>
+</ul>
+<p><em>(Item 03 is MCQ — single correct option, no rubric.)</em></p>
+<h2 id="internal-coherence--the-three-items-together-test-the-chapters-three-piece-kit">Internal
+coherence — the three items together test the chapter&#39;s three-piece
+kit</h2>
+<p>The chapter&#39;s narrative closes on what Elena calls <em>&quot;the chapter&#39;s
+three-piece kit&quot;</em> (<a href="narrative.md">narrative.md</a>):
+<strong>a way to ask</strong> (the seven-slot prompt), <strong>a way to
+say no</strong> (the competence rule), and <strong>a way to
+deliver</strong> (channel choice + token unit). The three items map
+one-to-one onto those three pieces:</p>
+<ul>
+<li><strong>Item 01</strong> tests <em>the way to ask</em> — but with a
+<strong>structural twist</strong>: the summative tested the
+<em>most</em> load-bearing slots; the item tests <em>least</em>
+load-bearing too, and the three slots (<em>role / style / examples</em>)
+the summative leaves implicit. A student who has only done the summative
+cannot solve item 01 by recall.</li>
+<li><strong>Item 02</strong> tests <em>the way to say no</em> — and
+pushes it past the simple form (<em>delegate only what you can
+check</em>) into the <strong>special case</strong> the chapter&#39;s
+narrative reserves for its last paragraph (<em>delegating well is not
+delegating everything</em>). Scenario B is the textbook instance: the
+LLM may get the answer right, but <em>checking</em> requires the
+database that should have been the original source. A student who marks
+B as <em>delegable</em> has read the rule but missed its higher-order
+form.</li>
+<li><strong>Item 03</strong> tests <em>the way to deliver</em> — and
+surfaces the <strong>disjunctive reading</strong> of the API-trigger
+rule that is easy to miss. The chapter states the rule with three
+conditions (volume, repeatability, integration) and any one suffices;
+option B in the MCQ tempts a student to read all three as required.
+Picking C requires the disjunctive reading the chapter teaches but does
+not over-emphasise.</li>
+</ul>
+<p>Together, the three items verify the chapter&#39;s <em>practice</em>
+rather than its <em>vocabulary</em>. A student who passes all three has
+demonstrated the three-piece kit on a <em>new</em> task
+(surgical-procedure extraction), with a <em>new</em> normative test (the
+not-delegable-regardless-of-expertise case), at a <em>new</em>
+channel-rule discrimination (recurrence flips the rule). The summative&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+ED letters scenario is <em>recalled in none of them</em> — by
+design.</p>
+<h2 id="anti-leakage--vocabulary-boundary-with-ch-09">Anti-leakage —
+vocabulary boundary with ch. 09+</h2>
+<p>The items stay strictly within ch. 08 vocabulary: <em>prompt</em>,
+<em>role / context / task / instructions / output / style /
+examples</em> (the seven slots), <em>competence rule</em>,
+<em>delegate</em>, <em>failure mode</em>, <em>expertise</em>, <em>Web
+chat / Prompt design / API</em> (the three channels), <em>token</em>
+(with the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\approx \dfrac{3}{4}</annotation></semantics></math>-word
+rule of thumb). They do <strong>not</strong> presuppose any concept from
+ch. 09+ — no <em>agent</em>, no <em>tool</em>, no <em>control loop</em>,
+no <em>decision points</em>, no <em>trust boundary</em>, no
+<em>reversibility</em>, no <em>human-in-the-loop</em>, no <em>autonomous
+search / ask for interaction / ask for sharing / do stuff</em> (the four
+agent interaction modes), no <em>gate</em> (the spatial reformulation of
+the check that ch. 09 will introduce). The chapter&#39;s pre-hook to ch. 09
+(Wednesday afternoon, the four-step PubMed-summarise-draft-email
+workflow, the <em>trust gate</em>) is staged in the chapter&#39;s <a href="narrative.md">narrative</a> and <a href="storyboard.md">storyboard
+frame 6</a>, <em>not</em> inside the items.</p>
+<p>The references in item 03&#39;s expected-answer to <em>the chapter&#39;s
+three triggers for API</em> (volume / repeatability / integration), and
+the references in item 01 to <em>role / style / examples</em> as named
+slots, are not anti-leakage violations: those terms are ch. 08
+vocabulary as introduced in <a href="objectives.md">Obj. 1 and Obj. 3 of
+objectives.md</a>.</p>
+<h2 id="pre-hook-to-ch-09--left-to-the-chapter-not-embedded-in-items">Pre-hook
+to ch. 09 — left to the chapter, not embedded in items</h2>
+<p>Same convention as ch. 04 → ch. 05, ch. 05 → ch. 06, and ch. 07 → ch.
+08: the items measure what <em>this</em> chapter has taught, with no
+forward references; the <em>narrative</em> and <em>storyboard</em> of
+the chapter carry the bridge to the next one. A student who has mastered
+the three items has <em>built</em> a structured prompt for a new task,
+<em>applied</em> the competence rule including its special case, and
+<em>picked</em> the right channel under a disjunctive trigger — and is
+exactly the student that ch. 09 will then teach to <em>decide where, in
+a chain of model outputs, the <em>check</em> of ch. 08 must be
+placed</em> when the model stops returning only text and starts taking
+actions on the world. (The specific vocabulary by which ch. 09 will name
+<em>where</em> — and the four interaction modes that surface the choice
+— is left to ch. 09; this index keeps to ch. 08 vocabulary throughout,
+including in the bridge.)</p>
+</body>
+</html>

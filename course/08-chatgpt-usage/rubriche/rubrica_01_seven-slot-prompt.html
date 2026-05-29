@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 01 (Build a 7-slot prompt: surgical-procedure
+extraction)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-01-build-a-7-slot-prompt-surgical-procedure-extraction">Rubric
+— Item 01 (Build a 7-slot prompt: surgical-procedure extraction)</h1>
+<p><strong>Item</strong>: IB-08-chatgpt-usage-01
+<strong>Objective</strong>: Construct a structured prompt for a given
+clinical task using the 7-slot template, justify each slot&#39;s
+contribution by naming the specific failure mode it suppresses, and
+reason about which slots are most and least load-bearing for this
+specific task (Obj. 1).</p>
+<p>The rubric scores three criteria, one per sub-question, on three
+levels — <em>Base</em> (sufficiency floor), <em>Good</em> (solid
+command), <em>Excellent</em> (task-specific reasoning that distinguishes
+this task from any other).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — 7-slot prompt construction (sub-q 1)</strong></td>
+<td>All seven slots filled, each with <strong>task-specific</strong>
+content (no generic boilerplate, no re-wording of the slot&#39;s own
+definition). The slot named <em>task</em> contains <strong>one
+verb</strong> (not two or three). The slot named <em>examples</em>
+contains at least one input/output pair, not just a description of what
+examples <em>would</em> look like.</td>
+<td>All of <em>Base</em>, plus <strong>two key escapes are
+present</strong>: (i) the <em>output</em> slot includes an explicit
+escape token for the ambiguous case — e.g. <code>&#39;UNCLEAR&#39;</code>,
+<code>&#39;&#39;</code>, <code>&#39;NA&#39;</code> (any sentinel that the audit script
+can branch on); (ii) the <em>style</em> slot explicitly forbids the
+model from adding explanation, qualifications or preamble.</td>
+<td>All of <em>Good</em>, plus the <em>instructions</em> slot contains a
+<strong>disambiguation rule for multi-procedure notes</strong> — e.g.
+<em>&quot;if multiple procedures are named, return the one listed first under
+the &#39;procedure performed&#39; heading&quot;</em> (or any equivalent priority
+rule). This rule is what stops two correctors from disagreeing on the
+same operative note, and recognising the need for it signals
+chapter-level fluency on the <em>one-verb</em> discipline of the
+<em>task</em> slot.</td>
+</tr>
+<tr>
+<td><strong>C2 — Failure-mode justification for <em>role</em>,
+<em>style</em>, <em>examples</em> (sub-q 2)</strong></td>
+<td>For each of <em>role</em>, <em>style</em> and <em>examples</em>, the
+student names a <strong>concrete, namable wrong behaviour</strong> the
+model would exhibit without that slot. Vague phrasings such as
+<em>&quot;makes the answer better&quot;</em>, <em>&quot;clarifies the request&quot;</em>,
+<em>&quot;the model would be confused&quot;</em> are <strong>below Base</strong> —
+they describe an effect on the <em>student&#39;s reading</em>, not on the
+<em>model&#39;s output</em>. The failure mode must be
+<strong>operational</strong>: a string the model would produce, a
+behaviour an audit script could detect.</td>
+<td>All of <em>Base</em>, plus the three failure modes named are
+<strong>distinct from each other</strong> — the student names a
+different concrete behaviour for <em>role</em> (voice/register),
+<em>style</em> (formatting/preamble) and <em>examples</em> (edge-case
+handling), and does not collapse two slots into &quot;the model would explain
+too much&quot; twice.</td>
+<td>All of <em>Good</em>, plus the student names, for <strong>at least
+one</strong> of the three slots, the <em>specific failure mode for an
+extraction task</em> (not for a generic clinical task) — e.g. for
+<em>examples</em>, that the model would drift on <em>converted
+procedures</em> (<em>&quot;started laparoscopic, converted to open&quot;</em>) or
+staged procedures, naming an actual pattern in operative-note writing.
+The justification is <em>task-aware</em>, not slot-agnostic.</td>
+</tr>
+<tr>
+<td><strong>C3 — Most/least load-bearing slots for <em>this</em> task
+(sub-q 3)</strong></td>
+<td>Names <strong>one slot for most</strong> and <strong>one slot for
+least</strong>, each with a one-sentence justification. Most:
+<em>output</em> or <em>task</em> (both acceptable). Least: any of
+<em>role</em>, <em>context</em>, or <em>style</em> with a defensible
+reason <strong>tied to the specifics of procedure extraction</strong>.
+Naming <em>output</em> or <em>task</em> as <strong>least</strong>
+load-bearing is <strong>below Base</strong> — this is the single
+non-negotiable misreading of the task.</td>
+<td>All of <em>Base</em>, plus the justification for the <em>least</em>
+slot <strong>names what that slot <em>would</em> contribute on a
+different task</strong> (e.g. <em>&quot;role is least load-bearing here
+because the structured output already enforces voice; on a
+patient-facing leaflet, role would be the most important slot&quot;</em>).
+The student recognises that <em>load-bearing</em> is
+<strong>task-relative</strong>, not slot-intrinsic.</td>
+<td>All of <em>Good</em>, plus the <em>most</em> load-bearing
+justification names the <strong>downstream consequence</strong> of
+removal — not just <em>what the model would produce</em> but <em>what
+would break in the audit</em>: e.g. <em>&quot;without <code>output</code>,
+the model would return prose on the majority of notes; the audit script
+that aggregates labels would silently miscount every prose response as a
+unique procedure, distorting the audit at scale&quot;</em>. The student is
+reasoning about the <em>system</em>, not just the <em>model</em>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza</strong>: <strong>tutti e tre C1, C2 e
+C3 a livello Base o superiore</strong>. La filling di meno di 7 slot,
+una giustificazione vaga su anche uno solo dei tre slot di C2
+(<em>role</em> / <em>style</em> / <em>examples</em>), o nominare
+<em>output</em> / <em>task</em> come <em>least</em> load-bearing in C3,
+equivalgono a non aver svolto l&#39;esercizio: l&#39;item misura la <em>capacità
+di costruire e ragionare</em> sul template a sette pezzi, non la
+capacità di nominare i sette pezzi.</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>Premiare la lunghezza in sub-q 1.</strong> Una scheda 7-slot
+ben fatta sta in sotto-mezza pagina; uno studente che riempie ciascun
+slot con un paragrafo non sta facendo meglio, sta facendo <em>prompting
+peggiore</em> — un prompt più lungo non è un prompt migliore, e di
+solito è un prompt che il modello segue con più drift, non con meno.
+Valutare <em>correttezza e specificità del contenuto</em> di ogni slot,
+non la sua lunghezza.</li>
+<li><strong>Non confondere &quot;ha nominato un failure mode&quot; con &quot;ha
+nominato il failure mode giusto&quot;.</strong> In C2 l&#39;errore tipico è
+scrivere &quot;<em>il modello potrebbe sbagliare</em>&quot; — è una <em>risposta a
+un&#39;altra domanda</em>. Il prompt strutturato non risolve &quot;il modello
+potrebbe sbagliare&quot; (è il problema generale); risolve <em>failure mode
+specifici e prevedibili</em>. Lo studente che scrive &quot;potrebbe
+sbagliare&quot; è <em>sotto Base</em>.</li>
+<li><strong>Non premiare giustificazioni generiche per i sette
+slot.</strong> &quot;<em>Role serve a chiarire chi parla</em>&quot; è una
+rifrasatura della definizione di <em>role</em>, non una giustificazione
+del failure mode che sopprime — è <em>sotto Base</em>. Pretendere il
+<em>cosa farebbe il modello senza quel slot, esibito come stringa o
+comportamento osservabile</em>.</li>
+<li><strong>Non scambiare <em>least load-bearing</em> con
+<em>inutile</em>.</strong> In C3, dire che <em>role</em> è <em>least
+load-bearing per questo task</em> non equivale a dire che <em>role</em>
+sia inutile — il livello <em>Good</em> premia esplicitamente lo studente
+che fa questa distinzione (nominando in che task <em>role</em> sarebbe
+invece <em>most</em> load-bearing). Studenti che leggono &quot;least
+load-bearing&quot; come &quot;da eliminare dal prompt&quot; stanno fraintendendo la
+regola, non l&#39;esempio. Correggere indicando che il 7-slot va sempre
+riempito <em>tutto</em>; la domanda è su <em>quale slot è marginale, non
+quale slot è ridondante</em>.</li>
+<li><strong>CRITICO — non penalizzare la scelta di <em>task</em> o
+<em>output</em> come <em>most</em> load-bearing.</strong> Entrambe sono
+accettabili a <em>Base</em> purché la giustificazione sia coerente.
+<em>Output</em> è la scelta più semantica al <em>risultato</em> (la
+<em>forma</em> del deliverable rompe la pipeline se assente);
+<em>task</em> è la scelta più semantica al <em>processo</em> (il
+<em>verbo</em> rompe l&#39;intento). Lo studente che sa argomentare l&#39;una
+<em>o</em> l&#39;altra è a <em>Base</em>; lo studente che le confronta
+esplicitamente è a <em>Excellent</em>. Penalizzare una sola delle due in
+favore dell&#39;altra è imporre una preferenza personale del correttore, non
+misurare l&#39;obiettivo.</li>
+<li><strong>Non accettare un terzo slot al posto di uno dei due
+richiesti.</strong> La sub-question 3 chiede <em>uno</em> per most e
+<em>uno</em> per least; uno studente che ne nomina tre o quattro
+(<em>&quot;output, task, instructions sono tutti most...&quot;</em>) non sta
+rispondendo alla domanda — l&#39;esercizio è di <em>priorizzazione</em>, non
+di enumerazione. Riportare a <em>one most + one least</em>, ed
+eventualmente classificare la performance del <em>priority call</em>
+come <em>Base</em> anche se le tre opzioni nominate sono tutte legittime
+in sé.</li>
+</ul>
+</body>
+</html>

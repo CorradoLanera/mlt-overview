@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 02 (Apply the competence rule to two clinical
+scenarios)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-02-apply-the-competence-rule-to-two-clinical-scenarios">Rubric
+— Item 02 (Apply the competence rule to two clinical scenarios)</h1>
+<p><strong>Item</strong>: IB-08-chatgpt-usage-02
+<strong>Objective</strong>: State and apply the competence rule —
+<em>only delegate to an LLM tasks whose answer you can independently
+judge as correct or wrong</em> — on two contrasting scenarios, one
+delegable-with-expertise (oncology trial summarisation), one
+not-delegable-regardless-of-expertise (drug-interaction screening), and
+name the latter as a special case (Obj. 2).</p>
+<p>The rubric scores three criteria, one per sub-question, on three
+levels — <em>Base</em> (sufficiency floor), <em>Good</em> (solid
+command), <em>Excellent</em> (chapter-level fluency, especially on the
+&quot;<em>not delegable regardless of expertise</em>&quot; special case).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Failure-mode identification (sub-q 1, both
+scenarios)</strong></td>
+<td>For <strong>each scenario</strong>, the failure mode named is
+<strong>concrete and namable</strong> — a specific wrong behaviour the
+model would exhibit, not the generic &quot;the model could hallucinate&quot;. For
+A: any of <em>primary-endpoint confusion</em>, <em>HR-vs-RR
+conflation</em>, <em>misreported effect-size attribution</em>, or
+<em>subgroup-finding-as-main-finding</em> is acceptable. For B: missing
+the <strong>amiodarone–warfarin interaction</strong> (or equivalent
+named drug-pair from the list) is the expected answer; missing &quot;<em>a
+major interaction</em>&quot; without naming which one is below Base.</td>
+<td>All of <em>Base</em>, plus the failure mode named in each scenario
+is <strong>plausible at first read</strong> — the student names
+<em>why</em> the wrong output would <em>look right</em> to a non-expert.
+For A: numerically plausible figures, clinical vocabulary, internally
+coherent prose. For B: a reassuring summary that names <em>some</em>
+interactions correctly to lower the reader&#39;s guard.</td>
+<td>All of <em>Good</em>, plus the student names the <strong>clinical
+consequence</strong> of the failure mode going uncaught — for A, that
+the tumour-board would discuss the wrong endpoint; for B, that the
+patient leaves the clinic without the INR-monitoring schedule the
+interaction requires. The failure mode is grounded in <em>what happens
+next</em>, not in the model&#39;s output alone.</td>
+</tr>
+<tr>
+<td><strong>C2 — Expertise identification (sub-q 2, both
+scenarios)</strong></td>
+<td>For <strong>each scenario</strong>, the expertise is named as a
+<strong>capability</strong>, not as a credential. For A:
+<em>&quot;clinical-trials methodology&quot;</em>, <em>&quot;ability to distinguish HR
+from RR&quot;</em>, <em>&quot;reading the methods section critically&quot;</em>, or
+equivalent — naming the <em>operational skill</em> the user must already
+have. For B: <em>&quot;familiarity with the amiodarone–warfarin
+interaction&quot;</em> or <em>&quot;the discipline of cross-checking with a
+drug-interaction database&quot;</em> — either is acceptable at Base. Naming a
+credential alone (<em>&quot;an MD degree&quot;</em>, <em>&quot;a Pharm.D&quot;</em>) is
+<strong>below Base</strong>.</td>
+<td>All of <em>Base</em>, plus the student notes the
+<strong>insufficiency case</strong> for scenario A — that oncology
+knowledge alone is not enough; trials methodology is the binding
+constraint. For scenario B, the student notes that <em>catching one
+missed interaction</em> is a different capability from <em>being sure no
+interactions were missed</em>.</td>
+<td>All of <em>Good</em>, plus the student names, for scenario B, that
+the <strong>only fully reliable expertise is the discipline of always
+cross-checking with the authoritative source</strong> — i.e. the
+expertise is not <em>knowing more drugs</em> but <em>knowing to never
+trust an LLM on this task without checking the database</em>. This is
+the chapter&#39;s <em>meta-expertise</em> — knowing where the rule applies,
+not just <em>applying</em> it.</td>
+</tr>
+<tr>
+<td><strong>C3 — Verdicts + special-case recognition (sub-q 3, both
+scenarios)</strong></td>
+<td><strong>Verdict A = <em>delegable</em> with stated
+expertise</strong> (the fellow has clinical-trials methodology).
+<strong>Verdict B = <em>not delegable</em></strong> (the colleague is
+first-year IM, knowledge of amiodarone–warfarin is not guaranteed, and
+the verification step is the same as the original task). The
+justification for each verdict mentions the competence rule explicitly
+(<em>&quot;the user can/cannot independently judge&quot;</em>). A verdict of
+<em>delegable</em> for B on the grounds that &quot;experienced clinicians
+would catch it&quot; is <strong>below Base</strong> — it confuses <em>getting
+lucky</em> with <em>delegating well</em>.</td>
+<td>All of <em>Base</em>, plus the student names, for scenario B, that
+the verdict would be <strong>the same even if the user happened to know
+the interaction</strong> — because the <em>systematic</em> verification
+of an
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>-drug
+interaction matrix requires the database, and <em>that database is the
+source the user should have consulted to begin with</em>. The student is
+reasoning about the rule, not about the specific scenario.</td>
+<td>All of <em>Good</em>, plus the student names this case
+<strong>explicitly</strong> as a <em>special case of the competence
+rule</em> — &quot;<em>a task is not delegable when the only honest way to
+check the LLM&#39;s answer is to re-do the task with the authoritative
+source</em>&quot; — and recognises drug-interaction screening as the
+<strong>textbook instance</strong> of this special case. The student has
+internalised the rule&#39;s <em>higher-order</em> form: the rule is about
+the <em>verification step</em>, not about the <em>first-draft step</em>.
+This is the rule&#39;s payoff.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza</strong>: <strong>tutti e tre C1, C2 e
+C3 a livello Base o superiore</strong> <em>e</em> la verdict di
+<strong>Scenario B a <em>not delegable</em></strong>. Una verdict di
+<em>delegable</em> per B in C3 è <strong>automaticamente sotto
+Base</strong> indipendentemente dalla qualità della giustificazione,
+perché contraddice direttamente l&#39;obiettivo formativo del capitolo: la
+competence rule ha un <em>caso speciale</em> che fa parte del <em>cosa
+significhi applicarla</em>, e mancarlo significa non aver capito la
+regola — ha capito <em>come usarla quando si applica</em>, non
+<em>quando smettere di delegare</em>.</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>Non scambiare la <em>plausibilità clinica</em> del failure
+mode di scenario A per <em>correttezza</em>.</strong> Uno studente può
+inventare un failure mode tecnicamente impossibile (&quot;<em>il modello
+potrebbe dire che lo studio è stato fatto su modelli animali</em>&quot;) e
+farlo suonare clinico. La domanda è se <em>il modello plausibilmente lo
+produrrebbe</em>, non se <em>lo studente plausibilmente lo
+immaginerebbe</em>. In dubbio, premiare failure modes che ricalcano
+errori <em>noti</em> degli LLM su trial reports (endpoint confusion,
+effect-size attribution, conflazioni statistiche) sopra failure modes
+&quot;creativi&quot; che non ricalcano nessun pattern reale.</li>
+<li><strong>Non penalizzare studenti che nominano un <em>altro</em> paio
+amiodarone-warfarin-equivalente.</strong>
+Sull&#39;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>-drug
+list ipotetica di scenario B, il paziente potrebbe avere altre
+interazioni note del warfarin (es. fluconazole, metronidazole, alcuni
+macrolidi) — uno studente che nomina una di queste come failure mode
+plausibile va premiato a <em>Base</em> come l&#39;amiodarone-warfarin
+canonico. Il punto pedagogico è che <em>un&#39;interazione warfarin maggiore
+esiste e l&#39;LLM potrebbe mancarla</em>; quale interazione specifica venga
+nominata è secondario.</li>
+<li><strong>CRITICO — non confondere <em>delegabile</em> con
+<em>utile</em>.</strong> L&#39;errore tipico in C3 scenario B è:
+<em>&quot;delegabile perché l&#39;LLM può aiutare il colleague a generare la
+prima bozza, anche se poi va verificata&quot;</em>. Questo confonde <em>l&#39;LLM
+può essere utile</em> (vero) con <em>il task può essere delegato</em>
+(falso, in questo caso). <em>Delegare</em> significa <em>fidarsi
+dell&#39;output senza ripetere il task</em>. Se il task va comunque rifatto
+contro un database, l&#39;LLM non è stato delegato — è stato consultato come
+prima opinione, e la regola della competenza riguarda <em>quando
+smettere lì</em>. Riportare lo studente a questa distinzione
+esplicitamente.</li>
+<li><strong>Non premiare il <em>richiamo della regola</em> sopra
+l&#39;<em>applicazione della regola</em>.</strong> Uno studente che scrive
+<em>&quot;la regola della competenza dice di delegare solo ciò che si sa
+giudicare&quot;</em> in entrambe le verdict e nient&#39;altro ha <em>citato</em>
+l&#39;obiettivo formativo, non l&#39;ha <em>applicato</em>. La verdict deve
+essere una <em>decisione</em> (delegabile sì/no) ancorata al <em>failure
+mode + expertise</em> delle sub-question precedenti, non a una citazione
+generica.</li>
+<li><strong>Non penalizzare l&#39;assenza della parola &quot;special case&quot; in C3
+<em>Base</em>.</strong> Il livello <em>Base</em> richiede la verdict
+corretta (<em>not delegable</em> per B) e una giustificazione coerente.
+Il riconoscimento esplicito del caso speciale (&quot;<em>a task is not
+delegable when the only honest way to check is to re-do it</em>&quot;) è la
+transizione <em>Good → Excellent</em>, non la soglia di sufficienza.
+Studenti che arrivano alla verdict giusta con una giustificazione
+operativa (<em>&quot;servirebbe comunque controllare nel database, e a quel
+punto ho rifatto il task&quot;</em>) sono a <em>Base</em> o <em>Good</em>
+anche senza la formulazione formale.</li>
+</ul>
+</body>
+</html>

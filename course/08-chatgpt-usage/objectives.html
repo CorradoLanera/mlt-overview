@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>08 — Using ChatGPT in practice · Learning objectives &amp;
+summative exercise</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="08--using-chatgpt-in-practice--learning-objectives--summative-exercise">08
+— Using ChatGPT in practice · Learning objectives &amp; summative
+exercise</h1>
+<blockquote>
+<p>Chapter: <strong>Using ChatGPT in practice</strong> · 15 min ·
+biomedical/clinical graduate students (UBEP). Student-facing text in
+English; teacher design notes (<em>nota docente</em>) in Italian.</p>
+</blockquote>
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>By the end of this chapter, students can:</p>
+<ol type="1">
+<li><strong>Construct</strong> a structured prompt for a given clinical
+task using the <strong>7-slot template</strong> — <strong>role</strong>
+(who the model is impersonating), <strong>context</strong> (the
+situation the task lives in), <strong>task</strong> (the one verb the
+model must perform), <strong>instructions</strong> (the procedure to
+follow), <strong>output</strong> (the exact shape of the deliverable),
+<strong>style</strong> (constraints on tone, format, what <em>not</em>
+to add), <strong>examples</strong> (1–3 worked input/output pairs) — and
+justify in one line, <em>for each slot they used</em>, why that slot is
+load-bearing for the task at hand (i.e. which failure mode is suppressed
+by <em>that</em> slot).</li>
+<li><strong>State and apply</strong> the <strong>competence
+rule</strong>: <em>only delegate to an LLM tasks whose answer you can
+independently judge as correct or wrong</em>. Concretely: given a
+candidate task, identify (a) a <em>plausible-looking</em> failure mode
+the model could produce (e.g. a fabricated citation, a wrong dosage
+rounded to a plausible number, a hallucinated guideline), and (b) the
+expertise (clinical / methodological / statistical) the user must
+already have to <strong>catch</strong> that failure. If the user does
+not have that expertise, the task is <em>not</em> delegable.</li>
+<li><strong>Choose</strong> the right <strong>access mode</strong> (Web
+chat / Prompt design / API) for a given workflow and <strong>estimate
+its token cost</strong> using the rule of thumb
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+token
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\approx \dfrac{3}{4}</annotation></semantics></math>
+word (i.e.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>750</mn></mrow><annotation encoding="application/x-tex">\sim 750</annotation></semantics></math>
+words
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>1</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\approx 1\,000</annotation></semantics></math>
+tokens,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>750</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 750\,000</annotation></semantics></math>
+words
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><msup><mn>10</mn><mn>6</mn></msup></mrow><annotation encoding="application/x-tex">\approx 10^6</annotation></semantics></math>
+tokens). State the decision rule: <em>Web</em> for ad-hoc one-shot
+questions, <em>Prompt design</em> (still in chat) for a small batch of
+repeated structured tasks done by hand, <em>API</em> for any workflow
+that must be <strong>repeatable</strong>, <strong>integrated</strong>
+into other software, or <strong>applied at volume</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≳</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">\gtrsim 100</annotation></semantics></math>
+items).</li>
+</ol>
+<p><em>Nota docente:</em> tre obiettivi per 15′ — il limite.
+<strong>L&#39;arco di ch 08 non è &quot;addestrare al prompt engineering
+avanzato&quot;</strong>: in 15′ si stabilisce il <em>minimo operativo</em>
+perché lo studente UBEP, lunedì mattina, sappia (a) come
+<em>strutturare</em> una richiesta (Obj. 1), (b) <em>quando non
+chiederla affatto</em> (Obj. 2 — la regola della competenza), e (c)
+<em>quale strumento</em> scegliere in base al volume del lavoro (Obj.
+3). Obj. 2 è il cuore <em>etico/operativo</em> del capitolo e va
+segnalato come <strong>non opzionale</strong>: tutto il resto del corso
+può andar bene tecnicamente, ma se uno studente usa un LLM per qualcosa
+che non sa giudicare, il corso ha fallito. Obj. 3 collega il prompt
+design al <em>come</em> lo deploymento (web vs API) e introduce i token
+come <em>unità di costo</em> — non come dettaglio tecnico. <strong>Voce
+docente — non valutato:</strong> chain-of-thought prompting, few-shot vs
+zero-shot vs many-shot, system vs user vs developer roles nell&#39;API
+OpenAI, function calling / tool use (è il pre-hook di ch 09 e va in
+<code>narrative.md</code>), structured output (JSON schema,
+response_format), embedding e retrieval-augmented generation (RAG),
+temperature/top-p, context window e i prezzi per modello specifico,
+privacy / GDPR / data residency su chat.openai.com (cita ma non
+valutare). Il pre-hook a ch 09 (<em>&quot;finora ogni risposta del modello
+passa dai tuoi occhi prima di diventare un&#39;azione — ma cosa succede
+quando il modello <strong>agisce</strong> prima che tu controlli?&quot;</em>)
+va in <code>narrative.md</code>, non qui.</p>
+<h2 id="summative-live-exercise--monday-morning-rank-the-ed-letters">Summative
+live exercise — &quot;Monday morning: rank the ED letters&quot;</h2>
+<p><em>Nota docente:</em> sommativo, gira negli <strong>ultimi
+~7′</strong> (min 8–15) dopo i tre livelli (Web / Prompt design / API) e
+dopo la slide sui token. <strong>Banco unico, condiviso da tutta la
+classe</strong> (presenza + remoto): uno <strong>scenario clinico
+realistico</strong> proiettato e stampato —</p>
+<blockquote>
+<p><strong>Scenario:</strong> <em>You are a resident in the Emergency
+Department. Your senior asks you to triage
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+anonymised ED discharge letters from last month into two categories —
+&quot;trauma-related&quot; vs &quot;non-trauma&quot; — to feed a quality-improvement audit.
+Each letter is on average
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>300</mn></mrow><annotation encoding="application/x-tex">\sim 300</annotation></semantics></math>
+words.</em></p>
+</blockquote>
+<p>A fianco, una <strong>scheda prompt</strong> con i 7 slot già
+etichettati (vuoti), due <strong>blanks etichettati</strong> <em>Failure
+mode: ___</em> e <em>Expertise needed to catch it: ___</em>, un
+<strong>mini-calcolatore di token</strong> (rule of thumb
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+token
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>3</mn><mi>/</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">\approx 3/4</annotation></semantics></math>
+word, da applicare a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>200</mn><mo>×</mo><mn>300</mn></mrow><annotation encoding="application/x-tex">200 \times 300</annotation></semantics></math>
+parole), e un <strong>box &quot;tre modi&quot;</strong> con tre celle vuote da
+spuntare e da motivare in una riga: <em>Web chat</em> / <em>Prompt
+design (chat, a mano)</em> / <em>API</em>.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objective verified</td>
+<td>Obj. 1 (7-slot prompt + justification) — verified in sub-task (i).
+Obj. 2 (competence rule) — verified in sub-task (ii), the
+<em>what-you-cannot-catch</em> identification. Obj. 3 (access mode +
+token estimate) — verified in sub-tasks (iii) and (iv).</td>
+</tr>
+<tr>
+<td>In-person action</td>
+<td>Table groups receive the scenario + the empty 7-slot card + the
+token calculator + the &quot;tre modi&quot; box. They: <strong>(i)</strong>
+<strong>fill the 7-slot prompt</strong> for the trauma/non-trauma triage
+task (e.g. <em>role</em> = &quot;You are a clinical-coding assistant&quot;;
+<em>context</em> = &quot;You are reading ED discharge letters from a teaching
+hospital, the goal is an internal quality audit&quot;; <em>task</em> =
+&quot;Classify each letter as trauma or non-trauma&quot;; <em>instructions</em> =
+&quot;Read the chief complaint and the mechanism-of-injury fields; if either
+names an external traumatic event, classify trauma&quot;; <em>output</em> =
+&quot;Return only one token: &#39;trauma&#39; or &#39;non-trauma&#39;&quot;; <em>style</em> = &quot;No
+explanation, no extra words&quot;; <em>examples</em> = two short worked
+cases) — <strong>and circle exactly two slots that are most load-bearing
+here: <em>task</em> and <em>output</em></strong> with one phrase each
+justifying why (the other five are commented in the reveal, not live);
+<strong>(ii)</strong> <strong>answer in two labelled blanks</strong> on
+the card (<em>Failure mode: ___</em> / <em>Expertise needed to catch it:
+___</em>): <em>&quot;Name one plausible-looking failure of this LLM call that
+a non-clinician would NOT catch, and the clinical expertise needed to
+catch it.&quot;</em> — expected pattern: e.g. &quot;<em>a letter describing a fall
+in a 92-yo with osteoporosis classified as &#39;non-trauma&#39; because the
+mechanism is described in geriatric/fragility framing — only a clinician
+knows fragility falls <strong>are</strong> trauma</em>&quot;, <em>the
+expertise: clinical knowledge of fragility-fracture epidemiology</em>;
+<strong>(iii)</strong> <strong>estimate the token cost</strong> on the
+calculator:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>200</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> letters</mtext></mrow><mo>×</mo><mn>300</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> words</mtext></mrow><mo>=</mo><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> words</mtext></mrow></mrow><annotation encoding="application/x-tex">200 \text{ letters} \times 300 \text{ words} = 60\,000 \text{ words}</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>×</mo><mstyle displaystyle="true"><mfrac><mn>4</mn><mn>3</mn></mfrac></mstyle><mo>=</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">60\,000 \times \dfrac{4}{3} = 80\,000</annotation></semantics></math>
+tokens of input,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>200</mn></mrow><annotation encoding="application/x-tex">+ 200</annotation></semantics></math>
+tokens of output (one short label per letter)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\approx 80\,000</annotation></semantics></math>
+tokens total; <strong>(iv)</strong> <strong>circle the access
+mode</strong> in the &quot;tre modi&quot; box (the correct answer is <em>API</em>
+—
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+items is at the limit where copy-paste in chat stops being practical,
+and an audit needs <strong>repeatability</strong>), with one phrase
+justifying <em>why not Web</em> (you would copy-paste
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+times, no traceability) and <em>why not Prompt design alone</em> (it is
+the right prompt, <em>delivered</em> through the wrong channel). Each
+group photographs its card and drops it into the shared doc.</td>
+</tr>
+<tr>
+<td>Remote equivalent</td>
+<td>Same scenario + same 7-slot card + same token calculator + same &quot;tre
+modi&quot; box on a shared doc. Remote groups type the seven slots directly
+into their slot, type the 1-sentence failure mode, type the token
+calculation, and type the access mode + justification. Two Slido polls
+run live, capturing <strong>all</strong> students individually:
+<strong>Poll 1 — &quot;Token estimate for the input (200 letters × 300
+words)&quot;</strong> (options
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 60\,000</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 80\,000</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>200</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 200\,000</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>600</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 600\,000</annotation></semantics></math>);
+<strong>Poll 2 — &quot;Best access mode for this task&quot;</strong> (options
+<em>Web chat</em> / <em>Prompt design in chat</em> / <em>API</em> /
+<em>&quot;do it by hand without an LLM&quot;</em>). The polls make the remote
+signal on Obj. 3 (token estimate + mode) visible <em>next to</em> the
+in-person sheets.</td>
+</tr>
+<tr>
+<td>Shared artifact</td>
+<td>A single shared doc / whiteboard with one row per group containing:
+<em>the seven filled slots</em> · <em>two circled load-bearing slots
+(task, output) + 1-phrase justification each</em> · <em>Failure mode +
+Expertise blanks</em> · <em>token estimate (calculation shown, not just
+the number)</em> · <em>circled access mode + 1-phrase
+why-not-the-others</em>. The two Slido bar charts (Poll 1 and Poll 2)
+are projected next to it, visible to in-person and remote at once.</td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>7 min, minutes 8–15 (end of chapter): ~1′ read the scenario + open
+the polls, ~2′30″ fill the 7-slot prompt + circle <em>task</em> and
+<em>output</em> with 1-phrase justification each (Poll 1 closes at min
+11 <em>or</em> at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\geq 80\%</annotation></semantics></math>
+votes, whichever is later; hard cap
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>90</mn><annotation encoding="application/x-tex">90</annotation></semantics></math>″),
+~1′ fill the <em>Failure mode</em> / <em>Expertise</em> blanks, ~1′
+token estimate + access mode circled (Poll 2 closes at min 13
+<em>or</em> at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\geq 80\%</annotation></semantics></math>,
+same floor), ~1′30″ instructor-led reveal — a model 7-slot prompt is
+read off the board (one group&#39;s is taken as the canonical example),
+<em>Poll 1</em> histogram is shown (the wrong distractors are
+<em>named</em>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">60\,000</annotation></semantics></math>
+= &quot;ha calcolato in <strong>parole</strong> non in token — è il segnale
+che ha letto la slide ma non ha applicato la conversione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>×</mi><mn>4</mn><mi>/</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">\times 4/3</annotation></semantics></math>&quot;,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>200</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">200\,000</annotation></semantics></math>
+= &quot;ha confuso il prompt template con il <em>whole context window</em>,
+ha contato il prompt per <em>ogni</em> lettera (cioè ha contato
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>1000</mn></mrow><annotation encoding="application/x-tex">\sim 1000</annotation></semantics></math>
+tokens di prompt
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>×</mi><mn>200</mn></mrow><annotation encoding="application/x-tex">\times 200</annotation></semantics></math>
+chiamate, mentre il sistema template è una stringa unica)&quot;,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>600</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">600\,000</annotation></semantics></math>
+= &quot;ha confuso parole con caratteri o ha applicato
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>×</mi><mn>10</mn></mrow><annotation encoding="application/x-tex">\times 10</annotation></semantics></math>
+— verifica il senso degli ordini di grandezza&quot;), <em>Poll 2</em>
+histogram is shown (the wrong distractors are <em>named</em>: <em>Web
+chat</em> = &quot;ha sottostimato
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+— provi a fare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+copy-paste in chat e poi mi dica&quot;, <em>Prompt design in chat</em> = &quot;ha
+confuso <em>avere un buon prompt</em> (sì) con <em>consegnarlo
+manualmente
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+volte</em> (no, ti serve l&#39;API)&quot;, <em>&quot;do it by hand&quot;</em> = &quot;è una
+risposta seria — per
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>
+lettere sì, per
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+no, ed è esattamente la soglia che Obj. 3 ti chiede di sentire&quot;),
+<strong>and the instructor explicitly closes the chapter&#39;s cliff-hanger
+with the spine beat to ch 09</strong>: <em>&quot;in this exercise you wrote
+the prompt, you delivered it, and you would read every one of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+outputs before doing anything with them. That is <strong>chat</strong>.
+But what if the system <strong>acts</strong> on the output without you
+reading every one? That is an <strong>agent</strong> — and that is ch
+09.&quot;</em></td>
+</tr>
+<tr>
+<td>Success criterion</td>
+<td>The class produces, on the shared artifact: <strong>(i)</strong> all
+seven slots filled (post-hoc quality check on the photographed artifact,
+not a live criterion), <strong>and the two circled slots are
+<em>task</em> and <em>output</em></strong>, each with a 1-phrase
+justification that names the failure mode it suppresses (live
+criterion); <strong>(ii)</strong> the 1-sentence failure mode names
+<strong>(a)</strong> a clinically-plausible, hard-to-spot error (not
+&quot;the model invents nonsense&quot; — the model <em>invents plausible
+nonsense</em>, that is the dangerous mode), <strong>and (b)</strong> the
+specific clinical expertise needed to catch it; <strong>(iii)</strong>
+the token estimate shows the <strong>calculation</strong>, not just the
+number —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>200</mn><mo>×</mo><mn>300</mn><mo>×</mo><mstyle displaystyle="true"><mfrac><mn>4</mn><mn>3</mn></mfrac></mstyle><mo>≈</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">200 \times 300 \times \dfrac{4}{3} \approx 80\,000</annotation></semantics></math>
+tokens of input, with output negligible; <em>Poll 1</em> shows the modal
+answer at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 80\,000</annotation></semantics></math>;
+<strong>(iv)</strong> the access mode circled is <em>API</em>, with the
+justification naming <strong>repeatability / integration /
+volume</strong> (any of the three) — <em>Poll 2</em> shows the modal
+answer at <em>API</em>. <strong>Live signal of mastery:</strong> the
+class can read off the board, without prompting, that <em>a usable
+Monday-morning LLM workflow is one part prompt-engineering, one part
+competence-honesty, and one part choosing the channel that matches the
+volume — and that for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+letters of an audit the answer is API, not chat</em>.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Nota docente — perché duale funziona qui:</em> l&#39;artefatto è
+<strong>uno solo</strong> (lo scenario + scheda 7-slot + calcolatore +
+box &quot;tre modi&quot;), tutto il sommativo è cella-da-riempire + frase singola
++ calcolo numerico + check su una opzione — niente da disegnare ex novo,
+niente asimmetria presenza/remoto. I due poll Slido danno il segnale
+immediato e individuale sui due punti più diagnosticabili (errore di
+unità di misura su token; errore di scelta del canale). Lo scenario è
+clinicamente plausibile, gestibile in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>
+min lordi, e <em>non</em> richiede prerequisiti tecnici NLP — il
+sommativo verifica <em>operatività</em>, non teoria.</p>
+<p><em>Nota docente — sulla scelta dello scenario e dei
+distrattori:</em>
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere ED, trauma vs non-trauma&quot; è scelto perché (a)
+<strong>plausibile</strong> in un audit reale di qualità ospedaliera;
+(b) <strong>al confine</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>
+→ copy-paste in chat va bene,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+→ no, e voglio che lo studente <em>senta</em> dove sta la soglia; (c)
+<strong>fragility-fracture failure mode</strong> è un esempio reale e
+celebre di errore di triage automatico (le cadute geriatriche sono
+trauma ma vengono spesso classificate diversamente). I distrattori del
+<em>Poll 1</em> sono diagnostici:
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>60</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">60\,000</annotation></semantics></math></strong>
+= parole anziché token (errore di unità);
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>200</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">200\,000</annotation></semantics></math></strong>
+= ha duplicato il prompt template per ogni chiamata (concettualmente OK
+ma non rilevante qui — premia l&#39;osservazione e correggi: il template è
+una stringa unica nella system role);
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>600</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">600\,000</annotation></semantics></math></strong>
+= errore di ordine di grandezza, va segnalato come <em>campanello
+d&#39;allarme</em> — quando un risultato è
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">10\times</annotation></semantics></math>
+off, non <em>aggiustare il numero</em>, verifica il <em>modello
+mentale</em>. I distrattori del <em>Poll 2</em> coprono i tre archetipi
+sbagliati: <em>Web chat</em> (non sa il volume), <em>Prompt design in
+chat</em> (sa il prompt, non sa la delivery), <em>do it by hand</em>
+(risposta <em>seria</em> — premia chi la dà perché dimostra senso del
+costo).</p>
+<p><em>Nota docente — anti-trabocchetto su &quot;ma posso anche usare la
+grep, no?&quot;:</em> uno studente attento può chiedere se per &quot;trauma vs
+non-trauma&quot; basterebbe un keyword-search (grep su
+&quot;trauma|fall|injury|MVA|...&quot;). La risposta — <strong>voce docente nel
+reveal, non parte della valutazione</strong> — è: <strong>sì, e dovresti
+chiederti se ti basta</strong>. Se l&#39;audit è di alto livello (volume) e
+la qualità della classificazione conta poco, una grep ben fatta vince
+per costo/replicabilità. Se l&#39;audit deve essere <em>clinicamente
+difendibile</em>, l&#39;LLM <em>con il giusto prompt</em> fa meglio sui casi
+al margine (es. <em>fragility fall</em> descritto in linguaggio non
+standard) — <em>ma allora ti serve un essere umano che validi un
+sample</em>, e il costo torna. Premia lo studente che fa l&#39;osservazione:
+è il livello di pragmatismo che il corso vuole costruire — <em>l&#39;LLM non
+è sempre la risposta, anche quando l&#39;LLM è quello che hai
+imparato</em>.</p>
+</body>
+</html>

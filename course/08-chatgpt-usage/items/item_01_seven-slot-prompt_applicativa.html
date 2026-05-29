@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 01 — Build a 7-slot prompt: surgical-procedure extraction
+from operative notes</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-01--build-a-7-slot-prompt-surgical-procedure-extraction-from-operative-notes">Item
+01 — Build a 7-slot prompt: surgical-procedure extraction from operative
+notes</h1>
+<p><strong>ID</strong>: IB-08-chatgpt-usage-01 <strong>Learning
+objective</strong>: Construct a structured prompt for a given clinical
+task using the <strong>7-slot template</strong> — <em>role</em>,
+<em>context</em>, <em>task</em>, <em>instructions</em>, <em>output</em>,
+<em>style</em>, <em>examples</em> — and justify, for each slot used,
+which failure mode is suppressed by that slot. Operate the construction
+on a clinical scenario different from the chapter&#39;s summative, and
+reason about which slots are <em>most</em> and <em>least</em>
+load-bearing for the specific task (Obj. 1).</p>
+<p><strong>Category</strong>: Application <strong>Type</strong>:
+applicativa <strong>Difficulty</strong>: medium
+<strong>Chapter</strong>: 08-chatgpt-usage</p>
+<h2 id="question">Question</h2>
+<p>A clinical research team at your hospital has a corpus of
+approximately
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+surgical operative notes</strong> (average length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>350</mn></mrow><annotation encoding="application/x-tex">\sim 350</annotation></semantics></math>
+words each, free-text, written by surgeons of varying styles). They want
+to extract, from <em>each</em> note, the <strong>primary surgical
+procedure</strong> — a single short label, e.g. <em>&quot;laparoscopic
+cholecystectomy&quot;</em>, <em>&quot;open right hemicolectomy&quot;</em>,
+<em>&quot;emergency exploratory laparotomy&quot;</em>. The output will feed an
+internal quality-improvement audit.</p>
+<p>You are asked to write the <strong>prompt</strong> that the team will
+use. (Channel choice and token cost are not asked here — only the prompt
+itself.)</p>
+<p>Answer the three sub-questions below in order.</p>
+<h3 id="sub-question-1--fill-the-7-slot-prompt">Sub-question 1 — fill
+the 7-slot prompt</h3>
+<p>Construct a prompt for this task using <strong>all seven
+slots</strong> of the template. Write each slot on its own line,
+labelled, in the form <em>&quot;slot-name: content of that slot&quot;</em>. The
+content of each slot must be <strong>specific to this task</strong> —
+generic boilerplate that would apply to <em>any</em> clinical task does
+not count.</p>
+<p>The seven slots are:</p>
+<ul>
+<li><strong>role</strong> — who the model is impersonating</li>
+<li><strong>context</strong> — the situation the task lives in</li>
+<li><strong>task</strong> — the <em>one</em> verb the model must
+perform</li>
+<li><strong>instructions</strong> — the procedure to follow</li>
+<li><strong>output</strong> — the exact shape of the deliverable</li>
+<li><strong>style</strong> — constraints on tone, format, and <em>what
+not to add</em></li>
+<li><strong>examples</strong> — one or two short worked input/output
+pairs</li>
+</ul>
+<h3 id="sub-question-2--justify-the-slots-the-chapters-summative-does-not-focus-on">Sub-question
+2 — justify the slots the chapter&#39;s summative does <em>not</em> focus
+on</h3>
+<p>The chapter&#39;s summative exercise focuses on the <em>task</em> and
+<em>output</em> slots as the two most load-bearing for the <em>trauma vs
+non-trauma</em> triage. For <strong>this</strong> item (procedure
+extraction), justify in <strong>one sentence each</strong> which
+<strong>specific failure mode</strong> is suppressed by each of the
+following three slots:</p>
+<ul>
+<li><strong>role</strong></li>
+<li><strong>style</strong></li>
+<li><strong>examples</strong></li>
+</ul>
+<p>A &quot;failure mode&quot; is a <em>concrete, namable wrong behaviour</em> the
+model would exhibit if that slot were absent (e.g. <em>&quot;the model would
+return a paragraph instead of a single phrase&quot;</em>, <em>&quot;the model
+would invent a procedure not actually named in the note&quot;</em>). Vague
+justifications (<em>&quot;makes the answer better&quot;</em>, <em>&quot;clarifies the
+request&quot;</em>) do not count.</p>
+<h3 id="sub-question-3--most-and-least-load-bearing-slots-for-this-task">Sub-question
+3 — most and least load-bearing slots for <em>this</em> task</h3>
+<p>Among your seven slots, identify:</p>
+<ul>
+<li><strong>(a)</strong> the <strong>one slot</strong> that, <strong>if
+removed</strong>, would degrade the model&#39;s output the
+<strong>most</strong> on this surgical-procedure-extraction task. State
+which slot and justify in one sentence — naming the <em>specific</em>
+failure mode that removal would cause.</li>
+<li><strong>(b)</strong> the <strong>one slot</strong> that, if removed,
+would degrade the model&#39;s output the <strong>least</strong> on this same
+task. State which slot and justify in one sentence — naming why this
+task happens to <em>not</em> depend strongly on that slot.</li>
+</ul>
+<p>A defensible answer to (b) is <strong>task-dependent</strong>: a slot
+that is least load-bearing here may be highly load-bearing in another
+task. Your justification must be tied to the specifics of <em>procedure
+extraction from operative notes</em>, not to a generic ranking of the
+slots.</p>
+<h2 id="expected-answer">Expected answer</h2>
+<h3 id="sub-question-1--model-7-slot-prompt">Sub-question 1 — model
+7-slot prompt</h3>
+<p>A defensible filling of the seven slots looks like this (variants in
+wording are acceptable provided each slot is <em>specific</em> to the
+surgical task):</p>
+<ul>
+<li><strong>role</strong>: <em>&quot;You are a clinical-coding assistant for
+an internal hospital quality-improvement audit on surgical
+activity.&quot;</em></li>
+<li><strong>context</strong>: <em>&quot;You are reading anonymised operative
+notes written by surgeons of a single tertiary hospital; the audit
+aggregates procedure counts by type for internal reporting and is not
+patient-facing.&quot;</em></li>
+<li><strong>task</strong>: <em>&quot;Extract the primary surgical procedure
+performed.&quot;</em></li>
+<li><strong>instructions</strong>: <em>&quot;Read the operative note&#39;s
+<em>procedure performed</em> section and the <em>operative summary</em>
+paragraph; if a single primary procedure is named, return it. If
+multiple procedures are named, return the one listed first in the
+<em>procedure performed</em> heading. Do not infer the procedure from
+the indication or from the post-operative diagnosis.&quot;</em></li>
+<li><strong>output</strong>: <em>&quot;Return a single short label in the
+form &#39;<approach> <procedure>&#39; — e.g. &#39;laparoscopic cholecystectomy&#39;,
+&#39;open right hemicolectomy&#39;. If the operative note does not contain a
+clearly named procedure, return the literal token &#39;UNCLEAR&#39;.&quot;</em></li>
+<li><strong>style</strong>: <em>&quot;No explanation, no caveats, no
+qualifications, no preamble. Only the label or &#39;UNCLEAR&#39;. Do not invent
+abbreviations not used by the surgeon.&quot;</em></li>
+<li><strong>examples</strong>: two short pairs, e.g. <em>Input:
+&quot;...procedure performed: laparoscopic cholecystectomy. Operative
+summary: ...&quot;</em> → <em>Output: &quot;laparoscopic cholecystectomy&quot;</em>;
+<em>Input: &quot;...converted to open right hemicolectomy after extensive
+adhesions...&quot;</em> → <em>Output: &quot;open right hemicolectomy&quot;</em>.</li>
+</ul>
+<p>A response that fills all seven slots with task-specific content (not
+generic boilerplate, not a re-wording of the slot&#39;s own definition) is
+at <em>Base</em>; a response that nails <em>output</em> with the
+<strong>&#39;UNCLEAR&#39; literal escape token</strong> is at <em>Good</em> (the
+escape is what stops the model from inventing a procedure when the note
+doesn&#39;t name one); a response that includes in <em>instructions</em> the
+<strong>disambiguation rule for multi-procedure notes</strong>
+(<em>&quot;return the one listed first in the heading&quot;</em>, or any
+equivalent priority rule) is at <em>Excellent</em> (this rule is what
+stops two correctors from disagreeing on the same note).</p>
+<h3 id="sub-question-2--failure-mode-justifications-for-role-style-examples">Sub-question
+2 — failure-mode justifications for <em>role</em>, <em>style</em>,
+<em>examples</em></h3>
+<ul>
+<li><strong>role</strong>: without <em>role</em>, the model&#39;s voice
+would default to <strong>conversational helpfulness</strong> — it would
+write &quot;<em>The procedure performed in this note appears to be a
+laparoscopic cholecystectomy.</em>&quot; instead of returning the bare label,
+<em>or</em> it would add caveats (&quot;<em>based on what is described, it
+seems...</em>&quot;) that an audit script cannot parse. Naming the role as a
+<em>clinical-coding assistant</em> forces the laconic, label-only voice
+of a structured-data extraction task.</li>
+<li><strong>style</strong>: without <em>style</em>, the model would, on
+most operative notes, <em>explain its choice</em> — adding a
+one-sentence justification after the label, or wrapping the label in a
+markdown header, or adding a confidence qualifier (&quot;<em>likely</em>&quot;).
+For an audit that expects <em>one row per note, one cell per row</em>,
+these additions break downstream parsing silently. The style slot kills
+the explain-along-the-way reflex.</li>
+<li><strong>examples</strong>: without <em>examples</em>, the model
+would handle the clean cases correctly but <strong>drift on the
+structurally ambiguous cases</strong> — converted procedures
+(<em>&quot;started laparoscopic, converted to open&quot;</em>), staged procedures
+(<em>&quot;first stage ileostomy creation, second stage planned&quot;</em>), or
+notes that name the surgical <em>approach</em> in one sentence and the
+<em>procedure</em> in another. The two worked examples anchor the
+disambiguation rule of <em>instructions</em> in a concrete pair the
+model can pattern-match against — without the pair, the rule is parsed
+but not necessarily applied.</li>
+</ul>
+<h3 id="sub-question-3--most-and-least-load-bearing-slots-for-this-task-1">Sub-question
+3 — most and least load-bearing slots for this task</h3>
+<p><strong>Most load-bearing: <em>output</em>.</strong> The task is a
+<em>structured-data extraction</em>, and the audit depends on every
+single response being a parseable label (or the literal &#39;UNCLEAR&#39;
+escape). Without <em>output</em>, the model would produce
+<strong>prose</strong> rather than a label on the majority of notes —
+and prose, even when correct, is unusable for the audit&#39;s downstream
+aggregation. Removing <em>output</em> would break the workflow on every
+note, not just the hard ones. (A response naming <em>task</em> as most
+load-bearing is <em>also defensible</em> — the verb &quot;extract&quot; is what
+makes this a structured task in the first place — and should be accepted
+at <em>Base</em> with a one-sentence justification.)</p>
+<p><strong>Least load-bearing: <em>role</em></strong> (for <em>this</em>
+task). The task is sufficiently <em>structured</em> by the combination
+of <em>task</em>, <em>output</em> and <em>examples</em> that the model
+would produce parseable labels even without an explicit role tag. The
+<em>role</em> slot is a <em>style amplifier</em> here — it makes the
+voice more reliably laconic — but the labels would still be extractable
+from a model that received the other six slots. Note that <strong>role
+is highly load-bearing in other tasks</strong> (e.g. patient-facing
+leaflet writing, where without the role the model would not know whether
+to address a clinician or a patient) — the answer here is
+<em>specifically</em> about procedure extraction.</p>
+<p>A defensible <em>alternative</em> answer for least load-bearing is
+<strong>context</strong> — for the same reason — provided the student
+names what <em>context</em> would add for a different task (e.g.
+discriminating between research and clinical use of the output). What is
+<em>not</em> defensible is naming <em>output</em> or <em>task</em> as
+least load-bearing — those are the spine of any extraction task.</p>
+<h2 id="rubric">Rubric</h2>
+<p>See <a href="../rubriche/rubrica_01_seven-slot-prompt.md">rubrica_01_seven-slot-prompt.md</a>.</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

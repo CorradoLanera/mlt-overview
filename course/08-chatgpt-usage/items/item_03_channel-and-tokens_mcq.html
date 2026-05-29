@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 03 — Channel choice and token cost: a recurring
+ophthalmology classification</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-03--channel-choice-and-token-cost-a-recurring-ophthalmology-classification">Item
+03 — Channel choice and token cost: a recurring ophthalmology
+classification</h1>
+<p><strong>ID</strong>: IB-08-chatgpt-usage-03 <strong>Learning
+objective</strong>: Choose the right access mode (Web chat / Prompt
+design in chat / API) for a given workflow and estimate its token cost
+using the rule of thumb
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+token
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\approx \dfrac{3}{4}</annotation></semantics></math>
+word. Recognise that channel choice depends not only on per-run volume
+but also on <strong>recurrence and integration</strong> — a workflow
+that fits prompt-design-in-chat on a <em>one-shot</em> per-run basis
+still flips to API once it must be repeated on a schedule and feed
+downstream automation (Obj. 3).</p>
+<p><strong>Category</strong>: Application <strong>Type</strong>: MCQ
+(scenario) <strong>Difficulty</strong>: medium <strong>Chapter</strong>:
+08-chatgpt-usage</p>
+<h2 id="question">Question</h2>
+<p>A clinical research team in ophthalmology wants to classify
+<strong>consultation notes</strong> as <em>&quot;diabetic retinopathy
+mentioned&quot;</em> vs <em>&quot;diabetic retinopathy not mentioned&quot;</em>. The
+notes are free-text, average
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>250</mn></mrow><annotation encoding="application/x-tex">\sim 250</annotation></semantics></math>
+words each. The classification will run as follows:</p>
+<ul>
+<li>per run:
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+new consultation notes</strong>;</li>
+<li>recurrence: <strong>once per month</strong>, for the next
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+months</strong>, as new notes accumulate in the EHR export;</li>
+<li>destination: the output (one label per note) feeds a research
+database that already has a monthly import script expecting a CSV with
+two columns (<code>note_id</code>, <code>label</code>).</li>
+</ul>
+<p>For an estimate to within
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>±</mi><mn>20</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\sim \pm 20\%</annotation></semantics></math>,
+use the chapter&#39;s rule of thumb
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+token
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\approx \dfrac{3}{4}</annotation></semantics></math>
+word.</p>
+<p>Among the four options below, <strong>which option is the correct
+channel choice for this workflow — and roughly what is the input-token
+cost per run?</strong></p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) <strong>Web chat</strong>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>7</mn><mspace width="0.167em"></mspace><mn>500</mn></mrow><annotation encoding="application/x-tex">\sim 7\,500</annotation></semantics></math>
+input tokens per run. <em>(Reasoning:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+notes is a manageable copy-paste session; the team can re-do it
+monthly.)</em></li>
+<li>B) <strong>Prompt design in chat</strong>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>13</mn><mspace width="0.167em"></mspace><mn>300</mn></mrow><annotation encoding="application/x-tex">\sim 13\,300</annotation></semantics></math>
+input tokens per run. <em>(Reasoning:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+notes is at the low-volume end where a structured prompt delivered by
+hand through the chat UI is most efficient — well below the threshold at
+which API integration becomes worthwhile.)</em></li>
+<li>C) <strong>API</strong>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>13</mn><mspace width="0.167em"></mspace><mn>300</mn></mrow><annotation encoding="application/x-tex">\sim 13\,300</annotation></semantics></math>
+input tokens per run. <em>(Reasoning: the workflow is <strong>recurring
+monthly</strong> and feeds a <strong>downstream import script</strong> —
+these two properties together require programmatic delivery, regardless
+of the fact that any <strong>single</strong> run&#39;s volume of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+items would otherwise fall in the prompt-design range.)</em></li>
+<li>D) <strong>Do it by hand without an LLM</strong>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+tokens. <em>(Reasoning:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+notes per month is a small enough batch that a trained reviewer can
+label them all in an afternoon; the LLM adds operational overhead
+without enough volume to justify it.)</em></li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: C.</strong> The chapter&#39;s rule for channel choice
+is: <em>Web</em> for one-shot ad-hoc questions, <em>Prompt design in
+chat</em> for a small batch of repeated structured tasks done <em>by
+hand</em>, <em>API</em> for any workflow that must be
+<strong>repeatable</strong>, <strong>integrated</strong> into other
+software, or <strong>applied at volume</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≳</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">\gtrsim 100</annotation></semantics></math>
+items per run). This workflow satisfies <strong>two</strong> of those
+three triggers — <em>repeatable</em> (six monthly runs) and
+<em>integrated</em> (feeds a CSV-consuming import script) — so the
+channel must be <strong>API</strong>, <em>even though a single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>-item
+run would otherwise sit in the prompt-design range</em>.</p>
+<p>The token estimate follows the chapter&#39;s rule of thumb:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>40</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> notes</mtext></mrow><mo>×</mo><mn>250</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> words</mtext></mrow><mo>=</mo><mn>10</mn><mspace width="0.167em"></mspace><mn>000</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> words</mtext></mrow><mspace width="1.0em"></mspace><mo>⇒</mo><mspace width="1.0em"></mspace><mn>10</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>×</mo><mstyle displaystyle="true"><mfrac><mn>4</mn><mn>3</mn></mfrac></mstyle><mo>≈</mo><mn>13</mn><mspace width="0.167em"></mspace><mn>300</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> tokens of input</mtext></mrow></mrow><annotation encoding="application/x-tex">40 \text{ notes} \times 250 \text{ words} = 10\,000 \text{ words} \quad \Longrightarrow \quad 10\,000 \times \dfrac{4}{3} \approx 13\,300 \text{ tokens of input}</annotation></semantics></math></p>
+<p>per run, plus a negligible
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+tokens of output (one short label per note). Over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+runs:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>80</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 80\,000</annotation></semantics></math>
+tokens of input total, which on current commercial API pricing is well
+below the cost of an espresso.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A</strong> is wrong on <strong>both axes</strong>: the token
+estimate ($7,500$) is a <em>parole-vs-token</em> error — the student has
+reported
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>40</mn><mo>×</mo><mn>250</mn><mo>×</mo><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle><mo>≈</mo><mn>7</mn><mspace width="0.167em"></mspace><mn>500</mn></mrow><annotation encoding="application/x-tex">40 \times 250 \times \dfrac{3}{4} \approx 7\,500</annotation></semantics></math>,
+which inverts the conversion factor (multiplying by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mstyle displaystyle="true"><mfrac><mn>3</mn><mn>4</mn></mfrac></mstyle><annotation encoding="application/x-tex">\dfrac{3}{4}</annotation></semantics></math>
+instead of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mstyle displaystyle="true"><mfrac><mn>4</mn><mn>3</mn></mfrac></mstyle><annotation encoding="application/x-tex">\dfrac{4}{3}</annotation></semantics></math>,
+treating tokens as <em>shorter</em> than words by the same ratio that
+they are actually <em>longer</em>). The channel is also wrong: Web chat
+is the ad-hoc one-shot channel; a workflow that runs monthly for half a
+year and produces structured output is <em>categorically</em> not
+ad-hoc. A student who picks A has not yet metabolised the token-unit
+convention <em>or</em> the <em>repeatable</em> trigger.</li>
+<li><strong>B</strong> is the <strong>subtlest distractor</strong>
+because it is <em>partially right</em>: the token estimate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>13</mn><mspace width="0.167em"></mspace><mn>300</mn></mrow><annotation encoding="application/x-tex">\sim 13\,300</annotation></semantics></math>
+is correct, <em>and</em> a one-shot
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>-item
+batch would indeed fit prompt-design-in-chat. The student who picks B
+has correctly metabolised the <em>volume</em> trigger but has
+<strong>missed the <em>recurrence</em> and <em>integration</em>
+triggers</strong>. The chapter&#39;s rule names <em>three</em> conditions
+for the API channel — volume, repeatability, integration — and a
+workflow satisfies the API criterion if <strong>any</strong> of the
+three holds, not only if all three do. Picking B reveals that the
+student is reading the rule conjunctively (&quot;API only if ALL three&quot;) when
+the chapter states it disjunctively (&quot;API if ANY of the three&quot;). This is
+the discriminator the item is designed to surface.</li>
+<li><strong>D</strong> is a <strong>principled answer</strong> that the
+chapter explicitly encourages students to consider — <em>&quot;do it by hand
+without an LLM&quot;</em> is the right call for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>-letter
+batches, and the chapter notes (<a href="../objectives.md">objectives.md</a>, nota docente
+<em>anti-trabocchetto</em>) that students who give this answer should be
+<strong>rewarded</strong> for the cost-sense. But here the volume is
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>40</mn><annotation encoding="application/x-tex">40</annotation></semantics></math>
+per month for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+months</em> =
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>240</mn><annotation encoding="application/x-tex">240</annotation></semantics></math>
+classifications total; combined with the audit-level expectation of
+<em>consistency</em> across runs (the EHR export shifts month to month,
+the human reviewer&#39;s calibration drifts), the LLM-with-API is the better
+tool. Picking D shows good <em>judgement</em> on the cost-of-LLM
+question but <strong>misses that the recurrence multiplies the human
+effort while the API does not</strong>. The right response, in
+correction, is to <em>praise the question being asked</em> (good
+students ask &quot;do I even need an LLM here?&quot;) while pointing out that
+<em>this</em> scenario has the recurrence dimension D&#39;s reasoning
+silently ignores.</li>
+</ul>
+<p>The single discriminator across A/B/C/D is whether the student reads
+the chapter&#39;s API-trigger rule <strong>disjunctively</strong> (volume
+<strong>or</strong> repeatability <strong>or</strong> integration) —
+which is the only reading that flips this scenario from B to C — or
+<strong>conjunctively</strong> (volume <strong>and</strong>
+repeatability <strong>and</strong> integration) — which would freeze the
+scenario on B. Only C reads the rule correctly.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>
