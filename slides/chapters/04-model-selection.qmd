@@ -61,6 +61,42 @@ The opposite failure — *underfitting* — is when **both** errors are *high*: 
 Diagnosi differenziale: overfit ≠ "alto errore", overfit = *basso train + grande gap*. Underfit ≠ "alto errore in generale", underfit = *entrambi alti e vicini*. Item 01 testa proprio questa diagnosi differenziale.
 :::
 
+<!-- ASIDE — what does "error" actually mean? threshold-based metrics + threshold-free metrics -->
+
+## Aside — *Which* error? A quick metric tour {.smaller}
+
+For a binary classifier, the **confusion matrix** counts four outcomes:
+
+|  | predicted $+$ | predicted $-$ |
+|:-:|:-:|:-:|
+| **actual $+$** | TP | FN |
+| **actual $-$** | FP | TN |
+
+From it, the most-used metrics:
+
+- **Accuracy** $= \dfrac{TP + TN}{TP + TN + FP + FN}$ — overall correct rate.
+- **Balanced accuracy** $= \dfrac{1}{2}\!\left(\dfrac{TP}{TP + FN} + \dfrac{TN}{TN + FP}\right)$ — avoids the *majority-class trap* on imbalanced data.
+- **Sensitivity** (recall, TPR) $= \dfrac{TP}{TP + FN}$ — of the actual positives, how many caught.
+- **Specificity** (TNR) $= \dfrac{TN}{TN + FP}$ — of the actual negatives, how many spared.
+- **Precision** (PPV) $= \dfrac{TP}{TP + FP}$ — of those flagged positive, how many really are.
+
+::: {.notes}
+Aside di metriche — ~60-90″, panoramica *non valutata*. Punto chiave clinico: in classi sbilanciate (es. malattia rara al $5\%$) un classificatore che predice sempre "sano" ha **accuracy $= 95\%$** ma **sensitivity $= 0$** — sopravvalutato. La *balanced accuracy* media sensitivity e specificity e neutralizza il bias di prevalenza. **Sensitivity ↔ recall**: stessa formula, vocabolario clinico vs ML. **Precision ↔ PPV**: stessa formula, vocabolario ML vs clinico. Tutte queste metriche presuppongono una **soglia di decisione** fissata: sulla slide dopo la togliamo.
+:::
+
+## Aside — Threshold-free: AUC-ROC vs AUC-PR
+
+Most classifiers output a **score** (often a probability); the threshold turns it into a label. Sweeping the threshold traces two curves:
+
+- **ROC curve** — sensitivity vs $1 - \text{specificity}$ across thresholds. Its area, **AUC-ROC** $\in [0.5, 1]$, is the probability that a random positive scores higher than a random negative.
+- **PR curve** — precision vs recall. Its area, **AUC-PR**, is more informative when the **positive class is rare**.
+
+Rule of thumb: **AUC-ROC** when classes are roughly balanced; **AUC-PR** under heavy imbalance (rare disease, fraud, anomaly detection).
+
+::: {.notes}
+Threshold-free — ~60-90″. Idea: una *buona* metrica non dipende da *una* soglia, riassume la performance su *tutte*. AUC-ROC $= 0.5$ è random, $= 1$ perfetto. **AUC-PR ha baseline $=$ prevalenza** (non $0.5$): per classi sbilanciate è il termometro onesto, perché ROC può sembrare alta ($0.85$+) anche quando in pratica il modello fa *pochi veri positivi tra molti falsi positivi*. Nello screening di malattie rare, **AUC-PR** è quasi sempre la misura clinicamente significativa. Le nomino e basta — chi vuole approfondire ne troverà i dettagli in `index-full.Rmd`.
+:::
+
 <!-- BEAT 4 — Nodo: contamination principle -->
 
 ## *Every decision spends data.*
@@ -134,6 +170,38 @@ $K$-fold CV è la procedura canonica del passo di validation. Notare che dopo la
 
 ::: {.notes}
 Callback al cap. 03 frame 5 — le tre colonne ($k$NN · SVM · RF) tornano, ma ora *una* è etichettata con un numero affidabile ("test: $18\%$"). Sullo sfondo, l'orizzonte sfumato di una rete di neuroni: pre-hook al cap. 05.
+:::
+
+<!-- ASIDE — once the model is validated: what did it learn? global (VIMP) + local (SHAP) -->
+
+## Aside — What did the model *learn*? Global importance (VIMP)
+
+After validating *that* a model predicts well, a second question follows: **which features is it relying on?**
+
+**Variable importance — permutation-based (VIMP):**
+
+1. Measure the validated model's error $E$.
+2. **Permute** the values of feature $X_j$ across patients — this breaks any signal in $X_j$, keeping everything else fixed.
+3. Re-measure the error $E_j$. The **importance of $X_j$** is $E_j - E$: how much performance *drops* when $X_j$ is scrambled.
+
+Born with **random forests**, but works for *any* fitted model (**model-agnostic**).
+
+::: {.notes}
+VIMP — ~60″. Idea: se permutando $X_j$ l'errore non cambia, quel predittore non sta contribuendo. È **globale**: una sola classifica per l'intero dataset. **Caveat clinici:** (a) VIMP **non è causalità** — può rilevare confondenti correlati (es. "ICU room number" come proxy di gravità); (b) in presenza di forti correlazioni tra predittori, l'importanza si "spalma" — permutare $X_j$ mentre $X_k$ è ancora intatto sottostima entrambi. La cito *come strumento di sanity check post-fit*, non come spiegazione causale.
+:::
+
+## Aside — Why *this* prediction? Local explanations (SHAP)
+
+VIMP tells you *which features matter on average*. **SHAP** tells you *how each feature contributed to a single patient's prediction*.
+
+- Borrowed from cooperative **game theory** (Shapley values, 1953): each feature is a "player"; its SHAP value is its **fair share** of the prediction's deviation from the average.
+- For one patient: a positive SHAP value pushes the prediction *up*; a negative one pushes it *down*. Contributions are **additive**.
+- Aggregated across patients, SHAP also yields a *global* view that is consistent with the local explanations.
+
+Model-agnostic; standard tooling for tree ensembles, deep nets, and LLMs.
+
+::: {.notes}
+SHAP — ~60″. Idea: ogni paziente ha una *scomposizione* additiva della propria previsione, contributo per contributo. Clinicamente utile perché risponde alla domanda *"why was THIS patient flagged?"*. Onestà intellettuale: SHAP spiega il **modello**, non la **biologia** — descrive *come* quel modello combina le feature, non *perché* la malattia esista. **Take-home dell'aside:** VIMP (globale) + SHAP (locale) coprono i due bisogni clinici più comuni — *quale fattore conta in generale* e *cosa ha guidato questa diagnosi*. Nei deep net (cap. 05) SHAP resta utile, ma l'interpretabilità diventa più costosa: gancio implicito al prossimo capitolo.
 :::
 
 ## Pre-hook → chapter 5: deep learning
@@ -267,11 +335,9 @@ Item 03 — Application / MCQ / medium. Obj. 2 (contamination principle applied 
 Lascio 60-90 secondi. Se la classe esita tra A e B, è il momento giusto per richiamare la contamination rule. **A** è sbagliato perché $18\%$ è il numero che ha scelto $M_B$ tra quattro — è ottimisticamente biased.
 :::
 
-## Item 03 — Solution
+## Item 03 — Solution {.smaller}
 
-**Correct: B.**
-
-$M_B$'s CV error ($18\%$) is the very number that *chose* $M_B$ among four candidates. By the **contamination principle**, that number is no longer an unbiased estimate — it is *optimistically biased* (the smallest of four CV errors). The **test set** is the only untouched dataset.
+**Correct: B.** $M_B$'s CV error ($18\%$) is the very number that *chose* $M_B$ among four candidates. By the **contamination principle**, that number is no longer unbiased — it is *optimistically biased* (the smallest of four CV errors). The **test set** is the only untouched dataset.
 
 Why the distractors are wrong:
 
