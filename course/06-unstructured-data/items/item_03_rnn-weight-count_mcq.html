@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 03 — RNN weight count and independence from sequence
+length</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-03--rnn-weight-count-and-independence-from-sequence-length">Item
+03 — RNN weight count and independence from sequence length</h1>
+<p><strong>ID</strong>: IB-06-unstructured-data-03 <strong>Learning
+objective</strong>: Describe the recurrent operation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa}\, a^{&lt;t-1&gt;} + W_{ax}\, x^{&lt;t&gt;} + b_a)</annotation></semantics></math>
+and explain that the <strong>same matrices
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}, W_{ya}</annotation></semantics></math>
+are reused at every position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math></strong>,
+so the parameter count is <strong>independent of the sequence length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math></strong>
+(Obj. 3). <strong>Category</strong>: Application <strong>Type</strong>:
+MCQ (scenarizzato) <strong>Difficulty</strong>: medium
+<strong>Chapter</strong>: 06-unstructured-data</p>
+<h2 id="question">Question</h2>
+<p>You are training a Recurrent Neural Network to flag early signs of
+cardiac arrhythmia from a multi-channel bedside monitor. At every time
+step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">t = 1, \ldots, T_x</annotation></semantics></math>:</p>
+<ul>
+<li>the input is a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>-dimensional
+reading:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">x^{&lt;t&gt;} \in \mathbb{R}^{4}</annotation></semantics></math>
+(heart rate, blood pressure, SpO2, temperature);</li>
+<li>the hidden state is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>-dimensional:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mn>20</mn></msup></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} \in \mathbb{R}^{20}</annotation></semantics></math>;</li>
+<li>the output is a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>-dimensional
+probability vector:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">y^{&lt;t&gt;} \in \mathbb{R}^{3}</annotation></semantics></math>
+(<em>no-event</em> / <em>pre-arrhythmia</em> /
+<em>arrhythmia</em>).</li>
+</ul>
+<p>The recurrent update is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa}\, a^{&lt;t-1&gt;} + W_{ax}\, x^{&lt;t&gt;} + b_a)</annotation></semantics></math>
+and the per-step output is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mo>′</mo></msup><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>y</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">y^{&lt;t&gt;} = g&#39;(W_{ya}\, a^{&lt;t&gt;} + b_y)</annotation></semantics></math>.
+<strong>Ignore biases for this item.</strong> A typical patient session
+yields
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 2\,000</annotation></semantics></math>
+time steps.</p>
+<p><strong>How many weights does the network have to learn, and does
+this count depend on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>?</strong></p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A)
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>80</mn><annotation encoding="application/x-tex">80</annotation></semantics></math>
+weights</strong>, and the count <strong>depends on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math></strong>
+(each time step has its own copy of the weights, so the total grows with
+the length of the session).</li>
+<li>B)
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>80</mn><annotation encoding="application/x-tex">80</annotation></semantics></math>
+weights</strong>, and the count <strong>does NOT depend on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math></strong>
+(the same weights are reused at every time step).</li>
+<li>C)
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>540</mn><annotation encoding="application/x-tex">540</annotation></semantics></math>
+weights</strong>, and the count <strong>does NOT depend on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math></strong>
+(the same matrices
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}, W_{ya}</annotation></semantics></math>
+are reused at every time step).</li>
+<li>D)
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>540</mn><mo>×</mo><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>=</mo><mn>1</mn><mspace width="0.167em"></mspace><mn>080</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">540 \times 2\,000 = 1\,080\,000</annotation></semantics></math>
+weights</strong>, and the count <strong>depends on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math></strong>
+(the network is fully unrolled over the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">2\,000</annotation></semantics></math>
+time steps and has independent weights at each step).</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: C.</strong> Decomposition of the weight count,
+matrix by matrix:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mn>20</mn><mo>×</mo><mn>20</mn><mo>=</mo><mn>400</mn><mo>,</mo><mspace width="2.0em"></mspace><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mn>20</mn><mo>×</mo><mn>4</mn><mo>=</mo><mn>80</mn><mo>,</mo><mspace width="2.0em"></mspace><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mn>3</mn><mo>×</mo><mn>20</mn><mo>=</mo><mn>60</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">|W_{aa}| = 20 \times 20 = 400, \qquad |W_{ax}| = 20 \times 4 = 80, \qquad |W_{ya}| = 3 \times 20 = 60.</annotation></semantics></math></p>
+<p>Total:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>400</mn><mo>+</mo><mn>80</mn><mo>+</mo><mn>60</mn><mo>=</mo><mn>540</mn></mrow><annotation encoding="application/x-tex">400 + 80 + 60 = 540</annotation></semantics></math>
+weights. The count is <strong>independent of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math></strong>
+because the chapter&#39;s central dispositive for sequences — <strong>weight
+sharing across time</strong> — says exactly that the <em>same</em> three
+matrices
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}, W_{ya}</annotation></semantics></math>
+are reused at every position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.
+The recurrence unrolls in time, but the <em>parameters</em> do not. A
+patient session of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 2\,000</annotation></semantics></math>
+and a session of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>10</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 10\,000</annotation></semantics></math>
+are processed by the <em>same</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>540</mn><annotation encoding="application/x-tex">540</annotation></semantics></math>
+weights.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<p>The four options form a
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+matrix of misconceptions</strong> along two axes: <em>which matrices
+were counted</em> (only
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">W_{ax}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>80</mn><annotation encoding="application/x-tex">80</annotation></semantics></math>
+weights — vs all three matrices,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>540</mn><annotation encoding="application/x-tex">540</annotation></semantics></math>
+weights) × <em>what
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>
+does to the count</em> (multiplies it — vs does not).</p>
+<ul>
+<li><strong>A</strong> <em>(80 weights, depends on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>)</em>
+combines <strong>both</strong> misconceptions: counted only
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">W_{ax}</annotation></semantics></math>
+(input → hidden), forgot the recurrent matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><annotation encoding="application/x-tex">W_{aa}</annotation></semantics></math>
+(hidden → hidden) and the output matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><annotation encoding="application/x-tex">W_{ya}</annotation></semantics></math>
+(hidden → output), <em>and</em> assumed every time step has its own
+copy. A student who lands on A has not seen Obj. 3 at all; they are
+reading the RNN as if it were a sequence of unrelated input layers.</li>
+<li><strong>B</strong> <em>(80 weights, does NOT depend on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>)</em>
+gets the <strong>scaling concept right</strong> but the <strong>count
+wrong</strong>: it correctly applies <em>&quot;the same matrices are reused
+at every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>&quot;</em>
+(Obj. 3&#39;s punchline) but counts only
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><annotation encoding="application/x-tex">W_{ax}</annotation></semantics></math>,
+missing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><annotation encoding="application/x-tex">W_{aa}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><annotation encoding="application/x-tex">W_{ya}</annotation></semantics></math>.
+In a closed MCQ this misconception is scored as <em>incorrect</em> like
+the others — <strong>but</strong> the <em>Nota docente</em> below flags
+it as the response to look at in the asynchronous debrief: a student who
+picked B is much closer to mastery than a student who picked A or D, and
+that signal is worth re-using in the next class or the next item
+set.</li>
+<li><strong>D</strong> <em>(1,080,000 weights, depends on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>)</em>
+is the <strong>unrolled-MLP fallacy</strong>: the student has correctly
+identified all three matrices
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>400</mn><mo>+</mo><mn>80</mn><mo>+</mo><mn>60</mn><mo>=</mo><mn>540</mn></mrow><annotation encoding="application/x-tex">400 + 80 + 60 = 540</annotation></semantics></math>)
+and then multiplied by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 2\,000</annotation></semantics></math>,
+as if every time step were a separate copy of the network. This is
+exactly the <em>wrong</em> mental model the chapter is built to dispel.
+The student has done the matrix arithmetic correctly but has not
+internalised the <em>purpose</em> of the recurrent architecture —
+namely, that the recurrence reuses <em>the same</em> matrices, <em>that
+is what makes it recurrent</em>. The number
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mspace width="0.167em"></mspace><mn>080</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">1\,080\,000</annotation></semantics></math>
+is also the number a <em>naïve unrolling without weight sharing</em>
+would yield — which is precisely the parameter explosion the RNN was
+designed to avoid.</li>
+</ul>
+<p>The single discriminator is <strong>both axes simultaneously
+right</strong>: enumerate all three matrices
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}, W_{ya}</annotation></semantics></math>)
+<em>and</em> recognise that they are shared across time. Only C does
+both.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>Nota docente — design dei distrattori in matrice
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>.</em>
+Pattern speculare a ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>05</mn><annotation encoding="application/x-tex">05</annotation></semantics></math>
+item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>
+(matrice
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+sign ×
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+sulla discesa del gradiente). Qui le due assi sono <em>quante
+matrici</em> (B/A vs C/D) × <em>che cosa fa
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math></em>
+(A/D vs B/C). C è l&#39;unica casella corretta su entrambi gli assi.
+<strong>B è il distrattore pedagogicamente più ricco</strong>: nel
+reveal il docente può aprire la conversazione su <em>&quot;hai capito il
+principio (weight sharing) ma hai dimenticato due delle tre matrici —
+quali sono e dove vivono nel grafo della rete?&quot;</em>. Lo studente che è
+arrivato a B è <em>vicino</em> al modello mentale corretto e va
+recuperato; lo studente che è arrivato a D ha il modello mentale
+<em>opposto</em> a quello del capitolo.</p>
+<p><em>Nota docente — scelta dei numeri.</em> Le dimensioni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mn>20</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(4, 20, 3)</annotation></semantics></math>
+sono <strong>diverse</strong> dal formative <em>solved</em> di SU 3 — lì
+le dimensioni erano
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>5</mn><mo>,</mo><mn>10</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(5, 10, 2)</annotation></semantics></math>
+e il totale
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>170</mn><annotation encoding="application/x-tex">170</annotation></semantics></math>.
+Qui sono
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mn>20</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(4, 20, 3)</annotation></semantics></math>
+e il totale
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>540</mn><annotation encoding="application/x-tex">540</annotation></semantics></math>.
+Numeri diversi → l&#39;item misura <em>processo</em> (saper enumerare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}, W_{ya}</annotation></semantics></math>
+e fare i tre conti), non <em>memoria</em> del totale di SU 3.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 2\,000</annotation></semantics></math>
+è clinicamente plausibile per una sessione di monitoraggio bedside
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">\sim 4</annotation></semantics></math>
+minuti a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">\sim 8</annotation></semantics></math>
+Hz oppure
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>
+min a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\sim 1</annotation></semantics></math>
+Hz). Le dimensioni del hidden state
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>)
+e dell&#39;output
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>)
+sono appropriate per il task clinico (3 classi: no-event /
+pre-arrhythmia / arrhythmia).</p>
+<p><em>Nota docente — anti-leakage rispettata.</em> Niente vocabolario
+ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>07</mn><mo>+</mo></mrow><annotation encoding="application/x-tex">07+</annotation></semantics></math>.
+L&#39;item resta dentro ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+(formula
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t&gt;}</annotation></semantics></math>
++ tre matrici + weight sharing nel tempo).</p>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

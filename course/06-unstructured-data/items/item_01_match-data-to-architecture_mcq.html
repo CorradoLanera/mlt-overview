@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 01 — Match the data structure to the right
+architecture</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-01--match-the-data-structure-to-the-right-architecture">Item 01
+— Match the data structure to the right architecture</h1>
+<p><strong>ID</strong>: IB-06-unstructured-data-01 <strong>Learning
+objective</strong>: Match an unstructured-data type to the right deep
+architecture and name the structural property the architecture preserves
+(Obj. 1) — <em>sequential single-information</em> → <strong>Recurrent
+Neural Network</strong> because the <em>order</em> of the elements
+carries information, encoded by propagating a hidden state from position
+to position. <strong>Category</strong>: Comprehension
+<strong>Type</strong>: MCQ <strong>Difficulty</strong>: medium
+<strong>Chapter</strong>: 06-unstructured-data</p>
+<h2 id="question">Question</h2>
+<p>You are building a deep model to detect <em>atrial fibrillation</em>
+(AFib) from a single-lead electrocardiogram with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 5\,000</annotation></semantics></math>
+samples. Which architecture is the <strong>canonical choice</strong> for
+this task as covered in this chapter, and <strong>what is the
+reason</strong>?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) <strong>Convolutional Neural Network</strong> — because the
+irregular RR-interval pattern is a <em>local</em> shape that can occur
+anywhere in the trace, and a kernel slid over the input would detect it
+at every position.</li>
+<li>B) <strong>Recurrent Neural Network</strong> — because the
+<em>order</em> of the samples carries clinical meaning (the rhythm
+<em>is</em> a pattern over time), and the recurrent update propagates a
+hidden state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>→</mo><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup></mrow><annotation encoding="application/x-tex">a^{&lt;t-1&gt;} \to a^{&lt;t&gt;}</annotation></semantics></math>
+that encodes order; the same matrices
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}</annotation></semantics></math>
+are reused at every position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.</li>
+<li>C) <strong>Multi-Layer Perceptron on the flat
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>-dimensional
+vector</strong> — because an MLP can approximate any function of a
+vector input with enough hidden units, so with sufficient capacity it
+will learn the rhythm directly from the raw samples.</li>
+<li>D) <strong>Multi-Layer Perceptron after Principal Component Analysis
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+components</strong> — because reducing the dimensionality to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+scalars removes the time-axis problem and makes the input manageable for
+a standard fully-connected network.</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: B.</strong> The chapter&#39;s Obj. 1 says:
+<em>sequential single-information</em> (the position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+carries meaning) → <strong>RNN</strong>, because the recurrent update
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa}\, a^{&lt;t-1&gt;} + W_{ax}\, x^{&lt;t&gt;} + b_a)</annotation></semantics></math>
+propagates a hidden state from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t-1</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+— and so the <em>order</em> of the samples is explicitly encoded in the
+architecture (the network <em>knows</em> that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mrow><mo>&lt;</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">x^{&lt;1&gt;}</annotation></semantics></math>
+comes before
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mrow><mo>&lt;</mo><mn>5000</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">x^{&lt;5000&gt;}</annotation></semantics></math>).
+The same matrices are reused at every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
+so the parameter count is independent of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>.
+Atrial fibrillation is a <em>pattern over time</em> (irregular RR
+intervals over a window): the RNN is the canonical architecture because
+it is the one that respects this structural property.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A</strong> is the <em>practical-answer trap</em>.
+Numerically, a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+often works well on short ECG segments — and the chapter&#39;s <em>Nota
+docente</em> on anti-trabocchetto explicitly recognises this. A student
+who picks A has noticed something correct (local pattern
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>+</mi><annotation encoding="application/x-tex">+</annotation></semantics></math>
+kernel-shared-across-positions does generalise to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D),
+and in the live summative this answer is <em>premiata nel reveal</em>.
+But it is <strong>not the canonical answer of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math></strong>,
+because
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+does not introduce the <em>new dispositive</em> the chapter is teaching
+here — <em>memory across time via a hidden state</em>. CNN&#39;s prior is
+<em>positional invariance</em>; RNN&#39;s prior is <em>order</em>. The
+chapter teaches them on different axes because the <em>axes</em> are
+different — and for sequences, the canonical answer is the one that
+encodes the axis.</li>
+<li><strong>C</strong> is the <em>&quot;MLP universally approximates
+everything&quot;</em> mistake. True in the limit (universal approximation),
+but ignores that an MLP on the flat
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>-vector
+has <em>no built-in notion of order</em>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>1</mn></msub><annotation encoding="application/x-tex">x_1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mn>5000</mn></msub><annotation encoding="application/x-tex">x_{5000}</annotation></semantics></math>
+are columns of a spreadsheet with no temporal relation. The MLP would
+have to <em>discover</em> the time axis from training data — at a
+parameter cost that grows with the number of hidden units (e.g. a single
+FC layer with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+hidden units would need
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>×</mo><mn>100</mn><mo>=</mo><mn>500</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000 \times 100 = 500\,000</annotation></semantics></math>
+weights, for <em>one</em> layer) and that no clinical dataset will pay.
+The chapter&#39;s Obj. 1 rules out this option precisely because <em>the
+architecture must respect the structure of the data</em>, not be forced
+to re-discover it.</li>
+<li><strong>D</strong> is the <em>&quot;preprocessing fixes the architecture
+problem&quot;</em> mistake — and is in fact <strong>worse than C</strong>.
+PCA on a flat
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>-vector
+is a <em>linear projection that mixes samples from different times into
+the same component</em>. The first principal component might be a
+weighted average of samples across the whole trace; the second might
+combine samples from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">t = 100</annotation></semantics></math>
+with samples from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>4</mn><mo>,</mo><mn>900</mn></mrow><annotation encoding="application/x-tex">t = 4{,}900</annotation></semantics></math>.
+The time axis is not <em>managed</em>: it is <em>erased</em>. A student
+who picks D has confused <em>dimensionality reduction</em> (fewer
+numbers to feed the model) with <em>structure preservation</em> (keeping
+the relations among those numbers). PCA does the first; it destroys the
+second.</li>
+</ul>
+<p>The single discriminator is <strong>which option encodes the
+<em>order</em> of the sequence into the architecture itself, rather than
+asking the network or the preprocessing to discover (or destroy) that
+order</strong>. Only B does this.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>Nota docente — perché il <strong>distrattore A è il più
+ricco</strong>.</em> A non è un errore: è una <em>scelta praticamente
+competitiva</em> presentata come <em>risposta canonica del
+capitolo</em>. Nel reveal — o nella correzione asincrona di un esame
+scritto — lo studente che ha scelto A va trattato in due tempi: (a)
+<strong>prima si riconosce la correttezza pratica della sua
+osservazione</strong> (&quot;ha ragione: una
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+funziona spesso bene su ECG corti&quot;); (b) <strong>poi si chiarisce perché
+ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+chiede B</strong>: il capitolo introduce il <em>dispositivo memoria via
+stato nascosto</em>, e la canonical answer è la <em>risposta
+architetturale che mostra il dispositivo nuovo</em>, non la <em>risposta
+che vince un benchmark Kaggle</em>. Lo studente bravo che sceglie A va
+premiato per l&#39;osservazione e <em>poi</em> riportato alla domanda
+effettiva del capitolo. Nel set di item, A è esattamente lo
+<em>stesso</em> trap del Poll 1 di Card B nel summative (vedi <a href="../objectives.md">objectives.md</a>) — coerenza voluta: il
+sommativo e l&#39;item misurano lo <em>stesso</em> errore di livello
+pedagogico.</p>
+<p><em>Nota docente — anti-leakage rispettata.</em> L&#39;item resta
+interamente dentro ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>:
+no <em>attention</em>, no <em>Transformer</em>, no
+<em>encoder/decoder</em>, no riferimenti a LLM. Il pre-hook a ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>
+(long-range dependency su discharge letter) vive in
+<code>narrative.md</code>, non qui.</p>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

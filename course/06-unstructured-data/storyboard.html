@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>06 — Unstructured data (CNN/RNN) · storyboard (6
+frames)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="06--unstructured-data-cnnrnn--storyboard-6-frames">06 —
+Unstructured data (CNN/RNN) · storyboard (6 frames)</h1>
+<blockquote>
+<p>Visual plan for the chapter, built from its <a href="narrative.md">arc</a>, <a href="objectives.md">objectives</a>, and
+three <a href="subunits.md">subunits</a>. 20 min, dual classroom
+(in-person + remote). On-screen text in <strong>English</strong> (≤ 1
+sentence/frame, 3-second readable); regia/voce docente in
+<em>italiano</em>. Feeds <code>mlt-quarto-build</code>.</p>
+</blockquote>
+<blockquote>
+<p>🎨 La colonna <strong>Visual</strong> è la descrizione sintetica (per
+noi). I <strong>prompt pronti per un generatore di immagini</strong> —
+con lo stesso <em>style-anchor</em> condiviso dei cap. 01–05 — stanno
+nella sezione <strong><code>## Prompt visivi</code></strong> in fondo.
+Eventuali label numeriche / matematiche (es.
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math></em>,
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">5\,017\,600</annotation></semantics></math></em>,
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t&gt;}</annotation></semantics></math></em>,
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math></em>,
+<em>CNN</em>/<em>RNN</em>/<em>MLP</em>) si aggiungono <strong>come
+overlay</strong> in slide-editor.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funzione</th>
+<th>Visual</th>
+<th>Testo a video</th>
+<th>Voce docente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Hook visivo</td>
+<td>Elena&#39;s desk seen from above. <strong>Centre-left</strong>, the same
+small
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+network lattice that closed ch. 05&#39;s frame 6 sits flat on the desk —
+<em>tiny</em>, <em>tidy</em>, twelve clean orange lines. <strong>From
+above</strong>, two oversized clinical objects descend onto the same
+desk: a chest X-ray
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+implied by fine pixel grain) on one side, a long wavy single-lead ECG
+trace on the other. Both objects are visibly <strong>far too
+big</strong> to fit through the tiny lattice — the X-ray spills over the
+desk&#39;s edge, the ECG trace runs off-frame in both directions. The
+lattice now looks <em>suddenly inadequate</em>, not wrong.</td>
+<td><em>&quot;Twelve weights worked. Then the image arrived.&quot;</em></td>
+<td>La rete di ch. 05 era soddisfacente sui dati tabular:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+feature,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+pesi. Il prossimo paziente, però, arriva come un&#39;immagine
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>.
+Una rete fully-connected sopra questo input avrebbe oltre un milione di
+pesi <em>per neurone</em>. La macchina di ieri non è sbagliata —
+semplicemente <em>non scala</em> al dato reale.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Contesto — i due assi strutturali</td>
+<td><strong>Split panel separated by a thin vertical glowing
+line.</strong> <strong>LEFT (spatial axis):</strong> the chest X-ray
+with the <em>same</em> clinical consolidation shape highlighted
+<strong>twice</strong> — once in the upper-right lobe (bright orange
+ring), once in the lower-left lobe (identical ring, identical shape). A
+faint ghost arrow between the two rings implies <em>translation</em>.
+<strong>RIGHT (time axis):</strong> the ECG trace with <strong>two
+distant pattern segments</strong> highlighted — one near the start
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>≈</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t \approx 1</annotation></semantics></math>),
+one near the end
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>≈</mo><mn>4</mn><mspace width="0.167em"></mspace><mn>999</mn></mrow><annotation encoding="application/x-tex">t \approx 4\,999</annotation></semantics></math>),
+both showing the same irregular cluster of beats. A long faint dotted
+arrow connects them, with a question-mark glyph hovering on it.</td>
+<td><em>&quot;Same lesion, different place. Same beat, far apart.&quot;</em></td>
+<td>Due strutture diverse, due fallimenti diversi dell&#39;MLP. L&#39;immagine
+ha <strong>invarianza di posizione</strong> — la stessa lesione, ovunque
+appaia, è la stessa. La sequenza ha <strong>ordine</strong> — il
+campione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><mn>999</mn></mrow><annotation encoding="application/x-tex">4\,999</annotation></semantics></math>
+<em>non</em> è intercambiabile col campione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>.
+L&#39;MLP non rispetta né l&#39;una né l&#39;altra struttura, e per questo
+collassa.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sfida / Dati — l&#39;esplosione dei parametri (il <em>gem</em>
+numerico)</td>
+<td>A single dominant frame split horizontally into two stacked rows.
+<strong>Top row:</strong> a chest X-ray on the left; an oversized
+glowing numeric badge
+<strong>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">5\,017\,600</annotation></semantics></math>&quot;</strong>
+anchored to the right, connected to the X-ray by a thick orange arrow
+labelled (overlay) <em>FC layer,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+hidden units</em>. The badge dwarfs the X-ray. <strong>Bottom
+row:</strong> the same chest X-ray on the left; a tiny
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+kernel grid floating above the image with a slim arrow showing it
+sliding rightward across a small portion of the image; a small modest
+numeric badge
+<strong>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>&quot;</strong>
+anchored to the right, connected by a <em>thinner</em> orange arrow
+labelled (overlay) <em>single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+conv kernel</em>. The visual asymmetry — <em>gigantic vs tiny</em> — is
+the lesson.</td>
+<td><em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">5\,017\,600</annotation></semantics></math>
+versus
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>.
+Same image, two architectures.&quot;</em></td>
+<td>Un fully-connected primo layer con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+neuroni nascosti sull&#39;immagine
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+raw: cinque milioni di pesi. Un singolo kernel convoluzionale
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>:
+<em>nove</em>. È <strong>tre ordini di grandezza</strong> di parametri,
+sulla stessa immagine. E il primo neanche generalizzerebbe —
+re-imparerebbe ogni traslazione da zero.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Nodo / Impatto — il principio comune (<em>weight sharing</em>)</td>
+<td><strong>Split horizontally into two halves by a thin orange
+divider.</strong> <strong>Top half (spatial axis — CNN):</strong> a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>×</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">5 \times 5</annotation></semantics></math>
+image grid with a small
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+kernel
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+shown in <strong>three successive sliding positions</strong> (two faded,
+one bright) — at each position three faint arrows fan upward into a
+corresponding cell of a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+output feature-map grid above, but <strong>the kernel symbol
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+is visibly the same object</strong> at all three positions (same
+shading, same shape, the <em>same nine cells</em>). A label-overlay
+<em>&quot;share across space&quot;</em> spans the top half. <strong>Bottom half
+(time axis — RNN):</strong> a horizontal row of positions
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mn>3</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>T</mi></mrow><annotation encoding="application/x-tex">t = 1, 2, 3, \ldots, T</annotation></semantics></math>,
+at each position a small input arrow
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">x^{&lt;t&gt;}</annotation></semantics></math>
+enters a <em>boxed update unit</em>, the box is visibly the <strong>same
+identical box</strong> at every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+(same shading, same outline), and the box passes a hidden-state arrow
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>→</mo><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup></mrow><annotation encoding="application/x-tex">a^{&lt;t-1&gt;} \to a^{&lt;t&gt;}</annotation></semantics></math>
+to its right neighbour. A label-overlay <em>&quot;share across time&quot;</em>
+spans the bottom half. On the right edge of the frame, a vertical
+bracket spans both halves with the overlay label <em>&quot;weight
+sharing&quot;</em>.</td>
+<td><em>&quot;One trick. Two axes. Share the weights.&quot;</em></td>
+<td>Lo <em>stesso</em> kernel su ogni posizione spaziale. Le
+<em>stesse</em> matrici a ogni passo temporale. <strong>Weight
+sharing</strong> è il dispositivo unico — nello spazio si chiama CNN,
+nel tempo si chiama RNN — e fa due lavori in uno: blocca l&#39;esplosione
+dei pesi, <em>e</em> codifica nell&#39;architettura la struttura del dato.
+Niente di concettualmente nuovo dopo questo riquadro.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Metodo / Soluzione (<em>Right tool for the wrong tensor</em> —
+summative perno)</td>
+<td><strong>Three data cards arranged side-by-side
+horizontally</strong>, identical card frame, each labelled by an overlay
+tag (<em>Card A</em> / <em>Card B</em> / <em>Card C</em>). <strong>Card
+A:</strong> a chest X-ray thumbnail + overlay caption &quot;<em>pneumonia
+y/n?</em>&quot;; below the card, an empty <em>architecture</em> slot.
+<strong>Card B:</strong> a single-lead ECG trace (clearly
+varying-length,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">\sim 10</annotation></semantics></math>
+s shown) + overlay caption &quot;<em>AFib y/n?</em>&quot;; below, an empty
+<em>architecture</em> slot. <strong>Card C:</strong> a small structured
+spreadsheet
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>18</mn><annotation encoding="application/x-tex">18</annotation></semantics></math>
+scalar feature names visible as rows: <em>age, BMI, eGFR, …</em>) +
+overlay caption &quot;<em>30-day mortality y/n?</em>&quot;; below, an empty
+<em>architecture</em> slot. <strong>Below the three cards</strong>,
+anchored to Card A: a small <strong>weight-count mini-table</strong>
+with header overlay <em>&quot;weights per single output neuron, no bias&quot;</em>
+and two rows, both empty: <em>&quot;FC layer to one output neuron on raw
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+grayscale&quot;</em> / <em>&quot;single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+conv kernel&quot;</em>. <strong>To the side</strong>, anchored to Card B: a
+single empty equation slot for the recurrent update, with a tiny
+placeholder overlay
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mspace width="0.167em"></mspace><mi>?</mi></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = \,?</annotation></semantics></math>&quot;</em>.</td>
+<td><em>&quot;Right tool for the wrong tensor.&quot;</em></td>
+<td>È qui che gira il sommativo <strong>&quot;Right tool for the wrong
+tensor&quot;</strong> (vedi <a href="objectives.md">objectives.md</a>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+min, minuti
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>).
+Tre carte, tre architetture, <strong>Card C è il distrattore
+concettuale</strong>: la risposta giusta è MLP, non CNN/RNN — costringe
+lo studente a <em>non</em> applicare CNN/RNN ovunque. Due poll Slido
+individuali: <em>Poll 1</em> sull&#39;architettura di Card B (la risposta
+canonical è RNN; chi vota
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+viene <strong>premiato nel reveal</strong> come <em>practical
+answer</em> corretta); <em>Poll 2</em> sul conto pesi di Card A
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+FC vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+kernel; distrattori diagnostici
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+= confusione FC↔︎kernel,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>224</mn><annotation encoding="application/x-tex">224</annotation></semantics></math>
+= dimensionalità sbagliata,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>150</mn><mspace width="0.167em"></mspace><mn>528</mn></mrow><annotation encoding="application/x-tex">150\,528</annotation></semantics></math>
+= canali RGB).</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Payoff + pre-hook ch. 07</td>
+<td>The same desk of frame 1, <em>transformed</em>. <strong>Where the
+tiny
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+lattice once sat</strong>, the desk now holds <strong>two specialised
+structures side by side</strong>: on the left a <strong>CNN
+tower</strong> with the chest X-ray sitting <em>comfortably</em> inside
+the convolution window of a sliding kernel; on the right an <strong>RNN
+unrolled</strong> as a horizontal sequence of identical boxed
+update-units with the ECG trace flowing <em>naturally</em> through their
+inputs. The image and the trace, oversized in frame 1, now fit.
+<strong>On the back horizon of the frame</strong>, a new clinical
+artefact has appeared, slightly out of focus: a <strong>single-page
+discharge letter</strong> — clearly textual (paragraphs of generic
+ghosted lines, no readable words), with <strong>two specific tokens
+highlighted in orange</strong>: one near the top of the page, one near
+the bottom. A <strong>long fading dotted arrow</strong> connects them
+across all the intermediate ghosted lines, the arrow visibly
+<em>thinning to almost nothing</em> by the time it reaches its
+destination. A small question-mark glyph hovers above the fading
+midpoint of the arrow.</td>
+<td><em>&quot;Atoms unchanged. Only the rule of repetition. One more
+time?&quot;</em></td>
+<td>Le due architetture nuove fanno il loro lavoro: la CNN incassa
+l&#39;immagine, l&#39;RNN incassa la sequenza. Ma l&#39;RNN legge una posizione alla
+volta — su un ECG va benissimo, su una lettera clinica dove
+&quot;<em>no</em>&quot; alla posizione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>42</mn><annotation encoding="application/x-tex">42</annotation></semantics></math>
+dipende da &quot;<em>ma</em>&quot; alla posizione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>,
+la dipendenza deve viaggiare attraverso
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>37</mn><annotation encoding="application/x-tex">37</annotation></semantics></math>
+stati nascosti, e si <em>sfilaccia</em>. Esiste una rete in cui ogni
+posizione vede ogni altra posizione <em>direttamente</em>? Capitolo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>:
+<strong>attention</strong>, e l&#39;architettura che la incorpora — il
+<strong>Transformer</strong>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="modalità-duale--dove-si-attiva">Modalità duale — dove si
+attiva</h2>
+<p>Il riquadro <strong>5</strong> è il perno attivo: lì gira il
+sommativo &quot;<strong>Right tool for the wrong tensor</strong>&quot; (vedi <a href="objectives.md">objectives.md</a>). L&#39;artefatto condiviso è
+<strong>uno solo</strong> — le tre data cards + la mini-tabella di
+pre-conto pesi su Card A + lo slot equazione su Card B — proiettato e
+distribuito su carta. Tutta la classe lavora sullo <strong>stesso
+banco</strong> (presenza + remoto), niente group cards diverse: capitolo
+da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>′
+troppo breve per la struttura a tre-card per gruppo di ch. 03/04. Due
+<strong>poll Slido individuali</strong> corrono in parallelo:</p>
+<ul>
+<li><em>Poll 1</em> — <em>&quot;Card B (ECG,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+s @
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>500</mn><annotation encoding="application/x-tex">500</annotation></semantics></math>
+Hz) — which architecture?&quot;</em> (opzioni <em>CNN</em> / <em>RNN</em> /
+<em>MLP</em> / <em>&quot;depends, can&#39;t tell&quot;</em>). La risposta canonical è
+<strong>RNN</strong> (mostra il dispositivo <em>memoria</em> introdotto
+dal capitolo); <em>&quot;depends&quot;</em> è la <em>practical answer</em> — chi
+la sceglie va <strong>premiato nel reveal</strong> come osservazione
+corretta (le
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+su ECG corti sono spesso competitive), ma in ch. 06 RNN resta canonical
+perché <em>introduce il meccanismo nuovo</em>.</li>
+<li><em>Poll 2</em> — <em>&quot;On Card A, a single fully-connected output
+neuron over the raw
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+grayscale image, no bias, needs how many weights?&quot;</em> (opzioni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>224</mn><annotation encoding="application/x-tex">224</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn><mo>×</mo><mn>3</mn><mo>=</mo><mn>150</mn><mspace width="0.167em"></mspace><mn>528</mn></mrow><annotation encoding="application/x-tex">50\,176 \times 3 = 150\,528</annotation></semantics></math>).
+Risposta corretta
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math></strong>.
+Distrattori diagnostici:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+= confusione FC↔︎kernel;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>224</mn><annotation encoding="application/x-tex">224</annotation></semantics></math>
+= dimensionalità
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D
+invece di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>D;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>150</mn><mspace width="0.167em"></mspace><mn>528</mn></mrow><annotation encoding="application/x-tex">150\,528</annotation></semantics></math>
+= canali RGB (tecnicamente corretto su immagine a colori — <em>premia
+l&#39;osservazione</em> e nota che oggi abbiamo specificato scala di
+grigi).</li>
+</ul>
+<p>Il <strong>doc condiviso</strong> raccoglie
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+colonne per riga (una riga per gruppo): <em>Card A architettura +
+1-sentence why</em> · <em>Card B architettura + 1-sentence why</em> ·
+<em>Card C architettura + 1-sentence why</em> · <em>Card A weight-count
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
++ 1-sentence on weight sharing</em> · <em>Card B recurrent equation +
+1-sentence on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>-independence</em>.</p>
+<p><strong>Pacing.</strong> Riquadri <strong>1–4 espositivi</strong>
+(~<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>′,
+minuti
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+— il riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+chiude la fase espositiva con la <em>frase del principio</em>); riquadro
+<strong>5</strong> ospita gli
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>′
+del sommativo (min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>);
+riquadro <strong>6</strong> chiude e fa ponte
+(~<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>′
+alla fine, sovrapposto al min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>19</mn><annotation encoding="application/x-tex">19</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>
++ transizione esplicita a ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>).
+I due poll Slido hanno il floor <em>&quot;closes at min X <em>or</em> at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\geq 80\%</annotation></semantics></math>,
+whichever is later&quot;</em> (vedi nota timing in
+<code>objectives.md</code>).</p>
+<h2 id="prompt-visivi">Prompt visivi</h2>
+<p>Prompt pronti per un generatore di immagini. Lo
+<strong><code>style-anchor</code></strong> è definito <em>una volta</em>
+(stesso dei cap. 01–05, per coerenza di serie tra capitoli) e va
+premesso a ogni prompt come parametro. Mai testo / lettere / numeri
+dentro l&#39;immagine — le label matematiche, i numeri
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>,
+…), le frecce di tipo <em>Poll</em> e i tag <em>Card A/B/C</em> si
+aggiungono come overlay in slide-editor.</p>
+<p><strong><code>style-anchor</code></strong> = <em>&quot;Coherent image set,
+one shared visual identity: warm orange (#E8741E) as the single accent
+colour on a dark-slate background, soft cinematic lighting, 16:9, crisp
+and high quality, no text, letters or numbers rendered anywhere in the
+image.&quot;</em></p>
+<ul>
+<li><strong>Riquadro 1 (Hook)</strong>: <code>style-anchor</code> +
+<em>a clean wooden desk seen from a slightly elevated three-quarter
+angle. In the centre-left of the desk sits a small, tidy lattice diagram
+of a fully-connected neural network with three input nodes, two hidden
+layers of two nodes each, and one output node — twelve thin orange lines
+connecting them, visibly countable, the same lattice that closed the
+previous chapter&#39;s final frame. From above, two oversized clinical
+objects are descending onto the desk: on one side a large chest X-ray
+image with a fine implied pixel grain, on the other side a long
+horizontal wavy ECG-like signal trace; both objects are visibly far too
+large to fit through the small lattice, the X-ray spilling over the edge
+of the desk, the ECG trace running off frame in both directions. The
+small lattice looks suddenly inadequate, dwarfed. Soft warm rim-light
+from above; the lattice is the same dim orange as before, the two large
+objects are emphasised with the same warm accent.</em>
+<strong>(Continuity callback to ch. 05 frame 6 — same lattice, now
+overrun by real clinical data.)</strong></li>
+<li><strong>Riquadro 2 (Contesto — two structural axes)</strong>:
+<code>style-anchor</code> + <em>a clean split-panel composition, two
+halves separated by a thin vertical glowing orange line. Left half: a
+stylised chest X-ray with the same clinical consolidation shape
+highlighted twice — once as a bright orange ring in the upper-right lobe
+of the lung, once as an identical ring in the lower-left lobe; a faint
+ghost arrow curves between the two rings, suggesting translation. Right
+half: a long single-lead ECG-style horizontal signal trace; two short
+irregular pattern segments along the trace are highlighted by bright
+orange brackets — one near the left end of the trace, one near the right
+end — and a long fading dotted line connects them across the trace&#39;s
+middle, with a small question-mark glyph hovering on the
+connection.</em></li>
+<li><strong>Riquadro 3 (Sfida / Dati — parameter explosion)</strong>:
+<code>style-anchor</code> + <em>the frame is divided horizontally into
+two stacked rows. Top row: on the left, a chest X-ray thumbnail at
+moderate size; on the right, a single large glowing rounded numeric
+badge — the most luminous element of the row — anchored against the
+right margin, with a thick orange arrow connecting the X-ray to it.
+Bottom row: the same chest X-ray thumbnail again on the left at the same
+size; floating above the bottom-left portion of the image, a small
+clearly visible three-by-three grid of cells (the kernel) shown in three
+successive sliding positions across the top-left corner of the image
+(two positions faded, one bright); on the right, a single small modest
+rounded numeric badge connected to the X-ray by a thinner orange arrow.
+The dramatic visual contrast between the huge top badge and the tiny
+bottom badge is the entire point of the frame. The badges themselves are
+the only luminous elements apart from the network arrows.</em></li>
+<li><strong>Riquadro 4 (Nodo / Impatto — weight sharing as the unifying
+principle)</strong>: <code>style-anchor</code> + <em>the frame is split
+horizontally into two equal halves by a thin orange divider line. Top
+half (spatial axis): a five-by-five grid representing a small image
+patch; superimposed on it, the same three-by-three kernel grid is shown
+in three successive sliding positions across the patch — two positions
+faded ghosted, the third position bright and crisp; from each kernel
+position, three thin faint arrows fan upward into one corresponding cell
+of a smaller three-by-three output grid above. Crucially, the kernel
+symbol must read as the same identical object at all three positions —
+same internal shading, same shape, same nine cells. Bottom half (time
+axis): a horizontal row of positions left to right, at each position a
+small downward input arrow enters a small boxed update unit; the box
+must read as the same identical box at every position — same shading,
+same outline; each box passes a small horizontal arrow to the next box
+on its right. On the right edge of the frame, a tall vertical bracket
+spans both halves, suggesting the two halves share one underlying
+principle.</em></li>
+<li><strong>Riquadro 5 (Metodo + summative perno — three data
+cards)</strong>: <code>style-anchor</code> + <em>three identical clean
+card frames arranged side by side in a single horizontal row, evenly
+spaced across the centre of the frame, all three of strictly identical
+width and identical height, each card with the same thin outer border
+and a thin warm-orange top edge. The three cards together occupy roughly
+the upper two-thirds of the frame; the lower third of the frame is clean
+uniform dark-slate space, intentionally empty. Card on the left: inside
+the card, a clean chest X-ray of a human torso, soft circular halo
+highlighting a small lesion in one lung, no other annotation. Card in
+the centre: inside the card, a short horizontal single-lead ECG-style
+signal trace, clearly waveform, drawn cleanly on a flat background, no
+grid lines, no other annotation. Card on the right: inside the card, a
+small tidy data table — unambiguously tabular: about a dozen short
+horizontal rows stacked vertically with thin separator lines between
+rows, each row carrying a ghosted unreadable text label on its left side
+and a single small numeric mark on its right side, the row pattern reads
+as structured rows of a spreadsheet, never as a signal or waveform.
+Directly below each of the three cards, vertically aligned with its card
+and of identical width and identical height to the other two slots, a
+single empty rounded-rectangle slot (the architecture-choice slot, to be
+filled later by slide-editor overlay); the three slots sit on the same
+horizontal baseline, evenly spaced, clearly readable as three distinct
+empty slots — never merged into one. All three cards equally
+illuminated, no card dominant, soft cinematic lighting, crisp focus on
+each card, 16:9 framing, generous breathing room around and between the
+cards. No text, letters or numbers rendered anywhere in the image — the
+Card A/B/C tags, the architecture labels (CNN/RNN/MLP), the weight-count
+mini-table, the recurrent equation slot and any other numeric annotation
+are added separately as slide-editor overlays, in the empty lower third
+of the composition.</em></li>
+<li><strong>Riquadro 6 (Payoff + pre-hook ch. 07 — the discharge letter
+on the horizon)</strong>: <code>style-anchor</code> + <em>the same
+wooden desk from frame 1, seen from the same slightly elevated
+three-quarter angle. The small twelve-line lattice that sat there before
+has been replaced by two specialised structures sitting side by side: on
+the left, a stack-like CNN tower with a chest X-ray sitting comfortably
+inside a sliding convolution window indicated by a small kernel-grid
+hovering over the X-ray; on the right, an RNN unrolled as a horizontal
+sequence of about six identical boxed update units, with the ECG trace
+flowing naturally as input across the bottom of the sequence. Both
+structures comfortably fit their respective data — the visual claim of
+the frame is that the desk now has the right tools for the X-ray and the
+ECG. On the back horizon of the frame, slightly out of focus, a new
+clinical artefact has appeared: a single-page document, clearly a
+written discharge-letter style page, with several lines of ghosted
+unreadable text. Two specific small tokens on the page are highlighted
+in bright orange — one near the top of the page, one near the bottom —
+and a long fading dotted arrow connects them across all the intermediate
+ghosted lines, the arrow visibly thinning to almost nothing by the time
+it reaches its destination at the bottom token. A small question-mark
+glyph hovers above the fading midpoint of the arrow.</em>
+<strong>(Pre-hook to ch. 07 — attention / Transformer. Same
+discharge-letter scenario will return as the summative of ch.
+08.)</strong></li>
+</ul>
+<h2 id="verifica-post-output-auto-check">Verifica post-output
+(auto-check)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked></input><strong>Riquadro 1
+aggancia in 3 secondi?</strong> — sì: il <em>gem</em> di ch. 05 (lattice
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>
+con
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+archi visibili) riappare <em>intatto</em> nel centro-sinistra della
+scrivania → cattura immediata di chi ha seguito ch. 05; sopra ci cadono
+<em>due dati clinici visibilmente troppo grandi</em>, il conflitto è
+leggibile in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+secondi senza voce. La frase a video <em>&quot;Twelve weights worked. Then
+the image arrived.&quot;</em> è
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+parole e dichiara la situazione + il problema in una
+clausola.</label></li>
+<li><label><input type="checkbox" checked></input><strong>Riquadro 3 il
+dato chiave è VISIBILE?</strong> — sì: i due numeri
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">5\,017\,600</annotation></semantics></math></strong>
+e
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math></strong>
+sono <em>badge</em> nella scena (overlay slide-editor), e l&#39;asimmetria
+gigantesca vs minuscola è il <em>secondo</em> canale di lettura oltre al
+numero — uno studente che NON legge i numeri <em>sente comunque</em> la
+differenza di ordine di grandezza dalla scala dei badge. Il calcolo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn><mo>×</mo><mn>100</mn><mo>=</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">50\,176 \times 100 = 5\,017\,600</annotation></semantics></math>
+è la <em>frase iniziale di SU 1</em>; qui diventa visibile.</label></li>
+<li><label><input type="checkbox" checked></input><strong>Riquadro 4 il
+nodo è il concetto centrale del capitolo?</strong> — sì: <strong>weight
+sharing come dispositivo unico applicato a due assi</strong> è la
+<em>tesi del capitolo</em> dichiarata in SU 1 e nel six-word <em>&quot;Match
+the structure; share the weights.&quot;</em>. Il frame mostra letteralmente
+<em>lo stesso oggetto</em> (kernel, box di update) ripetuto a ogni
+posizione — e la bracket <em>&quot;weight sharing&quot;</em> sulla destra unifica
+i due assi in un solo nome. Lo studente che vede questo frame <em>senza
+voce</em> capisce che CNN e RNN sono <em>un&#39;unica idea su due
+assi</em>.</label></li>
+<li><label><input type="checkbox" checked></input><strong>Riquadro 6 lascia
+una domanda-ponte?</strong> — sì: la frase <em>&quot;Atoms unchanged. Only
+the rule of repetition. One more time?&quot;</em> è scritta deliberatamente
+per riprendere il <em>gem narrativo</em> di chiusura della prosa di ch.
+06 (<em>&quot;only the rules of repetition&quot;</em>) e diventare il cliff-hanger
+anaforico a ch. 07 (<em>&quot;one more time&quot;</em>). La <strong>discharge
+letter sulla retroscena</strong> con la <em>long-range fading arrow</em>
+è il distillato visivo del pre-hook ed è lo <em>stesso</em> artefatto
+clinico che ch. 08 userà come scenario sommativo
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere ED) → <em>ponte di scenario</em>, non solo di
+concetto.</label></li>
+<li><label><input type="checkbox" checked></input><strong>Solo i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+riquadri (senza voce) raccontano l&#39;arco?</strong> — sì: lattice di ch.
+05 sopraffatto da RX/ECG → due strutture diverse rendono l&#39;MLP cieco →
+il salto di parametri
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>,</mo><mn>017</mn><mo>,</mo><mn>600</mn></mrow><annotation encoding="application/x-tex">5{,}017{,}600</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+rende il problema visivo → weight sharing è lo stesso oggetto su due
+assi → tre carte cliniche scelgono l&#39;architettura → la scrivania ora ha
+due strutture specializzate, ma sull&#39;orizzonte una lettera clinica con
+dipendenza a lungo raggio resta irrisolta.</label></li>
+<li><label><input type="checkbox" checked></input><strong>Stile coerente
+coi cap. 01–05?</strong> — sì: stesso <code>style-anchor</code>
+(#E8741E, dark-slate, 16:9, no text). Riquadro 1 fa <strong>callback
+strutturale a ch. 05 frame 6</strong> (lo stesso lattice
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>2</mn><mo>→</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">3 \to 2 \to 2 \to 1</annotation></semantics></math>,
+esattamente lo stesso oggetto visivo che chiudeva il capitolo
+precedente) — è il <strong>secondo callback strutturale forte</strong>
+della serie dopo ch. 05 frame 2 → ch. 02 frame 4. Riquadro 6 fa
+<strong>forward-hook visivo a ch. 07 <em>e</em> ch. 08</strong> (la
+<em>discharge letter</em> con dipendenza a lungo raggio è insieme la
+motivazione di attention/Transformer in ch. 07 e l&#39;artefatto clinico del
+sommativo di ch. 08 — <em>gancio doppio</em>, prima volta nella
+serie).</label></li>
+</ul>
+<h3 id="nota-meta--5017600-e-9-nei-badge-di-sb-06_03--resi-come-09827-e-027">Nota
+meta —
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">5\,017\,600</annotation></semantics></math>
+e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>&quot;
+nei badge di sb-06_03 → resi come
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.9827</mn><annotation encoding="application/x-tex">0.9827</annotation></semantics></math>&quot;
+e
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.27</mn><annotation encoding="application/x-tex">0.27</annotation></semantics></math>&quot;</em></h3>
+<p>L&#39;immagine <strong>sb-06_03</strong> (BEAT 3) <strong>non riporta i
+numeri richiesti</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">5\,017\,600</annotation></semantics></math>
+e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>):
+l&#39;AI generator ha invece scritto
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.9827</mn><annotation encoding="application/x-tex">0.9827</annotation></semantics></math>&quot;</em>
+nel badge grande e
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.27</mn><annotation encoding="application/x-tex">0.27</annotation></semantics></math>&quot;</em>
+nel badge piccolo. <strong>Diverso dal caso ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>05</mn><annotation encoding="application/x-tex">05</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math></strong>
+(dove
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>17</mn><annotation encoding="application/x-tex">17</annotation></semantics></math>&quot;
+=
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>12</mn><mo>+</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">12 + 5</annotation></semantics></math>
+bias era pedagogicamente recuperabile come <em>teachable bridge</em>):
+qui
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.9827</mn><annotation encoding="application/x-tex">0.9827</annotation></semantics></math>
+e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.27</mn><annotation encoding="application/x-tex">0.27</annotation></semantics></math>
+<strong>non hanno significato</strong> rispetto al messaggio del beat —
+sono <em>artefatti random del modello</em>. Tre opzioni operative:</p>
+<ol type="1">
+<li><strong>Soluzione strutturale (raccomandata):</strong> la slide
+expansion successiva
+(<code>Fully-connected on a chest X-ray — back of the envelope</code>,
+slide
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>154</mn><annotation encoding="application/x-tex">154</annotation></semantics></math>
+del deck) riporta i numeri <em>veri</em> in formule chiare e grandi
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn><mo>×</mo><mn>100</mn><mo>=</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">224 \times 224 \times 100 = 5\,017\,600</annotation></semantics></math>).
+Nel reveal il docente fa l&#39;asimmetria visiva <em>senza</em> fare
+affidamento sui badge dell&#39;immagine, dicendo: <em>&quot;i numeri precisi sono
+nella prossima slide; quelli sull&#39;immagine sono artefatti del generatore
+— guardate il rapporto fra le dimensioni dei due badge, è la cifra che
+conta&quot;</em>. L&#39;asimmetria visiva grande-vs-piccolo resta valida (il
+messaggio <em>&quot;orders of magnitude&quot;</em> lo trasmette il rapporto, non
+il numero).</li>
+<li><strong>Sostituzione dell&#39;immagine:</strong> il docente può
+rigenerare <code>sb-06_03.png</code> con un prompt più restrittivo
+(rischio non eliminato: gli AI image generator faticano
+<em>strutturalmente</em> col rendering del testo); oppure sostituire con
+un&#39;immagine non-AI dalla library <code>img/</code> (es. una versione di
+<code>convExample.png</code> con overlay slide-editor dei numeri reali)
+seguendo il precedente di <code>sb-06_05_deprecated.png</code>
+(l&#39;immagine BEAT
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+è stata già sostituita una volta — la convenzione del repo accetta
+questo workflow).</li>
+<li><strong>Overlay slide-editor:</strong> mantenere
+<code>sb-06_03.png</code> come hero shot per colore/atmosfera e
+sovrapporre i numeri reali
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">5\,017\,600</annotation></semantics></math>
+e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>)
+come label di slide-editor (Inkscape/Keynote/PowerPoint), coerente con
+la convenzione <em>&quot;label numeriche / matematiche si aggiungono come
+overlay in slide-editor&quot;</em> già nominata nello header del file.</li>
+</ol>
+<p><strong>Decisione corrente: opzione 1</strong> (la slide expansion
+del deck già porta il vero messaggio numerico). Il docente decide in
+autonomia se applicare 2 o 3 in seconda passata. Nessun blocker per la
+docenza: il deck è didatticamente coerente <em>anche con i badge
+sbagliati</em>, perché il messaggio <em>strutturale</em> (asimmetria di
+scala) lo trasmette il rapporto delle dimensioni, e i numeri
+<em>precisi</em> arrivano nello slide
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\sim 1</annotation></semantics></math>
+minuto dopo.</p>
+<h3 id="nota-meta--copertura-obiettivi-times-frame">Nota meta —
+copertura obiettivi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+frame</h3>
+<table>
+<thead>
+<tr>
+<th>Obj.</th>
+<th>Frame primario</th>
+<th>Frame secondario</th>
+<th>Verificato nel summative (frame 5)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Obj. 1</strong> <em>(match data type →
+architecture)</em></td>
+<td>Frame 2 (i due assi strutturali)</td>
+<td>Frame 5 (3 cards)</td>
+<td>sub-task (i)+(ii) — assegnazione architettura</td>
+</tr>
+<tr>
+<td><strong>Obj. 2</strong> <em>(convolution + weight sharing across
+space)</em></td>
+<td>Frame 3
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">5\,017\,600</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>)
++ Frame 4 top half</td>
+<td>Frame 5 (mini-tabella Card A)</td>
+<td>sub-task (iii) — conto pesi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><strong>Obj. 3</strong> <em>(recurrent + weight sharing across
+time)</em></td>
+<td>Frame 4 bottom half</td>
+<td>Frame 5 (slot equazione Card B)</td>
+<td>sub-task (iv) — equazione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t&gt;}</annotation></semantics></math>
++ 1-sentence on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>-independence</td>
+</tr>
+</tbody>
+</table>
+<p>Tutti e tre gli obiettivi sono coperti <strong>almeno due
+volte</strong> prima di essere valutati in frame 5 — pattern di
+ridondanza didattica coerente con ch. 04/05.</p>
+</body>
+</html>

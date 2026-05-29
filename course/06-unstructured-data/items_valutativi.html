@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item bank — 06 Unstructured data (CNN/RNN)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-bank--06-unstructured-data-cnnrnn">Item bank — 06
+Unstructured data (CNN/RNN)</h1>
+<blockquote>
+<p>Chapter: <code>06-unstructured-data</code> · MLT course (UBEP,
+biomedical/clinical graduate students). Generated 2026-05-29 (notte).
+Items student-facing in <strong>English</strong>; rubrics 3-level
+(Base/Good/Excellent). Review: <code>assessment-reviewer</code> ✓
+<strong>APPROVED WITH FIXES</strong> (2026-05-29 notte) — 2 critical + 3
+should-fix applied: (1) item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+critique framing reworded from
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+pesi per paziente&quot;</em> a
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">5\,000\times</annotation></semantics></math>
+più parametri che pazienti&quot;</em> (orders-of-magnitude framing è il
+segnale pedagogico più forte di C1); (2) item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>
+distrattore C:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>500</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">500\,000</annotation></semantics></math>
+pesi ora ancorato a un&#39;ipotesi esplicita di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+hidden units, non più un numero pendente; (3) rubrica
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>
+bias clause 3 riscritta come istruzione positiva (<em>&quot;la 1-sentence sul
+weight sharing in (ii) È valutata, sempre&quot;</em>) — eliminata
+l&#39;auto-contraddizione segnalata dal reviewer; (4) item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>
+distrattore B <em>Nota docente</em>: la <em>margin-note</em>
+MCQ-inappropriata sostituita con una flag per il debrief asincrono; (5)
+rubrica
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+C3: ordine di grandezza accettato ristretto da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>1</mn></msup><annotation encoding="application/x-tex">10^{1}</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>4</mn></msup><annotation encoding="application/x-tex">10^{4}</annotation></semantics></math>
+a
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">\sim 20</annotation></semantics></math>
+(single kernel) →
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^{3}</annotation></semantics></math>
+(small recurrent block);
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>5</mn></msup><annotation encoding="application/x-tex">10^{5}</annotation></semantics></math>+
+= riprodotto FC mistake = sotto-Base&quot;</em> — Base più diagnostica.
+<strong>Verifiche superate dal reviewer:</strong> (a) coverage
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mi>/</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">3/3</annotation></semantics></math>
+obiettivi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+categorie cognitive (no pure Knowledge); (b) anti-leakage ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>+
+pulito su testo student-facing (le menzioni di
+<em>attention</em>/<em>Transformer</em> nelle <em>Note docente</em> sono
+<em>meta-commentary</em> anti-trap, esattamente la clausola protettiva
+voluta); (c) correttezza numerica completa (item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><mn>096</mn></mrow><annotation encoding="application/x-tex">4\,096</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mspace width="0.167em"></mspace><mn>048</mn><mspace width="0.167em"></mspace><mn>576</mn></mrow><annotation encoding="application/x-tex">1\,048\,576</annotation></semantics></math>,
+ratio
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>256</mn><annotation encoding="application/x-tex">256</annotation></semantics></math>;
+item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>400</mn><mo>+</mo><mn>80</mn><mo>+</mo><mn>60</mn><mo>=</mo><mn>540</mn></mrow><annotation encoding="application/x-tex">400 + 80 + 60 = 540</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>540</mn><mo>×</mo><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>=</mo><mn>1</mn><mspace width="0.167em"></mspace><mn>080</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">540 \times 2\,000 = 1\,080\,000</annotation></semantics></math>;
+item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>259</mn><mspace width="0.167em"></mspace><mn>200</mn><mo>×</mo><mn>100</mn><mo>=</mo><mn>25</mn><mspace width="0.167em"></mspace><mn>920</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">259\,200 \times 100 = 25\,920\,000</annotation></semantics></math>;
+alternative RNN
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^3</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>⋅</mo><mn>7</mn><mo>=</mo><mn>21</mn></mrow><annotation encoding="application/x-tex">3 \cdot 7 = 21</annotation></semantics></math>);
+(d) qualità distrattori (item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>
+tutti diagnostici, A è il <em>richest distractor</em>; item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>
+matrice
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+pulita su entrambe le assi); (e) <strong>triade
+canonical-vs-practical</strong> (item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>
+distrattore A → summative Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+→ item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+accept) è genuinamente consistente sul principio (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+di chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>);
+(f) rubriche con descrittori osservabili + soglia esplicita + clausola
+<em>&quot;non dare ragione al collega su downsampling&quot;</em> + clausola
+<em>&quot;blocca chi invoca attention&quot;</em> (entrambe pedagogicamente sane);
+(g) numeri degli item <em>diversi</em> da summative
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn><mo>→</mo><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">224 \times 224 \to 50\,176</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 5\,000</annotation></semantics></math>)
+e da SU 1
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">5\,017\,600</annotation></semantics></math>)
+/ SU 3
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>170</mn><annotation encoding="application/x-tex">170</annotation></semantics></math>).
+3 nice-to-have non bloccanti accettati come direzione futura (cue
+<em>&quot;dataset size&quot;</em> esplicito nella stem di item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>-iii;
+etc.). <strong>No must-fix residui.</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>Set size note:</strong> chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+closes at <strong>4 items</strong>, covering all three learning
+objectives with three distinct cognitive categories (Comprehension +
+Application × 2 + Argumentation). Unlike ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>05</mn><annotation encoding="application/x-tex">05</annotation></semantics></math>
+(which closed at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+items, Argumentation dropped by the teacher&#39;s call), chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+<em>includes</em> the Argumentation item — Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
++ Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
++ Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+are <em>jointly</em> testable on this chapter because the central
+message (<em>match the structure, share the weights</em>) collapses
+cleanly into one critique of a single bad-design scenario (item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>).
+The Argumentation is genuinely a <em>synthesis</em> test, not a
+redundant Comprehension question.</p>
+</blockquote>
+<blockquote>
+<p><strong>Note on numbers:</strong> the items use input shapes, hidden
+dimensions, and sequence lengths <strong>different</strong> from those
+in the chapter&#39;s summative exercise (chest X-ray
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+in <em>Card A</em>; ECG with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 5\,000</annotation></semantics></math>
+in <em>Card B</em>; the FC-vs-conv comparison giving
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+weights — in <a href="objectives.md">objectives.md</a>) and
+<strong>different</strong> from those in SU
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn><mo>×</mo><mn>100</mn><mo>=</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">224 \times 224 \times 100 = 5\,017\,600</annotation></semantics></math>
+pesi) and SU
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>5</mn><mo>,</mo><mn>10</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mo>→</mo><mn>170</mn></mrow><annotation encoding="application/x-tex">(5, 10, 2) \to 170</annotation></semantics></math>
+pesi — in <a href="subunits.md">subunits.md</a>). Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>
+uses a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+input (FC vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+conv); item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>
+uses an RNN with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mn>20</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(4, 20, 3)</annotation></semantics></math>
+dimensions and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 2\,000</annotation></semantics></math>;
+item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+uses a clinical multi-channel signal at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>86</mn><mspace width="0.167em"></mspace><mn>400</mn></mrow><annotation encoding="application/x-tex">86\,400</annotation></semantics></math>
+samples ×
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+channels. The items measure the <em>procedure</em> — <em>can you count
+weights / write the recurrence / criticise a design from the structural
+principle?</em> — not the student&#39;s memory of any specific row of the
+summative or of the sub-units. Same convention as ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>05</mn><annotation encoding="application/x-tex">05</annotation></semantics></math>.</p>
+</blockquote>
+<h2 id="item--objective-map">Item ↔︎ objective map</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Learning objective</th>
+<th>Category</th>
+<th>Type</th>
+<th>Difficulty</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>Obj. 1 — match an unstructured-data type to the right deep
+architecture; for a sequential single-information signal (ECG), name
+<strong>RNN</strong> as the canonical answer and the
+<em>order/memory</em> prior as the reason</td>
+<td>Comprehension</td>
+<td>MCQ</td>
+<td>medium</td>
+<td><a href="items/item_01_match-data-to-architecture_mcq.md">item_01_match-data-to-architecture_mcq.md</a></td>
+</tr>
+<tr>
+<td>02</td>
+<td>Obj. 2 — describe the convolution operation on a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>D
+input; count weights for a fully-connected layer on raw
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><mn>096</mn></mrow><annotation encoding="application/x-tex">4\,096</annotation></semantics></math>)
+vs a single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+kernel
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>);
+justify the convolutional count by naming <strong>weight sharing across
+spatial positions</strong>; predict how each count scales when the image
+resolution grows to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math></td>
+<td>Application</td>
+<td>applicativa (open task, 3 sub-questions)</td>
+<td>medium</td>
+<td><a href="items/item_02_weight-count-fc-vs-conv_applicativa.md">item_02_weight-count-fc-vs-conv_applicativa.md</a></td>
+</tr>
+<tr>
+<td>03</td>
+<td>Obj. 3 — apply the recurrent update
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa}\, a^{&lt;t-1&gt;} + W_{ax}\, x^{&lt;t&gt;} + b_a)</annotation></semantics></math>:
+count weights of an RNN with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mn>20</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(4, 20, 3)</annotation></semantics></math>
+dimensions
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>540</mn><annotation encoding="application/x-tex">540</annotation></semantics></math>
+weights via $</td>
+<td>W_{aa}</td>
+<td>+</td>
+<td>W_{ax}</td>
+<td>+</td>
+</tr>
+<tr>
+<td>04</td>
+<td>Obj. 1 + Obj. 2 + Obj. 3 (synthesis) — argue, on a clinical
+multi-channel time-series scenario, why a
+<em>flatten-and-feed-to-MLP</em> design fails on <strong>three
+structural fronts</strong> (parameter explosion, loss of temporal order,
+loss of multi-channel structure), and propose an alternative
+architecture (RNN,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN,
+or hybrid) grounded in the chapter&#39;s <strong>weight sharing</strong>
+dispositive</td>
+<td>Argumentation / valutazione</td>
+<td>argomentativa (open critique, 2 sub-questions)</td>
+<td>high</td>
+<td><a href="items/item_04_critique-flatten-and-feed_argomentativa.md">item_04_critique-flatten-and-feed_argomentativa.md</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="coverage">Coverage</h2>
+<p><strong>By objective</strong> (all three chapter objectives covered,
+<em>with the Argumentation item synthesising all three</em>):</p>
+<ul>
+<li><strong>Obj. 1</strong> (match data → architecture): item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>
+(Comprehension, canonical ECG → RNN) + item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+(Argumentation, multi-channel signal critique).</li>
+<li><strong>Obj. 2</strong> (convolution + weight sharing across space):
+item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>
+(Application, FC vs conv weight count + scaling) + item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+(Argumentation, parameter-explosion arm of the critique).</li>
+<li><strong>Obj. 3</strong> (recurrent + weight sharing across time):
+item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>
+(Application, RNN weight count +
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>-independence)
++ item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+(Argumentation, alternative-architecture proposal arm).</li>
+</ul>
+<p>Every objective is covered by <strong>at least two items</strong> —
+one in <em>isolation</em> (items
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>)
+and once again in <em>synthesis</em> (item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>).
+This is the same pattern as ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+(where item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+argomentativa was <em>&quot;the methodical colleague who thinks they&#39;re doing
+it right&quot;</em>, a cross-technique CV trap that synthesised Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>).</p>
+<p><strong>By cognitive category</strong> (3 of 4 categories, no
+pure-recall item — appropriate for graduate level):</p>
+<ul>
+<li>Knowledge:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+<em>(deliberately absent — graduate-level set)</em></li>
+<li>Comprehension:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>)</li>
+<li>Application:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+(items
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>)</li>
+<li>Argumentation/valutazione:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>)</li>
+</ul>
+<h2 id="rubrics">Rubrics</h2>
+<ul>
+<li><a href="rubriche/rubrica_02_weight-count-fc-vs-conv.md">rubrica_02_weight-count-fc-vs-conv.md</a>
+— item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>
+(applicativa)</li>
+<li><a href="rubriche/rubrica_04_critique-flatten-and-feed.md">rubrica_04_critique-flatten-and-feed.md</a>
+— item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+(argomentativa)</li>
+</ul>
+<p><em>(Items
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>
+are MCQ — single correct option, no rubric.)</em></p>
+<h2 id="internal-coherence--the-canonical-vs-practical-triad">Internal
+coherence — the <em>canonical-vs-practical</em> triad</h2>
+<p>Items
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>,
+the summative (Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+on <em>Card B</em>), and item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+form a <strong>deliberate triad</strong> around the same pedagogical
+tension:</p>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>What happens</th>
+<th>Treatment of
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN&quot;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math></strong>
+(MCQ, exam)</td>
+<td>The student picks RNN or CNN as the <em>canonical answer</em> for an
+ECG</td>
+<td>A) <strong>distractor</strong> — wrong because CNN does not
+introduce the <em>memory dispositive</em> the chapter names</td>
+</tr>
+<tr>
+<td><strong>Summative</strong> (live, <a href="objectives.md">objectives.md</a>)</td>
+<td>The student picks an architecture for <em>Card B</em> (ECG) on a
+Slido poll</td>
+<td><em>&quot;depends, can&#39;t tell&quot;</em> is the <em>practical answer</em> —
+<strong>rewarded in the reveal</strong> as a correct observation, while
+RNN remains canonical</td>
+</tr>
+<tr>
+<td><strong>Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math></strong>
+(Argumentation, exam)</td>
+<td>The student proposes an alternative architecture to the colleague&#39;s
+MLP</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+is <strong>accepted as a complete answer</strong> at <em>Good</em> on
+(C3), provided weight sharing across time is named — <em>not</em>
+penalised for &quot;not picking RNN&quot;</td>
+</tr>
+</tbody>
+</table>
+<p>The triad is <em>intentionally inconsistent on the surface</em> (item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>
+marks CNN wrong; item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+accepts
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+as right) and <em>fully consistent on the principle</em>: the chapter
+teaches <em>the canonical answer</em> (RNN, because it introduces
+memory) <strong>and</strong> <em>the practical answer</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN,
+because the kernel-shared-across-positions trick also encodes the time
+axis for short local patterns). Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>
+measures the <em>canonical answer</em> (because that is what the
+<em>first</em> exam question on the chapter should pin down); item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+measures the <em>student&#39;s reasoning</em> (because by item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+they are expected to <em>choose</em> the architecture, not
+<em>receive</em> it). The summative bridges the two with the in-reveal
+teacher voice. <strong>This triad is the principal <em>quality
+signal</em> of the ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+item set</strong> — a student who reads all four items consistently has
+been trained to think in terms of <em>which dispositive the architecture
+encodes</em>, not in terms of <em>which acronym wins
+benchmarks</em>.</p>
+<h2 id="internal-coherence--items-02--03-build-the-two-axis-weight-sharing-fluency">Internal
+coherence — items
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>
++
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>
+build the two-axis weight-sharing fluency</h2>
+<p>The two Application items are deliberately staged to give the student
+the <strong>same kind of operational fluency on both axes</strong> of
+weight sharing:</p>
+<ul>
+<li><strong>Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math></strong>
+asks the student to <em>operate weight sharing across space</em>: count
+weights for a single output neuron on a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+image (FC) vs a single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+kernel (conv), and watch how each scales when the image grows to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>.
+The teachable beat is the <em>quadratic-vs-constant</em> scaling law —
+the same architectural decision yields different <em>asymptotic</em>
+behaviours.</li>
+<li><strong>Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math></strong>
+asks the student to <em>operate weight sharing across time</em>: count
+weights for an RNN with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo>,</mo><mn>20</mn><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(4, 20, 3)</annotation></semantics></math>
+dimensions
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>540</mn><annotation encoding="application/x-tex">540</annotation></semantics></math>
+total via three matrices), and recognise that the count is
+<strong>independent</strong> of the sequence length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>.
+The teachable beat is the <em>non-dependence on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math></em>
+— same architectural decision, <em>constant</em> behaviour on the time
+axis as well.</li>
+</ul>
+<p>Together, items
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math>
+make the chapter&#39;s central message <em>operationally</em> concrete:
+<em>weight sharing is the same trick, with the same scaling consequence,
+applied to two different axes</em>. This is the SU
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+frame (<a href="subunits.md">subunits.md</a>) verified in two distinct
+numerical settings — appropriately, the SU
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+message is delivered <em>narratively</em> in <a href="narrative.md">narrative.md</a> and <em>visually</em> in frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+of <a href="storyboard.md">storyboard.md</a>, and the items close the
+loop <em>operationally</em>.</p>
+<h2 id="anti-leakage--vocabulary-boundary-with-ch-07">Anti-leakage —
+vocabulary boundary with ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>+</h2>
+<p>The items stay strictly within ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+vocabulary: <em>image</em>, <em>sequence</em>, <em>tabular</em>, <em>MLP
+/ fully-connected</em>, <em>kernel</em>, <em>convolution</em>,
+<em>feature map</em>, <em>weight sharing</em>, <em>recurrent</em>,
+<em>hidden state</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t&gt;}</annotation></semantics></math>,
+<em>weight matrices</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}, W_{ya}</annotation></semantics></math>,
+<em>parameter count</em>, <em>positional invariance</em>,
+<em>order</em>, <em>memory</em>. They do <strong>not</strong> presuppose
+any concept from ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>+
+(<em>attention</em>, <em>Transformer</em>, <em>self-attention</em>,
+<em>encoder/decoder</em>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>,
+<em>softmax</em>, <em>LLM</em>, <em>ChatGPT</em>, <em>agent</em>,
+<em>prompt design</em>, <em>API</em>, <em>token</em>,
+<em>pre-training</em>, <em>fine-tuning</em>, <em>transfer learning</em>,
+<em>SHAP</em>, <em>variable importance</em>, <em>data leakage</em> in
+the formal cross-validation-discipline sense). The rubric of item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+<em>actively protects</em> the boundary: a student who proposes
+attention or Transformer as the alternative is <strong>blocked in
+correction</strong> with a margin note (<em>&quot;ottima curiosità, ma fuori
+dallo scope dell&#39;esame su ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>&quot;</em>)
+— see rubric
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>&#39;s
+&quot;Bias da evitare in correzione&quot; section.</p>
+<p>The pre-hook to ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>
+(discharge letter, long-range dependency across positions
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>42</mn><annotation encoding="application/x-tex">42</annotation></semantics></math>)
+is staged in the chapter&#39;s <a href="narrative.md">narrative</a>
+(<em>&quot;only the rule of repetition does — one more time&quot;</em>) and in <a href="storyboard.md">storyboard frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math></a>
+(discharge letter on the back horizon with the fading dotted arrow),
+<em>not</em> inside the items.</p>
+<h2 id="bridges-that-do-appear-in-the-items">Bridges that DO appear in
+the items</h2>
+<p>The items make <em>backward</em> references where they earn the
+student&#39;s recognition:</p>
+<ul>
+<li><strong>Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math></strong>&#39;s
+distractor A explicitly names the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+as a <em>practical answer</em> (forward consistency to item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+and to the summative).</li>
+<li><strong>Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math></strong>&#39;s
+sub-question (iii) (jump
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>→</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">64 \to 1024</annotation></semantics></math>)
+replays SU
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>&#39;s
+scaling argument on new numbers (<em>not</em> a citation of SU
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+but the same intellectual move).</li>
+<li><strong>Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>03</mn><annotation encoding="application/x-tex">03</annotation></semantics></math></strong>&#39;s
+decomposition
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mi>+</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mi>+</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|W_{aa}| + |W_{ax}| + |W_{ya}|</annotation></semantics></math>
+replays SU
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>&#39;s
+formative <em>solved</em> on new dimensions
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>170</mn><annotation encoding="application/x-tex">170</annotation></semantics></math>
+→
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>540</mn><annotation encoding="application/x-tex">540</annotation></semantics></math>).</li>
+<li><strong>Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math></strong>&#39;s
+critique uses the <em>summative&#39;s principle</em> (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>:
+<em>the architecture must respect the structure of the data</em>) as the
+unifying frame — making explicit, in argumentative form, what the
+summative tests in operational form.</li>
+</ul>
+<p>These backward references are <em>not</em> leakage: they are the
+<em>consistency</em> the chapter is designed to teach.</p>
+</body>
+</html>

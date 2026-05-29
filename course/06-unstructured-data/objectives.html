@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>06 — Unstructured data (CNN/RNN) · Learning objectives &amp;
+summative exercise</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="06--unstructured-data-cnnrnn--learning-objectives--summative-exercise">06
+— Unstructured data (CNN/RNN) · Learning objectives &amp; summative
+exercise</h1>
+<blockquote>
+<p>Chapter: <strong>Unstructured data (CNN/RNN)</strong> · 20 min ·
+biomedical/clinical graduate students (UBEP). Student-facing text in
+English; teacher design notes (<em>nota docente</em>) in Italian.</p>
+</blockquote>
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>By the end of this chapter, students can:</p>
+<ol type="1">
+<li><strong>Match</strong> an unstructured-data type to the right deep
+architecture and justify the choice in one sentence:
+<strong>multi-dimensional spatial single-information</strong> (e.g. a
+chest X-ray, a CT slice) → <strong>Convolutional Neural Network
+(CNN)</strong> because the signal of interest is a <em>local spatial
+pattern that can appear anywhere in the image</em>, and CNNs encode this
+via a small kernel slid over the input; <strong>one-dimension privileged
+sequential single-information</strong> (e.g. an ECG trace, a clinical
+note, a heart-rate time series) → <strong>Recurrent Neural Network
+(RNN)</strong> because <em>the order of the elements carries
+information</em>, and RNNs encode this via a hidden state propagated
+from one position to the next.</li>
+<li><strong>Describe</strong> the convolution operation on a 2D input: a
+small kernel
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>k</mi><mo>×</mo><mi>k</mi></mrow></msup></mrow><annotation encoding="application/x-tex">K \in \mathbb{R}^{k \times k}</annotation></semantics></math>
+(e.g.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>)
+is slid over the input image
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>;
+at each position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>
+the output <strong>feature map</strong> is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mo>∑</mo><mrow><mi>u</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></msubsup><msubsup><mo>∑</mo><mrow><mi>v</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></msubsup><msub><mi>K</mi><mrow><mi>u</mi><mi>v</mi></mrow></msub><mspace width="0.167em"></mspace><msub><mi>X</mi><mrow><mi>i</mi><mo>+</mo><mi>u</mi><mo>−</mo><mn>1</mn><mo>,</mo><mspace width="0.167em"></mspace><mi>j</mi><mo>+</mo><mi>v</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F_{ij} = g\!\left(\sum_{u=1}^{k} \sum_{v=1}^{k} K_{uv} \, X_{i+u-1,\, j+v-1}\right)</annotation></semantics></math>.
+Then explain — <em>as the core reason CNNs exist</em> — that <strong>the
+same kernel</strong> is reused at every spatial position (<em>weight
+sharing</em>) and is therefore much smaller than a fully-connected layer
+would be on the same input: a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+kernel scanning a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+image has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+weights to learn instead of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>50</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\approx 50\,000</annotation></semantics></math>
+a single fully-connected neuron would need over the same input.</li>
+<li><strong>Describe</strong> the recurrent operation on a sequence: at
+each position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">t = 1, \ldots, T_x</annotation></semantics></math>
+the network updates a hidden activation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g\!\left(W_{aa} \, a^{&lt;t-1&gt;} + W_{ax} \, x^{&lt;t&gt;} + b_a\right)</annotation></semantics></math>
+and emits an output
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mo>′</mo></msup><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">y^{&lt;t&gt;} = g&#39;\!\left(W_{ya} \, a^{&lt;t&gt;} + b_y\right)</annotation></semantics></math>.
+Then explain — <em>as the core reason RNNs exist</em> — that <strong>the
+same matrices
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}, W_{ya}</annotation></semantics></math>
+are reused at every position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math></strong>
+(<em>weight sharing across time</em>), which (a) makes the parameter
+count independent of the sequence length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>,
+and (b) lets the hidden state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t&gt;}</annotation></semantics></math>
+act as the network&#39;s <em>memory</em> of everything it has read so
+far.</li>
+</ol>
+<p><em>Nota docente:</em> tre obiettivi per 20′. <strong>L&#39;arco di ch 06
+non è &quot;scoprire la CNN/RNN come tecnologie&quot;</strong>: lo studente UBEP
+ha già visto una CNN su una slide e una RNN in un paper. Ciò che il
+capitolo aggiunge — e che gli obiettivi codificano — è il
+<strong>principio architetturale comune</strong>: <em>la rete è
+disegnata per rispettare la struttura del dato</em>. Una MLP funziona
+sui tabular del ch 03, fallisce sulle immagini (parametri ingestibili,
+nessuna invarianza di posizione) e sulle sequenze (nessuna nozione di
+ordine). Da qui i due dispositivi: il <strong>kernel condiviso
+spazialmente</strong> (CNN) e il <strong>peso condiviso
+temporalmente</strong> (RNN). Obj. 1 fissa la <em>mappa dato →
+architettura</em>; Obj. 2 e Obj. 3 fissano i due meccanismi al livello
+che lo studente UBEP può davvero osservare (la formula della
+convoluzione, l&#39;aggiornamento ricorrente) — senza entrare in
+stride/padding/pooling per la CNN né in LSTM/GRU/vanishing gradient per
+la RNN. <strong>Voce docente — non valutato:</strong> stride, padding,
+max-pooling, numero e tipo di canali in/out di un layer convoluzionale,
+architetture complete (ResNet/U-Net), il vanishing-gradient problem e
+perché ha portato a LSTM/GRU, attention come limite dell&#39;RNN (è il
+pre-hook a ch 07 e va in <code>narrative.md</code>), il modello DARP-D
+di Corianò-Lanera 2024 come <em>esempio di &quot;Take them all&quot;</em> (rete
+ibrida CNN+MLP su dati clinici eterogenei) va citato come <em>caso
+studio reale che mostra che le architetture si combinano</em>, non come
+materiale d&#39;esame.</p>
+<h2 id="summative-live-exercise--right-tool-for-the-wrong-tensor">Summative
+live exercise — &quot;Right tool for the wrong tensor&quot;</h2>
+<p><em>Nota docente:</em> sommativo, gira negli <strong>ultimi
+~8′</strong> (min 12–20) dopo i due meccanismi (convoluzione,
+ricorrenza) e l&#39;esempio ibrido &quot;Take them all&quot;. <strong>Banco unico,
+condiviso da tutta la classe</strong> (presenza + remoto): tre <em>data
+cards</em> clinici proiettati su slide e stampati sui banchi —</p>
+<ul>
+<li><strong>Card A — Chest X-ray</strong> (singola,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>,
+scala di grigi): <em>task — predict pneumonia (yes / no)</em>.</li>
+<li><strong>Card B — ECG trace</strong> (singolo lead,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>5000</mn></mrow><annotation encoding="application/x-tex">T_x = 5000</annotation></semantics></math>
+campioni a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>500</mn><annotation encoding="application/x-tex">500</annotation></semantics></math>
+Hz,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+secondi): <em>task — detect atrial fibrillation (yes / no)</em>.</li>
+<li><strong>Card C — Pre-operative tabular record</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>18</mn><annotation encoding="application/x-tex">18</annotation></semantics></math>
+scalar features: age, BMI,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+comorbidities flags,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+lab values,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+vital signs): <em>task — predict 30-day mortality (yes / no)</em>.</li>
+</ul>
+<p>A fianco, una <strong>mini-tabella di pre-conto pesi</strong> già
+stampata per Card A (header in chiaro: <em>weights per single output
+neuron, no bias</em>), con due righe vuote da riempire:
+<em>fully-connected layer to one output neuron on raw
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+input → ??? weights</em> / <em>single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+convolutional kernel → ??? weights</em>.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objective verified</td>
+<td>Obj. 1 (data type → architecture) — verified in sub-tasks (i) and
+(ii) for all three cards. Obj. 2 (convolution + weight sharing) —
+verified in sub-task (iii), the CNN weight-count comparison on Card A.
+Obj. 3 (recurrence + weight sharing across time) — verified in sub-task
+(iv), the recurrent-step equation on Card B.</td>
+</tr>
+<tr>
+<td>In-person action</td>
+<td>Table groups receive the three cards and: <strong>(i)</strong>
+<strong>assign an architecture</strong> to each card by writing
+<strong>CNN / RNN / MLP</strong> in the architecture column, and
+<strong>(ii)</strong> <strong>write one sentence</strong> justifying the
+choice — the justification must name the structural property the
+architecture preserves (<em>local spatial patterns</em> for CNN,
+<em>order/memory</em> for RNN, <em>no structure to preserve</em> for MLP
+on Card C); <strong>(iii)</strong> <strong>on Card A</strong>, fill the
+mini-table: the fully-connected number is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>⋅</mo><mn>224</mn><mo>=</mo><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">224 \cdot 224 = 50\,176</annotation></semantics></math>
+weights for a <em>single</em> output neuron over the raw image, the
+single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+kernel is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+weights — and <strong>write one sentence</strong> stating <em>why</em>
+the CNN can get away with so few (the answer must name <strong>weight
+sharing across spatial positions</strong>); <strong>(iv)</strong>
+<strong>on Card B</strong>, write the recurrent-step equation for one
+position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g\!\left(W_{aa} \, a^{&lt;t-1&gt;} + W_{ax} \, x^{&lt;t&gt;} + b_a\right)</annotation></semantics></math>,
+and answer in one sentence: <em>&quot;why does the parameter count of this
+network NOT grow with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>5000</mn></mrow><annotation encoding="application/x-tex">T_x = 5000</annotation></semantics></math>?&quot;</em>
+— the answer must name <strong>the same
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+matrices are reused at every position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math></strong>.
+Each group photographs its three cards + the mini-table and drops them
+into the shared doc.</td>
+</tr>
+<tr>
+<td>Remote equivalent</td>
+<td>Same three cards + the same mini-table on a shared doc. Remote
+groups type the architecture + justification rows directly into their
+slot of the shared doc, and type the recurrent-step equation as inline
+LaTeX. Two Slido polls run live, capturing <strong>all</strong> students
+individually: <strong>Poll 1 — &quot;Card B (ECG,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+s @
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>500</mn><annotation encoding="application/x-tex">500</annotation></semantics></math>
+Hz) — which architecture?&quot;</strong> (options
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">CNN</mtext><annotation encoding="application/x-tex">\text{CNN}</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">RNN</mtext><annotation encoding="application/x-tex">\text{RNN}</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">MLP</mtext><annotation encoding="application/x-tex">\text{MLP}</annotation></semantics></math>
+/ <em>&quot;depends, can&#39;t tell&quot;</em>); <strong>Poll 2 — &quot;On Card A, a single
+fully-connected output neuron over the raw
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+grayscale image, no bias, needs how many weights?&quot;</strong> (options
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>224</mn><annotation encoding="application/x-tex">224</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn><mo>×</mo><mn>3</mn><mo>=</mo><mn>150</mn><mspace width="0.167em"></mspace><mn>528</mn></mrow><annotation encoding="application/x-tex">50\,176 \times 3 = 150\,528</annotation></semantics></math>).
+The polls make the remote signal on Obj. 1 (Card B) and Obj. 2 (FC
+weight count) visible <em>next to</em> the in-person sheets.</td>
+</tr>
+<tr>
+<td>Shared artifact</td>
+<td>A single shared doc / whiteboard with one row per group containing:
+<em>Card A architecture + justification</em> · <em>Card B architecture +
+justification</em> · <em>Card C architecture + justification</em> ·
+<em>Card A weight count (FC vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+conv) + 1-sentence why</em> · <em>Card B recurrent-step equation +
+1-sentence on parameter count</em>. The two Slido bar charts (Poll 1 and
+Poll 2) are projected next to it, visible to in-person and remote at
+once.</td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>8 min, minutes 12–20 (end of chapter): ~1′ read the three cards +
+open the polls, ~3′ assign architectures + 1-sentence justification each
+(Poll 1 closes at min 16 <em>or</em> at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\geq 80\%</annotation></semantics></math>
+votes, whichever is later — voting is faster than writing, the floor
+protects artefact↔︎poll alignment), ~2′ fill the mini-table on Card A +
+1-sentence on weight sharing (Poll 2 closes at min 18 <em>or</em> at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\geq 80\%</annotation></semantics></math>,
+same floor), ~1′ write the recurrent-step equation on Card B +
+1-sentence on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>-independence,
+~1′ instructor-led reveal — the three architecture choices are read off
+the board, <em>Poll 1</em> histogram is shown (the wrong distractors are
+<em>named</em>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">CNN</mtext><annotation encoding="application/x-tex">\text{CNN}</annotation></semantics></math>
+on Card B = &quot;ha visto convoluzione = generica feature extraction e ha
+dimenticato che la CNN per default <em>non</em> preserva l&#39;ordine
+temporale, smussa la sequenza&quot;,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">MLP</mtext><annotation encoding="application/x-tex">\text{MLP}</annotation></semantics></math>
+= &quot;ha contato
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5000</mn><annotation encoding="application/x-tex">5000</annotation></semantics></math>
+scalari e li ha trattati come tabular — l&#39;errore esatto che ch 06 vuole
+prevenire&quot;, <em>&quot;depends&quot;</em> = &quot;in pratica sì, una CNN 1D è
+competitiva su ECG corti — è la risposta dello studente che ha già letto
+qualcosa; va premiata nel reveal come <em>osservazione corretta</em> ma
+in ch 06 l&#39;RNN resta la canonical answer perché è quella che mostra il
+dispositivo di <em>memoria</em> introdotto dal capitolo&quot;); <em>Poll
+2</em> histogram is shown (the wrong distractors are <em>named</em>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+= &quot;ha confuso FC con kernel — è esattamente l&#39;errore che il sommativo
+vuole esporre&quot;,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>224</mn><annotation encoding="application/x-tex">224</annotation></semantics></math>
+= &quot;ha contato una dimensione sola, ha dimenticato che l&#39;immagine è 2D&quot;,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>150</mn><mspace width="0.167em"></mspace><mn>528</mn></mrow><annotation encoding="application/x-tex">150\,528</annotation></semantics></math>
+= &quot;ha pensato all&#39;immagine RGB
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+canali), è tecnicamente corretto su un&#39;immagine a colori — premia
+l&#39;osservazione e nota che oggi abbiamo usato scala di grigi&quot;), and the
+instructor closes the chapter&#39;s cliff-hanger with the spine beat to ch
+07 (<em>the recurrent network reads the ECG one sample at a time — but
+what if we want to read a whole clinical note where the meaning of the
+word &quot;no&quot; at position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>42</mn><annotation encoding="application/x-tex">42</annotation></semantics></math>
+depends on the word &quot;but&quot; at position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>?
+Sequential memory becomes a bottleneck — and that is why ch 07
+introduces the Transformer</em>).</td>
+</tr>
+<tr>
+<td>Success criterion</td>
+<td>The class produces, on the shared artifact: <strong>(i)</strong>
+Card A → CNN, Card B → RNN, Card C → MLP, each with a 1-sentence
+justification that names the structural property preserved (<em>local
+spatial pattern</em> / <em>order/memory</em> / <em>no structure</em>) —
+a group that writes only the architecture name without naming the
+property is corrected in the reveal; <strong>(ii)</strong> <em>Poll
+1</em> shows the modal answer at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">RNN</mtext><annotation encoding="application/x-tex">\text{RNN}</annotation></semantics></math>
+on Card B (with non-trivial <em>&quot;depends&quot;</em> vote which the instructor
+explicitly praises); <strong>(iii)</strong> Card A weight-count table
+shows
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+on the FC row and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+on the conv row, with a 1-sentence justification that names
+<strong>weight sharing across spatial positions</strong> (a group that
+writes &quot;<em>there are fewer weights because the kernel is smaller</em>&quot;
+is corrected — the kernel is smaller <em>because it is shared</em>, not
+the other way around); <em>Poll 2</em> shows the modal answer at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>;
+<strong>(iv)</strong> Card B recurrent-step equation correctly written
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa} a^{&lt;t-1&gt;} + W_{ax} x^{&lt;t&gt;} + b_a)</annotation></semantics></math>
+or component-wise equivalent), and the 1-sentence on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>-independence
+names <strong>the same matrices are reused at every position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math></strong>
+— a group that writes &quot;<em>because the network is small</em>&quot; is
+corrected (it&#39;s not size, it&#39;s <em>sharing across time</em>).
+<strong>Live signal of mastery:</strong> the class can read off the
+board, without prompting, that <em>the architecture is chosen by the
+data&#39;s structure, and that what makes CNN and RNN tractable is the same
+trick (weight sharing) applied along two different axes (space, then
+time)</em>.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Nota docente — perché duale funziona qui:</em> l&#39;artefatto è
+<strong>uno solo</strong> (le tre data cards + la mini-tabella di Card
+A), tutto il sommativo è categorizzazione + numero + una equazione +
+frasi singole — niente da disegnare ex novo, niente asimmetria
+presenza/remoto. I due poll Slido danno il segnale immediato e
+individuale sui due punti dove l&#39;errore è secco e diagnosticabile (la
+scelta architetturale su Card B; il conto FC su Card A). Le risposte
+testuali nel doc condiviso danno la traccia osservabile per le
+giustificazioni (le 1-sentence). Se la classe è piccola (&lt; 3 gruppi),
+unisci tutti in un gruppo collettivo e accorcia il reveal.</p>
+<p><em>Nota docente — sulla scelta delle tre cards:</em> le tre cards
+coprono <strong>i tre regimi del capitolo</strong>: spaziale (CNN),
+sequenziale (RNN), e — di proposito — <em>tabular non-strutturato</em>
+(MLP). Card C è il distrattore concettuale: lo studente che ha appena
+visto CNN/RNN tende a &quot;applicarle a tutto&quot;, e Card C lo costringe a dire
+<em>no, qui non c&#39;è struttura da preservare, MLP è la scelta
+giusta</em>. Card B è il caso clinicamente plausibile dove la
+<em>risposta canonical</em> (RNN) compete con una risposta
+<em>praticamente preferibile</em> (1D-CNN su ECG corti): è esattamente
+la tensione che vogliamo esporre nel reveal — <em>la canonical answer è
+quella che mostra il meccanismo, la practical answer è quella che vince
+i benchmark</em>. I distrattori del <em>Poll 2</em> sono diagnostici:
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math></strong>
+= confusione FC↔︎kernel,
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>224</mn><annotation encoding="application/x-tex">224</annotation></semantics></math></strong>
+= errore di dimensionalità (1D invece di 2D),
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>150</mn><mspace width="0.167em"></mspace><mn>528</mn><mo>=</mo><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn><mo>⋅</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">150\,528 = 50\,176 \cdot 3</annotation></semantics></math></strong>
+= ha contato i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+canali RGB, è una risposta più sofisticata e va premiata come
+osservazione anche se oggi abbiamo specificato <em>scala di
+grigi</em>.</p>
+<p><em>Nota docente — anti-trabocchetto su &quot;ma una CNN 1D fa l&#39;ECG
+benissimo&quot;:</em> lo studente che ha letto un paper recente può obiettare
+che le CNN 1D sono state competitive (e spesso superiori) alle RNN per
+la classificazione di ECG corti — e ha ragione. La risposta —
+<strong>voce docente nel reveal, non parte della valutazione</strong> —
+è duplice: (a) la CNN 1D <em>funziona</em> perché un&#39;aritmia è un
+<em>pattern locale</em> che si ripete e quindi rientra nel regime del
+kernel-condiviso-su-uno-spazio (qui lo spazio è il tempo, ma il
+dispositivo è identico); (b) la RNN resta la <em>canonical answer del
+capitolo</em> perché mostra il dispositivo nuovo che ch 06 introduce (la
+<em>memoria</em> via stato nascosto), che la CNN 1D <em>non</em>
+introduce. Premia lo studente che fa l&#39;osservazione: anticipa il
+cliff-hanger di ch 07 (anche i Transformer sostituiranno la memoria
+sequenziale con attention sui pattern locali).</p>
+</body>
+</html>

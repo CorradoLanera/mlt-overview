@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 02 — Weight count: fully-connected vs convolutional, and
+how each scales</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-02--weight-count-fully-connected-vs-convolutional-and-how-each-scales">Item
+02 — Weight count: fully-connected vs convolutional, and how each
+scales</h1>
+<p><strong>ID</strong>: IB-06-unstructured-data-02 <strong>Learning
+objective</strong>: Describe the convolution operation on a 2D input and
+explain <em>weight sharing across spatial positions</em> as the
+mechanism that makes the parameter count independent of input size (Obj.
+2). The student counts weights, justifies the count, and shows what
+happens when the input image scales up. <strong>Category</strong>:
+Application <strong>Type</strong>: applicativa (open task, 3
+sub-questions) <strong>Difficulty</strong>: medium
+<strong>Chapter</strong>: 06-unstructured-data</p>
+<h2 id="question">Question</h2>
+<p>Consider a chest X-ray represented as a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+grayscale image (so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow></msup></mrow><annotation encoding="application/x-tex">X \in \mathbb{R}^{64 \times 64}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><mn>096</mn></mrow><annotation encoding="application/x-tex">4\,096</annotation></semantics></math>
+pixels). You are deciding between two ways to extract a first layer of
+features from this image:</p>
+<ul>
+<li><strong>Architecture A</strong> — <em>one fully-connected output
+neuron</em> on the raw image, with <strong>no bias</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>A</mi></msub><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mn>64</mn></msubsup><msubsup><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mn>64</mn></msubsup><msubsup><mi>W</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>A</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mspace width="0.167em"></mspace><msub><mi>X</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">z_A = \sum_{i=1}^{64} \sum_{j=1}^{64} W^{(A)}_{ij} \, X_{ij}</annotation></semantics></math>,
+then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>A</mi></msub><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mi>A</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_A = g(z_A)</annotation></semantics></math>.</li>
+<li><strong>Architecture B</strong> — <em>one
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+convolutional kernel</em> slid across the raw image with stride
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+<strong>no padding</strong>, <strong>no bias</strong>: at every valid
+spatial position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>
+the feature map cell is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msubsup><mo>∑</mo><mrow><mi>u</mi><mo>=</mo><mn>1</mn></mrow><mn>3</mn></msubsup><msubsup><mo>∑</mo><mrow><mi>v</mi><mo>=</mo><mn>1</mn></mrow><mn>3</mn></msubsup><msub><mi>K</mi><mrow><mi>u</mi><mi>v</mi></mrow></msub><mspace width="0.167em"></mspace><msub><mi>X</mi><mrow><mi>i</mi><mo>+</mo><mi>u</mi><mo>−</mo><mn>1</mn><mo>,</mo><mspace width="0.167em"></mspace><mi>j</mi><mo>+</mo><mi>v</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">F_{ij} = g(\sum_{u=1}^{3} \sum_{v=1}^{3} K_{uv} \, X_{i + u - 1,\, j + v - 1})</annotation></semantics></math>.</li>
+</ul>
+<p>Answer the three sub-questions below; show the calculation in each
+case (do not give only the final number).</p>
+<h3 id="sub-question-i--count-weights-architecture-a">Sub-question (i) —
+count weights, Architecture A</h3>
+<p>How many weights does Architecture A need to learn? Show the
+count.</p>
+<h3 id="sub-question-ii--count-weights-architecture-b">Sub-question (ii)
+— count weights, Architecture B</h3>
+<p>How many weights does Architecture B need to learn? Show the count,
+and <strong>state in one sentence</strong> why the count is <em>not</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9</mn><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">number of spatial positions of the feature map</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">9 \times (\text{number of spatial positions of the feature map})</annotation></semantics></math>.</p>
+<h3 id="sub-question-iii--scaling-to-1024-times-1024">Sub-question (iii)
+— scaling to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math></h3>
+<p>Imagine the same chest X-ray were stored at full resolution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+(so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mspace width="0.167em"></mspace><mn>048</mn><mspace width="0.167em"></mspace><mn>576</mn></mrow><annotation encoding="application/x-tex">1\,048\,576</annotation></semantics></math>
+pixels). For each of the two architectures, write the new weight count.
+Then state, in one sentence, the operational consequence for clinical
+datasets.</p>
+<h2 id="expected-answer">Expected answer</h2>
+<h3 id="sub-question-i">Sub-question (i)</h3>
+<p>Architecture A has <strong>one weight per pixel</strong> of the
+input, because each input pixel
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">X_{ij}</annotation></semantics></math>
+contributes its own coefficient
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>W</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>A</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><annotation encoding="application/x-tex">W^{(A)}_{ij}</annotation></semantics></math>
+to the weighted sum. With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+input pixels and no bias:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>A</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="prefix">|</mo><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><mn>64</mn><mo>×</mo><mn>64</mn><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><mn>4</mn><mspace width="0.167em"></mspace><mn>096</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> weights.</mtext></mrow></mrow><annotation encoding="application/x-tex">|W^{(A)}| \;=\; 64 \times 64 \;=\; 4\,096 \text{ weights.}</annotation></semantics></math></p>
+<h3 id="sub-question-ii">Sub-question (ii)</h3>
+<p>Architecture B has <strong>one weight per cell of the
+kernel</strong>, because the <em>same</em> kernel
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow></msup></mrow><annotation encoding="application/x-tex">K \in \mathbb{R}^{3 \times 3}</annotation></semantics></math>
+is reused at every spatial position. With a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+kernel and no bias:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msup><mi>W</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>B</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="prefix">|</mo><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><mn>3</mn><mo>×</mo><mn>3</mn><mspace width="0.278em"></mspace><mo>=</mo><mspace width="0.278em"></mspace><mn>9</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> weights.</mtext></mrow></mrow><annotation encoding="application/x-tex">|W^{(B)}| \;=\; 3 \times 3 \;=\; 9 \text{ weights.}</annotation></semantics></math></p>
+<p>The count is <em>not</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9</mn><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">spatial positions</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">9 \times (\text{spatial positions})</annotation></semantics></math>
+because the kernel is <strong>shared across space</strong>: the same
+nine numbers are used wherever the kernel lands, so the layer has nine
+trainable weights <em>total</em>, not nine per location. (This is
+<em>weight sharing across space</em> — the operational definition.)</p>
+<h3 id="sub-question-iii">Sub-question (iii)</h3>
+<p>At resolution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>:</p>
+<ul>
+<li><strong>Architecture A</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn><mo>=</mo><mn>1</mn><mspace width="0.167em"></mspace><mn>048</mn><mspace width="0.167em"></mspace><mn>576</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024 = 1\,048\,576</annotation></semantics></math>
+weights.</li>
+<li><strong>Architecture B</strong>: still
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+weights — <em>the kernel size is independent of the input image
+size</em>.</li>
+</ul>
+<p>Operational consequence: Architecture A&#39;s weight count grows
+<strong>quadratically</strong> with the linear resolution of the image —
+going from a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+thumbnail to a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+full-resolution chest X-ray multiplies its parameter count by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1024</mn><mi>/</mi><mn>64</mn><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>=</mo><mn>256</mn></mrow><annotation encoding="application/x-tex">(1024 / 64)^2 = 256</annotation></semantics></math>.
+Architecture B&#39;s weight count <em>does not grow at all</em>. On any
+clinical imaging dataset that does not have hundreds of thousands of
+labelled cases, Architecture A is simply not trainable; Architecture B
+is.</p>
+<h2 id="rubric">Rubric</h2>
+<p>→ <a href="rubriche/rubrica_02_weight-count-fc-vs-conv.md">rubriche/rubrica_02_weight-count-fc-vs-conv.md</a></p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>Nota docente — sulla scelta dei numeri.</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+è <strong>diverso</strong> dal summative
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn><mo>→</mo><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">224 \times 224 \to 50\,176</annotation></semantics></math>
+pesi FC vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+pesi conv) e dalla SU 1
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn><mo>×</mo><mn>100</mn><mo>→</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">224 \times 224 \times 100 \to 5\,017\,600</annotation></semantics></math>
+pesi). Convenzione di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>05</mn><annotation encoding="application/x-tex">05</annotation></semantics></math>
+ribadita: <em>non</em> riproporre i numeri del summative negli item
+d&#39;esame — un item che riusa
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+misura <em>memoria del numero</em>, non <em>processo di conta</em>. Qui
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn><mo>=</mo><mn>4</mn><mspace width="0.167em"></mspace><mn>096</mn></mrow><annotation encoding="application/x-tex">64 \times 64 = 4\,096</annotation></semantics></math>
+è ancora computabile a mente
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>⋅</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \cdot 64</annotation></semantics></math>);
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn><mo>=</mo><mn>1</mn><mspace width="0.167em"></mspace><mn>048</mn><mspace width="0.167em"></mspace><mn>576</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024 = 1\,048\,576</annotation></semantics></math>
+richiede di moltiplicare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>⋅</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \cdot 1024</annotation></semantics></math>
+(o riconoscere
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>2</mn><mn>20</mn></msup><annotation encoding="application/x-tex">2^{20}</annotation></semantics></math>)
+— è il <em>jump quantitativo</em> che rende il punto.</p>
+<p><em>Nota docente — bias-da-evitare nella correzione (vedi
+rubrica).</em> Il rischio principale è premiare
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+pesi&quot;</em> come risposta a (ii) <strong>senza</strong> la frase sul
+perché non sono
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9</mn><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">posizioni</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">9 \times (\text{posizioni})</annotation></semantics></math>.
+La frase è la <strong>prova</strong> che lo studente ha capito il
+dispositivo <em>weight sharing</em>; il numero da solo è raggiungibile
+per memorizzazione, e questo item <em>non lo deve premiare</em>. Stessa
+logica di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>05</mn><annotation encoding="application/x-tex">05</annotation></semantics></math>
+item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>02</mn><annotation encoding="application/x-tex">02</annotation></semantics></math>
+(conta dei pesi con decomposizione obbligatoria).</p>
+<p><em>Nota docente — anti-leakage rispettata.</em> Niente vocabolario
+ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>07</mn><mo>+</mo></mrow><annotation encoding="application/x-tex">07+</annotation></semantics></math>.
+La
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+in (iii) è la stessa risoluzione nominata nel pre-hook narrativo di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>05</mn><annotation encoding="application/x-tex">05</annotation></semantics></math>
+→ ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+— coerenza intenzionale, <em>non</em> leakage (è ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+che usa la sua propria risoluzione canonica).</p>
+<p><em>Nota docente — coerenza con SU 1.</em> La sub-question (iii) sul
+jump da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+ricalca esattamente la <em>prova viva</em> di SU 1 (formative
+<em>solved</em>): chi ha seguito la lezione ha già visto questo
+argomento con i numeri
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn><mo>→</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">224 \times 224 \to 5\,017\,600</annotation></semantics></math>
+pesi. Qui lo applica a numeri nuovi — è il segnale che ha <em>capito il
+pattern di scala</em>, non memorizzato il caso particolare.</p>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

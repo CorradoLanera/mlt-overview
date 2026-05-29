@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>06 — Unstructured data (CNN/RNN) · Sub-learning-units</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="06--unstructured-data-cnnrnn--sub-learning-units">06 —
+Unstructured data (CNN/RNN) · Sub-learning-units</h1>
+<blockquote>
+<p>Chapter: <strong>Unstructured data (CNN/RNN)</strong> · 20 min ·
+biomedical/clinical graduate students (UBEP). Student-facing text in
+English; teacher design notes (<em>nota docente</em>) in Italian.</p>
+</blockquote>
+<p><em>Nota docente — perché tre sub-unità.</em> Il capitolo ha
+<strong>due meccanismi</strong> (CNN, RNN) ma <strong>un solo principio
+architetturale</strong> (<em>weight sharing</em>: riusare gli stessi
+pesi lungo una struttura del dato — lo spazio per le immagini, il tempo
+per le sequenze). Esporre i due meccanismi <em>senza</em> prima nominare
+il principio comune rischia di far percepire CNN e RNN come due
+tecnologie scollegate. SU 1
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\sim 3</annotation></semantics></math>′)
+fissa il principio; SU 2
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">\sim 4</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>′)
+e SU 3
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">\sim 4</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>′)
+lo applicano ai due assi. Tempo totale di esposizione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">\sim 12</annotation></semantics></math>′
++ sommativo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">\sim 8</annotation></semantics></math>′
+=
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>20</mn><annotation encoding="application/x-tex">20</annotation></semantics></math>′
+di capitolo. Le tre SU si mappano
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1:1</annotation></semantics></math>
+ai tre obiettivi del capitolo (SU 1 ↔︎ Obj. 1; SU 2 ↔︎ Obj. 2; SU 3 ↔︎ Obj.
+3).</p>
+<hr />
+<h2 id="sub-unit-1--why-architecture-matters-the-data-dictates-the-network">Sub-unit
+1 — Why architecture matters: the data dictates the network</h2>
+<p><em>Time:</em> ~3 min · <em>Maps to:</em> Obj. 1 (data type →
+architecture choice).</p>
+<h3 id="mini-arc">Mini-arc</h3>
+<p><strong>Hook.</strong> You already know fully-connected networks from
+ch 05 — a stack of generalised non-linear logistic units. So
+<em>why</em> invent CNNs and RNNs at all? Take a single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>×</mo><mn>1</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">1\,000 \times 1\,000</annotation></semantics></math>
+chest X-ray. A single fully-connected neuron over it has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>6</mn></msup><annotation encoding="application/x-tex">10^6</annotation></semantics></math>
+weights. Stack ten such hidden layers and you have blown past
+clinical-scale datasets before the first epoch — the network has learned
+<em>nothing</em> about images, just memorised pixels.</p>
+<p><strong>Challenge / Data.</strong> Two unstructured-data types break
+the MLP for two <em>different</em> reasons. <strong>(a) Spatial
+single-information</strong> (chest X-ray, CT slice, histology tile) —
+the <em>same</em> edge or lesion can appear at different positions; an
+MLP has no built-in reason to call those instances similar and must
+re-learn each one. <strong>(b) Sequential single-information</strong>
+(ECG trace, clinical note, heart-rate stream) — the position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+in the sequence carries meaning; an MLP that takes the sequence as a
+flat vector has <em>no notion</em> of <em>before</em> and
+<em>after</em>.</p>
+<p><strong>Resolution.</strong> Two architectural ideas, both built
+around <strong>one common trick — weight sharing</strong>: reuse the
+same small set of weights across the structure of the data.
+<strong>CNN</strong> shares weights across <strong>space</strong> (one
+kernel, slid everywhere). <strong>RNN</strong> shares weights across
+<strong>time</strong> (one update rule, applied at every position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>).
+The number of weights stops growing with the size of the data and starts
+being governed by the <em>prior</em> you encoded into the
+architecture.</p>
+<p><strong>Payoff.</strong> Once you see weight sharing as the
+<em>common</em> engineering choice, CNN and RNN stop looking like two
+separate technologies and start looking like <em>the same idea applied
+to two different axes of the data</em>. The rest of the chapter is just
+spelling out each axis.</p>
+<h3 id="formative-exercise-pair-not-graded">Formative exercise pair (not
+graded)</h3>
+<p><strong>Proposed</strong> (at sub-unit start,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>″):
+For a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+grayscale image, write down (a) how many weights a single
+fully-connected layer with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+hidden units would need on the raw pixels, and (b) one sentence on why
+that number feels wrong for clinical applications.</p>
+<p><strong>Solved</strong> (at sub-unit end,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>″):
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn><mo>=</mo><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">224 \times 224 = 50\,176</annotation></semantics></math>
+inputs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>×</mi><mspace width="0.167em"></mspace><mn>100</mn></mrow><annotation encoding="application/x-tex">\times \,100</annotation></semantics></math>
+hidden units
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">= 5\,017\,600</annotation></semantics></math>
+weights — <em>for the first layer alone</em>. That is <strong>more
+parameters than the dataset has examples</strong> in essentially every
+clinical imaging study. The MLP has no choice but to memorise; it cannot
+generalise. <em>That</em> is the constraint CNN was designed to break —
+and it is the same flavour of constraint (parameter explosion grows with
+the data axis) that, on the <em>time</em> axis, motivates the RNN.</p>
+<p><em>Nota docente.</em> Questa SU è <em>quasi tutta narrativa</em> —
+l&#39;obiettivo è far <em>sentire</em> allo studente lo sproporzionato costo
+dell&#39;MLP sui dati non-strutturati, non insegnargli formule. Il calcolo
+dei
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+milioni di pesi nel formative <em>solved</em> è la <em>prova viva</em>
+che giustifica perché serve un altro dispositivo: senza questo numero
+davanti agli occhi, le SU 2 e SU 3 arrivano come <em>soluzione a un
+problema mai posto</em>.</p>
+<hr />
+<h2 id="sub-unit-2--convolutional-networks-share-weights-across-space">Sub-unit
+2 — Convolutional networks: share weights across space</h2>
+<p><em>Time:</em> ~5 min · <em>Maps to:</em> Obj. 2 (convolution +
+weight sharing across positions).</p>
+<h3 id="mini-arc-1">Mini-arc</h3>
+<p><strong>Hook.</strong> A chest X-ray of a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-year-old
+shows a consolidation in the lower-right lobe. A chest X-ray of a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>65</mn><annotation encoding="application/x-tex">65</annotation></semantics></math>-year-old
+shows the same consolidation in the upper-left lobe. To the radiologist,
+it is the <em>same</em> finding. To an MLP, two completely different
+vectors of pixels — and the MLP has <em>no</em> built-in reason to treat
+them similarly. We need an operator that says &quot;an edge is an edge, a
+consolidation is a consolidation — <em>wherever in the image</em> it
+appears&quot;.</p>
+<p><strong>Challenge / Data.</strong> Concretely, define a
+<strong>kernel</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>k</mi><mo>×</mo><mi>k</mi></mrow></msup></mrow><annotation encoding="application/x-tex">K \in \mathbb{R}^{k \times k}</annotation></semantics></math>
+— a small matrix of trainable weights (typically
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">k = 3</annotation></semantics></math>,
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+weights). Slide it over the input image
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>;
+at each position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>,
+compute the <strong>feature map</strong></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><munderover><mo>∑</mo><mrow><mi>u</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></munderover><munderover><mo>∑</mo><mrow><mi>v</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></munderover><msub><mi>K</mi><mrow><mi>u</mi><mi>v</mi></mrow></msub><mspace width="0.167em"></mspace><msub><mi>X</mi><mrow><mi>i</mi><mo>+</mo><mi>u</mi><mo>−</mo><mn>1</mn><mo>,</mo><mspace width="0.167em"></mspace><mi>j</mi><mo>+</mo><mi>v</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">F_{ij} = g\!\left(\sum_{u=1}^{k} \sum_{v=1}^{k} K_{uv} \, X_{i + u - 1,\, j + v - 1}\right).</annotation></semantics></math></p>
+<p>The crucial point: the <em>same</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+— the <em>same</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+weights — is used at <em>every</em> position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>.
+There is one kernel for the whole image, not one per pixel.</p>
+<p><strong>Resolution.</strong> Two operational consequences follow
+directly from this sharing.</p>
+<ul>
+<li><strong>Weight count.</strong> The convolutional layer has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+weights (plus
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+bias) for the whole layer, independent of image size — vs the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn><mo>×</mo><mtext mathvariant="normal">(hidden units)</mtext></mrow><annotation encoding="application/x-tex">50\,176 \times \text{(hidden units)}</annotation></semantics></math>
+of an MLP on the same input. The parameter explosion of SU 1 is killed
+at the root.</li>
+<li><strong>Translation invariance.</strong> The kernel that learned to
+detect an edge will detect that edge <em>wherever</em> it appears,
+because the <em>same</em> operator is applied everywhere — the network&#39;s
+structure encodes the geometric prior that <em>position should not
+change &quot;what&quot;.</em></li>
+</ul>
+<p><strong>Payoff.</strong> The CNN is <em>not</em> a magical
+image-understander. It is <em>a fully-connected network in which the
+linear algebra has been constrained to encode two clinical priors:
+locality (the kernel is small, so it looks at neighbourhoods) and
+positional invariance (the same kernel is shared everywhere)</em>. Strip
+those two constraints out and you are back to the MLP — with all of its
+problems.</p>
+<h3 id="formative-exercise-pair-not-graded-1">Formative exercise pair
+(not graded)</h3>
+<p><strong>Proposed</strong> (at sub-unit start,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>″):
+A
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+kernel is slid over a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>×</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">5 \times 5</annotation></semantics></math>
+image with stride
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and <em>no padding</em>. (a) How big is the output feature map? (b)
+Write the operation that produces the central output pixel.</p>
+<p><strong>Solved</strong> (at sub-unit end,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\sim 1</annotation></semantics></math>′):
+(a) The output size is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⌊</mo><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo>−</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>s</mi><mo stretchy="false" form="postfix">⌋</mo><mo>+</mo><mn>1</mn><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>5</mn><mo>−</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>1</mn><mo>+</mo><mn>1</mn><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\lfloor (n - k)/s \rfloor + 1 = (5 - 3)/1 + 1 = 3</annotation></semantics></math>,
+so the feature map is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>.
+(b) The central output pixel is at position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(2, 2)</annotation></semantics></math>
+of the feature map and corresponds to the kernel applied to the central
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+patch of the input:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>22</mn></msub><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><munderover><mo>∑</mo><mrow><mi>u</mi><mo>=</mo><mn>1</mn></mrow><mn>3</mn></munderover><munderover><mo>∑</mo><mrow><mi>v</mi><mo>=</mo><mn>1</mn></mrow><mn>3</mn></munderover><msub><mi>K</mi><mrow><mi>u</mi><mi>v</mi></mrow></msub><mspace width="0.167em"></mspace><msub><mi>X</mi><mrow><mn>1</mn><mo>+</mo><mi>u</mi><mo>,</mo><mspace width="0.167em"></mspace><mn>1</mn><mo>+</mo><mi>v</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>⋅</mo><mi>X</mi><mo stretchy="false" form="prefix">[</mo><mn>2</mn><mo>:</mo><mn>4</mn><mo>,</mo><mspace width="0.167em"></mspace><mn>2</mn><mo>:</mo><mn>4</mn><mo stretchy="false" form="postfix">]</mo><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">F_{22} = g\!\left(\sum_{u=1}^{3} \sum_{v=1}^{3} K_{uv} \, X_{1 + u,\, 1 + v}\right) = g\!\left(K \cdot X[2{:}4,\, 2{:}4]\right).</annotation></semantics></math></p>
+<p>The whole layer has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+weights — <em>that is the headline number</em>. A clinician should walk
+away from this SU able to answer &quot;why so few?&quot; with a single phrase:
+<strong>the same kernel is reused at every position</strong>.</p>
+<p><em>Nota docente.</em> Il calcolo della dimensione output può
+sembrare un dettaglio ingegneristico, ma serve un&#39;unica cosa:
+<em>materializzare</em> la convoluzione come <em>operazione locale
+ripetuta</em>. Lo studente che ha visto il formato output (e ha contato
+dove finisce il kernel a passi successivi) ha <em>vissuto</em> il
+dispositivo del weight sharing, non solo memorizzato la frase.
+<strong>Voce docente — non valutato nelle SU</strong>: stride, padding
+(<code>same</code> vs <code>valid</code>), max-pooling, numero di canali
+in/out — sono dettagli architetturali che vanno ben oltre i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>′
+di SU 2 e sono materia di un eventuale corso CNN-dedicato.</p>
+<hr />
+<h2 id="sub-unit-3--recurrent-networks-share-weights-across-time">Sub-unit 3
+— Recurrent networks: share weights across time</h2>
+<p><em>Time:</em> ~5 min · <em>Maps to:</em> Obj. 3 (recurrent update +
+weight sharing across time).</p>
+<h3 id="mini-arc-2">Mini-arc</h3>
+<p><strong>Hook.</strong> Take an ECG with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 5\,000</annotation></semantics></math>
+samples. The clinical question — <em>is there atrial fibrillation?</em>
+— depends on <em>the pattern of irregular intervals over time</em>, not
+on the absolute value at any one sample. If you feed an MLP
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+scalars as a flat vector, you have erased the time axis: sample
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and sample
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><mn>999</mn></mrow><annotation encoding="application/x-tex">4\,999</annotation></semantics></math>
+look interchangeable to it, because the MLP has no built-in notion of
+<em>which sample comes after which</em>.</p>
+<p><strong>Challenge / Data.</strong> We need an operator that
+<em>reads</em> one position at a time <em>and</em> keeps memory of what
+came before. Concretely, at each
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">t = 1, \ldots, T_x</annotation></semantics></math>,
+update a hidden state</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g\!\left(W_{aa} \, a^{&lt;t-1&gt;} + W_{ax} \, x^{&lt;t&gt;} + b_a\right),</annotation></semantics></math></p>
+<p>and, optionally, emit an output</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mo>′</mo></msup><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">y^{&lt;t&gt;} = g&#39;\!\left(W_{ya} \, a^{&lt;t&gt;} + b_y\right).</annotation></semantics></math></p>
+<p>The crucial point: the <em>same</em> three matrices
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}, W_{ya}</annotation></semantics></math>
+are used at <em>every</em> position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.
+There is <strong>one</strong> update rule for the whole sequence,
+applied recursively.</p>
+<p><strong>Resolution.</strong> Two operational consequences follow
+directly from this sharing across time.</p>
+<ul>
+<li><strong>Parameter count is independent of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>.</strong>
+The same
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+matrices process a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>-sample
+ECG and a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>500</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">500\,000</annotation></semantics></math>-sample
+one. The number of weights stops growing with the length of the sequence
+— the analogue, on the time axis, of what CNN did on the spatial
+axis.</li>
+<li><strong>Memory.</strong> Because
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t&gt;}</annotation></semantics></math>
+depends on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t-1&gt;}</annotation></semantics></math>,
+which depends on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>2</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t-2&gt;}</annotation></semantics></math>,
+and so on, the hidden state at position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+has — in principle — <em>access to the entire history</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mrow><mo>&lt;</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup></mrow><annotation encoding="application/x-tex">x^{&lt;1&gt;}, \ldots, x^{&lt;t&gt;}</annotation></semantics></math>.
+This is what the RNN <em>adds</em> beyond the CNN: a <em>temporal</em>
+memory.</li>
+</ul>
+<p><strong>Payoff.</strong> The RNN is <em>not</em> a black box that
+&quot;understands time&quot;. It is <em>a fully-connected network applied
+recursively to its own previous output, with weight sharing along the
+time axis</em>. Strip out the recursion and you are back to the MLP —
+once again.</p>
+<h3 id="formative-exercise-pair-not-graded-2">Formative exercise pair
+(not graded)</h3>
+<p><strong>Proposed</strong> (at sub-unit start,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">\sim 30</annotation></semantics></math>″):
+For an RNN with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-dimensional
+input
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">x^{&lt;t&gt;} \in \mathbb{R}^5</annotation></semantics></math>),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>-dimensional
+hidden state
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mn>10</mn></msup></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} \in \mathbb{R}^{10}</annotation></semantics></math>),
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>-dimensional
+output
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">y^{&lt;t&gt;} \in \mathbb{R}^2</annotation></semantics></math>),
+count the total number of weights (ignore biases). State whether this
+count depends on the sequence length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>.</p>
+<p><strong>Solved</strong> (at sub-unit end,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\sim 1</annotation></semantics></math>′):
+The three matrices have shapes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>∈</mo><msup><mi>ℝ</mi><mrow><mn>10</mn><mo>×</mo><mn>10</mn></mrow></msup></mrow><annotation encoding="application/x-tex">W_{aa} \in \mathbb{R}^{10 \times 10}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>∈</mo><msup><mi>ℝ</mi><mrow><mn>10</mn><mo>×</mo><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">W_{ax} \in \mathbb{R}^{10 \times 5}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><mo>∈</mo><msup><mi>ℝ</mi><mrow><mn>2</mn><mo>×</mo><mn>10</mn></mrow></msup></mrow><annotation encoding="application/x-tex">W_{ya} \in \mathbb{R}^{2 \times 10}</annotation></semantics></math>.
+Counts:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mn>10</mn><mo>⋅</mo><mn>10</mn><mo>=</mo><mn>100</mn><mo>,</mo><mspace width="1.0em"></mspace><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mn>10</mn><mo>⋅</mo><mn>5</mn><mo>=</mo><mn>50</mn><mo>,</mo><mspace width="1.0em"></mspace><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mn>2</mn><mo>⋅</mo><mn>10</mn><mo>=</mo><mn>20</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">|W_{aa}| = 10 \cdot 10 = 100, \quad |W_{ax}| = 10 \cdot 5 = 50, \quad |W_{ya}| = 2 \cdot 10 = 20.</annotation></semantics></math></p>
+<p>Total
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>170</mn></mrow><annotation encoding="application/x-tex">= 170</annotation></semantics></math>
+weights. This count is <strong>independent of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math></strong>:
+the same
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>170</mn><annotation encoding="application/x-tex">170</annotation></semantics></math>
+weights process a sequence of length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">1\,000</annotation></semantics></math>,
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">10\,000</annotation></semantics></math>
+— <em>that</em> is what &quot;weight sharing across time&quot; buys you
+operationally. Contrast with the MLP that would need a fresh column of
+weights per sequence position: at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">T_x = 5\,000</annotation></semantics></math>
+on a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-dimensional
+input the first MLP layer alone would already need
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>⋅</mo><mn>5</mn><mo>⋅</mo><mn>10</mn><mo>=</mo><mn>250</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000 \cdot 5 \cdot 10 = 250\,000</annotation></semantics></math>
+weights — three orders of magnitude more — <em>to read the same
+ECG</em>.</p>
+<p><em>Nota docente.</em> Il numero
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>170</mn><annotation encoding="application/x-tex">170</annotation></semantics></math>
+è basso <em>di proposito</em> — abbastanza basso da essere contato a
+mente in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>″,
+abbastanza alto da non sembrare giocattolo. Il confronto
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>170</mn><annotation encoding="application/x-tex">170</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>250</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">250\,000</annotation></semantics></math>
+è la <em>frase finale</em> del capitolo: <em>la differenza fra
+&quot;rispettare la struttura del dato&quot; e &quot;ignorarla&quot; è di tre ordini di
+grandezza in pesi</em>, e i tre ordini di grandezza si traducono in
+<em>generalizzazione che funziona</em> vs <em>memorizzazione che
+esplode</em>. <strong>Voce docente — non valutato nelle SU</strong>:
+vanishing-gradient problem, LSTM/GRU, bidirectional RNN, encoder-decoder
+per sequence-to-sequence — sono motivazioni per <em>come</em> l&#39;RNN
+classico viene sostituito (e ch 07 chiuderà il cerchio mostrando come il
+Transformer rimpiazzi del tutto la memoria sequenziale).</p>
+<hr />
+<h2 id="closing--how-the-three-su-compose">Closing — how the three SU
+compose</h2>
+<p><em>Nota docente.</em> Alla fine del capitolo, sulla <em>lavagna o
+sulla slide riassuntiva</em> va lasciato visibile questo specchietto,
+che è anche il legame fra le tre SU e il summative live exercise:</p>
+<table>
+<thead>
+<tr>
+<th>Asse</th>
+<th>Architettura</th>
+<th>Dispositivo</th>
+<th>Headline numerico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(nessuno)</td>
+<td>MLP</td>
+<td>nessuno</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>017</mn><mspace width="0.167em"></mspace><mn>600</mn></mrow><annotation encoding="application/x-tex">5\,017\,600</annotation></semantics></math>
+pesi su un&#39;immagine
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+(SU 1)</td>
+</tr>
+<tr>
+<td>Spazio</td>
+<td>CNN</td>
+<td>kernel condiviso</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+pesi per layer (SU 2)</td>
+</tr>
+<tr>
+<td>Tempo</td>
+<td>RNN</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+condivise nel tempo</td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>170</mn><annotation encoding="application/x-tex">170</annotation></semantics></math>
+pesi per processare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+campioni (SU 3)</td>
+</tr>
+</tbody>
+</table>
+<p>Il summative <em>&quot;Right tool for the wrong tensor&quot;</em> (vedi
+<code>objectives.md</code>) verifica esattamente questa tabella: tre
+data cards, tre architetture diverse, e le due conte di pesi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+(Card A, CNN) e l&#39;equazione ricorrente su Card B (RNN). Le SU sono
+quindi <em>pre-cucinate per</em> il sommativo: chi ha seguito le tre SU
+porta dentro l&#39;esercizio i tre numeri-faro.</p>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>06 — Unstructured data (CNN/RNN) · narrative</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="06--unstructured-data-cnnrnn--narrative">06 — Unstructured data
+(CNN/RNN) · narrative</h1>
+<blockquote>
+<p>Chapter narrative, hanging off the course <a href="../_global/spine.md">spine</a>. Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Six-word,
+100-word, chapter arc, and an explicit pre-hook to the next chapter
+(<code>07-llm-transformers</code>).</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Match the structure; share the weights.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su 5
+varianti. Mantiene la struttura a due clausole con punto e virgola della
+serie (01 <em>&quot;Programs follow rules; learners find them.&quot;</em>, 02
+<em>&quot;Draw the line; count the cost.&quot;</em>, 03 <em>&quot;Same data; three
+algorithms, three boundaries.&quot;</em>, 04 <em>&quot;Decisions cost data; hold
+the test.&quot;</em>, 05 <em>&quot;Stack logistic units; descent finds
+weights.&quot;</em>) — la coerenza tipografica è ormai cifra della serie e va
+rispettata. <strong>&quot;Match the structure&quot;</strong> è il primo dei due
+beat del capitolo: l&#39;architettura <em>non</em> è una scelta libera, è
+dettata dalla forma del dato (spaziale → CNN, sequenziale → RNN) — è la
+riformulazione letterale di Obj. 1 (<em>&quot;Match an unstructured-data type
+to the right deep architecture&quot;</em>). <strong>&quot;Share the
+weights&quot;</strong> è il secondo beat: l&#39;unico <em>trucco
+ingegneristico</em> che rende sia CNN sia RNN tractable — un kernel
+piccolo riusato su tutte le posizioni dell&#39;immagine; le stesse matrici
+applicate a ogni passo della sequenza. Lessico-perno
+<strong>weights</strong> <em>ripreso dal ch. 05</em> (lì <em>&quot;descent
+finds weights&quot;</em>, qui <em>&quot;share the weights&quot;</em>) — coerenza
+esplicita: i pesi non cambiano natura, cambia <em>come vengono
+riusati</em>. Niente <em>kernel</em>, <em>convolutional</em>,
+<em>recurrent</em>, <em>attention</em> nel six-word — vocabolario
+seminato solo nel pre-hook e nella prosa.</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>Elena&#39;s deep network of chapter five worked on tabular data — twelve
+features, twelve weights per neuron. The next patient arrived as a chest
+X-ray, then an ECG, then a discharge letter. Fed raw, a fully-connected
+layer needed millions of weights per neuron, and the network re-learnt
+the same edge at every pixel and the same word at every position. She
+needed a constraint, not more parameters. One trick fit both: weight
+sharing. A small kernel slid across the image, the same matrix applied
+at every time step on the sequence. The atoms had not changed — only the
+rules of repetition.</p>
+<p><em>Struttura:</em> Bing = la deep network di ch. 05 funzionava su
+dati tabular
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+feature,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>
+pesi) — il prossimo paziente arriva come RX torace, ECG, lettera di
+dimissione | Bang = un fully-connected layer su quei dati richiederebbe
+milioni di pesi <em>per neurone</em>, e re-imparerebbe lo stesso pattern
+ad ogni posizione — il problema non è il numero di parametri, è la
+mancanza di un <em>vincolo</em> | Bongo = <em>un solo</em> trucco copre
+entrambi i casi (weight sharing: kernel condiviso nello spazio, matrici
+condivise nel tempo); <em>gli atomi non sono cambiati, è cambiata solo
+la regola di ripetizione</em>. (Verificato
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+parole esatte.) Il payoff narrativo <em>&quot;only the rules of
+repetition&quot;</em> nomina esplicitamente il principio comune che ribalta
+la lettura &quot;due tecnologie diverse&quot; in &quot;due assi della stessa idea&quot; — è
+la stessa promessa fatta da SU 1 di <a href="subunits.md">subunits.md</a>.</p>
+<h2 id="chapter-arc--hook--challenge--resolution--payoff">Chapter arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio</td>
+<td>Elena&#39;s fully-connected machinery of chapter 5 was satisfying on a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>12</mn><annotation encoding="application/x-tex">12</annotation></semantics></math>-feature
+tabular row. Then the next case file lands on her desk: a chest X-ray at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+pixels. A fully-connected first layer with one hidden neuron would need
+over a million weights — more parameters in the first layer than her
+dataset has patients. The &quot;deep&quot; machinery did not break; it simply
+<em>did not scale</em> to data that looked like the real world.</td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto</td>
+<td>Two unstructured-data types fail the MLP for two <em>different</em>
+structural reasons. <strong>(a) Spatial single-information</strong>
+(X-ray, CT slice, histology tile) — the <em>same</em> edge or lesion can
+appear anywhere in the field of view, and an MLP has no built-in reason
+to treat two displaced instances similarly: it must re-learn every
+translation from scratch. <strong>(b) Sequential
+single-information</strong> (ECG trace, clinical note, heart-rate
+stream) — the position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+within the sequence carries meaning, and an MLP fed the flat vector has
+<em>no</em> notion of <em>before</em> and <em>after</em>. One question:
+can a single engineering principle fix both?</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta</td>
+<td>Yes — <em>the same trick on two different axes:</em> <strong>weight
+sharing</strong>. For images, a small kernel
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>k</mi><mo>×</mo><mi>k</mi></mrow></msup></mrow><annotation encoding="application/x-tex">K \in \mathbb{R}^{k \times k}</annotation></semantics></math>
+(typically
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>,
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+trainable weights) is slid over the input; at every spatial position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>
+the feature map is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mo>∑</mo><mrow><mi>u</mi><mo>,</mo><mi>v</mi></mrow></msub><msub><mi>K</mi><mrow><mi>u</mi><mi>v</mi></mrow></msub><mspace width="0.167em"></mspace><msub><mi>X</mi><mrow><mi>i</mi><mo>+</mo><mi>u</mi><mo>−</mo><mn>1</mn><mo>,</mo><mspace width="0.167em"></mspace><mi>j</mi><mo>+</mo><mi>v</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F_{ij} = g\!\left(\sum_{u, v} K_{uv} \, X_{i + u - 1,\, j + v - 1}\right)</annotation></semantics></math>.
+The <em>same</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+is reused everywhere — <em>one</em> operator across space — and the
+parameter count stops growing with image size. For sequences, at every
+position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">t = 1, \ldots, T_x</annotation></semantics></math>
+the hidden state is updated by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g\!\left(W_{aa}\, a^{&lt;t-1&gt;} + W_{ax}\, x^{&lt;t&gt;} + b_a\right)</annotation></semantics></math>,
+optionally emitting
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mo>′</mo></msup><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">y^{&lt;t&gt;} = g&#39;\!\left(W_{ya}\, a^{&lt;t&gt;} + b_y\right)</annotation></semantics></math>.
+The <em>same</em> matrices
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}, W_{ya}</annotation></semantics></math>
+are reused at every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+— <em>one</em> update rule across time — and the parameter count stops
+growing with sequence length.</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta</td>
+<td>What looked like <em>two new technologies</em> is <strong>one trick
+applied to two axes of the data</strong>. A
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+convolutional kernel has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+weights for the whole layer, <em>regardless</em> of image size — versus
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+weights <em>per output neuron</em> for a fully-connected layer on a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+grayscale input. An RNN with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-dim
+input,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>-dim
+hidden state,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>-dim
+output has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>170</mn><annotation encoding="application/x-tex">170</annotation></semantics></math>
+weights, <em>regardless</em> of sequence length — versus
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>250</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\sim 250\,000</annotation></semantics></math>
+for the analogous MLP on a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>-sample
+ECG. Three orders of magnitude fewer parameters in <em>both</em> cases —
+and the saving is paid for by <em>encoding the data&#39;s structure into the
+architecture</em>, rather than asking the network to <em>discover</em>
+that structure during training. CNN and RNN are not a new kind of
+network. They are MLPs <em>constrained</em> — fully-connected nets in
+which the weights are <em>forced to repeat</em> along the axis the data
+lives on. The black box of chapter 5 was big; now it is <em>also
+smart</em>, in a very specific sense: <em>it knows what kind of data it
+is reading</em>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>The first case file on Elena&#39;s desk that morning was a chest X-ray —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+grayscale pixels of a patient she would not see in person. The &quot;deep
+network&quot; of the previous chapter had been satisfying on tabular data:
+twelve features, twelve weights per neuron, four equations she could
+write on a napkin. But a fully-connected first layer over this image,
+even with a single hidden neuron, would already need over a million
+weights — and a network with ten hidden layers, on a dataset of a
+thousand patients, would have orders of magnitude more parameters than
+examples. She did not need a <em>bigger</em> model. She needed <em>the
+same model, with a constraint</em>.</p>
+<p>The next case file was an ECG:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+scalar samples at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>500</mn><annotation encoding="application/x-tex">500</annotation></semantics></math>
+Hz, ten seconds of cardiac rhythm. Flatten that into a vector and feed
+it to an MLP, and the MLP has no notion that sample
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><mn>999</mn></mrow><annotation encoding="application/x-tex">4\,999</annotation></semantics></math>
+comes <em>after</em> sample
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+— it sees five thousand columns of a spreadsheet, in whatever order they
+happen to be arranged. The order, on an ECG, <em>is</em> the signal. An
+MLP could not even <em>describe</em> atrial fibrillation, because atrial
+fibrillation is a <em>pattern over time</em>. The fully-connected
+machinery had been built to learn arbitrary functions of unstructured
+vectors; it had not been built to <em>respect</em> the structure of what
+was inside the vector.</p>
+<p>Two data types, two reasons the same machinery failed. And — to her
+relief — <em>one</em> engineering response.</p>
+<p>The trick was <strong>weight sharing</strong>. For the X-ray, define
+a small kernel — say a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+of nine trainable weights — and slide it across the image, computing, at
+every position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>,
+a feature map
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mo>∑</mo><mrow><mi>u</mi><mo>,</mo><mi>v</mi></mrow></msub><msub><mi>K</mi><mrow><mi>u</mi><mi>v</mi></mrow></msub><mspace width="0.167em"></mspace><msub><mi>X</mi><mrow><mi>i</mi><mo>+</mo><mi>u</mi><mo>−</mo><mn>1</mn><mo>,</mo><mspace width="0.167em"></mspace><mi>j</mi><mo>+</mo><mi>v</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F_{ij} = g\!\left(\sum_{u, v} K_{uv} \, X_{i + u - 1,\, j + v - 1}\right)</annotation></semantics></math>.
+The <em>same</em> nine weights were used at every position. There was
+<em>one</em> kernel for the entire image, not one per pixel. If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+had learned to detect an edge, it would detect that edge wherever the
+edge appeared — <em>positional invariance</em> was now part of the
+network&#39;s structure, not something the network had to <em>discover</em>
+during training. And the weight count stopped growing with image size:
+nine weights for the whole layer, full stop.</p>
+<p>For the ECG, the analogous move was on the <em>time</em> axis. At
+every position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">t = 1, \ldots, T_x</annotation></semantics></math>
+the network updated a hidden state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g\!\left(W_{aa}\, a^{&lt;t-1&gt;} + W_{ax}\, x^{&lt;t&gt;} + b_a\right)</annotation></semantics></math>,
+optionally emitting an output
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>y</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><msup><mi>g</mi><mo>′</mo></msup><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">y^{&lt;t&gt;} = g&#39;\!\left(W_{ya}\, a^{&lt;t&gt;} + b_y\right)</annotation></semantics></math>.
+The <em>same</em> three matrices
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>y</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}, W_{ya}</annotation></semantics></math>
+were used at <em>every</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>.
+There was <em>one</em> update rule for the whole sequence, applied
+recursively. The hidden state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t&gt;}</annotation></semantics></math>
+depended on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t - 1&gt;}</annotation></semantics></math>,
+which depended on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>2</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t - 2&gt;}</annotation></semantics></math>,
+and so on — so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t&gt;}</annotation></semantics></math>
+carried, at least in principle, the network&#39;s memory of everything it
+had read up to that point. The weight count stopped growing with
+sequence length: an RNN with five-dimensional input, a ten-dimensional
+hidden state and a two-dimensional output had
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>170</mn><annotation encoding="application/x-tex">170</annotation></semantics></math>
+weights to learn — independent of whether the ECG was ten seconds long
+or ten minutes.</p>
+<p>The same trick, on two different axes. CNN: share across space. RNN:
+share across time. Both of them, mathematically, were
+<em>fully-connected networks with constraints</em> — the weights were
+forced to repeat along the axis the data was structured on. Strip the
+constraints and you got back the MLP. Keep them, and you had a model
+that could read a million-pixel image with nine weights, or a
+five-thousand-sample sequence with one hundred and seventy.</p>
+<p>By the end of that afternoon Elena was no longer wondering why &quot;deep
+learning&quot; needed two architectures instead of one. She was wondering
+whether <em>every</em> data type would have its own
+architecture-and-sharing rule. Three-dimensional volumetric CT scans?
+Graphs of patient interactions in a ward? <em>Probably yes, probably the
+same idea each time.</em> The atoms — logistic units, weights, descent —
+had not changed at all. What had changed was <em>the rule of
+repetition</em>: how often, and along which axis, the same weights were
+going to be reused. That was what made an architecture an
+architecture.</p>
+<h2 id="versione-didattica-objectives-recap">Versione didattica
+(objectives recap)</h2>
+<p>Gli obiettivi formali del capitolo vivono in <a href="objectives.md">objectives.md</a>. In sintesi, il payoff narrativo
+li ricalca: <strong>match</strong> il tipo di dato non-strutturato
+all&#39;architettura giusta (spaziale → CNN, sequenziale → RNN) e giustifica
+la scelta nominando la proprietà strutturale preservata (<em>local
+spatial pattern</em> / <em>order/memory</em>); <strong>describe</strong>
+la convoluzione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mo>∑</mo><mrow><mi>u</mi><mo>,</mo><mi>v</mi></mrow></msub><msub><mi>K</mi><mrow><mi>u</mi><mi>v</mi></mrow></msub><msub><mi>X</mi><mrow><mi>i</mi><mo>+</mo><mi>u</mi><mo>−</mo><mn>1</mn><mo>,</mo><mi>j</mi><mo>+</mo><mi>v</mi><mo>−</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">F_{ij} = g(\sum_{u, v} K_{uv} X_{i + u - 1, j + v - 1})</annotation></semantics></math>
+con <em>weight sharing across space</em> — un kernel
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+ha
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+pesi indipendentemente dalla dimensione dell&#39;immagine, contro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mspace width="0.167em"></mspace><mn>176</mn></mrow><annotation encoding="application/x-tex">50\,176</annotation></semantics></math>
+per un fully-connected su un&#39;immagine
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>224</mn><mo>×</mo><mn>224</mn></mrow><annotation encoding="application/x-tex">224 \times 224</annotation></semantics></math>
+in scala di grigi; <strong>describe</strong> l&#39;aggiornamento ricorrente
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa} a^{&lt;t-1&gt;} + W_{ax} x^{&lt;t&gt;} + b_a)</annotation></semantics></math>
+con <em>weight sharing across time</em> — le stesse matrici applicate a
+ogni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+rendono il numero di pesi indipendente da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>.
+Le tre sotto-unità in <a href="subunits.md">subunits.md</a> attraversano
+il principio comune (SU 1) prima dei due meccanismi (SU 2 spazio, SU 3
+tempo), così l&#39;esposizione e la narrativa lavorano in coppia: stessa
+promessa pedagogica (<em>un trucco su due assi</em>) consegnata due
+volte, con linguaggi diversi (narrativo nella prosa qui, operativo nelle
+SU).</p>
+<h2 id="pre-hook--07-llms--transformers">Pre-hook → 07 LLMs &amp;
+Transformers</h2>
+<blockquote>
+<p>The RNN was the canonical answer for sequences, but Elena could
+already feel the limit. Reading an ECG one sample at a time is fine:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t&gt;}</annotation></semantics></math>
+depends on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t-1&gt;}</annotation></semantics></math>,
+and the cardiac rhythm is a <em>local</em> pattern that the recurrence
+will catch in a few steps. But a discharge letter is harder: the meaning
+of &quot;no&quot; at position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>42</mn><annotation encoding="application/x-tex">42</annotation></semantics></math>
+depends on &quot;but&quot; at position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>,
+and the network would have to propagate that dependency through
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>37</mn><annotation encoding="application/x-tex">37</annotation></semantics></math>
+intermediate hidden states — each one a chance for the signal to fade.
+Is there a way to let <em>every</em> position see <em>every other</em>
+position directly, without the sequential bottleneck? That is the
+question of the next chapter. The answer is <strong>attention</strong>,
+and the architecture built around it is called the
+<strong>Transformer</strong> — the network that replaced RNNs in nearly
+every sequence task by the late
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2020</mn><annotation encoding="application/x-tex">2020</annotation></semantics></math>s
+and that, wrapped in a chat interface, became the most famous
+machine-learning artefact of Elena&#39;s career. The atoms, again, do not
+change. Only the rule of repetition does — one more time.</p>
+</blockquote>
+<p><em>Glossa:</em> il pre-hook <strong>non ritira</strong> weight
+sharing (SU 1 + l&#39;intera narrativa del capitolo): l&#39;RNN
+<em>funziona</em>, ed è la <em>canonical answer</em> del capitolo.
+Riformula però il suo limite operativo come <strong>dipendenza a lungo
+raggio</strong>, esattamente il tipo di dipendenza che il sommativo di
+ch. 07 (Sentence S, <em>denies</em> … <em>contradicts</em>) renderà
+visibile. Cliff-hanger lessicale <strong>attention /
+Transformer</strong> (il vocabolario di ch. 07) — niente
+<em>self-attention</em>, <em>encoder/decoder</em>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">QK^\top</annotation></semantics></math>
+ancora rivelati: vivono in objectives.md di ch. 07 e nella sua
+narrativa, non qui. Tre eco strutturali:</p>
+<ul>
+<li>la frase di chiusura <strong>&quot;only the rule of repetition does — one
+more time&quot;</strong> è la <em>stessa</em> frase di chiusura usata nella
+prosa narrativa di ch. 06 (&quot;<em>only the rules of repetition</em>&quot;) — è
+un <em>segnale di serie</em> (anaphora) che lega il prossimo capitolo
+all&#39;attuale al livello <em>narrativo</em>, non solo concettuale. Il ch.
+07 erediterà esattamente questo gancio per il suo
+six-word/100-parole.</li>
+<li><strong>ChatGPT</strong> è nominato in modo <em>non</em> tecnico
+(&quot;<em>the most famous machine-learning artefact of Elena&#39;s career</em>&quot;)
+— l&#39;aggancio culturale che ch. 07 e ch. 08 sfrutteranno è già
+piantato.</li>
+<li>Il problema clinico <strong>discharge letter</strong> (lettera di
+dimissione) compare per la prima volta come <em>esempio di sequenza con
+dipendenze a lungo raggio</em> — è lo <em>stesso</em> dato clinico che
+ch. 08 userà come scenario sommativo
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere ED trauma/non-trauma). Ponte di scenario, non solo di
+concetto.</li>
+</ul>
+<p>Ponte deterministico a <code>07-llm-transformers</code> (per
+<code>manifest.next_enabled</code> il capitolo non è ancora
+<em>enabled</em> — entrambi <code>include: false</code> — ma l&#39;ordine
+naturale del corso è esplicito nello spine e nei capitoli precedenti, e
+ch. 05 → ch. 06 ha applicato la stessa convenzione).</p>
+</body>
+</html>

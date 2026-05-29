@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 04 (Critique a colleague&#39;s design: *&quot;flatten the
+multi-channel signal and feed it to a fully-connected network&quot;*)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-04-critique-a-colleagues-design-flatten-the-multi-channel-signal-and-feed-it-to-a-fully-connected-network">Rubric
+— Item 04 (Critique a colleague&#39;s design: <em>&quot;flatten the multi-channel
+signal and feed it to a fully-connected network&quot;</em>)</h1>
+<p><strong>Item</strong>: IB-06-unstructured-data-04 <strong>Learning
+objective</strong>: Argue why a flattened-MLP design on multi-channel
+time-series fails on parameter count, temporal order, and channel
+structure — and propose an architectural alternative grounded in weight
+sharing (Obj. 1+2+3 jointly).</p>
+<p>Three criteria, mapped to the three structural problems + the
+proposal.</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>(C1) Parameter explosion identified (Obj. 2).</strong> The
+student names <em>parameter count</em> as a problem of the design and
+supports it with a concrete number.</td>
+<td>The student computes (or estimates within an order of magnitude) the
+weight count of the colleague&#39;s first layer — i.e.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>26</mn><mo>×</mo><msup><mn>10</mn><mn>6</mn></msup></mrow><annotation encoding="application/x-tex">\sim 26 \times 10^{6}</annotation></semantics></math>
+weights, or any number in the range
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>7</mn></msup><annotation encoding="application/x-tex">10^{7}</annotation></semantics></math>.
+They explicitly state that this number is a problem.</td>
+<td>All of <em>Base</em>, plus the student frames the problem as <em>no
+clinical dataset has enough labelled patients to train this many
+parameters</em> — i.e. names <strong>generalisation</strong> (or
+<strong>memorisation</strong>, or <strong>overfitting in the colloquial
+sense</strong>) as the operational consequence. They explicitly compare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>26</mn><mo>×</mo><msup><mn>10</mn><mn>6</mn></msup></mrow><annotation encoding="application/x-tex">\sim 26 \times 10^{6}</annotation></semantics></math>
+weights to the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>-patient
+cohort and observe the asymmetry.</td>
+<td>All of <em>Good</em>, plus the student compares to the parameter
+count of the proposed alternative in sub-question (ii) — i.e. <em>&quot;five
+(or four) orders of magnitude fewer parameters&quot;</em> or equivalent. The
+criterion is <em>Excellent</em> when the student treats the parameter
+count as a <em>first-class diagnostic</em>, not a side observation.</td>
+</tr>
+<tr>
+<td><strong>(C2) Loss of structure identified (Obj. 1 + Obj.
+3).</strong> The student identifies that the flattening erases <em>at
+least one</em> of the data&#39;s two structural axes (time,
+multi-channel).</td>
+<td>The student names <strong>temporal order</strong> as lost — <em>&quot;the
+MLP does not know which sample came first&quot;</em> or equivalent — and
+gives one example of a clinical pattern that cannot be encoded without
+order (e.g. <em>&quot;a sustained drop&quot;</em>, <em>&quot;a trend over the last
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+hours&quot;</em>, <em>&quot;a rhythm&quot;</em>). The example shows they have
+<em>operationalised</em> the abstract complaint.</td>
+<td>All of <em>Base</em>, plus the student also identifies the
+<strong>multi-channel collapse</strong> — i.e. notices that
+concatenating HR, BP, SpO2 into a single flat vector treats three
+physiologically-correlated channels as unrelated columns. They show they
+are tracking <em>both</em> axes the chapter named (time, channel).</td>
+<td>All of <em>Good</em>, plus the student <strong>diagnoses both
+problems as instances of the same principle</strong> — i.e. names
+<em>&quot;the architecture must respect the structure of the data&quot;</em> (or
+the chapter&#39;s own framing <em>&quot;match the structure&quot;</em>) as the
+unifying violation. They are seeing the <em>category</em> of error, not
+two unrelated bugs.</td>
+</tr>
+<tr>
+<td><strong>(C3) Alternative proposed, grounded in weight
+sharing.</strong> The student proposes a specific architecture and
+justifies it by naming the axis along which weights are shared.</td>
+<td>The student names <strong>a specific alternative
+architecture</strong> (RNN, or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN,
+or a hybrid) and <strong>states that weights are shared along the time
+axis</strong>. They give an order-of-magnitude estimate for the
+first-layer parameter count of the alternative — <strong>anywhere from a
+single kernel
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">\sim 20</annotation></semantics></math>
+weights) to a small recurrent block
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^{3}</annotation></semantics></math>
+weights) is accepted</strong>; anything in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>5</mn></msup><annotation encoding="application/x-tex">10^{5}</annotation></semantics></math>+
+signals the student has <em>reproduced the FC mistake on the proposed
+alternative</em> and is <strong>scored sotto-Base on C3</strong> (the
+order of magnitude is the diagnostic, not the precise number).</td>
+<td>All of <em>Base</em>, plus the student explicitly names the
+<strong>prior</strong> the alternative encodes that the MLP cannot —
+e.g. <em>&quot;the recurrent update encodes order&quot;</em>, <em>&quot;the kernel
+encodes locality&quot;</em>, <em>&quot;weight sharing makes the parameter count
+independent of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>&quot;</em>.
+The justification is the <em>structural</em> one, not just <em>&quot;it works
+better&quot;</em>.</td>
+<td>All of <em>Good</em>, plus one of: (a) the student proposes a
+<strong>hybrid</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+feature extractor + RNN aggregator, or <em>vice versa</em>) and grounds
+it in <em>both</em> priors (local pattern + long-range dependence); (b)
+the student justifies the choice between RNN and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+on the basis of <em>what kind of temporal dependence</em> they expect in
+the data (e.g. <em>&quot;if the diagnostic signal is a sustained trend over
+many minutes, RNN is appropriate; if it is a local waveform shape,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+suffices&quot;</em>). Either path shows the student is <em>choosing</em> the
+architecture, not <em>receiving</em> it.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza:</strong> <em>almeno
+<strong>due</strong> criteri a livello <strong>Base</strong>,
+<strong>e</strong> (C3) a livello <strong>Base</strong>
+obbligatorio</em> (un&#39;argomentativa senza proposta di alternativa è una
+<em>lamentela</em>, non una critica costruttiva — il capitolo insegna
+<em>l&#39;alternativa</em>, e l&#39;item lo deve valutare). Per la sufficienza
+Argumentation grad-level, <strong>almeno un criterio deve raggiungere
+<em>Good</em></strong> (un&#39;argomentativa interamente a livello Base =
+critica corretta ma piatta, sotto la soglia attesa da un
+dottorato/magistrale).</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>CRITICO — non dare ragione al collega su un
+dettaglio.</strong> Esempi del genere <em>&quot;hai ragione che
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mspace width="0.167em"></mspace><mi>H</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">1\,Hz</annotation></semantics></math>
+è eccessivo e potresti downsamplare a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.1</mn><mspace width="0.167em"></mspace><mi>H</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">0.1\,Hz</annotation></semantics></math>&quot;</em>
+sono <strong>praticamente sensati</strong> ma <strong>fuori
+scope</strong> di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>.
+Il capitolo non insegna <em>downsampling come strategia</em> — insegna
+<em>architetture che rispettano la struttura del dato</em>. Lo studente
+che propone <em>downsampling al posto</em> dell&#39;architettura nuova ha
+<em>evitato</em> la domanda, e va riportato alla critica di scope.
+Premiare il downsampling collassa l&#39;ironia didattica del capitolo
+(l&#39;opposto del <em>Modern Alchemist</em> di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>,
+applicato qui: lo studente che downsampla &quot;fa pace&quot; col collega invece
+di costruire l&#39;architettura giusta).</li>
+<li><strong>CRITICO — non penalizzare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+come proposta.</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+su segnali biomedici è una <em>practical answer</em> corretta e
+competitiva, <strong>esattamente</strong> come il trap del Poll 1 Card B
+del summative e del distrattore A di item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>.
+Lo studente che propone
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+e lo giustifica con <em>weight sharing across time</em> è a livello
+<em>Good</em> su (C3) — <em>non</em> sotto-Base perché <em>&quot;avrebbe
+dovuto scegliere RNN&quot;</em>. La triade item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>
+/ summative / item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+deve premiare la <em>coerenza dello studente</em> tra i tre punti, non
+forzare RNN ovunque.</li>
+<li><strong>Non penalizzare l&#39;assenza di notazione formale</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo>,</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub></mrow><annotation encoding="application/x-tex">W_{aa}, W_{ax}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;t&gt;}</annotation></semantics></math>)
+se i <em>concetti</em> sono presenti. Un dottorando UBEP può scrivere
+<em>&quot;l&#39;RNN ha tre matrici di pesi che riusa a ogni passo temporale, e
+basta — pesi totali
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>1000</mn></mrow><annotation encoding="application/x-tex">\sim 1000</annotation></semantics></math>&quot;</em>
+— è una risposta Eccellente su (C3) anche senza simboli.</li>
+<li><strong>Non premiare la lunghezza.</strong> Una critica di tre
+pagine che non quantifica
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>25.9</mn><mspace width="0.167em"></mspace><mi>M</mi></mrow><annotation encoding="application/x-tex">25.9\,M</annotation></semantics></math>
+pesi resta sotto-Base su (C1); una critica di sei righe che lo fa è a
+Base. Il segnale è la <em>struttura</em> della critica (problema →
+numero/principio → consequenza), non la lunghezza.</li>
+<li><strong>Non dare ragione al collega &quot;per solidarietà&quot;</strong>
+(<em>&quot;il collega è metodico, magari ha pensato a qualcosa che noi non
+vediamo&quot;</em>). Lo scenario è <em>strutturato</em> in modo che il design
+<strong>non</strong> sia difendibile dentro ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>:
+il design viola tutti e tre gli obiettivi del capitolo. La concessione
+di solidarietà è gentile ma <em>valuta sotto-Base</em> — l&#39;item misura
+la <em>capacità di critica argomentativa entro lo scope del
+capitolo</em>, non <em>la capacità di trovare un buon comportamento
+sociale nel commentare un collega</em>.</li>
+<li><strong>Non confondere &quot;ha proposto un&#39;alternativa con un acronimo&quot;
+con &quot;ha capito perché funziona&quot;.</strong> Lo studente che scrive
+<em>&quot;userei un RNN&quot;</em> senza nominare <em>weight sharing across
+time</em> o <em>order encoded by hidden state</em> è sotto-Base su (C3).
+L&#39;acronimo nudo è memorizzabile da chiunque abbia visto la slide title;
+il <em>perché funziona</em> è la prova del capitolo.</li>
+<li><strong>Non confondere &quot;ha invocato ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>&quot;
+con &quot;ha proposto un&#39;alternativa migliore&quot;.</strong> Uno studente che,
+già curioso di letture personali, propone <em>attention</em> o
+<em>Transformer</em> come alternativa va <strong>bloccato in
+correzione</strong> con una nota <em>&quot;ottima curiosità, ma fuori dallo
+scope dell&#39;esame su ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+— riproponi una scelta dentro CNN/RNN e ne parliamo a ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>&quot;</em>.
+Valutare ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>
+in un esame su ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+è il <em>trabocchetto inverso</em>: il docente che premia
+<em>attention</em> qui sta misurando <em>lettura extra-corso</em>, non
+<em>padronanza del capitolo</em>. Per coerenza, sotto-Base su (C3) se
+nominato come alternativa principale; <em>non penalizzato</em> se appare
+come <em>cliff-hanger</em> in chiusura (<em>&quot;un giorno con attention
+faremo meglio, ma oggi RNN è la risposta&quot;</em>).</li>
+</ul>
+</body>
+</html>

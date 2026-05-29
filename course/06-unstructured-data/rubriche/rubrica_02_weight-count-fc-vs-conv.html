@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 02 (Weight count: fully-connected vs
+convolutional, and how each scales)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-02-weight-count-fully-connected-vs-convolutional-and-how-each-scales">Rubric
+— Item 02 (Weight count: fully-connected vs convolutional, and how each
+scales)</h1>
+<p><strong>Item</strong>: IB-06-unstructured-data-02 <strong>Learning
+objective</strong>: Describe the convolution operation on a 2D input and
+explain <em>weight sharing across spatial positions</em> as the
+mechanism that makes the parameter count independent of input size (Obj.
+2).</p>
+<p>Three criteria, one per sub-question.</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>(i) FC weight count,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+input.</strong> The student writes the FC weight count for Architecture
+A on a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+input, no bias.</td>
+<td>The number
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><mn>096</mn></mrow><annotation encoding="application/x-tex">4\,096</annotation></semantics></math>
+is correct <strong>and</strong> the student writes the decomposition
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+explicitly (i.e. shows that the count is <em>one weight per input
+pixel</em>).</td>
+<td>All of <em>Base</em>, plus the student names the structural reason:
+<em>&quot;one weight per pixel of the input&quot;</em> (or equivalent — e.g.
+<em>&quot;each input dimension contributes its own coefficient&quot;</em>).</td>
+<td>All of <em>Good</em>, plus the student writes the FC count
+symbolically as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>⋅</mo><mi>W</mi></mrow><annotation encoding="application/x-tex">H \cdot W</annotation></semantics></math>
+for an
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>×</mo><mi>W</mi></mrow><annotation encoding="application/x-tex">H \times W</annotation></semantics></math>
+input, signalling that the formula generalises beyond the specific
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+case.</td>
+</tr>
+<tr>
+<td><strong>(ii) Convolutional weight count + weight-sharing
+explanation.</strong> The student writes the kernel weight count for
+Architecture B and explains why it is <em>not</em> multiplied by the
+number of spatial positions.</td>
+<td>The number
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+is correct <strong>and</strong> decomposed as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>.
+The 1-sentence justification names <strong>weight sharing</strong> or
+its operational equivalent (<em>&quot;the same kernel is reused at every
+position&quot;</em>, <em>&quot;the kernel is shared across space&quot;</em>).</td>
+<td>All of <em>Base</em>, plus the student explicitly <em>rejects</em>
+the wrong count: they write something like <em>&quot;it is not
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>9</mn><mo>×</mo><mtext mathvariant="normal">(spatial positions)</mtext></mrow><annotation encoding="application/x-tex">9 \times \text{(spatial positions)}</annotation></semantics></math>
+because the kernel is the same nine numbers at every position&quot;</em>. The
+rejection is what shows that the student is comparing the right and
+wrong models, not just remembering a fact.</td>
+<td>All of <em>Good</em>, plus the student frames the architectural
+prior in their own words: <em>&quot;weight sharing encodes positional
+invariance in the structure of the layer, instead of asking the network
+to learn it from data&quot;</em> (or equivalent).</td>
+</tr>
+<tr>
+<td><strong>(iii) Scaling to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+and operational consequence.</strong> The student writes the new weight
+counts at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+resolution for both architectures, and states the operational
+consequence.</td>
+<td>Both numbers are correct: Architecture A →
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mspace width="0.167em"></mspace><mn>048</mn><mspace width="0.167em"></mspace><mn>576</mn></mrow><annotation encoding="application/x-tex">1\,048\,576</annotation></semantics></math>
+(or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>2</mn><mn>20</mn></msup><annotation encoding="application/x-tex">2^{20}</annotation></semantics></math>,
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+shown explicitly), Architecture B →
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>.</td>
+<td>All of <em>Base</em>, plus the student names the <strong>scaling
+law</strong>: Architecture A grows <em>quadratically</em> with the
+linear resolution of the image, Architecture B is <em>constant</em>. (A
+student who writes <em>&quot;A&#39;s count grows by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>256</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">256\times</annotation></semantics></math>
+from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>&quot;</em>
+— i.e. the exact ratio — also qualifies.)</td>
+<td>All of <em>Good</em>, plus the student frames the <strong>clinical
+implication</strong> in their own words: e.g. <em>&quot;no clinical imaging
+dataset has enough labelled cases to train a million-parameter first
+layer; Architecture A is not trainable in practice, Architecture B
+is&quot;</em>. Naming <em>dataset size</em> (or <em>generalisation</em>, or
+<em>overfitting</em>) as the operational gate is what makes this
+<em>Excellent</em>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza:</strong> <em>almeno
+<strong>due</strong> criteri a livello <strong>Base</strong>,
+<strong>e</strong> (i) a livello Base obbligatorio</em> (un&#39;item
+applicativa sul conteggio dei pesi che non passa (i) non ha senso
+valutare oltre).</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>Non premiare
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><mn>096</mn></mrow><annotation encoding="application/x-tex">4\,096</annotation></semantics></math>&quot;
+e
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>&quot;
+nudi.</strong> Un numero senza decomposizione (i.e. senza
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+e senza
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>)
+è raggiungibile per memorizzazione da chi ha letto la SU 1 senza
+capirla. La decomposizione è il <em>processo</em> — il livello Base la
+richiede esplicitamente.</li>
+<li><strong>Non penalizzare notazione non canonica, se
+consistente.</strong> Se lo studente scrive
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>×</mo><mi>W</mi></mrow><annotation encoding="application/x-tex">H \times W</annotation></semantics></math>
+pesi&quot;</em> invece di
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">64 \times 64</annotation></semantics></math>
+pesi&quot;</em> in (i), è una <em>generalizzazione corretta</em> e va
+premiata come Eccellente. Se scrive il conto come
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4096</mn><annotation encoding="application/x-tex">4096</annotation></semantics></math>
+(senza spazio) o
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mspace width="0.167em"></mspace><mn>096</mn></mrow><annotation encoding="application/x-tex">4\,096</annotation></semantics></math>
+(con thin-space) o
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>,</mo><mn>096</mn></mrow><annotation encoding="application/x-tex">4{,}096</annotation></semantics></math>
+(con virgola separatore di migliaia), è la <em>stessa</em>
+risposta.</li>
+<li><strong>La 1-sentence sul <em>weight sharing</em> in (ii) È
+valutata, sempre.</strong> Per ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+il dispositivo <em>weight sharing</em> è il <em>titolo</em> della SU 1,
+il <em>nodo</em> del frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+dello storyboard, e il <em>secondo termine del six-word</em> (<em>&quot;Match
+the structure; share the weights.&quot;</em>) — il capitolo lo ha insegnato
+in tutti i registri possibili. Una risposta a (ii) che dà il numero
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+senza nominare <em>weight sharing</em> (o un equivalente operativo:
+<em>&quot;the same kernel is reused at every position&quot;</em>) sta sotto-Base.
+<em>Non</em> attenuare questa richiesta perché la frase non è stata
+&quot;esplicitamente assegnata come item d&#39;esame&quot; durante la lezione: il
+principio <em>è</em> stato dato, e questo item <em>è</em> il modo in cui
+lo si valuta.</li>
+<li><strong>Non confondere &quot;ha dato il numero giusto a (iii)&quot; con &quot;ha
+capito la legge di scala&quot;.</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mspace width="0.167em"></mspace><mn>048</mn><mspace width="0.167em"></mspace><mn>576</mn></mrow><annotation encoding="application/x-tex">1\,048\,576</annotation></semantics></math>
+è il calcolo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>×</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024 \times 1024</annotation></semantics></math>
+che si può fare a mente. Il livello <em>Good</em> di (iii) richiede di
+nominare <em>quadratico</em> o
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>256</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">256\times</annotation></semantics></math></em>
+— è la <em>legge</em>, non il <em>valore particolare</em>.</li>
+<li><strong>Non premiare la lunghezza.</strong> Una risposta di tre
+paragrafi a (ii) che non nomina <em>weight sharing</em> sta sotto-Base.
+Una risposta di una frase che lo nomina sta a Base o sopra.</li>
+</ul>
+</body>
+</html>

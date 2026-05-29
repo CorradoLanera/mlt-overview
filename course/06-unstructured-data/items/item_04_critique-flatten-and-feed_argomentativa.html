@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 04 — Critique a colleague&#39;s design: *&quot;flatten the
+multi-channel signal and feed it to a fully-connected network&quot;*</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-04--critique-a-colleagues-design-flatten-the-multi-channel-signal-and-feed-it-to-a-fully-connected-network">Item
+04 — Critique a colleague&#39;s design: <em>&quot;flatten the multi-channel
+signal and feed it to a fully-connected network&quot;</em></h1>
+<p><strong>ID</strong>: IB-06-unstructured-data-04 <strong>Learning
+objective</strong>: Argue, on a clinical multi-channel time-series
+scenario, why a fully-connected (MLP) baseline on the flattened raw
+signal <em>fails on three fronts</em> — parameter count, loss of
+temporal order, and loss of multi-channel structure — and propose an
+architectural alternative grounded in the chapter&#39;s central dispositive
+of <strong>weight sharing</strong>. Verifies Obj. 1 (match data →
+architecture), Obj. 2 (CNN, weight sharing across space), and Obj. 3
+(RNN, weight sharing across time). <strong>Category</strong>:
+Argumentation / valutazione <strong>Type</strong>: argomentativa (open
+critique, 2 sub-questions) <strong>Difficulty</strong>: high
+<strong>Chapter</strong>: 06-unstructured-data</p>
+<h2 id="question">Question</h2>
+<p>A clinical-research colleague — methodical, well-read in classical
+statistics, new to deep learning — sends you the design of an ML
+pipeline for predicting <em>in-hospital mortality</em> within the next
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>24</mn><annotation encoding="application/x-tex">24</annotation></semantics></math>
+hours from continuous bedside-monitor data. Here is their design,
+verbatim:</p>
+<blockquote>
+<p><em>&quot;Each patient is monitored for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>24</mn><annotation encoding="application/x-tex">24</annotation></semantics></math>
+hours. We record three signals — heart rate, mean arterial pressure,
+peripheral oxygen saturation — sampled at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+Hz, so each signal is a
+length-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>86</mn><mspace width="0.167em"></mspace><mn>400</mn></mrow><annotation encoding="application/x-tex">86\,400</annotation></semantics></math>
+time series. For each patient, I concatenate the three signals into a
+single flat vector of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>86</mn><mspace width="0.167em"></mspace><mn>400</mn><mo>×</mo><mn>3</mn><mo>=</mo><mn>259</mn><mspace width="0.167em"></mspace><mn>200</mn></mrow><annotation encoding="application/x-tex">86\,400 \times 3 = 259\,200</annotation></semantics></math>
+scalar values, and I feed this vector to a fully-connected neural
+network with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+hidden units in the first layer and a single sigmoid output. The network
+is deep, so it should be able to find any pattern that matters. I will
+train it on our
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>-patient
+cohort.&quot;</em></p>
+</blockquote>
+<p>Your colleague closes with: <em>&quot;can you see any problem with this
+design?&quot;</em></p>
+<h3 id="sub-question-i--critique">Sub-question (i) — Critique</h3>
+<p>Identify the <strong>structural problems</strong> of this design
+using the material of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>.
+A complete answer names <strong>at least two</strong> distinct problems
+(not symptoms or restatements of the same problem) and justifies each
+with one concrete number or one concrete reference to the chapter&#39;s
+principle. <em>Do not</em> invoke material the chapter has not covered
+(e.g. dropout, batch normalisation, regularisation).</p>
+<h3 id="sub-question-ii--proposal">Sub-question (ii) — Proposal</h3>
+<p>Propose <strong>an alternative architecture</strong> that fixes the
+problems you have identified, and justify the alternative by naming the
+<em>prior</em> it encodes — i.e. <em>what structural property of the
+data the alternative respects that the colleague&#39;s MLP does not</em>. A
+complete proposal names the architecture, sketches what is shared and
+along which axis, and gives one order-of-magnitude estimate of the
+parameter count for the <em>first layer only</em> under your proposed
+architecture.</p>
+<h2 id="expected-answer">Expected answer</h2>
+<h3 id="sub-question-i--critique-1">Sub-question (i) — Critique</h3>
+<p>A complete critique names <strong>three distinct problems</strong>,
+each grounded in one of the chapter&#39;s three objectives:</p>
+<ol type="1">
+<li><strong>Parameter explosion (Obj. 2).</strong> The first
+fully-connected layer has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>259</mn><mspace width="0.167em"></mspace><mn>200</mn><mo>×</mo><mn>100</mn><mo>=</mo><mn>25</mn><mspace width="0.167em"></mspace><mn>920</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">259\,200 \times 100 = 25\,920\,000</annotation></semantics></math>
+weights — i.e. <strong>roughly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn><mspace width="0.167em"></mspace><mo>×</mo></mrow><annotation encoding="application/x-tex">5\,000\,\times</annotation></semantics></math>
+more parameters than the cohort has training patients</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>25.9</mn><mtext mathvariant="normal">M</mtext><mspace width="0.167em"></mspace><mi>/</mi><mspace width="0.167em"></mspace><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>≈</mo><mn>5</mn><mspace width="0.167em"></mspace><mn>200</mn></mrow><annotation encoding="application/x-tex">25.9 \text{M} \,/\, 5\,000 \approx 5\,200</annotation></semantics></math>).
+No clinical dataset of this size can train a first layer with that many
+parameters; the network will <em>memorise</em> the training cohort
+rather than generalise. The colleague&#39;s <em>&quot;the network is deep, so it
+should find any pattern that matters&quot;</em> is exactly the assumption
+that the <em>parameter explosion</em> invalidates: capacity is not the
+same thing as generalisation.</li>
+<li><strong>Loss of temporal order (Obj. 3).</strong> The flattening
+into a single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>259</mn><mspace width="0.167em"></mspace><mn>200</mn></mrow><annotation encoding="application/x-tex">259\,200</annotation></semantics></math>-vector
+erases the time axis. To the MLP, sample
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and sample
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>86</mn><mspace width="0.167em"></mspace><mn>400</mn></mrow><annotation encoding="application/x-tex">86\,400</annotation></semantics></math>
+are <em>interchangeable columns of a spreadsheet</em>. But a
+pre-mortality blood-pressure trajectory is <em>a pattern over time</em>
+— a sustained drop, a loss of variability, an oscillation — and a model
+that does not know which sample came when <em>cannot</em> describe such
+a pattern. The MLP would have to <em>discover</em> the time axis from
+the data (at additional parameter cost, on a dataset that already cannot
+pay).</li>
+<li><strong>Loss of multi-channel structure (Obj. 1).</strong>
+Concatenating HR, BP, and SpO2 into a single flat vector treats the
+three physiologically-correlated signals as <em>unrelated columns</em>.
+The chapter&#39;s Obj. 1 rule (<em>&quot;the architecture must respect the
+structure of the data&quot;</em>) is violated twice: once by erasing the time
+axis (problem 2), and once by collapsing the three parallel channels
+into a single concatenation that hides the channel-axis structure.</li>
+</ol>
+<p>The deeper diagnosis: the colleague has picked an architecture that
+<em>does not respect any of the data&#39;s two structural axes</em> (time,
+channel). The chapter&#39;s central message — <em>match the structure, share
+the weights</em> — is the principle the design violates.</p>
+<h3 id="sub-question-ii--proposal-1">Sub-question (ii) — Proposal</h3>
+<p>A complete proposal names a <strong>specific</strong> architectural
+alternative and grounds it in the chapter&#39;s <em>weight sharing</em>
+dispositive. Two acceptable canonical answers:</p>
+<ul>
+<li><p><strong>(a) Recurrent Neural Network reading the multi-channel
+signal as a sequence of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>-dimensional
+inputs.</strong> At each
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>86</mn><mspace width="0.167em"></mspace><mn>400</mn></mrow><annotation encoding="application/x-tex">t = 1, \ldots, 86\,400</annotation></semantics></math>
+the input is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">x^{&lt;t&gt;} \in \mathbb{R}^{3}</annotation></semantics></math>
+(the three channels at that time), the hidden state is — say —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>∈</mo><msup><mi>ℝ</mi><mn>32</mn></msup></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} \in \mathbb{R}^{32}</annotation></semantics></math>,
+and the final
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>86</mn><mspace width="0.167em"></mspace><mn>400</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;86\,400&gt;}</annotation></semantics></math>
+feeds a small classifier head. Weights to learn (no bias):
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mn>32</mn><mo>⋅</mo><mn>32</mn><mo>=</mo><mn>1</mn><mspace width="0.167em"></mspace><mn>024</mn></mrow><annotation encoding="application/x-tex">|W_{aa}| = 32 \cdot 32 = 1\,024</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mn>32</mn><mo>⋅</mo><mn>3</mn><mo>=</mo><mn>96</mn></mrow><annotation encoding="application/x-tex">|W_{ax}| = 32 \cdot 3 = 96</annotation></semantics></math>,
+plus a small classifier head. Order of magnitude:
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^{3}</annotation></semantics></math>
+weights</strong>, independent of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>.
+This is <strong>five orders of magnitude fewer parameters</strong> than
+the colleague&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>25.9</mn><mspace width="0.167em"></mspace><mi>M</mi></mrow><annotation encoding="application/x-tex">25.9\,M</annotation></semantics></math>
+— and the architecture <em>encodes</em> the temporal order through the
+recurrent update, instead of asking the network to discover it.</p></li>
+<li><p><strong>(b)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D
+Convolutional Neural Network with multi-channel input.</strong> Channels
+are treated as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+&quot;feature channels&quot; (as in RGB for images), and one or more
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D
+kernels of size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+(say
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">k = 7</annotation></semantics></math>)
+are slid across time. A single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D
+kernel has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>⋅</mo><mn>7</mn><mo>=</mo><mn>21</mn></mrow><annotation encoding="application/x-tex">3 \cdot 7 = 21</annotation></semantics></math>
+weights. Order of magnitude:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^{1}</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>2</mn></msup><annotation encoding="application/x-tex">10^{2}</annotation></semantics></math>
+weights for the first layer. Encodes <em>temporal local patterns</em>
+(the analogue, on the time axis, of CNN&#39;s translation invariance on the
+spatial axis) — appropriate if the <em>local shape</em> of the rhythm
+carries the diagnostic signal more than long-range dependence
+does.</p></li>
+</ul>
+<p>Either answer is accepted as a <em>complete</em> response provided
+the student names:</p>
+<ul>
+<li>the architecture chosen,</li>
+<li>the axis along which weights are shared (time for both),</li>
+<li>a parameter-count order of magnitude for the first layer,</li>
+<li>the <em>prior</em> the alternative encodes that the MLP cannot.</li>
+</ul>
+<p>A student who proposes a <strong>hybrid</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+feature extractor + RNN aggregator, or <em>vice versa</em>) and
+justifies it by naming both <em>local patterns</em> and <em>long-range
+structure</em> shows mastery and is rewarded as Excellent on this
+sub-question.</p>
+<h2 id="rubric">Rubric</h2>
+<p>→ <a href="rubriche/rubrica_04_critique-flatten-and-feed.md">rubriche/rubrica_04_critique-flatten-and-feed.md</a></p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>Nota docente — perché un argomentativa.</em> I primi tre item
+(MCQ + applicativa + MCQ scenarizzato) misurano <em>componenti
+separate</em> dei tre obiettivi. Item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+è il <em>test di sintesi</em>: chi ha capito Obj. 1+2+3 deve essere in
+grado di criticare un design <em>che fallisce contemporaneamente su
+tutti e tre</em>, e proporre un&#39;alternativa <em>che li rispetta
+contemporaneamente</em>. Un set di item senza Argumentation finale è una
+raccolta di esercizi; con l&#39;item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+è una <em>valutazione del capitolo come unità didattica</em>.</p>
+<p><em>Nota docente — il design del collega è clinicamente
+plausibile.</em> Un epidemiologo o uno statistico medico abituato a dati
+tabular <em>davvero</em> costruirebbe questo tipo di pipeline come primo
+tentativo — il flatten è il riflesso <em>naturale</em> di chi ha sempre
+lavorato con un vettore di feature per paziente. L&#39;item <em>non</em> sta
+criticando un design strawman: sta criticando il <strong>default
+mentale</strong> di un&#39;intera categoria di colleghi (quella in cui molti
+studenti UBEP si troveranno a lavorare). L&#39;ironia didattica funziona
+solo se non viene smascherata come parodia.</p>
+<p><em>Nota docente — bias-da-evitare critico nella correzione (vedi
+rubrica).</em> Il rischio principale è <strong>dare ragione al collega
+su un dettaglio</strong> (es. <em>&quot;hai ragione,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mspace width="0.167em"></mspace><mi>H</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">1\,Hz</annotation></semantics></math>
+è poco e potresti farlo a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.1</mn><mspace width="0.167em"></mspace><mi>H</mi><mi>z</mi></mrow><annotation encoding="application/x-tex">0.1\,Hz</annotation></semantics></math>&quot;</em>).
+Una concessione <em>praticamente sensata</em> ma <strong>fuori scope di
+ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math></strong>
+— il capitolo non insegna <em>downsampling come strategia</em>, insegna
+<em>architetture che rispettano la struttura del dato</em>. Lo studente
+che propone <em>downsampling al posto</em> di un&#39;architettura nuova ha
+<em>evitato</em> la domanda. Si valuta la critica <em>dentro lo scope
+del capitolo</em>.</p>
+<p><em>Nota docente — alternative accettate.</em> Sia RNN (canonical)
+sia
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+(practical) sono accettate come risposte complete. Pattern speculare al
+trap del Poll 1 Card B del summative + al distrattore A dell&#39;item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>:
+l&#39;item
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+<strong>chiude</strong> la triade, premiando come Eccellente lo studente
+che propone un <em>hybrid</em> o che giustifica esplicitamente la scelta
+fra RNN e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>D-CNN
+sulla base del <em>tipo di dipendenza</em> che pensa domini il segnale
+(locale vs lungo raggio).</p>
+<p><em>Nota docente — anti-leakage rispettata.</em> Niente vocabolario
+ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>07</mn><mo>+</mo></mrow><annotation encoding="application/x-tex">07+</annotation></semantics></math>.
+<strong>Importante</strong>: l&#39;item NON deve invocare
+<em>attention</em>, <em>Transformer</em>, <em>self-attention</em> come
+alternativa &quot;migliore di RNN su sequenze lunghe&quot; — è esattamente la trap
+che il pre-hook a ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>
+pianta e che ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>
+risolverà. In ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+la canonical answer su sequenze è RNN, punto.</p>
+<p><em>Nota docente — versione del docente.</em> Ho iterato la
+formulazione del design del collega per assicurarmi che (a) il
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>86</mn><mspace width="0.167em"></mspace><mn>400</mn></mrow><annotation encoding="application/x-tex">T_x = 86\,400</annotation></semantics></math>
+producesse un parameter count <em>chiaramente catastrofico</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>25.9</mn><mi>M</mi></mrow><annotation encoding="application/x-tex">25.9M</annotation></semantics></math>,
+non
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>1</mn><mi>M</mi></mrow><annotation encoding="application/x-tex">\sim 1M</annotation></semantics></math>
+— la grandezza deve essere <em>non-ambigua</em>), (b) le tre signal
+HR/BP/SpO2 fossero clinicamente correlate (multi-channel structure è una
+vera proprietà del dato, non un&#39;invenzione) e (c) il cohort size
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+pazienti) fosse <em>plausibile</em> per un dataset clinico reale ma
+<em>insufficiente</em> per addestrare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>25.9</mn><mi>M</mi></mrow><annotation encoding="application/x-tex">25.9M</annotation></semantics></math>
+pesi — così il parameter explosion è leggibile come <em>limite operativo
+concreto</em>, non come critica astratta.</p>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>
