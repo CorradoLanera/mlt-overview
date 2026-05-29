@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 04 (Interpretability defence: technique +
+clinical argument)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-04-interpretability-defence-technique--clinical-argument">Rubric
+— Item 04 (Interpretability defence: technique + clinical argument)</h1>
+<p><strong>Item</strong>: IB-10-best-practices-04
+<strong>Objective</strong>: Match the interpretability technique to the
+model family — <em>linear/logistic</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>coefficients</em>; <em>single tree</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>decision path</em>; <em>RF / gradient boosting</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>variable importance</em>; <em>neural network</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>SHAP or surrogate models</em> — and weigh the
+interpretability/performance tradeoff as a <strong>clinical
+decision</strong>, not a technical one. State an operational rule that
+survives both audiences (clinical lead asking <em>&quot;why this
+patient?&quot;</em> and ethics committee asking <em>&quot;what does the model rely
+on?&quot;</em>) (Obj. 3).</p>
+<p>The rubric scores three criteria, one per component of Obj. 3, on
+three levels — <em>Base</em> (sufficiency floor), <em>Good</em> (solid
+command), <em>Excellent</em> (operational fluency that generalises
+beyond the specific scenario).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Technique matching to model family (sub-q
+a)</strong></td>
+<td>Names <strong>variable importance</strong> as the technique for the
+random forest, <strong>and</strong> does <strong>not</strong> propose
+reading off <em>coefficients</em>. The matching is correctly
+<em>one-direction</em> (this technique goes with this family).
+<strong>Below Base</strong> <em>(critical)</em>: proposes <em>&quot;read off
+the random forest&#39;s coefficients&quot;</em> (coefficients exist for logistic
+regression, <strong>not</strong> for tree ensembles — the forest&#39;s
+prediction is the average of many trees, not a single per-feature linear
+weight); proposes <em>&quot;read the decision path of the random forest&quot;</em>
+(decision paths exist for a <em>single</em> tree, but a random forest is
+hundreds of trees, and no one path is the prediction); proposes a
+technique <em>invented for a different family</em> (e.g. <em>&quot;attention
+weights&quot;</em> — applies to Transformers, not to forests). These are the
+chapter&#39;s named mismatches; getting them wrong means the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1{:}1</annotation></semantics></math>
+matching has not been internalised.</td>
+<td>All of <em>Base</em>, plus the student names <strong>the global /
+per-patient distinction</strong> explicitly: variable importance is
+<strong>global</strong> (a population-level ranking — <em>which features
+the ensemble relies on most across the data</em>), so it answers
+<em>&quot;what does the model rely on?&quot;</em> but <strong>does not by
+itself</strong> answer <em>&quot;why this patient?&quot;</em>. The student
+supplies an operational route for the per-patient question — minimally,
+<em>&quot;read the top-ranked features against this patient&#39;s chart
+values&quot;</em> (which is the chapter&#39;s pragmatic fall-back) — or any
+operationally-equivalent move. Naming the limit of variable importance
+and providing a per-patient route shows the student has not confused
+<em>the technique</em> with <em>the explanation</em>.</td>
+<td>All of <em>Good</em>, plus the student <strong>matches each
+component to the audience that needs it</strong>: <em>global variable
+importance</em> for the <strong>ethics committee</strong> (who ask
+population-level questions about which features the model uses, in order
+to judge whether the model is relying on something inappropriate — e.g.
+a proxy for socio-economic status); <em>the per-patient route</em> for
+the <strong>clinical lead</strong> (who will, on the next patient, need
+to explain to that specific patient — or to a colleague — why the model
+recommended what it recommended). Recognising that <em>interpretability
+techniques have audiences</em> — and that the choice of route is, in
+part, a choice about <em>who is going to read the explanation</em> — is
+the chapter-level fluency mark for the matching component of Obj. 3.
+<strong>Bonus accepted (not required) at Excellent</strong>: a student
+who additionally names a per-patient attribution technique seen outside
+the chapter&#39;s core (<em>SHAP</em>, <em>LIME</em>, <em>partial dependence
+at the patient&#39;s values</em>) is at Excellent <strong>if</strong> the
+citation is anchored operationally (the student names what the bonus
+technique <em>adds</em> over variable importance); a mechanical citation
+of the term without the anchor stays at Good.</td>
+</tr>
+<tr>
+<td><strong>C2 — Technical justification of the matching (sub-q
+a)</strong></td>
+<td>States a <strong>correct technical reason</strong> for the matching,
+even if generic — e.g. <em>&quot;a random forest aggregates many trees, so
+there is no single weight per feature to read off&quot;</em>, <em>&quot;variable
+importance ranks features by how much they contribute to the model&#39;s
+accuracy across the trees&quot;</em>, <em>&quot;forests don&#39;t have a single
+equation, so a post-hoc ranking is needed&quot;</em>. The reason is
+<em>true</em> and <em>non-circular</em> (the student does not assert the
+matching with no reason, and does not assert it for a wrong reason).
+<strong>Below Base</strong> <em>(critical)</em>: the matching is
+asserted with <strong>no</strong> technical reason (<em>&quot;I&#39;ll use
+variable importance because it&#39;s standard in healthcare AI&quot;</em> —
+appeal to authority); the matching is asserted with a
+<strong>wrong</strong> technical reason (<em>&quot;random forests don&#39;t use
+coefficients because they overfit&quot;</em> — confuses
+<em>interpretability</em> with <em>capacity</em>: the forest doesn&#39;t
+have coefficients because it aggregates many trees, not because
+coefficients would be <em>&quot;too simple&quot;</em>; or <em>&quot;variable importance
+has lower bias than coefficients&quot;</em> / <em>&quot;variable importance is
+statistically more robust&quot;</em> — confuses <em>interpretability</em>
+with <em>statistical-estimation properties</em>, which are a different
+dimension entirely and are not what the chapter is asking about).</td>
+<td>All of <em>Base</em>, plus the student <strong>explicitly
+distinguishes built-in interpretability from post-hoc
+interpretability</strong>, and frames variable importance as the
+<em>post-hoc</em> technique that matches random forests
+<strong>because</strong> their structure (an average across many trees)
+does not expose a small set of human-readable parameters — there is
+<em>nothing built-in to read off</em>, so a <em>post-hoc</em> technique
+is required. The chapter&#39;s terminology of <em>built-in vs post-hoc</em>
+— or any operationally-equivalent formulation
+(<em>read-from-the-model</em> vs
+<em>attribution-on-top-of-the-model</em>) — is present.</td>
+<td>All of <em>Good</em>, plus recognition of the chapter&#39;s <strong>full
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1{:}1</annotation></semantics></math>
+mapping as a rule, not a menu</strong>: the student notes (briefly, one
+sentence is enough) that <em>linear / logistic</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>coefficients</em>, <em>single tree</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>decision path</em>, <em>RF / gradient boosting</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>variable importance</em>, <em>neural network</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>SHAP or surrogate models</em> — and that the matching is
+<em>determined by the structure each family exposes</em>, not by the
+analyst&#39;s preference. The student understands that <em>if tomorrow the
+team escalated further to a neural net, the technique would become SHAP
+or a surrogate model</em> — the rule generalises across the model-family
+axis, and the student names that generalisation.</td>
+</tr>
+<tr>
+<td><strong>C3 — Clinical defensibility framing (sub-q b)</strong></td>
+<td>The defence sentence gives a <strong>correct reason</strong> for
+preferring the chosen technique over reverting to logistic — but the
+reason is <strong>technical</strong>, with the <em>model</em> as the
+subject: <em>&quot;random forest reaches AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.32</mn><annotation encoding="application/x-tex">0.32</annotation></semantics></math>
+versus
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.27</mn><annotation encoding="application/x-tex">0.27</annotation></semantics></math>
+for logistic&quot;</em>, <em>&quot;we use variable importance because the model
+has no coefficients&quot;</em>, <em>&quot;the performance gap justifies the loss
+of interpretability&quot;</em>. The tradeoff is <em>acknowledged</em>, even
+if framed about the <em>model</em> rather than the <em>patient</em>.
+<strong>Below Base</strong> <em>(critical)</em>: the defence sentence
+<strong>bypasses the tradeoff</strong> entirely — <em>&quot;interpretability
+is always better, so we should have used logistic&quot;</em> (refuses the
+question); <em>&quot;performance is always better, so the forest is
+fine&quot;</em> (refuses the question); the defence sentence is <em>&quot;I use
+variable importance because it&#39;s the standard&quot;</em> (appeal to
+authority, no tradeoff posed); the defence sentence is missing or merely
+restates the technical answer from (a) without a clinical reason. The
+chapter is explicit: <em>&quot;the tradeoff is a clinical decision, not a
+technical one&quot;</em> — bypassing the tradeoff means not having understood
+the objective.</td>
+<td>All of <em>Base</em>, plus the student <strong>names the tradeoff as
+a comparison</strong>: <em>&quot;we accept variable importance post-hoc over
+logistic built-in <strong>because</strong> the performance gap is
+meaningful enough to be worth the loss of native interpretability&quot;</em>,
+or any operationally-equivalent formulation in which both sides of the
+tradeoff are <em>named</em> (what is gained: more readmissions caught;
+what is lost: built-in interpretation). The tradeoff is <em>posed</em>,
+but as a <strong>technical comparison</strong> between two model choices
+on technical criteria — the subject is still the <em>model</em>, not yet
+the <em>patient</em>.</td>
+<td>All of <em>Good</em>, plus the defence sentence <strong>inverts the
+subject from model to patient</strong>, <strong>names the
+cost-of-failure clinically</strong>, and <strong>positions the tradeoff
+as the clinical lead&#39;s call</strong>: the subject of the sentence is the
+<em>patient</em> (<em>&quot;the patient is better served by...&quot;</em>, <em>&quot;on
+this audit, the patients we miss with logistic...&quot;</em>); the
+cost-of-failure is <em>clinically qualified</em> with at least one
+concrete clinical consequence (re-admission, possible adverse event,
+longer length of stay, ICU re-entry — not just <em>&quot;worse
+performance&quot;</em>); the <em>clinical lead&#39;s signoff on the cost
+ratio</em> is referenced (explicitly or implicitly) as the
+<em>authority</em> on which the tradeoff is being resolved — <em>the
+data scientist applies the rule, the clinician sets the cost ratio</em>.
+The sentence reads as something the clinical lead could <em>read aloud
+back to the ethics committee</em> without rephrasing — which is the
+operational test the chapter implicitly poses for clinical
+defensibility.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza</strong>: <strong>tutti e tre C1, C2 e
+C3 a livello Base o superiore</strong>. Una proposta di <em>&quot;read off
+coefficients&quot;</em> su random forest in C1 è <strong>sotto Base</strong>
+indipendentemente dal resto (il matching tecnico è sbagliato; l&#39;item
+misura <em>matching</em>, non <em>eloquence</em>). Un <em>bypass del
+tradeoff</em> in C3 (<em>&quot;interpretability is always better&quot;</em> /
+<em>&quot;performance is always better&quot;</em>) è <strong>sotto Base</strong>
+indipendentemente dal resto (l&#39;item misura <em>applicare il tradeoff
+come scelta clinica</em>, e bypassarlo significa non averlo applicato).
+Una mancanza di <strong>giustificazione tecnica</strong> in C2
+(asserzione del matching senza ragione, o con ragione sbagliata) è
+<strong>sotto Base</strong> anche se il matching nominato è quello
+corretto — la rubrica misura <em>capire perché</em>, non <em>recitare la
+parola variable importance</em>.</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>CRITICO — non premiare a Excellent una risposta che cita
+<em>variable importance</em> senza dire <em>perché variable importance
+per questa famiglia</em>.</strong> L&#39;uso meccanico del termine è
+<em>recall di parole</em>, non <em>applicazione della regola</em>. Lo
+studente che scrive <em>&quot;I&#39;ll use variable importance because it is the
+standard interpretability technique for ensembles in clinical AI&quot;</em>
+sta facendo una <em>appeal to authority</em> travestita da matching:
+<strong>sotto Base</strong> su C2. Il livello
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mi>o</mi><mi>o</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">Good</annotation></semantics></math>
+richiede <em>built-in vs post-hoc</em>; il livello
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>x</mi><mi>c</mi><mi>e</mi><mi>l</mi><mi>l</mi><mi>e</mi><mi>n</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">Excellent</annotation></semantics></math>
+richiede <em>full
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1{:}1</annotation></semantics></math>
+mapping come regola</em>. Senza una di queste due, <em>variable
+importance</em> è una parola, non una scelta.</li>
+<li><strong>CRITICO — non premiare a Excellent un framing che bypassa il
+tradeoff.</strong> Il chapter è esplicito sul punto: <em>&quot;the tradeoff
+is a clinical decision, not a technical one&quot;</em>. Risposte come
+<em>&quot;interpretability is always better&quot;</em> (uso logistic always) o
+<em>&quot;performance is always better&quot;</em> (uso
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mi>o</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">box</annotation></semantics></math>
++ post-hoc always) sono <strong>rifiuti del tradeoff</strong>, non sue
+<em>risoluzioni</em>. Sono <strong>sotto Base</strong> su C3 a
+prescindere dalla qualità retorica. Il <em>Voce docente — non
+valutato</em> di <a href="../objectives.md">objectives.md</a> (la nota
+sul <em>gradient boosting vince empiricamente su dati clinici
+tabular</em>) <strong>non</strong> ribalta questo punto: anche se gli
+ensembles vincono empiricamente, <em>applicare</em> la scelta richiede
+<em>porre</em> il tradeoff, non <em>dichiararlo già risolto</em>.</li>
+<li><strong>CRITICO — accettare a Excellent una risposta che <em>inverte
+la scelta</em> (revert to logistic + read off coefficients), se la
+mappatura tecnica è corretta E la giustificazione clinica è ben
+posta.</strong> Il chapter non dice <em>&quot;sempre il modello
+complesso&quot;</em>; dice <em>&quot;earn the complexity&quot;</em> — e l&#39;opposto
+<em>&quot;defend the simplicity&quot;</em> è altrettanto valido se argomentato
+clinicamente. Uno studente che scrive <em>&quot;on this audit the extra
+recall the random forest buys is below the threshold our clinical lead
+has set for accepting model opacity — so we revert to logistic on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+features, read off coefficients, and the model is built-in interpretable
+to the bedside&quot;</em> sta applicando la <strong>stessa rubrica</strong>
+con l&#39;altro segno: matching tecnico corretto (logistic
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+coefficients,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>✓</mi><annotation encoding="application/x-tex">\checkmark</annotation></semantics></math>),
+tradeoff posto (gap nominato, soglia clinica nominata,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>✓</mi><annotation encoding="application/x-tex">\checkmark</annotation></semantics></math>),
+clinical-defensibility framing (cost-of-failure quantified vs
+cost-of-opacity quantified,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>✓</mi><annotation encoding="application/x-tex">\checkmark</annotation></semantics></math>).
+<strong>Accettare a Excellent</strong>. L&#39;errore opposto — penalizzare
+la <em>inversione di scelta</em> per favorire <em>random forest</em> —
+sarebbe un <em>bias da modello-vincente</em> che la rubrica deve
+esplicitamente rifiutare.</li>
+<li><strong>SHAP / LIME / Shapley values come <em>bonus</em>, non come
+<em>required</em>.</strong> La mappatura <em>ufficiale</em> in <a href="../objectives.md">objectives.md</a> è <em>RF/GB
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+variable importance</em> e <em>NN
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+SHAP/surrogate</em>. Lo studente che applica la mappatura ufficiale (RF
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+variable importance) è <strong>al livello pieno della rubrica</strong>,
+non a un livello <em>inferiore</em> perché non ha &quot;spinto&quot; su SHAP. Uno
+studente che <strong>aggiunge</strong> SHAP / LIME / Shapley values /
+partial dependence come tecnica di <em>per-patient attribution</em>
+sopra la variable-importance globale è <strong>bonus a
+Excellent</strong>, e va riconosciuto come tale, <strong>se</strong> la
+citazione è ancorata operativamente (lo studente nomina cosa la tecnica
+bonus <em>aggiunge</em> su variable importance: la per-patient
+attribution che VI, essendo globale, non fornisce). Citazioni meccaniche
+(<em>&quot;perché è lo standard&quot;</em>, <em>&quot;perché SHAP è
+interpretabile&quot;</em>) <strong>non</strong> sono bonus — restano
+<em>Good</em> su C2 (terminologia senza matching). <strong>Da dove esce
+SHAP per uno studente che la cita?</strong> Tipicamente da: (i) ricerca
+per casa su Obj. 3 (lo studente curioso che ha letto un paper o un
+tutorial); (ii) ricordo della <em>narrative illustration</em> della
+prosa di <a href="../narrative.md">narrative.md</a> (Elena difende il
+modello con <em>&quot;SHAP on a forest&quot;</em>); (iii) menzione <em>voce
+docente</em> in classe di SHAP come <em>upgrade</em> della VI globale a
+<em>per-patient</em> — non valutata. In nessuno dei tre casi la mancata
+citazione è penalizzante.</li>
+<li><strong>Non penalizzare la mancanza di numeri esatti.</strong>
+L&#39;Excellent può menzionare <em>&quot;meaningfully more readmissions
+caught&quot;</em> o <em>&quot;AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.32</mn><annotation encoding="application/x-tex">0.32</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.27</mn><annotation encoding="application/x-tex">0.27</annotation></semantics></math>,
+an extra recall margin clinically material&quot;</em> — è equivalente.
+L&#39;importante è che il <em>guadagno sia nominato come clinicamente
+significativo</em>, non che sia <em>quantificato con la cifra
+esatta</em>. Penalizzare uno studente per non aver <em>tradotto</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.32</mn><mo>−</mo><mn>0.27</mn><mo>=</mo><mn>0.05</mn></mrow><annotation encoding="application/x-tex">0.32 - 0.27 = 0.05</annotation></semantics></math>
+in termini di <em>patients</em> sarebbe un bias da quantitativismo che
+non è nello spirito di Obj. 3 (che chiede <em>defensibility</em>, non
+<em>biostatistical precision</em>).</li>
+<li><strong>Non premiare lo studente che cita Shapley values con
+dettagli matematici (cooperative game theory, marginal contributions,
+axiomatic uniqueness).</strong> Quei dettagli sono nel <em>Voce docente
+— non valutato</em> di <a href="../objectives.md">objectives.md</a>. Lo
+studente che li nomina mostra <em>fluenza tecnica</em>, ma la rubrica
+misura <em>clinical defensibility</em>, non <em>SHAP theory</em>. È
+<strong>bonus fuori rubrica</strong> — non sostituisce la
+giustificazione clinica.</li>
+<li><strong>Non confondere <em>interpretability</em> con
+<em>explainability</em>.</strong> Il chapter cita la distinzione
+concettuale (<em>built-in interpretability</em> vs <em>post-hoc
+explainability</em>) ma <strong>non la valuta</strong> (<em>&quot;la cito ma
+non la valuto&quot;</em> — <a href="../objectives.md">objectives.md</a>). Uno
+studente che usa <em>interpretability</em> in entrambi i sensi senza
+distinguere è <strong>a livello Good</strong>, non penalizzato; uno
+studente che distingue è <strong>bonus fuori rubrica</strong>, non
+<em>necessario</em> per Excellent. Il discriminante di Excellent è il
+<em>framing clinico</em>, non la <em>precisione terminologica
+AI/ML</em>.</li>
+<li><strong>Variable importance è agnostico fra le sue varianti
+operative.</strong> Esistono almeno due implementazioni di <em>variable
+importance</em> per random forest: <em>Mean Decrease in Impurity</em>
+(MDI — la versione <em>built-in</em> di scikit-learn
+<code>.feature_importances_</code>, calcolata come riduzione totale di
+impurità accumulata a ogni split su ogni feature) e <em>permutation
+importance</em> (più robusta sui feature correlati, calcolata permutando
+ogni feature sul validation set e misurando il calo di performance). Lo
+studente che cita una variante specifica (<em>&quot;MDI from scikit-learn&#39;s
+feature_importances_&quot;</em> o <em>&quot;permutation importance with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+repeats on the validation split&quot;</em>) mostra <strong>fluenza
+tecnica</strong> ma <strong>non è privilegiato</strong> rispetto allo
+studente che cita <em>variable importance</em> senza specifica.
+Distinguere MDI da permutation è <strong>bonus fuori rubrica</strong>,
+come SHAP / LIME / Shapley values. La rubrica misura <em>matching</em> +
+<em>clinical defensibility</em>, non <em>implementation
+choice</em>.</li>
+<li><strong>Non premiare a Excellent un&#39;inversione <em>senza</em> il
+tradeoff posto.</strong> Il punto della clausola sopra (<em>accettare
+l&#39;inversione</em>) è che <em>l&#39;inversione DEVE essere argomentata</em>;
+un revert silenzioso a logistic (<em>&quot;I prefer logistic because it&#39;s
+simpler&quot;</em>) <strong>non</strong> è Excellent — è Base su C1 e
+<strong>sotto Base</strong> su C3 (il tradeoff non è stato posto).
+L&#39;inversione è una scelta clinica legittima <em>se argomentata
+clinicamente</em>, non una scappatoia <em>&quot;the simpler model is always
+safer&quot;</em>.</li>
+</ul>
+</body>
+</html>

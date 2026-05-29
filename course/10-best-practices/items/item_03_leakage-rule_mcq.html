@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 03 — Protect the test (R2): when the test stops being a
+test</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-03--protect-the-test-r2-when-the-test-stops-being-a-test">Item
+03 — Protect the test (R2): when the test stops being a test</h1>
+<p><strong>ID</strong>: IB-10-best-practices-03 <strong>Learning
+objective</strong>: <em>The data-leakage rule.</em> <strong>Any</strong>
+decision (model choice, hyperparameter, feature set, threshold) that is
+taken <strong>after</strong> having seen a performance number on a
+dataset <em>converts that dataset into a training set</em> — even if the
+file is labelled &quot;test&quot;. A faithful test set is one that has been
+<strong>looked at exactly once, at the end, and never again</strong>
+(Obj. 2 — Rule R2, <em>leakage rule</em>).</p>
+<p><strong>Category</strong>: Application <strong>Type</strong>: MCQ
+<strong>Difficulty</strong>: medium-high <strong>Chapter</strong>:
+10-best-practices</p>
+<h2 id="question">Question</h2>
+<p>A colleague — Davide — built a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission classifier on the same hospital extract
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+patients,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+candidate features, prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≈</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p \approx 5\%</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>70</mn><mi>/</mi><mn>15</mn><mi>/</mi><mn>15</mn></mrow><annotation encoding="application/x-tex">70 / 15 / 15</annotation></semantics></math>
+train / validation / test split). He narrates, at lab meeting, the
+sequence of moves he took. He plans to report the final test-set number
+in his methods write-up.</p>
+<blockquote>
+<p><strong>Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>.</strong>
+Train logistic regression on <em>training</em>. Validation AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0.25</mn></mrow><annotation encoding="application/x-tex">= 0.25</annotation></semantics></math>.
+<strong>Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>.</strong>
+Train gradient boosting on <em>training</em>. Validation AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0.31</mn></mrow><annotation encoding="application/x-tex">= 0.31</annotation></semantics></math>.
+<strong>Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>.</strong>
+Pick gradient boosting. Tune hyperparameters (learning rate, max depth,
+regularisation) by cross-validation on <em>training</em>. Final
+validation AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0.34</mn></mrow><annotation encoding="application/x-tex">= 0.34</annotation></semantics></math>.
+<strong>Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>.</strong>
+Open the <em>test</em> split for the first time. Read <strong>test AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0.29</mn></mrow><annotation encoding="application/x-tex">= 0.29</annotation></semantics></math></strong>.
+<strong>Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>.</strong>
+Decide <em>&quot;the
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+penalty looks a bit weak — let me nudge it up by a factor of two&quot;</em>.
+Retrain. Re-open the <em>test</em> split. Read <strong>test AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0.31</mn></mrow><annotation encoding="application/x-tex">= 0.31</annotation></semantics></math></strong>,
+and plan to report this as the headline number in the <em>Methods</em>
+and the abstract.</p>
+</blockquote>
+<p>Under the chapter&#39;s <em>leakage rule</em> (R2), is
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math></strong>
+a faithful test number?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) <strong>Yes.</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>
+is the model&#39;s performance on a split that was held out during training
+— the model was never fit on the test rows, so the number is honest. The
+fact that Davide read the test set twice does not change the train/test
+separation: he did not train on it.</li>
+<li>B) <strong>No.</strong> Davide took a modelling decision (the
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+bump in Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>)
+<em>after</em> having seen a performance number on the test set (in Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>).
+Under R2, <em>any decision taken after observing a performance number on
+a dataset converts that dataset into a training set</em> — the second
+test reading
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>)
+is therefore read off a <em>contaminated</em> test, and the original
+test split is, retrospectively, a third <em>training</em> split. The
+faithful number for this audit is <strong>neither</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.29</mn><annotation encoding="application/x-tex">0.29</annotation></semantics></math>
+<strong>nor</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>
+— and the procedure now requires a <em>new</em> held-out split, drawn
+fresh from training data, before any defensible test number exists.</li>
+<li>C) <strong>Yes</strong> — provided Davide reports
+<strong>both</strong> numbers
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.29</mn><annotation encoding="application/x-tex">0.29</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>)
+in the <em>Methods</em> section, and explicitly describes the
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+change between them. Full disclosure of the iteration preserves the
+test&#39;s epistemic status: the reader can see exactly what happened, judge
+the procedure, and discount the second number if they wish.</li>
+<li>D) <strong>Yes</strong> — provided Davide splits a <em>fresh
+validation</em> set from the training pool and re-tunes the
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+penalty on that fresh validation, then reads the <strong>same</strong>
+test split he originally used. With the tuning moved off the test, the
+second test number
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>)
+becomes the legitimate held-out result of the corrected procedure.</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: B.</strong> Option B is the only one that applies R2
+in its <strong>operationally exact</strong> form. Three components carry
+the answer:</p>
+<ul>
+<li><strong>The rule triggers on the <em>decision</em>, not on the
+<em>observation</em>.</strong> Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+alone — reading the test number — does not, by itself, trigger R2: a
+single observation, <em>with no decision taken on the basis of that
+observation</em>, leaves the test set faithful. R2 triggers at Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>,
+when Davide <em>decides</em> to bump the
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+penalty <em>because</em> of what he saw at Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>.
+The decision is what <em>uses</em> the test-set information to shape the
+model, and that use is what <em>converts the test into a training
+set</em>. (The chapter&#39;s narrative makes this distinction explicit:
+<em>&quot;the key is not the looking, it is the deciding after having
+looked&quot;</em>.)</li>
+<li><strong>The contamination is retrospective, not
+prospective.</strong> Once R2 has been violated, the original test split
+is <strong>no longer a test split</strong> — and there is no procedure,
+applied afterwards, that restores it. Reading the test <em>again</em> at
+Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+is reading from a split that has already lost its epistemic status; the
+number
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>
+is an inflated <em>training-grade</em> number, not a faithful
+<em>test-grade</em> one. The faithful number for this audit is therefore
+<em>neither</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.29</mn><annotation encoding="application/x-tex">0.29</annotation></semantics></math>
+<em>nor</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.29</mn><annotation encoding="application/x-tex">0.29</annotation></semantics></math>
+was <em>technically</em> faithful at the moment it was read, but Davide
+cannot now report it as &quot;the test result&quot; without also disclosing that
+he iterated on it (which would change the framing entirely); and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>
+was <em>never</em> faithful.</li>
+<li><strong>The correct fix is a <em>new</em> held-out split.</strong>
+The only way to obtain a defensible test number, given that R2 has been
+violated, is to draw a <strong>new</strong> test split from the training
+pool — a split that has never been observed in <em>any</em>
+decision-relevant context — and read it exactly once at the end. (A new
+<em>validation</em> split fixes future hyperparameter tuning, but it
+does <em>not</em> repair the already-contaminated test; the chapter&#39;s
+discipline is precisely that the <em>test</em> must be a split that is
+&quot;looked at exactly once, at the end, and never again&quot;, and a split that
+has been looked at twice can never be that split again.)</li>
+</ul>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A</strong> is wrong because it reads R2 as <em>a rule about
+training, not a rule about decisions</em>. The student who picks A is
+reasoning: <em>&quot;the model was never fit on the test rows, so the test
+rows are uncontaminated&quot;</em> — and this is true <em>as a statement
+about gradient descent</em>, but R2 is <em>not</em> about gradient
+descent. R2 is about <em>epistemic leakage</em>: the test set transfers
+information into the model not only via gradient updates, but also
+<em>via decisions made on the basis of test-set numbers</em> — those
+decisions (which hyperparameter to use, which split to keep, which run
+to report) carry test-set information back into the trained model, and
+the model that emerges from those decisions is, in effect, fit to the
+test set as well. A student who picks A has the textbook-mechanical
+reading of &quot;test set&quot; (<em>&quot;it is the data the model was not fit
+on&quot;</em>) without the chapter&#39;s <em>operational</em> reading (<em>&quot;it is
+the data on which no decision has yet been taken&quot;</em>). This is the
+Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+<em>&quot;yes&quot;</em> distractor of <a href="../objectives.md">objectives.md</a> translated into a
+scenario.</li>
+<li><strong>C</strong> is wrong because it confuses
+<em>transparency</em> with <em>correctness</em>. The student who picks C
+is reasoning: <em>&quot;if I disclose what I did, the reader can judge, so
+the result is preserved&quot;</em> — and disclosure <em>is</em> an ethical
+duty, but it does <strong>not</strong> un-contaminate the test set. The
+contamination is <em>structural</em>: the second number is statistically
+<em>biased</em> (it reports the
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+penalty&#39;s performance <em>on the data that selected the
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+penalty</em>), and that bias persists regardless of whether the reader
+knows about it. A transparent report of a biased number is still a
+biased number. The chapter&#39;s discipline is <em>operational</em>, not
+<em>rhetorical</em>: the test set&#39;s epistemic status is established by
+<em>how the work was done</em>, not by <em>how the work is
+described</em>. A student who picks C has internalised the (correct)
+norm that <em>one should disclose methodology</em> but has not
+internalised the (chapter-specific) rule that <em>some methodologies
+cannot be rescued by disclosure</em>. This is the Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+<em>&quot;yes if both reported&quot;</em> distractor.</li>
+<li><strong>D</strong> is the <strong>subtlest distractor</strong>, and
+it is the response of a student who <strong>has already seen serious
+work</strong>. The student is reasoning: <em>&quot;yes — the procedure was
+flawed, the fix is to use a fresh validation set for the tuning, and
+once that&#39;s in place the test number stands&quot;</em>. The first half of the
+reasoning (the operational fix) is <strong>directionally
+correct</strong> and should be acknowledged at the reveal — <em>fresh
+validation</em> is, in general, the right way to separate tuning data
+from the held-out test. The second half is <strong>wrong</strong>, and
+on a specific point: <em>fresh validation</em> fixes the procedure
+<strong>going forward</strong>, but it does <strong>not</strong> repair
+the <em>already-contaminated</em> test set. By Step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>,
+the original test split has already been used in a decision (the
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+bump); that decision has already imported test-set information into the
+model; the number
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>
+is already a <em>training-grade</em> number; and no procedure applied
+afterwards can revoke that. The chapter&#39;s exact wording handles this
+case: <em>&quot;the test set is one that has been looked at exactly once, at
+the end, and never again&quot;</em> — a split that has been looked at twice
+<strong>can never be that split again</strong>, no matter what is done
+afterwards. The corrected procedure requires a <strong>new test
+split</strong> (drawn fresh from training data), not just a new
+validation split. A student who picks D has the <em>operational
+instinct</em> of someone who has worked in a real lab (they know about
+fresh validation as a fix) but has not internalised that <em>the
+contaminated test cannot be repaired</em> — only <em>replaced</em>. The
+diagnostic for the corrector: at the reveal, <em>praise the operational
+direction</em> (fresh validation is right), but <em>correct on the
+specific point</em> (the original test is now training; the second
+number
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>
+remains contaminated; the fix is a <em>new test</em>, not a <em>fresh
+validation that legitimises the old test</em>). This is the Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+<em>&quot;only after a fresh validation&quot;</em> distractor.</li>
+</ul>
+<p>The single discriminator across A / B / C / D is whether the student
+reads R2 as a rule about <em>decisions taken on a dataset</em>, applied
+<em>retrospectively to the moment the decision was made</em>: (A) reads
+it as a rule about <em>training</em>; (C) reads it as a rule about
+<em>disclosure</em>; (D) reads it as a rule about <em>future
+procedure</em>. Only B reads it as the chapter&#39;s <em>operational
+rule</em> — that the test loses its status at the moment of the
+<em>decision</em>, that no fix applied afterwards restores it, and that
+the only defensible move is to draw a <em>new</em> held-out split.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

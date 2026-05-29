@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 05 — Critique Anna&#39;s plan: four violations of three
+disciplines</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-05--critique-annas-plan-four-violations-of-three-disciplines">Item
+05 — Critique Anna&#39;s plan: four violations of three disciplines</h1>
+<p><strong>ID</strong>: IB-10-best-practices-05 <strong>Learning
+objective</strong>: Synthesise the chapter&#39;s three disciplines —
+<em>earn complexity</em> (Obj. 1), <em>protect the test</em> in its two
+rules R1 <em>accuracy trap</em> and R2 <em>leakage rule</em> (Obj. 2),
+<em>match interpretability to the model family + weigh the tradeoff as a
+clinical decision</em> (Obj. 3) — on a project plan that violates each
+discipline at a single, isolable point. Identify each violation by the
+chapter&#39;s vocabulary, articulate the operational consequence (what the
+clinical lead or the ethics committee will reject and why), and propose
+a corrected plan that fixes all four violations as <strong>one coherent
+revision</strong> — not four patches glued together. The corrected plan
+must read as the <strong>order of operations</strong> the three
+disciplines compose: <em>start simple, measure honestly, defend
+clinically</em> (Obj. 1 + Obj. 2 + Obj. 3 in synthesis).</p>
+<p><strong>Category</strong>: Argumentation <strong>Type</strong>:
+open-ended (<em>argomentativa</em>) <strong>Difficulty</strong>: high
+<strong>Chapter</strong>: 10-best-practices</p>
+<h2 id="question">Question</h2>
+<p>A colleague — <strong>Anna</strong> — circulates the following
+<strong>project plan</strong> by email on Friday morning, for the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission audit
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+patients,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+candidate features, prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≈</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p \approx 5\%</annotation></semantics></math>,
+defence to clinical lead + ethics committee in three weeks).</p>
+<blockquote>
+<p><em>&quot;Friday morning — sending the project plan for the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission audit.</em></p>
+<p><em>(1) <strong>Model</strong>: random forest on all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+features, since random forest is the best model class for tabular
+clinical data — it handles non-linearity and feature interactions
+automatically, and there&#39;s no reason to start with anything
+simpler.</em></p>
+<p><em>(2) <strong>Metric</strong>: accuracy on the held-out test set.
+If we hit
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>90</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\ge 90\%</annotation></semantics></math>,
+the model is ready for the defence.</em></p>
+<p><em>(3) <strong>Hyperparameter tuning</strong>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-fold
+cross-validation on the combined train+test data, to maximise
+statistical power and reduce variance in the estimates.</em></p>
+<p><em>(4) <strong>Interpretability</strong>: if the committee asks,
+I&#39;ll read off the coefficients of each feature in the random forest —
+coefficients are the standard interpretability technique.</em></p>
+<p><em>Plan to defend in three weeks.&quot;</em></p>
+</blockquote>
+<p>Anna&#39;s plan contains <strong>four</strong> distinct violations of the
+chapter&#39;s three disciplines — one violation per numbered point. Write a
+critique of the plan that:</p>
+<p>(a) <strong>Names each violation by the chapter&#39;s vocabulary</strong>
+— you should find one violation of <em>earn complexity</em> (Obj. 1),
+one of the <em>accuracy trap</em> rule R1 (Obj. 2), one of the
+<em>leakage rule</em> R2 (Obj. 2), and one of the <em>match
+interpretability + clinical defensibility</em> discipline (Obj. 3).
+Anchor each name to the specific sentence in Anna&#39;s plan.</p>
+<p>(b) <strong>For each violation, explain in one or two sentences why
+it breaks the defence</strong> — what the clinical lead or the ethics
+committee will reject when they see it, and what specifically about
+Anna&#39;s text triggers the rejection.</p>
+<p>(c) <strong>Propose a corrected plan</strong> that fixes all four
+violations as <strong>one coherent revision</strong> — written as the
+order of operations the three disciplines compose (not four patches
+glued onto Anna&#39;s original).</p>
+<p><em>Plain prose. Write the critique as text Anna could read and
+understand without you sitting next to her. No code, no diagrams. Bullet
+lists are acceptable only in (a) if they help anchor each violation to a
+sentence of the plan.</em></p>
+<h2 id="expected-answer">Expected answer</h2>
+<p>A response at the <em>Excellent</em> level reads approximately as
+follows.</p>
+<blockquote>
+<p><strong>(a) Anna&#39;s plan violates each of the three disciplines in
+turn — one violation per numbered point of her email.</strong></p>
+<ul>
+<li>Point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1)</annotation></semantics></math>
+violates <strong>earn complexity</strong> (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>).
+The plan ramps directly to random forest on all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+features as the <em>primary</em> model, with no logistic-regression
+baseline on a smaller clinically-chosen subset, no pre-registered
+target, and no stop-criterion written before training. The justification
+— <em>&quot;random forest is the best model class&quot;</em> — is a
+population-level prior, not a project-level argument.</li>
+<li>Point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(2)</annotation></semantics></math>
+violates the <strong>accuracy trap</strong> rule (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+R1). The plan reports <em>accuracy</em> on a problem with prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≈</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p \approx 5\%</annotation></semantics></math>,
+where the always-predict-NO classifier already scores
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1 - p = 95\%</annotation></semantics></math>
+— and sets the success threshold at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>90</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\ge 90\%</annotation></semantics></math>,
+a number Anna has not compared to that baseline.</li>
+<li>Point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3)</annotation></semantics></math>
+violates the <strong>leakage rule</strong> (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+R2).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-fold
+cross-validation on the <em>combined</em> train+test data uses the test
+set to choose hyperparameters; <em>any decision taken after observing
+the test set converts the test set into a training set</em>. There is no
+test set left to read at the end.</li>
+<li>Point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(4)</annotation></semantics></math>
+violates the <strong>match interpretability + clinical
+defensibility</strong> discipline (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>).
+Random forests do not expose coefficients — the prediction is the
+average across many trees, so there is no per-feature linear weight to
+read off; the chapter&#39;s mapping for ensembles is <strong>variable
+importance</strong>, not coefficients. The framing — <em>&quot;if the
+committee asks&quot;</em> — treats interpretability as an afterthought, not
+as a clinical defensibility argument the team owes the patient.</li>
+</ul>
+<p><strong>(b) Why each violation breaks the defence.</strong></p>
+<p>The earn-complexity violation breaks the defence because the ethics
+committee&#39;s question <em>&quot;why <strong>this</strong> model?&quot;</em> cannot
+be answered with general superiority in the literature; it must be
+answered with a documented failure of the simpler model on
+<strong>this</strong> dataset. Anna has no such document.</p>
+<p>The accuracy-trap violation breaks the defence the moment the
+clinical lead does the arithmetic:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1 - p = 95\%</annotation></semantics></math>
+is what the model that always-predicts-NO would score on this
+prevalence, and Anna&#39;s success threshold of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">90\%</annotation></semantics></math>
+sits <em>below</em> it. Her <em>&quot;ready for defence&quot;</em> model would, in
+the strict reading, be a model that performs <strong>worse</strong> than
+doing nothing — a number the clinical lead will not pass to the
+committee.</p>
+<p>The leakage-rule violation breaks the defence because the test number
+Anna will report is, by construction, a number read off a split she used
+to tune the model. The ethics committee&#39;s question <em>&quot;why should I
+trust this on my next patient?&quot;</em> is the question the held-out test
+is supposed to answer; Anna will have nothing held-out to answer it
+with.</p>
+<p>The interpretability violation breaks the defence on
+<strong>two</strong> axes. First, the matching error: Anna will sit in
+front of the clinical lead, open her notebook, and find that her
+<em>coefficients-on-random-forest</em> technique does not exist — there
+are no coefficients to read. Second, the framing error: <em>&quot;if the
+committee asks&quot;</em> is an afterthought; the chapter&#39;s discipline
+requires a clinical-defensibility argument the team poses
+<strong>before</strong> the committee even asks — the argument is owed
+to the <strong>patient</strong>, regardless of whether the committee
+remembers to interrogate it.</p>
+<p><strong>(c) The corrected plan.</strong></p>
+<p>Before any training, Anna writes the stop-criterion: <em>baseline =
+logistic regression on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+clinically-chosen features (e.g. age, ICU length of stay, Charlson
+comorbidity index, prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>90</mn><annotation encoding="application/x-tex">90</annotation></semantics></math>-day
+admissions, discharge-time eGFR, number of medications at discharge);
+baseline metric and target = AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math>
+(or, equivalently, recall
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.55</mn></mrow><annotation encoding="application/x-tex">\ge 0.55</annotation></semantics></math>
+at precision
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.40</mn></mrow><annotation encoding="application/x-tex">\ge 0.40</annotation></semantics></math>)
+on a held-out <strong>validation</strong> split; escalation rule = if
+the baseline does not reach the target, escalate to random forest on a
+wider clinical feature set; if the baseline reaches the target, ship the
+baseline</em>. The metric is not accuracy — it is AUPRC or
+recall-at-precision, because
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>
+prevalence makes accuracy uninterpretable, and the threshold is set by
+the cost ratio the clinical lead signs off on, not by an arbitrary
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">90\%</annotation></semantics></math>.
+Hyperparameter tuning runs on a <strong>fresh validation split</strong>
+drawn from the training pool; the test set is <strong>sealed</strong> in
+a separate folder until the day of the defence, and is opened
+<strong>exactly once</strong>, on that day. And the interpretability
+technique is matched to whatever model finally ships:
+<strong>coefficients</strong> if the logistic baseline reaches the
+target (which, on this audit, is the most defensible outcome — built-in
+interpretability, simpler model, smaller per-patient risk per unit
+error); <strong>variable importance</strong> + the top-ranked features
+read against this patient&#39;s chart if escalation to random forest is
+required, with the tradeoff between <em>missed readmissions</em> and
+<em>loss of built-in interpretability</em> posed explicitly to the
+clinical lead as a <em>clinical decision</em>, given the cost ratio they
+have set.</p>
+<p>The corrected plan does not predetermine the model; it predetermines
+the <strong>discipline</strong> that decides between the models. The
+three disciplines compose — <em>start simple, measure honestly, defend
+clinically</em> — and they compose as an <strong>order of
+operations</strong>, not as four independent patches on Anna&#39;s plan.</p>
+</blockquote>
+<p>What the response must contain, across the three criteria of the
+rubric:</p>
+<ul>
+<li><strong>C1 — Identification of violations.</strong> All four
+violations named by the chapter&#39;s vocabulary (<em>earn complexity</em>,
+<em>accuracy trap</em>, <em>leakage rule</em>, <em>match
+interpretability + clinical defensibility</em>), each anchored to the
+specific numbered point of Anna&#39;s plan that triggers it. At higher
+levels, the student recognises that the interpretability violation has
+<em>two</em> components — the <em>matching error</em> (coefficients on a
+random forest) and the <em>framing error</em> (<em>&quot;if the committee
+asks&quot;</em> as an afterthought).</li>
+<li><strong>C2 — Operational diagnosis.</strong> For each named
+violation, the student articulates the <em>specific operational
+consequence</em> — what fails, who rejects it, and what about Anna&#39;s
+text triggers the rejection. At higher levels, the student names the
+<em>cascading failure mode</em> — the four violations reinforce each
+other (e.g. <em>the accuracy threshold of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>90</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\ge 90\%</annotation></semantics></math>
+is below the always-predict-NO baseline of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>,
+which masks the absence of a real baseline</em>).</li>
+<li><strong>C3 — Corrected plan.</strong> The student proposes a single
+coherent revision that fixes all four violations as an <em>order of
+operations</em>: stop-criterion ex ante → metric matched to the problem
+→ split discipline (sealed test + fresh validation) → interpretability
+matched to whatever model ships. At higher levels, the student frames
+the corrected plan as <em>not predetermining the model</em> (the
+simplest possible outcome — logistic + coefficients — is named as the
+<strong>most defensible</strong> outcome, not as a fallback), and
+explicitly states that the three disciplines are <em>an order of
+operations</em>, not <em>independent rules</em>.</li>
+</ul>
+<h2 id="rubric">Rubric</h2>
+<p><a href="../rubriche/rubrica_05_critique-the-plan.md">rubrica_05_critique-the-plan.md</a>
+—
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+criteria
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+levels (Base / Good / Excellent).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

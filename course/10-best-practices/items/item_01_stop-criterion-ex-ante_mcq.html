@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 01 — Earn complexity: when the stop-criterion is
+written</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-01--earn-complexity-when-the-stop-criterion-is-written">Item 01
+— Earn complexity: when the stop-criterion is written</h1>
+<p><strong>ID</strong>: IB-10-best-practices-01 <strong>Learning
+objective</strong>: Plan a first iteration of an ML project as the
+<strong>simplest model on the smallest sensible feature set</strong>,
+and write an explicit <strong>stop-criterion</strong> <em>before</em>
+adding complexity. Concretely, given a problem and a dataset, state (a)
+the baseline model (e.g. logistic regression on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+features), (b) the baseline metric and the target value that would make
+the simple model &quot;good enough&quot;, and (c) the single failure mode that
+would justify <em>increasing</em> model complexity — and not before. The
+rationale: <em>more parameters and richer features are paid for in
+robustness, interpretability, and risk of overfitting — so each added
+unit of complexity must be earned by a failure of the simpler model</em>
+(Obj. 1).</p>
+<p><strong>Category</strong>: Comprehension <strong>Type</strong>: MCQ
+<strong>Difficulty</strong>: medium <strong>Chapter</strong>:
+10-best-practices</p>
+<h2 id="question">Question</h2>
+<p>A junior colleague on your team — Marco — is about to start an audit
+on
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission</strong>. The dataset has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+patients with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+candidate features and a positive-class prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≈</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p \approx 5\%</annotation></semantics></math>;
+he must defend the model to the clinical lead and the ethics committee
+three weeks from today. He shows you four versions of the
+<em>Methods</em> section of his planning document — four different ways
+of writing the <strong>stop-criterion</strong> that the chapter&#39;s
+<em>earn complexity</em> discipline asks for.</p>
+<p>Which of the four versions applies the discipline correctly?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) Marco trains a logistic regression on a clinically-chosen
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>-feature
+subset and reads the validation result (AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.27</mn><annotation encoding="application/x-tex">0.27</annotation></semantics></math>).
+He then trains a gradient boosting model on the same features and reads
+its validation result (AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>).
+Once both results are in front of him, he writes the following sentence
+in the <em>Methods</em> section: <em>&quot;We adopted gradient boosting
+because logistic regression failed to reach the AUPRC target we had set
+for the baseline.&quot;</em></li>
+<li>B) Marco writes, at the top of his planning document — before any
+training — the following: <em>&quot;We will train gradient boosting on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+candidate features as our primary model, because gradient boosting
+consistently outperforms logistic regression on tabular clinical data.
+We will report AUPRC and recall on a held-out test set. If the result is
+unsatisfactory, we will revisit the modelling choice.&quot;</em></li>
+<li>C) Marco writes, at the top of his planning document — before any
+training — the following: <em>&quot;Baseline: logistic regression on six
+clinically-chosen features (age, ICU length of stay, Charlson
+comorbidity index, prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>90</mn><annotation encoding="application/x-tex">90</annotation></semantics></math>-day
+admissions, discharge-time eGFR, number of medications at discharge).
+Baseline metric and target: AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math>
+on the validation split. Escalation rule: if the baseline does not reach
+AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.30</mn><annotation encoding="application/x-tex">0.30</annotation></semantics></math>
+on validation, we escalate to gradient boosting on a wider clinical
+feature set; if the baseline reaches the target, we ship the
+baseline.&quot;</em></li>
+<li>D) Marco writes, at the top of his planning document — before any
+training — the following: <em>&quot;Baseline: logistic regression on six
+clinically-chosen features. Baseline metric and target: AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.80</mn></mrow><annotation encoding="application/x-tex">\ge 0.80</annotation></semantics></math>
+on the validation split. Escalation rule: if the baseline does not reach
+AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.80</mn><annotation encoding="application/x-tex">0.80</annotation></semantics></math>,
+we escalate to gradient boosting.&quot;</em></li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: C.</strong> Option C is the only one that carries
+<strong>all three</strong> components of the chapter&#39;s <em>earn
+complexity</em> discipline, each correctly placed in time:</p>
+<ul>
+<li><strong>Timing — ex ante.</strong> The stop-criterion is written
+<em>before</em> any training has begun. The discipline is temporal:
+writing it <em>before</em> commits Marco to a rule he must then follow;
+writing it <em>after</em> lets the rule be shaped by results he has
+already seen, which is <em>rationalisation</em>, not discipline.</li>
+<li><strong>Baseline — simplest model on smallest sensible feature
+set.</strong> Logistic regression on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+clinically-motivated features is the <em>simplest model a clinical lead
+would recognise and interrogate</em>. Obj. 1 explicitly: <em>the
+simplest model on the smallest sensible feature set</em>.</li>
+<li><strong>Target — realistic given the prevalence.</strong> AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math>
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>
+is a target the simple model could plausibly reach, so the criterion is
+a <em>real test</em> of the baseline, not a rigged one. Escalation then
+becomes a <em>documented failure of the simpler model</em> — which is
+exactly what <em>&quot;each added unit of complexity must be earned by a
+failure of the simpler model&quot;</em> requires.</li>
+<li><strong>Escalation rule — single, named, if-then.</strong> One
+trigger (the baseline misses AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.30</mn><annotation encoding="application/x-tex">0.30</annotation></semantics></math>
+on validation), one direction (gradient boosting on a wider clinical
+feature set), and an explicit <em>not-escalate</em> branch (<em>&quot;if the
+baseline reaches the target, we ship the baseline&quot;</em>). The criterion
+has a <em>real chance of stopping at the baseline</em>, which is the
+defining property of a binding stop-criterion.</li>
+</ul>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A</strong> is wrong on <strong>timing</strong>. Marco writes
+the stop-criterion <em>after</em> he has seen both the baseline result
+and the escalation result. He is now <em>describing</em> a sequence of
+decisions he has already made, in the language of <em>&quot;we set a target,
+the baseline failed, we escalated&quot;</em> — a defensible-sounding sentence
+on a slide that did not, in fact, govern the work. The chapter&#39;s
+discipline is precisely the move that A skips: <em>writing the rule
+before the run, so the rule can constrain the run</em>. A student who
+picks A has read <em>&quot;a stop-criterion was specified in the methods
+section&quot;</em> (yes) as equivalent to <em>&quot;a stop-criterion was specified
+before training&quot;</em> (no — the <em>Methods</em> section was written
+last). This is also the most common form of the failure in published
+clinical-ML papers: the <em>Methods</em> section is written after the
+experiments and reads as if the methodology had been pre-registered. It
+had not. The chapter&#39;s <em>earn complexity</em> discipline names this
+failure and asks the student to refuse it.</li>
+<li><strong>B</strong> is wrong on <strong>the baseline</strong>. Marco
+starts the work with gradient boosting on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+features as his <em>primary</em> model — not as an escalation from a
+documented failure of a simpler baseline. There is no simple model in
+the planning document, and so there is no <em>documented failure of the
+simpler model</em> to <em>earn</em> the complexity. The sentence
+<em>&quot;gradient boosting consistently outperforms logistic
+regression&quot;</em> is a <em>defence of the choice in general</em>, not a
+<em>defence of the choice on this dataset given a documented baseline
+result</em>. The ethics committee&#39;s question <em>&quot;why
+<strong>this</strong> model?&quot;</em> cannot be answered with
+population-level prior beliefs about model families; it must be answered
+with a project-level documented failure. A student who picks B has read
+<em>&quot;empirically better in general&quot;</em> as a sufficient
+<em>clinical-defence</em> substitute for <em>&quot;earned on this project by
+the failure of the simpler alternative&quot;</em> — exactly the substitution
+Obj. 1 rules out. The closing clause <em>&quot;if the result is
+unsatisfactory, we will revisit the modelling choice&quot;</em> compounds the
+failure: it is a <em>vague</em> stop-criterion (no metric, no threshold,
+no direction) embedded in a primary-model choice that already skips the
+baseline.</li>
+<li><strong>D</strong> is the <strong>subtlest distractor</strong>,
+because the timing is right (the document is written before any
+training) and the structure is right (baseline + target + escalation
+rule) — but the <strong>target is rigged</strong>. AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.80</mn></mrow><annotation encoding="application/x-tex">\ge 0.80</annotation></semantics></math>
+on a problem with prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>
+is, in practice, <strong>not reachable</strong> by logistic regression —
+and rarely reachable by <em>any</em> model on tabular clinical data of
+this size and signal-strength. The criterion is therefore <em>guaranteed
+to fire</em>: the simple model will <em>always</em> miss the target, by
+construction, and escalation will <em>always</em> be triggered. The
+discipline has been <em>shaped</em>, not <em>applied</em>. The defining
+property of <em>earn complexity</em> is that the baseline must have a
+<em>real chance</em> of being <em>good enough</em>; an unrealistically
+high target collapses the rule into a <em>predetermined escalation</em>,
+which is operationally identical to setup B (gradient boosting from the
+start), only dressed in disciplined language. A student who picks D has
+confused <em>the syntax of the rule</em> (a baseline + a number + an
+if-then) with <em>the binding force of the rule</em> (the number must be
+achievable; the <em>not-escalate</em> branch must have a real chance of
+being taken). Important precision: the failure mode in D is
+<strong>not</strong> <em>&quot;the target is too hard&quot;</em> per se — a
+<em>hard</em> target is fine if it is <em>reachable</em>. The failure is
+that the target is <strong>incompatible with the prevalence and the
+model class on this specific task</strong>: the historical AUPRC range
+published for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission models on tabular clinical features of this kind is
+roughly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.20</mn><annotation encoding="application/x-tex">0.20</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.45</mn><annotation encoding="application/x-tex">0.45</annotation></semantics></math>,
+so a target of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.80</mn><annotation encoding="application/x-tex">0.80</annotation></semantics></math>
+is roughly twice the realistic ceiling on this task — and a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>-feature
+logistic regression is well below even that historical ceiling. A target
+set above the realistic frontier <em>cannot fail in a way that informs
+escalation</em> — it can only fail because it was unattainable, and that
+failure carries no information about whether the simpler model was
+<em>good enough</em>. Diagnostic for the corrector: in D, the
+<em>if-then</em> has only one real branch (escalate); in C, the
+<em>if-then</em> has two real branches (escalate <strong>or</strong>
+ship the baseline). A stop-criterion with only one real branch is not a
+stop-criterion — it is a <em>plan disguised as a rule</em>.</li>
+</ul>
+<p>The single discriminator across A / B / C / D is whether the student
+reads <em>earn complexity</em> as a <strong>temporally-binding rule with
+a real-chance baseline</strong>: written <em>before training</em> (rules
+out A), starting from a <em>simple model</em> (rules out B), and tested
+against a <em>realistic target</em> on the <em>actual prevalence</em>
+(rules out D). Only C passes all three components together.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

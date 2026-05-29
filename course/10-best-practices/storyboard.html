@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>10 — Best practices for ML projects · storyboard (6
+frames)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="10--best-practices-for-ml-projects--storyboard-6-frames">10 —
+Best practices for ML projects · storyboard (6 frames)</h1>
+<blockquote>
+<p>Visual plan for the chapter, built from its <a href="narrative.md">arc</a> and <a href="objectives.md">objectives</a>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>
+min, dual classroom (in-person + remote). On-screen text in
+<strong>English</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≤</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\le 1</annotation></semantics></math>
+sentence/frame,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>-second
+readable); regia/voce docente in <em>italiano</em>. Feeds
+<code>mlt-quarto-build</code>. <strong>Last chapter of the
+course</strong> — the riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+closes the global spine (open-ring of <em>&quot;the risk score flashed red on
+Elena&#39;s screen&quot;</em>) and pivots to the <em>applied workshops +
+professional life</em> pre-hook.</p>
+</blockquote>
+<blockquote>
+<p>🎨 La colonna <strong>Visual</strong> è la descrizione sintetica (per
+noi). I <strong>prompt pronti per un generatore di immagini</strong> —
+con lo stesso <em>style-anchor</em> condiviso dei cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>
+— stanno nella sezione <strong><code>## Prompt visivi</code></strong> in
+fondo. Eventuali label testuali (i tre nomi delle <em>discipline</em> —
+<em>earn complexity / protect the test / match interpretability</em>, i
+nomi delle famiglie di modelli e delle tecniche di interpretabilità del
+riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>,
+i nomi dei quattro quadranti del
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+degli <em>AI users</em> — <em>Dependent Outsider / Exposed Charlatan /
+Resistant Craftsman / Modern Alchemist</em> —, i due assi <em>tools</em>
+/ <em>discipline</em>, le label <em>Section
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math></em>
+e <em>Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></em>
+del riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>,
+i badge calendario <em>Monday / Wednesday / Friday</em> e <em>weeks /
+months / years</em>) si aggiungono <strong>come overlay</strong> in
+slide-editor — mai dentro l&#39;immagine generata.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funzione</th>
+<th>Visual</th>
+<th>Testo a video</th>
+<th>Voce docente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Hook visivo (Friday morning — the audit folder)</td>
+<td>Elena&#39;s desk seen at a slight diagonal angle, <em>Friday
+morning</em> light. In the foreground centre, a <strong>physical folder
+lies open</strong> on the desk surface — a clinical-audit dossier just
+deposited by the senior, who is half-out-of-frame on the right (only a
+shoulder and the back of a coat visible, walking away). Inside the open
+folder, two things are visible: <strong>(a) a printed cover
+page</strong> with the shape of a hospital-style heading and a small ICU
+silhouette in the corner; <strong>(b) a strongly asymmetric horizontal
+bar-chart</strong> — one very long warm-orange bar
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+class) and one short faded bar
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>
+class) — visually unmistakable that this is a rare-event problem. Above
+the open folder, <strong>three small cold caution-glyphs</strong> hover
+in the air (warning-triangle silhouettes, faded blue-grey, no warm
+accent) — <em>three</em> exactly, not five, <em>deliberately
+pre-shadowing the three disciplines</em> the chapter resolves. On
+Elena&#39;s laptop screen (background, slightly out of focus) the
+<em>chat-window silhouette</em> of cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+— <em>the box</em> — is dormant; no badges, no loop, no eye-icons;
+<em>the box has been put down</em>. Along the <strong>bottom
+edge</strong> of the frame runs a thin horizontal <strong>week-calendar
+bar</strong>: five day-badges <em>Monday / Tuesday / Wednesday /
+Thursday / Friday</em> with Friday brightened in warm orange (Monday and
+Wednesday faded — references cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+and cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>).
+To the right of Friday, the calendar bar continues into negative space
+with a small
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>-week
+tick</em> and a tiny outline-shape of a <strong>committee-table</strong>
+(ethics committee) at the far right edge. <em>The week-of-Elena closes
+here</em>.</td>
+<td><em>&quot;Friday — the audit folder; three weeks to defend the
+model.&quot;</em></td>
+<td>Venerdì mattina. La settimana operativa di Elena chiude qui — lunedì
+il <em>triage</em> del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>,
+mercoledì il <em>gate</em> del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>,
+oggi il <em>prossimo audit</em>. Il senior lascia la cartella e se ne
+va: <em>ICU readmission a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+giorni,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+pazienti,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+feature candidate, prevalenza
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\sim 5\%</annotation></semantics></math>,
+defence al clinical lead e al comitato etico fra tre settimane</em>.
+Elena ha <strong>otto capitoli di strumenti</strong>. Sente, per la
+prima volta, che non bastano. Sopra la cartella aleggiano tre trappole —
+non cinque: tre. Le risolveremo come <strong>tre
+discipline</strong>.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Disciplina
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+— Earn complexity (KISS + stop-criterion <em>ex ante</em>)</td>
+<td>Centre of the frame: a <strong>clean five-rung
+ladder/staircase</strong> rising diagonally from bottom-left to
+upper-right. Each rung carries a different model-icon, growing in
+complexity: rung
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(bottom) = a simple straight-line shape (linear / logistic regression);
+rung
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+= a small branching-tree shape (decision tree); rung
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+= a fan of three trees (random forest); rung
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+= a stacked-trees-with-arrows shape (gradient boosting); rung
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+(top) = a multi-layer-network shape (neural net). The <strong>bottom
+rung glows warm orange and is fully lit</strong>; each higher rung is
+progressively cooler and dimmer — <em>complexity is paid for</em>.
+<strong>At the foot of the ladder, before rung
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></strong>,
+a <strong>sealed scroll/parchment</strong> is laid flat on the ground;
+it is <strong>clearly closed</strong> (a wax-seal visible, the ribbon
+tied), and a single human hand (Elena&#39;s, seen from the side) is in the
+act of <em>signing</em> the scroll — pen mid-stroke. <strong>Crucial
+visual delta</strong>: between the scroll and rung
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+a small clock-icon shows the scroll is signed <em>before</em> the
+training begins. Between rung
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and rung
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+and between every higher pair of rungs, a small
+<strong>fail-glyph</strong> (a broken-meter / red-X shape) hovers — the
+climb is <em>only</em> unlocked by a documented failure of the rung
+below. Above the ladder, in the upper-left negative space, a small soft
+thought-bubble silhouette suggests <em>&quot;and you stop when the simple one
+is good enough&quot;</em>. No text in the image; the <em>signed-before</em> +
+<em>fail-to-climb</em> + <em>bottom-glows-brightest</em> triad carries
+the discipline.</td>
+<td><em>&quot;Each unit of complexity is earned — by a documented failure of
+the simpler model.&quot;</em></td>
+<td>Disciplina <strong>uno</strong>. Prima riga del notebook,
+<em>prima</em> del training: <em>baseline = logistic regression su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+feature, target = AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math>,
+escalate solo se il baseline fallisce sul validation</em>. Lo
+stop-criterion va scritto <strong>prima</strong> — scritto <em>dopo</em>
+è razionalizzazione, non disciplina. La complessità si
+<strong>guadagna</strong>: ogni unità di parametri in più va pagata in
+robustezza, interpretabilità, rischio di overfitting. Sali la scala solo
+quando il rung sotto ha fallito documentato. <em>Earn
+complexity</em>.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Disciplina
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+— Protect the test (accuracy-trap + leakage rule)</td>
+<td>A <strong>vertical split-frame</strong>, two equal halves with a
+thin vertical divider. <strong>Left half — accuracy trap (R1)</strong>:
+a large <strong>gauge / speedometer-style meter</strong> dominates,
+needle pegged at the maximum end of the dial, glowing warm orange —
+<em>but visibly broken</em>. A close inspection of the meter shows it is
+wired to <strong>only one side</strong> of an underlying bar-chart: a
+small inset bar-chart below the meter shows the same asymmetric
+distribution of frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>),
+and a thin warm-orange wire connects the meter&#39;s input to <em>only</em>
+the long
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>)
+bar — the short
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>)
+bar is <em>disconnected</em>. A small
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+recall&quot;</em> tally-mark sits beside the disconnected short bar. The
+meter <em>measures only the easy class</em>. <strong>Right half —
+leakage rule (R2)</strong>: a <strong>closed drawer / locked
+file-cabinet</strong> with a heavy padlock on it. On the drawer front: a
+date-stamped label (overlay-ready) reading the defence date. A
+<strong>sticky note</strong> is affixed beside the lock, with a single
+date scrawled on it (overlay). A pair of <strong>ghostly hands</strong>
+reaches toward the drawer from the side — <em>the temptation to
+peek</em> — but a thin warm-orange chain visibly <em>blocks</em> them.
+Above the chain, a small
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">1\times</annotation></semantics></math>&quot;</em>
+tally-glyph (a single tick-mark) indicates the test is opened
+<em>exactly once</em>. <strong>A thin horizontal connector at the
+bottom</strong> links the two halves with a small
+<em>&quot;R<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
++
+R<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>&quot;</em>-shaped
+clip (overlay), signalling: the two rules are <strong>one
+discipline</strong>.</td>
+<td><em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>
+is the trap; the test is opened exactly once.&quot;</em></td>
+<td>Disciplina <strong>due</strong>, in due regole che vivono insieme.
+<strong>R<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></strong>
+— <em>accuracy trap</em>: su prevalenza
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>,
+il classificatore <em>&quot;sempre no&quot;</em> segna
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+di accuracy e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+di recall — <em>statisticamente brillante, clinicamente inutile</em>.
+Scegli AUPRC,
+F<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+recall-at-precision; la soglia è una <em>scelta clinica</em>, non una
+curva.
+<strong>R<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></strong>
+— <em>leakage rule</em>: il test si guarda <strong>esattamente una
+volta, alla fine, e mai più</strong>. Qualunque decisione presa dopo
+aver visto un numero sul test trasforma quel test in training —
+<em>anche se il file si chiama &quot;test.csv&quot;</em>. Per il thresholding e il
+tuning: un terzo split, <em>validation</em>. Il test resta nel cassetto,
+sigillato. <em>Protect the test</em>.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Disciplina
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+— Match interpretability (and the tradeoff is clinical)</td>
+<td>A <strong>two-column mapping diagram</strong> dominates the centre
+of the frame. <strong>Left column</strong> (top to bottom) shows four
+model-family icons, vertically stacked: (i) a <em>straight-line</em>
+shape (linear / logistic); (ii) a <em>single-tree</em> shape (decision
+tree); (iii) a <em>fan-of-trees</em> shape (random forest / gradient
+boosting); (iv) a <em>multi-layer-network</em> shape (neural net).
+<strong>Right column</strong> (top to bottom) shows four matching
+interpretability-technique icons: (i) a <em>small column of horizontal
+sliders</em> (coefficients with sign and magnitude); (ii) a <em>single
+branching decision-path</em> (if-then rules); (iii) a <em>bar-chart of
+variable importance</em> combined with a <em>SHAP-style force plot</em>;
+(iv) a <em>SHAP-style force plot alone</em>. Thin warm-orange lines
+connect each model-family on the left to its matching technique on the
+right — <strong>strictly horizontal pairings</strong>, no crossings.
+<strong>Crucially</strong>, the connection at row
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+(RF/GB → variable importance + SHAP) is drawn in the <strong>brightest
+warm orange of the four</strong> and pulses with a faint glow — <em>the
+connection the narrative chooses</em>. <strong>To the right of the
+mapping</strong>, a <strong>small balance-scale</strong> is drawn,
+<em>interpretability</em> on one pan and <em>performance</em> on the
+other. <strong>A clinical-lead silhouette</strong> stands beside the
+scale, one hand resting on the pivot — <em>the tradeoff is set by the
+clinician</em>, not by the data scientist. The silhouette wears a
+recognisable clinical attribute (stethoscope, lab coat shape) without
+facial detail. Above the scale, a thin connector links it back to the
+row-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+glowing pair (RF/GB ↔︎ SHAP), indicating: <em>the tradeoff is what
+justifies the choice</em>.</td>
+<td><em>&quot;Linear → coefficients; tree → path; ensemble → SHAP — the
+tradeoff is clinical.&quot;</em></td>
+<td>Disciplina <strong>tre</strong>. La tecnica di interpretabilità
+segue la <strong>famiglia del modello</strong>: linear → coefficienti
+(log-odds per unità di feature, con segno e magnitudine); decision tree
+→ decision path (if-then leggibili); RF / gradient boosting → variable
+importance + SHAP per il singolo paziente; NN → SHAP o surrogate models.
+La <em>scelta</em> fra <em>&quot;logistic interpretabile e cieca&quot;</em> e
+<em>&quot;GB + SHAP opaca ma accurata&quot;</em> <strong>non è una scelta
+tecnica</strong>: è una <strong>scelta clinica</strong>, e la prende il
+clinical lead. Se il SHAP-su-forest cattura abbastanza readmission da
+giustificare la perdita di interpretabilità built-in, il paziente è
+meglio servito dal <em>box con SHAP</em> che dal <em>semplice
+cieco</em>. <em>Match interpretability — and let the clinic weigh the
+tradeoff</em>.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Metodo + summative perno (<em>Monday&#39;s audit, Friday&#39;s
+defence</em>)</td>
+<td><strong>Composite single-sheet layout</strong> filling most of the
+frame, organised as one clean paperwork artefact (same compositional
+grammar as cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+and cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+— the <em>single-sheet rule</em> of the sommativo pattern). <strong>Top
+band:</strong> a thin horizontal banner-shape stretching edge to edge
+(the scenario header —
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+patients,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+features,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+weeks to defence</em>; no readable text in the image; the scenario lives
+in slide-editor overlay). <strong>Centre — a clean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+grid:</strong> three rows = three sections (one per discipline), three
+columns = the three sub-task slots per section. The <strong>first column
+of each row carries a small discipline-icon</strong>: row
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+= a small <em>ladder + signed-scroll</em> glyph (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+— Earn complexity); row
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+= a small <em>locked-drawer + broken-meter</em> glyph (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+— Protect the test); row
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+= a small <em>model-to-technique mapping + balance-scale</em> glyph
+(Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+— Match interpretability). Columns
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+are <strong>empty rectangular cells</strong> in the image — the sub-task
+labels (<em>baseline / metric+target / stop-criterion</em>;
+<em>metric+why-not-accuracy / threshold rule / leakage trap</em>;
+<em>final model if baseline fails / interpretability technique that
+matches /
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>-sentence
+clinical-defence</em>) are added via slide-editor overlay. <strong>To
+the right of the grid</strong>, two <strong>ghosted Slido bar-chart
+shapes</strong> are stacked vertically: top chart = four vertical bars
+labelled (overlay)
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">80\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">100\%</annotation></semantics></math></em>,
+the
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+bar</em> drawn taller and warmer (Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+preview: <em>accuracy of always-predict-NO</em>); bottom chart = four
+vertical bars labelled (overlay) <em>yes / no, model changed / yes if
+both reported / fresh validation</em>, the <em>no, model changed</em>
+bar drawn taller and warmer (Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+preview: <em>is the second number a faithful test number?</em>).
+<strong>Bottom-left of the sheet</strong>: a single blank-line slot,
+label <em>&quot;Why this model?&quot;</em> via overlay (the one-sentence clinical
+defence). No text, letters, or numbers rendered in the image — all
+labels added in slide-editor overlay.</td>
+<td><em>&quot;Three sections — plan it, measure it, defend it — on one
+sheet.&quot;</em></td>
+<td>Riquadro perno del <strong>sommativo <em>&quot;Monday&#39;s audit, Friday&#39;s
+defence&quot;</em></strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>7</mn><mo>′</mo></msup></mrow><annotation encoding="application/x-tex">\sim 7&#39;</annotation></semantics></math>,
+min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>,
+vedi <a href="objectives.md">objectives.md</a>). Un&#39;unica scheda
+condivisa, presenza e remoto. Lo scenario è uno: ICU readmission a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+giorni,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+pazienti,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+feature,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>,
+defence a tre settimane. I gruppi compilano <strong>tre sezioni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+tre sotto-task</strong>: <strong>Section
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></strong>
+baseline + metric/target + stop-criterion; <strong>Section
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></strong>
+metric + why-not-accuracy + threshold + leakage trap; <strong>Section
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math></strong>
+model + interpretability + clinical-defence. Due Slido in parallelo
+(Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+— accuracy trap; Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+— leakage rule).</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Payoff + pre-hook (course closes, practice begins)</td>
+<td>A <strong>two-zone composition</strong>, divided diagonally.
+<strong>Upper-right zone — the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+of <em>AI users</em></strong>: a clean four-cell grid (axes added via
+overlay — horizontal = <em>tools</em>, vertical = <em>discipline</em>).
+The cell at <em>(no tools, no discipline)</em> = <strong>Dependent
+Outsider</strong>; <em>(yes tools, no discipline)</em> = <strong>Exposed
+Charlatan</strong>; <em>(no tools, yes discipline)</em> =
+<strong>Resistant Craftsman</strong>; <em>(yes tools, yes
+discipline)</em> = <strong>Modern Alchemist</strong>. The <strong>three
+&quot;cold&quot; cells</strong> (Dependent Outsider, Exposed Charlatan, Resistant
+Craftsman) are <em>visually identical</em>: light tint, small cold-tone
+silhouette in each, no warm accent. The <strong>fourth cell — Modern
+Alchemist</strong> — is <strong>visually unique</strong>: a deeply
+warm-saturated background, a warm-glow rim around the cell border, and a
+small luminous figure centred inside it standing in a confident posture.
+<em>Three identical + one unique</em> — exactly the asymmetry of cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>.
+<strong>A small Elena silhouette is drawn mid-stride on the
+diagonal</strong>, walking from the <em>Exposed Charlatan</em> cell
+toward the <em>Modern Alchemist</em> cell, body language registering
+forward motion, but <strong>not yet arrived</strong> — feet still on the
+boundary between cells. <strong>Lower-left zone — the time-bar of the
+career</strong>: a horizontal time-bar runs left to right edge to edge
+across the lower portion, with three small calendar-badges at its
+leftmost end (<em>Monday / Wednesday / Friday</em> — faded, <em>the week
+that ended</em>). From Friday, the time-bar continues rightward;
+<strong>two small workshop-icons</strong> are anchored on it within the
+<em>weeks-ahead</em> range (a small <em>pipeline-ml</em> glyph — a chain
+of three connected boxes with arrows — and a small <em>agent-flow</em>
+glyph — a loop-arrow around a tool-and-bubble pair). Past the workshops,
+the time-bar fades into a <strong>sketched calendar-grid that covers
+years/decades</strong> (the same grammar as cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>,
+but the grid is <strong>much larger</strong>, spanning the right-third
+of the frame). At the far right edge, a small <strong>ghosted
+hospital-monitor silhouette</strong> appears: on its screen, a
+<strong>red risk-score number</strong> glows faintly. <em>Beside the
+monitor</em>, a small Elena-silhouette stands holding an <strong>open
+audit folder</strong> in her hand; on the visible page of the folder, a
+tiny <em>SHAP-style force-plot</em> glyph is drawn, and on the margin of
+the page, a hand-written <em>&quot;override&quot;</em> annotation is sketched (a
+short curved scrawl, no readable letters — overlay handles the word).
+<strong>The chat-window silhouette of <em>the box</em></strong> is
+visible on Elena&#39;s laptop in the lower-left corner of the frame —
+<em>still there</em>, but <strong>Elena&#39;s body partially overlaps it
+from the front</strong>: she is in the foreground, the box behind her.
+The compositional inversion is deliberate (the box dominated the screen
+in cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>;
+here Elena dominates the scene).</td>
+<td><em>&quot;Tools delivered, discipline begun — the practice is the rest of
+the career.&quot;</em></td>
+<td>Il corso ha consegnato <strong>due cose</strong> in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>240</mn><annotation encoding="application/x-tex">240</annotation></semantics></math>
+minuti: gli strumenti (cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>)
+e l&#39;inizio di una disciplina (cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>).
+Il
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+degli <em>AI users</em> è il <strong>frame di lettura della propria
+pratica</strong>: in quale quadrante stai oggi? In quale vuoi stare a
+fine residenza? Il <em>Modern Alchemist</em> non si raggiunge con altre
+slide — si raggiunge <strong>progetto per progetto, audit per audit,
+defence per defence</strong>. La settimana di Elena chiude (Monday /
+Wednesday / Friday); davanti ci sono due <strong>workshop
+hands-on</strong> che mettono queste discipline su dati veri, e poi una
+<em>carriera</em>. Il <em>red risk score</em> della prima scena del
+corso è ancora rosso — ma adesso Elena lo interroga, lo motiva, lo
+<em>override</em> in scritto. <em>The course had ended. The practice was
+about to begin.</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="modalità-duale--dove-si-attiva">Modalità duale — dove si
+attiva</h2>
+<p>Il riquadro
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math></strong>
+è il perno attivo: lì gira il sommativo <strong>&quot;Monday&#39;s audit,
+Friday&#39;s defence&quot;</strong> (vedi <a href="objectives.md">objectives.md</a>). L&#39;artefatto condiviso è
+<strong>uno solo</strong> — la planning sheet
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
++ la riga di giustificazione <em>&quot;Why this model?&quot;</em> + le due barre
+Slido ghostate — proiettata e distribuita su carta. Tutta la classe
+lavora sullo <strong>stesso banco</strong> (presenza + remoto), niente
+group cards differenziate: capitolo da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>15</mn><mo>′</mo></msup><annotation encoding="application/x-tex">15&#39;</annotation></semantics></math>
+troppo breve per la struttura a tre-card di cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>.
+Due <strong>poll Slido individuali</strong> corrono in parallelo:</p>
+<ul>
+<li><strong>Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+— &quot;On this dataset, what is the accuracy of the
+always-predict-NO-readmission classifier?&quot;</strong> (opzioni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">80\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">100\%</annotation></semantics></math>)
+— diagnostico sull&#39;<strong>accuracy trap</strong>
+(R<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>).
+Distrattori (vedi <a href="objectives.md">objectives.md</a>):
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math></strong>
+= ha confuso <em>baseline-random</em> con <em>baseline-majority</em>;
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">80\%</annotation></semantics></math></strong>
+= ha letto male la prevalenza
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.05</mn><annotation encoding="application/x-tex">0.05</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.20</mn><annotation encoding="application/x-tex">0.20</annotation></semantics></math>);
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">100\%</annotation></semantics></math></strong>
+= ha confuso <em>accuracy</em> con <em>true-negative rate</em>. La
+risposta corretta
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+si legge da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mn>0.05</mn></mrow><annotation encoding="application/x-tex">1 - 0.05</annotation></semantics></math>.</li>
+<li><strong>Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+— &quot;You finish training, look at the test set, see accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>92</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">= 92\%</annotation></semantics></math>.
+You bump the regularisation and check the test again:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>93</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">93\%</annotation></semantics></math>.
+Is the second number a faithful test number?&quot;</strong> (opzioni
+<em>yes</em> / <em>no, because we changed the model after seeing a test
+number</em> / <em>no, but only if we report the first number too</em> /
+<em>only after a fresh validation</em>) — diagnostico sulla
+<strong>leakage rule</strong>
+(R<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>).
+Distrattori: <em>yes</em> = non ha applicato
+R<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>;
+<em>yes if we report both</em> = ha confuso <em>trasparenza</em> con
+<em>correttezza</em>; <em>only after a fresh validation</em> = ha la
+<strong>soluzione</strong> ma non la <strong>regola</strong> (è la
+risposta dello studente che ha lavorato in lab; premiala come
+<em>operativamente corretta</em> ma sottolinea che la <em>regola</em>
+sotto è <em>&quot;il test è già stato contaminato quando hai modificato il
+modello dopo averlo visto&quot;</em>).</li>
+</ul>
+<p>Il doc condiviso raccoglie, per gruppo, le <strong>nove
+celle</strong> della planning sheet
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+sezioni
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+sotto-task: baseline + metric/target + stop-criterion · metric +
+threshold + leakage trap · final model + interpretability + clinical
+defence) + la frase singola di <em>&quot;Why this model?&quot;</em>. Riquadri
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+espositivi
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>6</mn><mo>′</mo></msup></mrow><annotation encoding="application/x-tex">\sim 6&#39;</annotation></semantics></math>
+totali — tre slide di best practice, non cinque: <em>KISS /
+iterate</em>, <em>accuracy trap</em>, <em>leakage rule</em> —
+<em>interpretability</em> e <em>Modern Alchemist</em> come
+<em>reveal-only</em> per liberare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>9</mn><mo>′</mo></msup><annotation encoding="application/x-tex">9&#39;</annotation></semantics></math>
+al sommativo, vedi <em>Nota docente sull&#39;esposizione</em> in <a href="objectives.md">objectives.md</a>), riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+ospita i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>9</mn><mo>′</mo></msup></mrow><annotation encoding="application/x-tex">\sim 9&#39;</annotation></semantics></math>
+di sommativo (min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>),
+riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+chiude e fa ponte
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>30</mn><mo>″</mo></msup></mrow><annotation encoding="application/x-tex">\sim 30&#39;&#39;</annotation></semantics></math>
+alla fine, sovrapposto al min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>).</p>
+<h2 id="note-meta--le-scelte-visive-che-portano-il-peso-pedagogico">Note
+meta — le scelte visive che portano il peso pedagogico</h2>
+<h3 id="1-la-grammatica-del-calendario-chiude-su-friday--non-più-cliffhanger-ma-settimana-finita">1.
+La grammatica del calendario chiude su <em>Friday</em> — non più
+cliffhanger, ma settimana finita</h3>
+<p>I capitoli
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+(Monday),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+(Wednesday),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+(Friday) hanno strutturato una <strong>settimana operativa
+singola</strong> di Elena. Il riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+riprende esplicitamente la <strong>grammatica del calendario</strong>
+introdotta nel time-bar del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+(<em>Monday</em> faded, <em>Wednesday</em> current, outgoing arrow verso
+ignoto), ma <strong>inverte la direzione narrativa</strong>: qui il
+calendario è una <em>settimana piena visibile da lunedì a venerdì</em>,
+non un <em>cliffhanger verso un giorno futuro</em>. Pedagogicamente: il
+time-bar del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+chiedeva <em>cosa viene dopo?</em>; il time-bar del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+risponde <em>adesso, il prossimo audit</em>, e il time-bar del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+<strong>estende la scala</strong> dalla <em>settimana</em> alla
+<em>carriera</em> (il <em>vero</em> pre-hook). Re-roll trigger sul frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>:
+il week-calendar bar deve avere <strong>cinque badge</strong>
+(lun-mar-mer-gio-ven) con <strong>Friday brillante</strong> e
+<strong>Monday/Wednesday faded ma visibili</strong> — se l&#39;image-gen
+produce un bar a tre badge o senza il Friday in evidenza, va re-rollato.
+La continuità del calendario fra cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+e cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+<strong>è il segnale visivo</strong> che il corso ha pivotato da
+<em>spiegazione</em> a <em>settimana di lavoro</em>.</p>
+<h3 id="2-la-saturazione-cromatica-del-quadrante-modern-alchemist--stessa-regola-del-2-times-2-del-cap-9-frame-4">2.
+La saturazione cromatica del quadrante <em>Modern Alchemist</em> —
+stessa regola del
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></h3>
+<p>Nel riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>,
+il
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+degli <em>AI users</em> segue <strong>esattamente la stessa regola di
+saturazione</strong> del
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+<em>trust boundary</em> di cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>:
+tre quadranti <em>visivamente identici</em> (cold tint, silhouette
+neutra) e uno solo <em>visivamente unico</em> (warm-saturated
+background, warm-glow rim, figura luminosa). Pedagogicamente: la
+<strong>disequità visiva è la disequità operativa della
+meta-mappa</strong>. Tre dei quattro quadranti sono <em>stati di
+partenza</em> (Dependent Outsider, Exposed Charlatan, Resistant
+Craftsman) — <em>tutti svantaggiati per ragioni diverse</em>; uno solo è
+la <em>destinazione professionale</em> (Modern Alchemist) — <em>tools +
+discipline = capacità di estrarre valore senza essere estratti</em>. La
+regola di re-roll è identica: <strong>contare i quadranti visivamente
+distinti — devono essere esattamente
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+(uno solo dei quattro è diverso dagli altri tre identici).</strong>
+<strong>Differenza con cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math></strong>:
+lì il quadrante <em>unique</em> era <em>dangerous</em> (warning-glyph,
+va gate-ato); qui il quadrante <em>unique</em> è <em>aspirational</em>
+(luminous figure, va raggiunto). La <em>grammatica visiva</em> è la
+stessa; il <em>segno semantico</em> si è invertito —
+<em>aspirazionale</em> a chiusura di corso, <em>avvertimento</em> a metà
+chapter-arc.</p>
+<h3 id="3-the-box--quattro-ruoli-in-dieci-capitoli-ultima-inversione-di-posizione">3.
+<em>The box</em> — quattro ruoli in dieci capitoli, ultima inversione di
+posizione</h3>
+<p><em>The box</em> (sostantivo-protagonista nominale dei cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>,
+sempre in articolo determinativo) ha attraversato il corso in
+<strong>tre funzioni</strong>: <em>oggetto da capire</em> (cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+— la rete neurale come scatola di pesi; cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+— la scatola diventa CNN/RNN/Transformer; il box <em>domina</em> lo
+schermo, Elena è piccola e periferica); <em>oggetto da governare</em>
+(cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+— la scatola accetta prompt strutturati, ha tools, ha decision points;
+Elena è <em>accanto</em> al box, alla stessa altezza); <em>oggetto da
+difendere</em> (cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+— la scatola è dietro le spalle di Elena, lei è in foreground con la
+<em>audit folder</em> in mano). Nel riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>,
+<strong>la composizione si inverte rispetto a cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math></strong>:
+il chat-window silhouette è ancora lì (continuità nominale: <em>the
+box</em>, articolo determinativo, stesso oggetto di cinque capitoli fa),
+ma <strong>Elena lo copre parzialmente dal davanti</strong>.
+Pedagogicamente: il corso ha trasferito il <em>peso compositivo</em> dal
+sistema al clinico. Re-roll trigger: nel riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>,
+il box deve essere visibile ma <strong>non dominante</strong> — se
+l&#39;image-gen produce un box centrale con Elena periferica, è la
+composizione <em>del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math></em>,
+non del <em>cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math></em>,
+e va re-rollato.</p>
+<h3 id="4-i-cinque-dot-markers-del-cap-9--risolti-per-categoria-non-per-conteggio">4.
+I <em>cinque dot-markers</em> del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+→ risolti per <em>categoria</em>, non per <em>conteggio</em></h3>
+<p>Il riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+chiudeva con un time-bar che portava <strong>cinque dot-markers</strong>
+equispaziati, deliberatamente non nominati (<em>&quot;five places&quot;</em> — i
+<em>five common pitfalls of ML projects</em>). Il cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+<strong>non ha &quot;cinque trappole&quot;</strong> — ha <strong>tre
+discipline</strong> (riquadri
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>)
+<strong>+ un
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+di posizionamento</strong> (riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>).
+La risoluzione del cliff-hanger è <strong>per categoria, non per
+conteggio</strong>: i cinque pitfall promessi dal cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+erano un <em>genere di problema</em> (errori operativi ricorrenti nei
+progetti ML applicati); il cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+li risolve riducendoli a <strong>tre discipline fondamentali</strong>
+che intercettano tutti e cinque i pitfall <em>via meccanismo</em>.
+Visivamente, il <strong>riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+porta <em>tre</em> caution-glyphs</strong> sull&#39;audit folder (non
+cinque) — la riduzione
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>→</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">5 \to 3</annotation></semantics></math></em>
+è il <em>segno visivo</em> che il cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+ha trovato la <em>categoria sotto i sintomi</em>. Re-roll trigger sul
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>:
+i caution-glyphs sopra la cartella devono essere <strong>esattamente
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math></strong>,
+in tono <em>cold</em> (non warm), distinti come triangoli con punto
+esclamativo — se l&#39;image-gen ne produce
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+o omette il count, va re-rollato. Nota di completezza: la
+<em>meta-mappa</em> del riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+degli <em>AI users</em>) <strong>non è una quarta disciplina</strong> —
+è il <em>frame di lettura</em> in cui le tre discipline acquisiscono
+significato professionale.</p>
+<h2 id="prompt-visivi">Prompt visivi</h2>
+<p>Prompt pronti per un generatore di immagini. Lo
+<strong><code>style-anchor</code></strong> è definito <em>una volta</em>
+(stesso dei cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>,
+per coerenza di serie tra capitoli) e va premesso a ogni prompt come
+parametro. Mai testo / lettere / numeri dentro l&#39;immagine — le label dei
+tre <em>discipline-icon</em>, dei <em>model-family</em> e
+<em>interpretability-technique</em> del riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>,
+dei quattro quadranti <em>AI users</em> del riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>,
+dei due assi (<em>tools / discipline</em>), dei badge calendario
+(<em>Monday / Wednesday / Friday / weeks / months / years</em>), dei
+numeri <em>Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></em>,
+di <em>Section
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math></em>,
+e della frase <em>&quot;Why this model?&quot;</em>, si aggiungono <strong>come
+overlay in slide-editor</strong>.</p>
+<p><strong><code>style-anchor</code></strong> = <em>&quot;Coherent image set,
+one shared visual identity: warm orange (#E8741E) as the single accent
+colour on a dark-slate background, soft cinematic lighting, 16:9, crisp
+and high quality, no text, letters or numbers rendered anywhere in the
+image.&quot;</em></p>
+<ul>
+<li><strong>Riquadro 1 (Hook — Friday morning, the audit
+folder)</strong>: <code>style-anchor</code> + <em>across the
+lower-centre of the frame, a clinical-audit folder lies open on a desk
+surface seen at a slight diagonal angle, in soft morning light. Inside
+the open folder, two pages are visible: the left page carries a
+hospital-style heading-shape with a small ICU bed silhouette in its
+upper corner; the right page carries a strongly asymmetric horizontal
+bar-chart, drawn as one very long warm-orange bar at the top and one
+short faded grey bar below it, the asymmetry visually unmistakable. To
+the right of the folder, partially out of frame on the right edge, the
+shoulder and back of a senior figure in a clinician&#39;s coat is shown
+walking away, just having deposited the folder. Above the open folder,
+three small cold-tone caution-glyphs hover in the air, each a faded
+blue-grey warning-triangle shape with a tiny exclamation glyph inside;
+exactly three glyphs, evenly spaced, no warm accent on them. On the desk
+to the upper-left, a laptop is shown with its screen tilted toward the
+viewer; on the screen, the silhouette of a chat-window outline is
+visible but dormant — empty rectangular outline with no bubbles, no
+badges, no loop. Across the bottom edge of the frame runs a thin
+horizontal calendar-bar with five small day-badges side by side, evenly
+spaced; the leftmost two badges are faded grey, the middle one is faded
+grey, the fourth is faded grey, and the rightmost badge is the
+brightest, drawn in warm orange. To the right of the rightmost badge,
+the calendar-bar continues into the empty space beyond the frame edge,
+with a small tick-marker positioned three units to the right, and at the
+far right edge a faint outline-shape of a long meeting-table with
+several chairs around it is sketched in the negative space.</em></li>
+<li><strong>Riquadro 2 (Disciplina
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+— Earn complexity)</strong>: <code>style-anchor</code> + <em>centred in
+the frame, a clean five-rung ladder rises diagonally from the lower-left
+to the upper-right at roughly a forty-five-degree angle. Each rung
+carries one model-icon: rung one (lowest) shows a simple straight-line
+shape, drawn fully lit in bright warm orange tone; rung two shows a
+small branching-tree shape with two branches, drawn slightly cooler and
+dimmer; rung three shows a fan of three overlapping tree shapes, drawn
+cooler still; rung four shows a stack of three tree shapes with arrows
+between them, drawn dimmer; rung five (top) shows a multi-layer network
+shape with circles connected by lines across three layers, drawn the
+coolest and dimmest of the five. At the foot of the ladder, before the
+first rung, a sealed parchment scroll lies flat on the ground surface,
+with a wax-seal shape visible on its lower edge and a ribbon tied around
+it; the scroll is clearly closed. A single human hand, drawn from the
+side in elegant outline, is in the act of signing the scroll with a pen,
+pen tip mid-stroke on the parchment. Beside the scroll, a small
+clock-icon shape is drawn showing an early hour. Between the first rung
+and the second rung, a small broken-meter shape with a red-X overlay
+floats in the gap, and similar small fail-glyphs float in each of the
+gaps between higher pairs of rungs. Above the upper-right end of the
+ladder, in the negative space, a soft thought-bubble silhouette hovers,
+empty inside, suggesting a stopping consideration. Strong warm-orange to
+cool-grey gradient runs along the ladder from bottom to top.</em></li>
+<li><strong>Riquadro 3 (Disciplina
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+— Protect the test)</strong>: <code>style-anchor</code> + <em>the frame
+is split vertically into two equal halves with a thin vertical divider
+down the centre. The left half shows a large gauge or speedometer-style
+meter dominating the space, its needle pegged to the rightmost end of
+the dial, glowing warm orange at the dial face. Below the meter, a small
+inset bar-chart shape is drawn showing the same asymmetric distribution
+as the opening frame: one very long warm-orange bar and one very short
+faded bar. A thin warm-orange wire connects the meter&#39;s input cable to
+the long bar only; the short bar is visibly disconnected, no wire
+reaching it. Beside the short disconnected bar, a small tally-mark glyph
+indicates a zero count. The right half shows a heavy file-cabinet drawer
+with a thick padlock affixed to its centre. On the front of the drawer,
+a date-stamp label-shape is drawn as an empty placeholder. A sticky-note
+shape is affixed beside the lock, with a single squiggle suggesting a
+date written on it. A pair of ghostly hand silhouettes reaches toward
+the drawer from the upper edge of the half, fingers extended toward the
+lock, but a thin warm-orange chain visibly blocks them, drawn as a
+horizontal chain-shape crossing the space between the hands and the
+drawer. Above the chain, a small single tick-mark glyph indicates a
+once-only count. At the bottom of the frame, a thin horizontal connector
+runs across both halves, joining them with a small clip-shape at the
+centre — a single small badge that visually joins the two halves into
+one composition.</em></li>
+<li><strong>Riquadro 4 (Disciplina
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+— Match interpretability)</strong>: <code>style-anchor</code> +
+<em>centred in the frame, a two-column mapping diagram dominates the
+composition. The left column shows four model-family icons stacked
+vertically from top to bottom: at the top, a simple straight-line shape;
+below it, a single branching-tree shape with three branches; below that,
+a fan of three overlapping tree shapes; at the bottom, a multi-layer
+network shape with circles connected across three layers. The right
+column shows four matching interpretability-technique icons, stacked at
+the same vertical positions: at the top, a small vertical column of
+horizontal slider-shapes with positive and negative tick-marks; below
+it, a small branching decision-path shape with three forks; below that,
+a horizontal bar-chart shape combined with a small SHAP-style horizontal
+force-plot beside it; at the bottom, a SHAP-style horizontal force-plot
+alone. Four thin warm-orange horizontal connector-lines link each
+left-column icon to its right-column match at the same row, strictly
+horizontal, no crossings. The connector at row three (the third from the
+top, linking the fan-of-trees to the bar-chart-plus-force-plot pair) is
+drawn in the brightest warm orange tone of the four connectors and is
+surrounded by a soft warm-orange glow. To the right of the right column,
+a small balance-scale shape is drawn, with one pan slightly higher than
+the other; a clinician&#39;s silhouette stands beside the scale, drawn in
+clean outline with a stethoscope-shape across the shoulders and a
+lab-coat shape suggested by the body outline, no facial features, and
+one hand of the silhouette rests on the pivot-point of the scale. A thin
+connector-line runs from the scale back up to the glowing row-three
+pair, connecting them.</em></li>
+<li><strong>Riquadro 5 (Metodo + summative perno — <em>Monday&#39;s audit,
+Friday&#39;s defence</em>)</strong>: <code>style-anchor</code> + <em>a
+composite single-sheet layout filling most of the frame, organised like
+a clean paperwork artefact. Across the very top of the sheet, a thin
+horizontal banner-shape stretches edge to edge (an empty scenario header
+— no text in the image). Just below the banner, a clean three-by-three
+grid is drawn with thin cell-borders. The first (leftmost) column of the
+grid contains a small discipline-icon in each of its three rows: row one
+contains a small composite glyph showing a ladder shape combined with a
+sealed-scroll shape beside it; row two contains a small composite glyph
+showing a locked-drawer shape combined with a broken-meter shape beside
+it; row three contains a small composite glyph showing a two-column
+model-to-technique mapping shape combined with a balance-scale shape
+beside it. Columns two and three of each row are empty rectangular cells
+in the image — empty placeholders. To the right of the three-by-three
+grid, two stacked ghosted bar-chart shapes are drawn at moderate
+transparency: the top chart contains four vertical bars side by side,
+with the third bar from the left drawn slightly taller and warmer in
+tone than the other three; the bottom chart also contains four vertical
+bars side by side, with the second bar from the left drawn slightly
+taller and warmer in tone than the other three. The two ghosted charts
+are drawn at moderate transparency, as soft previews. On the bottom-left
+of the sheet, a single horizontal blank-line slot is drawn (a thin
+horizontal rectangle with a single empty line inside it), beside which a
+small empty label-band area is reserved for an overlay label. No text,
+letters, or numbers rendered anywhere in the image — all labels added in
+slide-editor overlay.</em></li>
+<li><strong>Riquadro 6 (Payoff + pre-hook — course closes, practice
+begins)</strong>: <code>style-anchor</code> + <em>the frame is divided
+into two zones by a soft diagonal split running from upper-left to
+lower-right. In the upper-right zone, a clean two-by-two grid is drawn
+with bold cell borders, taking up roughly the upper-right third of the
+frame. The three cells at the bottom-left, top-left, and bottom-right of
+the grid are visually identical: a light cool-tone background, with a
+small cold-toned silhouette of a human figure centred in each, no warm
+accent. The fourth cell at the top-right of the grid is visually unique:
+a deeply warm-saturated background drawn in the most saturated
+warm-orange tone of the image set, a warm-glow rim around the entire
+cell border, and a small luminous figure centred inside it standing in a
+confident upright posture, drawn brighter than the other three figures.
+Above the top of the grid, an empty horizontal label-band area is
+reserved. Along the left side of the grid, an empty vertical label-band
+area is reserved. A small Elena-silhouette is drawn mid-stride on the
+diagonal between the bottom-right cell and the top-right cell, body
+language registering forward motion, feet still on the boundary between
+the two cells, not yet arrived in the top-right cell. In the lower-left
+zone, a horizontal time-bar runs left to right edge to edge across the
+lower portion of the frame; at its leftmost end, three small
+calendar-day badges are drawn side by side, all three faded in cool grey
+tone. From the rightmost of these three badges, the time-bar continues
+rightward; along this segment, two small workshop-glyphs are anchored:
+one shape showing a chain of three connected box-shapes with arrows
+between them (a pipeline-icon), and one shape showing a circular
+loop-arrow surrounding a small tool-and-bubble pair (an
+agent-flow-icon). Past these two workshop-glyphs, the time-bar fades
+into a much larger sketched calendar-grid drawn in faint cool-grey
+outlines, the grid covering the rightmost third of the frame, evoking
+many weeks, months, and years of duration. At the far right edge of the
+frame, a small hospital-monitor silhouette is sketched in faint ghostly
+outline; on its screen surface, a small red number-shape glows faintly
+without rendering specific digits. Beside the monitor silhouette, a
+small Elena-figure stands holding an open audit folder; on the visible
+page of the folder, a tiny SHAP-style horizontal force-plot glyph is
+drawn, and on the margin of that page, a short curved scribble-shape
+suggests a hand-written annotation, no readable letters. In the
+lower-left corner of the frame, a small laptop is shown on a surface; on
+its screen, the silhouette of a chat-window outline is visible. A small
+Elena-figure stands in the foreground partially in front of the laptop,
+her body silhouette covering roughly the centre portion of the
+chat-window outline, so that the laptop and the chat-window are clearly
+visible behind her but she dominates the foreground
+composition.</em></li>
+</ul>
+<h2 id="verifica-post-output-auto-check">Verifica post-output
+(auto-check)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked></input>Riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+aggancia in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+secondi? — sì: la <em>open audit folder</em> sul desk + l&#39;asymmetric
+bar-chart
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>)
++ il senior che esce dal frame + le <strong>tre</strong> caution-glyphs
+(non cinque) sopra la cartella + il week-calendar che chiude su Friday
+brillante: <strong>lo studente vede in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+secondi che la settimana di Elena è chiusa, che il prossimo audit è
+arrivato, e che ci sono tre cose che potrebbero andare storte</strong>.
+<em>&quot;Friday — the audit folder; three weeks to defend the model.&quot;</em>
+nomina la posta in una riga.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+il dato chiave è VISIBILE? — sì: l&#39;<strong>accuracy meter pegged at the
+top</strong>, <em>visibilmente cablato a una sola classe</em> della
+distribuzione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>,
+è la <em>visualizzazione operativa</em> dell&#39;accuracy trap: lo studente
+<em>vede</em> che la metrica è rotta (un cavo manca) prima che la voce
+docente lo dica. E il <em>locked drawer with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">1\times</annotation></semantics></math>-only
+marker</em> + le <em>ghostly hands</em> bloccate da una <em>warm-orange
+chain</em> è la visualizzazione operativa della leakage rule:
+<em>guardare costa</em> — l&#39;immagine mostra il vincolo, non lo
+dichiara.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+il nodo è il concetto centrale del capitolo? — il riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+è il <em>nodo formale</em> di Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>:
+la mappatura
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1{:}1</annotation></semantics></math>
+fra famiglie di modelli e tecniche di interpretabilità, con la
+<em>clinical-lead silhouette</em> che impone il tradeoff sul
+<em>balance-scale</em>. La connessione <em>RF/GB ↔︎ SHAP</em> in warm
+orange acceso è il <em>clip mentale</em> che pre-shadowa la scelta che
+Elena fa nel sommativo e nella defence narrativa. L&#39;asse pedagogico:
+<em>la tecnica segue il modello, ma il tradeoff non è
+tecnico</em>.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+il sommativo è ospitato correttamente? — sì: tutti gli elementi del
+<em>Field &quot;In-person action&quot;</em> in <a href="objectives.md">objectives.md</a> sono visivamente presenti —
+banner scenario, grid
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">3 \times 3</annotation></semantics></math>
+con i tre discipline-icon (ladder+scroll / locked-drawer+broken-meter /
+mapping+scale) nella prima colonna (e colonne 2-3 <em>vuote</em> per gli
+studenti), due bar-chart ghostate (Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+con la barra
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+taller, Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+con la barra <em>no, because we changed the model</em> taller), slot di
+giustificazione <em>&quot;Why this model?&quot;</em> a una riga. L&#39;artefatto è
+<strong>uno solo</strong>; le nove sub-task del sommativo trovano tutte
+un <em>correlato visivo</em> sulla stessa scena. <em>Show don&#39;t
+tell</em> nel senso pieno: lo schermo <em>mostra il foglio</em> su cui
+la classe lavora.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+lascia una domanda-ponte? — sì, <strong>due</strong>: <em>&quot;in quale
+quadrante del
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+stai oggi?&quot;</em> (Elena in transito tra <em>Exposed Charlatan</em> e
+<em>Modern Alchemist</em> è la <em>posa-domanda</em> — lo studente si
+chiede <em>e io?</em>); e <em>&quot;cosa fai con il prossimo red risk score
+sul prossimo schermo?&quot;</em> (il ghosted hospital-monitor sul time-bar
+futuro + la <em>open audit folder</em> in mano a Elena +
+l&#39;<em>override</em> scritto a margine sono la <em>promessa visiva</em>
+della pratica). <strong>Per la prima volta nel corso, il pre-hook non è
+verso un capitolo successivo</strong> (non c&#39;è) — è verso <em>due
+workshop applicativi</em> (i due workshop-glyph anchored sul time-bar) e
+<em>la carriera</em> (la sketched calendar-grid che si estende su
+anni).</label></li>
+<li><label><input type="checkbox" checked></input>Solo i
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+riquadri (senza voce) raccontano l&#39;arco? — sì:
+audit-folder-on-Friday-with-three-traps →
+ladder-with-signed-scroll-at-foot → broken-meter-and-locked-drawer →
+model-to-technique-mapping-with-clinical-judge →
+composite-summative-sheet-with-three-discipline-icons →
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>-with-Modern-Alchemist-glow
++ time-bar-into-career + closed-spine-ring. L&#39;arco <em>Hook → three
+Disciplines → Summative → Payoff + pre-hook</em> è leggibile senza una
+sola riga di prosa, <strong>e i tre discipline-icon (ladder /
+locked-drawer / mapping) sono il filo visivo continuo</strong> dei
+riquadri
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+(con il riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+che li <em>riassume in colonna</em> e il riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+che li <em>trasferisce nella settimana lavorativa successiva</em> via
+workshop-glyph).</label></li>
+<li><label><input type="checkbox" checked></input>Stile coerente coi cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>?
+— sì: stesso <code>style-anchor</code> (#E8741E, dark-slate,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn><mo>:</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">16{:}9</annotation></semantics></math>,
+no text). <strong>Quattro continuity callback critici</strong>: (a) il
+riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+riprende la <strong>grammatica del calendario</strong> del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+(calendar-badges + time-bar) ma la <em>chiude</em> (settimana piena
+Mon-Fri invece di cliffhanger); (b) il riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+<strong>chiude la spine globale</strong> riprendendo il <em>red risk
+score</em> della scena di apertura del corso — la stessa Elena, lo
+stesso schermo, ma adesso la <em>audit folder</em> con SHAP e
+l&#39;<em>override</em> a margine; (c) il
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+di <em>AI users</em> nel riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+riprende la <strong>grammatica visiva</strong> del
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+di cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+(tre cells identiche + una unique con warm-glow) ma <em>inverte il segno
+semantico</em> (qui <em>aspirazionale</em>, là <em>avvertimento</em>);
+(d) <em>the box</em> compare nei riquadri
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(dormant, sul laptop nel background) e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+(still there, but Elena&#39;s body partially overlaps it from the front) —
+la <strong>continuità nominale</strong> <em>the
+box</em>-articolo-determinativo regge per il sesto capitolo consecutivo,
+e la <em>composizione si inverte</em> rispetto al cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+(lì il box dominava, qui Elena domina). <strong>Niente forward-hook a un
+cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>11</mn><annotation encoding="application/x-tex">11</annotation></semantics></math></strong>
+(non c&#39;è) — il forward-hook è verso <em>workshops</em> +
+<em>carriera</em>, visualizzato dal time-bar esteso del riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>.</label></li>
+</ul>
+</body>
+</html>

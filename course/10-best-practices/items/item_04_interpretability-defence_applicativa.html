@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 04 — Interpretability defence: technique + clinical
+argument</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-04--interpretability-defence-technique--clinical-argument">Item
+04 — Interpretability defence: technique + clinical argument</h1>
+<p><strong>ID</strong>: IB-10-best-practices-04 <strong>Learning
+objective</strong>: Match the interpretability technique to the model
+family — <strong>linear / logistic regression</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>coefficients</em>; <strong>decision tree</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>decision path</em>; <strong>random forest / gradient
+boosting</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>variable importance</em>; <strong>neural network / deep
+model</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>SHAP or surrogate models</em> — and weigh the
+interpretability/performance tradeoff in a healthcare deployment
+context. State the operational rule: <em>if the deployment requires
+clinical defensibility, prefer a model whose interpretability is
+built-in (linear or single tree) — unless the performance gap to the
+opaque model is large enough that the patient is better off with the
+box-with-attribution than with a simpler model that misclassifies more
+often. The tradeoff is a clinical decision, not a technical one</em>
+(Obj. 3).</p>
+<p><strong>Category</strong>: Application <strong>Type</strong>:
+open-ended (<em>applicativa</em>) <strong>Difficulty</strong>:
+medium-high <strong>Chapter</strong>: 10-best-practices</p>
+<h2 id="question">Question</h2>
+<p>The audit is over. The final model for the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission task is <strong>random forest</strong> on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">\sim 12</annotation></semantics></math>
+clinically-chosen features, with validation AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0.32</mn></mrow><annotation encoding="application/x-tex">= 0.32</annotation></semantics></math>
+— an escalation from logistic regression on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+clinically-chosen features (validation AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0.27</mn></mrow><annotation encoding="application/x-tex">= 0.27</annotation></semantics></math>),
+justified by the pre-registered stop-criterion (target
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math>,
+baseline missed it). The clinical lead has signed off on the cost ratio
+between false positives and false negatives, and the threshold has been
+set on a <em>fresh validation</em> split for an operating point of
+recall
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>0.55</mn></mrow><annotation encoding="application/x-tex">\approx 0.55</annotation></semantics></math>
+at precision
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>0.40</mn></mrow><annotation encoding="application/x-tex">\approx 0.40</annotation></semantics></math>.
+The defence to the clinical lead and the ethics committee is in five
+days.</p>
+<p>Write the <strong>Interpretability</strong> section of the defence
+document. The section must contain:</p>
+<p>(a) <strong>Which interpretability technique</strong> you will use to
+explain the model to the clinical lead and the ethics committee, with
+one or two sentences on <em>why this technique matches this model
+family</em> — and why the alternative (reading off coefficients) is not
+available for a random forest.</p>
+<p>(b) <strong>One sentence</strong> stating why the choice in (a) —
+rather than reverting to logistic regression on the original
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+features and reading off coefficients — is <strong>clinically
+defensible</strong> before the ethics committee.</p>
+<p><em>Plain prose. No code, no diagrams. Write as text the clinical
+lead could read aloud back to the committee without rephrasing.</em></p>
+<h2 id="expected-answer">Expected answer</h2>
+<p>A response at the <em>Excellent</em> level reads approximately as
+follows.</p>
+<blockquote>
+<p><strong>(a)</strong> <em>We will use <strong>variable
+importance</strong> computed across the random forest ensemble — a
+ranking of the features by how much each contributes, on average across
+the trees, to the model&#39;s ability to separate readmitted from
+non-readmitted patients. Variable importance matches the random forest
+family because the model&#39;s prediction is the <strong>average across many
+independent trees</strong>: no single tree&#39;s coefficient or rule is the
+model, so there is no per-feature weight with sign and magnitude to read
+off, the way logistic regression&#39;s coefficients are read off — the
+natural read-from-the-model route is therefore unavailable, and a
+<strong>post-hoc</strong> ranking like variable importance is what
+stands in for it. For the ethics committee&#39;s question &quot;what does the
+model rely on?&quot; we report the global variable-importance ranking; for
+the clinical lead&#39;s question &quot;why <strong>this</strong> patient?&quot; we
+additionally show the values of the top-ranked features on that specific
+patient&#39;s chart, so the explanation lands on the record the clinician is
+already reading.</em></p>
+<p><strong>(b)</strong> <em>The random forest catches meaningfully more
+readmissions than the logistic baseline on the validation set (AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.32</mn><annotation encoding="application/x-tex">0.32</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.27</mn><annotation encoding="application/x-tex">0.27</annotation></semantics></math>,
+an extra recall margin that is, at this service, clinically material) —
+and the clinical cost of a missed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+readmission (re-admission, possible adverse event, longer length of
+stay) substantially exceeds the cost of explaining each prediction with
+a feature-importance ranking rather than with a single logistic
+coefficient, so on this audit the patient is better served by the more
+accurate model with a variable-importance defence than by the simpler
+logistic model that misses more events.</em></p>
+</blockquote>
+<p>What the response must contain, across the three criteria of the
+rubric:</p>
+<ul>
+<li><strong>C1 — Technique matching to model family.</strong> Names
+<em>variable importance</em> as the technique for the random forest.
+Rules out reading off <em>coefficients</em> (which exist for logistic
+regression, not for tree ensembles). At higher levels, distinguishes
+<em>global</em> variable importance (population-level — the ethics
+committee&#39;s <em>&quot;what does the model rely on?&quot;</em>) from a
+<em>per-patient</em> explanation (the clinical lead&#39;s <em>&quot;why this
+patient?&quot;</em>) — and either provides a concrete per-patient route (the
+top-ranked features read against the patient&#39;s chart) or, as a bonus,
+names a per-patient attribution technique seen outside the classroom
+(e.g. SHAP, LIME, partial dependence at the patient&#39;s values).</li>
+<li><strong>C2 — Technical justification of the matching.</strong>
+States a correct technical reason for the matching, ideally framed as
+the chapter&#39;s <em>built-in</em> (linear → coefficients, single tree →
+decision path) vs <em>post-hoc</em> (RF/GB → variable importance, NN →
+SHAP or surrogate) distinction. At higher levels, recognises the
+chapter&#39;s full
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1{:}1</annotation></semantics></math>
+mapping as a <em>rule</em>, not a <em>menu of options</em> — the
+technique follows the structure the model exposes, not the analyst&#39;s
+preference.</li>
+<li><strong>C3 — Clinical defensibility framing.</strong> Defends the
+choice as a <strong>clinical decision</strong>, not as a technical
+preference: the subject of the defence sentence is the <em>patient</em>
+(not the model), the cost-of-failure is <em>clinically named</em>
+(re-admission, adverse event, length of stay — not just
+<em>&quot;performance&quot;</em>), and the tradeoff is positioned as the
+<em>clinical lead&#39;s call</em> (given the cost ratio they have signed off
+on), not the data scientist&#39;s. At the Excellent level the sentence reads
+as something the clinical lead could <em>read aloud back to the ethics
+committee</em> without rephrasing.</li>
+</ul>
+<p>A response that <strong>inverts the choice</strong> — i.e. that
+argues the team should <strong>revert to logistic regression on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+features and read off coefficients</strong> because <em>&quot;on this audit,
+the extra recall the random forest buys is below the threshold our
+clinical lead has set for accepting model opacity&quot;</em> — <strong>is
+accepted at Excellent</strong> if the matching is technically correct
+(logistic
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+coefficients) AND the clinical argument is well-posed (the tradeoff is
+<em>named</em>, the cost-of-failure is <em>clinically qualified</em>,
+the subject is the <em>patient</em>). The rubric measures <em>applying
+the tradeoff as a clinical decision</em>, not <em>picking random
+forest</em>.</p>
+<p>A response that cites <strong>SHAP</strong>, <strong>LIME</strong>,
+<strong>Shapley values</strong>, or another per-patient attribution
+technique as a <em>bonus</em> on top of variable importance — typically
+from independent reading or from recalling the chapter&#39;s narrative
+illustration of <em>SHAP-on-a-forest</em> — is accepted at Excellent
+<strong>if</strong> the citation is anchored operationally (the student
+names what SHAP <em>adds</em> over variable importance: per-patient
+attribution that variable importance, being global, does not provide). A
+mechanical citation of <em>&quot;SHAP because it is the standard&quot;</em>
+without the operational anchor is at <em>Base / Good</em> on C2,
+<strong>not</strong> Excellent — the rubric does not require SHAP, but
+it does require <em>reasons</em> for whichever technique is named.</p>
+<h2 id="rubric">Rubric</h2>
+<p><a href="../rubriche/rubrica_04_interpretability-defence.md">rubrica_04_interpretability-defence.md</a>
+—
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+criteria
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>×</mi><annotation encoding="application/x-tex">\times</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+levels (Base / Good / Excellent).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>10 — Best practices for ML projects · narrative</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="10--best-practices-for-ml-projects--narrative">10 — Best
+practices for ML projects · narrative</h1>
+<blockquote>
+<p>Chapter narrative, hanging off the course <a href="../_global/spine.md">spine</a>. Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Six-word,
+100-word, chapter arc, and an explicit pre-hook to the <strong>applied
+follow-up workshops</strong> + <strong>professional life</strong> (ch.
+10 is the last chapter of the course).</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Earn complexity; protect the test.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+varianti. Mantiene la struttura a due clausole con punto e virgola della
+serie (01 <em>&quot;Programs follow rules; learners find them.&quot;</em>, 02
+<em>&quot;Draw the line; count the cost.&quot;</em>, 03 <em>&quot;Same data; three
+algorithms, three boundaries.&quot;</em>, 04 <em>&quot;Decisions cost data; hold
+the test.&quot;</em>, 05 <em>&quot;Stack logistic units; descent finds
+weights.&quot;</em>, 06 <em>&quot;Match the structure; share the weights.&quot;</em>,
+07 <em>&quot;Every token attends every; pre-train, fine-tune.&quot;</em>, 08
+<em>&quot;Structure the ask; check the answer.&quot;</em>, 09 <em>&quot;Check the
+answer; gate the act.&quot;</em>). <strong>Per il terzo capitolo consecutivo
+dopo il pivot di ch. 08, le due clausole sono <em>imperative</em> e il
+loro soggetto implicito è il clinico</strong> — la serie ha pivotato da
+<em>cosa fa il modello</em> a <em>cosa fa lo studente</em>, e ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+chiude il corso in quella stessa voce. <strong>&quot;Earn
+complexity&quot;</strong> è Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+nella sua formulazione <em>normativa esatta</em>: il testo
+dell&#39;obiettivo recita <em>&quot;each added unit of complexity must be
+<strong>earned</strong> by a failure of the simpler model&quot;</em> — il
+verbo <em>earn</em> è già nel target, e il six-word lo eleva a
+<em>signature word</em>. Codifica due cose in tre parole: (a) la regola
+del <em>KISS + stop-criterion ex ante</em> (non parti grande, parti
+semplice e <em>guadagni</em> il diritto a salire) e (b) il framing
+<em>normativo</em> (la complessità è un <strong>debito</strong>, non un
+default). <strong>&quot;Protect the test&quot;</strong> è Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+R2 nella sua forma operativa più dura: il test set è
+<strong>sacro</strong> — &quot;<em>any decision after having seen the test =
+leakage</em>&quot;. <em>Protect</em> (non <em>hold</em>, non <em>seal</em>) è
+scelto perché evoca <em>vigilanza attiva</em> contro le pressioni del
+lab — <em>&quot;guarda questo numero!&quot;</em>, <em>&quot;fai un&#39;ultima prova!&quot;</em>
+— che sono il meccanismo concreto attraverso cui il test si contamina
+nel mondo reale. Eco esplicito a ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+<em>&quot;hold the test&quot;</em>: ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+ha <strong>introdotto</strong> la regola (separazione train/val/test);
+ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+la <strong>promuove</strong> da <em>recipe</em> a <em>discipline difesa
+contro la tentazione</em>. Il <em>protect</em> di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+è la versione <em>agonistica</em> dello <em>hold</em> di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>04</mn><annotation encoding="application/x-tex">04</annotation></semantics></math>
+— sei tu contro il tuo lab. Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+(interpretability + clinical defensibility) <strong>non</strong> sta nel
+six-word: è importante operativamente, ma è una <em>scelta clinica
+contestualizzata</em>, non una <em>disciplina universale come
+earn/protect</em>; vive in pieno nella prosa e nell&#39;arco. Anti-pattern
+evitati: <em>&quot;Discipline outlasts the algorithm&quot;</em> (vero, ma è il
+<em>payoff</em> della prosa, non il <em>meccanismo</em>), <em>&quot;Start
+simple, defend clinically&quot;</em> (poco affilato: <em>start</em> è meno
+normativo di <em>earn</em>), <em>&quot;Keep it simple, stupid&quot;</em> (slogan
+extra-serie, non appartiene a un corso clinico), <em>&quot;Three disciplines
+outlast every algorithm&quot;</em> (corretto ma declarativo invece di
+imperativo, rompe la serie post-pivot).</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>Friday morning, the day after the agent. Three weeks before the
+ethics committee, the senior asked for the next audit:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission, five thousand patients, fifty features, prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>.
+Elena had every tool the course handed her. She wrote the stop-criterion
+before training — logistic regression on six features, AUPRC target —
+and earned the right to escalate only if the baseline failed.
+Always-predict-no would score
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+accuracy; she chose AUPRC and locked the test in a drawer. Three weeks
+later she defended the model — SHAP on a forest, because the simple one
+missed too many. Three disciplines outlasted the algorithm.</p>
+<p><em>Struttura:</em> Bing = il <em>Friday morning</em> arriva il
+giorno dopo il <em>Wednesday afternoon</em> di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>
+— la settimana operativa di Elena (Monday/triage → Wednesday/gate →
+Friday/audit) prosegue senza salti, e il prossimo audit
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission) porta i parametri esatti del sommativo di <a href="objectives.md">objectives.md</a>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+pazienti,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+feature,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>,
+<em>tre settimane</em> di scadenza, defence al <em>clinical lead</em> +
+<em>ethics committee</em>) | Bang = tre mosse correttive in cascata, una
+per obiettivo: (a) <strong>stop-criterion <em>prima</em> del
+training</strong> (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>:
+la complessità si <em>guadagna</em> per fallimento del baseline — il
+<em>prima</em> è la disciplina, non la regola); (b) <strong>AUPRC invece
+di accuracy + test sigillato</strong> (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>:
+<em>always-predict-no</em> a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+è il distrattore canonical di <a href="objectives.md">Poll 1</a>, e
+<em>locked in a drawer</em> è la metafora operativa del <em>protect the
+test</em> del six-word — sigillato per due settimane e mezza, guardato
+una volta sola alla defence); (c) <strong>SHAP su forest perché la
+logistic mancava troppe readmission</strong> (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>:
+SHAP non è scelta &quot;tecnica&quot; — è scelta <em>clinica</em> perché un
+readmission mancato costa più di un&#39;unità di interpretabilità persa) |
+Bongo = <em>&quot;Three disciplines outlasted the algorithm&quot;</em> — la frase
+di chiusura del corso, l&#39;enunciazione narrativa del fatto che <em>il
+corso ha consegnato strumenti, ma la cosa che resta è la
+disciplina</em>. Niente <em>the committee approved</em> esplicito perché
+la chiusura non è sull&#39;approvazione (evento contingente) ma sulla
+<em>disciplina che sopravvive a qualunque algoritmo</em>. Verificato
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+parole esatte. Eco strutturale con ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>
+(<em>&quot;box has not changed, again; now it can act&quot;</em>) e ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>05</mn><annotation encoding="application/x-tex">05</annotation></semantics></math>/<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>
+(<em>&quot;only the rule of repetition&quot;</em>) — ma qui la chiusura è di
+<strong>livello diverso</strong>: non sulla <em>natura della
+scatola</em> ma sulla <em>natura della clinica che la usa</em>.</p>
+<h2 id="chapter-arc--hook--challenge--resolution--payoff">Chapter arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio operativo</td>
+<td>Friday morning. La settimana di Elena è chiusa: lunedì il triage di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere ED con il prompt strutturato (ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>);
+mercoledì il workflow agente con il gate piazzato esattamente prima di
+step
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+(ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>).
+Il senior arriva con il prossimo audit:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+pazienti,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+feature candidate, prevalenza
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\sim 5\%</annotation></semantics></math>,
+da difendere a tre settimane di fronte al <em>clinical lead</em> e al
+<em>comitato etico</em>. Elena ha <em>ogni</em> strumento del corso. Ma
+sente, per la prima volta, che gli strumenti <strong>non
+bastano</strong>. Quello che le serve adesso non è un&#39;altra tecnica — è
+una <strong>disciplina di progetto</strong>.</td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto</td>
+<td>Tre trappole, nello stesso scenario, ciascuna delle quali farebbe
+fallire la defence al comitato. <strong>(i) <em>Cominciare
+grande</em>.</strong> Partire da un random forest perché &quot;vince sempre&quot;
+produce un modello inerpretabile <em>per ragioni che non sono
+cliniche</em> — e quando il comitato chiederà <em>&quot;perché
+<em>questo</em> modello?&quot;</em>, l&#39;unica risposta onesta sarà <em>&quot;perché
+ho scelto quello complicato per default&quot;</em>. Indefendibile.
+<strong>(ii) <em>Misurare male — in due modi</em>.</strong> R1,
+<em>accuracy trap</em>: su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>
+il classificatore &quot;sempre-no&quot; raggiunge
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+di accuracy e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+di recall — <em>clinicamente inutile, statisticamente brillante</em>; e
+accuracy è la metrica che il
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">90\%</annotation></semantics></math>
+dei poster clinici riporta. R2, <em>leakage rule</em>:
+<strong>qualunque</strong> decisione (hyperparameter, threshold, feature
+subset, model family) presa <em>dopo</em> aver visto un numero sul test
+trasforma quel test in un training set — <em>anche se il file si chiama
+&quot;test.csv&quot;</em>. È la regola più violata nella ricerca applicata, e il
+modo in cui lab seri producono paper irriproducibili. <strong>(iii)
+<em>Scegliere l&#39;interpretabilità per ragioni tecniche</em>.</strong>
+Dire <em>&quot;uso logistic perché è interpretabile&quot;</em> senza chiedersi
+<em>quanti pazienti in più si sbagliano con la logistic</em> è scegliere
+per <em>abitudine</em>, non per <em>responsabilità clinica</em>. Il
+comitato etico chiede <em>clinical defensibility</em>; <em>technical
+defensibility</em> non basta.</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta</td>
+<td><strong>(i) KISS + stop-criterion <em>ex ante</em>.</strong> Prima
+riga del notebook, <em>prima del training</em>: <em>baseline = logistic
+regression su
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+feature scelte clinicamente, AUPRC target
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math>
+(o equivalente: recall
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.60</mn></mrow><annotation encoding="application/x-tex">\ge 0.60</annotation></semantics></math>
+at precision
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math>),
+escalate solo se il baseline fallisce sul validation set</em>. Lo
+stop-criterion va scritto <em>prima</em>: scritto <em>dopo</em> è
+razionalizzazione, non disciplina. La complessità si
+<strong>guadagna</strong> per fallimento del semplice — <em>each added
+unit of complexity must be earned by a failure of the simpler
+model</em>. <strong>(ii) Metrica per il problema che hai, e test
+<em>protetto</em>.</strong> R1: scarta accuracy su sbilanciati, scegli
+AUPRC / F1 / recall-at-precision e fissa la soglia <em>basandoti sul
+costo clinico relativo</em> di FP e FN (un readmission mancato costa
+diversamente da un&#39;allerta falsa, e il costo è una scelta
+<em>clinica</em>, non <em>statistica</em>). R2: il test si guarda
+<em>esattamente una volta, alla fine, e mai più</em>. <em>Qualunque</em>
+decisione presa dopo aver visto un numero sul test = leakage — non
+importa quanto innocente sembri il <em>bump della regolarizzazione, just
+to check</em>. Lo stratagemma operativo: dedica un <strong>fresh
+validation split</strong> al thresholding e al tuning di iperparametri;
+il test resta sigillato. <strong>(iii) Interpretabilità <em>matched</em>
+al modello, tradeoff <em>clinico</em>.</strong> La tecnica segue la
+famiglia del modello: linear/logistic → coefficienti (log-odds per unità
+di feature, con segno e magnitudine); decision tree → decision path
+(sequenza di if-then leggibili); RF/GB → variable importance + SHAP per
+case-level; NN → SHAP o surrogate models. Ma la <em>scelta</em> fra
+<em>&quot;logistic interpretabile e cieca&quot;</em> e <em>&quot;GB + SHAP opaca ma
+accurata&quot;</em> <strong>non è una scelta tecnica — è una scelta
+clinica</strong>: se il SHAP-su-forest cattura abbastanza readmission da
+giustificare la perdita di interpretabilità built-in, allora il paziente
+è meglio servito dal <em>box con SHAP</em> che dal <em>semplice
+cieco</em>. Il comitato etico vuole il <em>clinical defensibility
+argument</em>, non il <em>technical one</em>.</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta</td>
+<td>Il corso ha consegnato tre cose negli ultimi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>
+minuti: <em>parti semplice, misura onestamente, difendi
+clinicamente</em>. Non sono regole d&#39;arte: sono <strong>ordini di
+operazioni</strong>. Senza la prima, qualunque modello complicato è una
+scommessa non motivata. Senza la seconda, qualunque numero su qualunque
+slide è dubbio (e <em>molti</em> numeri <em>sono</em> dubbi, nella
+letteratura applicata). Senza la terza, qualunque sistema &quot;che funziona&quot;
+è indifendibile al primo paziente che chiede <em>perché lei mi ha
+dimesso/non dimesso</em>. Sul
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+degli <em>AI users</em> — <em>Dependent Outsider</em> (no strumenti, no
+consapevolezza) / <em>Exposed Charlatan</em> (strumenti, no disciplina)
+/ <em>Resistant Craftsman</em> (consapevolezza, no strumenti) /
+<em>Modern Alchemist</em> (strumenti <strong>e</strong> disciplina) — la
+<strong>disciplina è la dimensione che separa l&#39;<em>Exposed
+Charlatan</em> dal <em>Modern Alchemist</em></strong>. Il corso ha
+consegnato gli strumenti; la disciplina è la parte che il corso <em>non
+può</em> consegnare. Si costruisce <strong>progetto per progetto, audit
+per audit, defence per defence</strong>. Elena non è uscita dal corso
+come <em>Modern Alchemist</em>; è uscita sapendo <em>cosa fa</em> uno, e
+sapendo che il quadrante successivo è una <em>pratica</em>, non un
+<em>titolo</em>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>Friday morning. The week that had begun on the Monday after the
+lecture on chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+ED letters and a prompt that needed to be rewritten three times, and had
+passed through the Wednesday afternoon of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+— the four-step agent, the PI&#39;s premature email, the gate placed exactly
+between <em>draft</em> and <em>send</em> — closed on a Friday in which
+Elena and her senior met in the small office at the end of the corridor.
+The senior put down a folder. <em>&quot;Next audit.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission. Five thousand patients on the hospital&#39;s de-identified
+extract, fifty candidate features, prevalence around five percent. The
+clinical lead wants something operational by the end of the month, and
+the ethics committee will see it three weeks from today. Build the
+model. Build it carefully.&quot;</em></p>
+<p>Elena had every tool the course had handed her. She knew how to frame
+the problem as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>/</mi><mi>P</mi><mi>/</mi><mi>E</mi></mrow><annotation encoding="application/x-tex">T/P/E</annotation></semantics></math>
+from chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>.
+She knew the difference between classification and regression, and which
+loss to use, from chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>.
+She had three families of algorithms in her head from chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>,
+a discipline for splitting the data and resisting overfitting from
+chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>,
+the inner machinery of deep networks from chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>,
+the constraints that made CNNs and RNNs tractable from chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>,
+the architecture of the Transformer from chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>,
+the three-piece kit for using a chat-LLM well from chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>,
+and the trust-boundary discipline for agents from chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>.
+She had, in other words, <strong>eight chapters&#39; worth of
+tools</strong>.</p>
+<p>And she sensed — sitting at her desk, the folder open in front of her
+— that the tools, by themselves, were not enough. <em>The tools were not
+the bit that would fail in front of the ethics committee.</em> What
+would fail was a sequence of <em>small wrong moves</em>, each defensible
+in isolation, accumulating into a model she could not justify when a
+clinician asked <em>why this one, why this number, why should I trust it
+on my next patient</em>. Those three questions were exactly the ones the
+senior had said the committee would ask. They were also the three
+questions that this final chapter — the chapter that began that Friday
+morning in her head, while the audit folder lay open — was about to
+answer.</p>
+<p>She wrote three lines at the top of a fresh notebook.</p>
+<blockquote>
+<p><strong>Baseline: logistic regression on six clinically-selected
+features. Target: AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math>.
+Escalate to gradient boosting only if the baseline fails this target on
+the validation set.</strong></p>
+</blockquote>
+<p>She read it twice and underlined <em>only if</em>. The thing she was
+doing, by writing this line <em>before</em> training a single model, was
+the thing the chapter had a name for: <strong>earn the
+complexity</strong>. If she&#39;d written this line <em>after</em> — after a
+random forest had given her
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.34</mn><annotation encoding="application/x-tex">0.34</annotation></semantics></math>,
+say, and she was now <em>defending</em> the random forest in her notes —
+it would have been a different sentence. It would have been a
+rationalisation, dressed up as a methodology, of a choice she had
+already made for unspoken reasons. <em>More parameters and richer
+features are paid for in robustness, interpretability, and risk of
+overfitting — so each added unit of complexity must be earned by a
+failure of the simpler model.</em> The simpler model deserved to be
+tried first, not because simple was <em>good</em>, but because complex
+was <em>expensive in defensibility</em>. Logistic regression on six
+features was the price of admission.</p>
+<p>The six features came from clinical reasoning, not from automated
+selection. <em>Age. ICU length of stay. Charlson comorbidity index.
+Number of prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>90</mn><annotation encoding="application/x-tex">90</annotation></semantics></math>-day
+admissions. Discharge-time estimated GFR. Number of medications at
+discharge.</em> Each one was something a clinical lead would
+<em>recognise</em> and <em>interrogate</em>; each one made sense without
+a SHAP plot to explain why the model was paying attention to it. If
+logistic regression on these six features hit AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math>,
+she would <em>ship that</em>, not the gradient boosting on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+features that would inevitably score higher. The committee would have a
+<em>defensible model</em> in their hands; her department would have an
+audit they could <em>operate</em>.</p>
+<p>Then she made the second move. <em>Metrics.</em> On a dataset with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>,
+the world&#39;s worst classifier — the one that always says <em>no, this
+patient will not be readmitted</em> — would score
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+accuracy on the held-out data,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">100\%</annotation></semantics></math>
+specificity, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">0\%</annotation></semantics></math>
+recall. The numbers would look excellent in a poster abstract; the model
+would be <em>clinically useless</em>, because the entire clinical reason
+to build it was to <em>catch</em> the rare event. Accuracy was the
+metric for problems where both classes happened roughly equally often,
+and on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>
+prevalence it was just <em>wrong</em>. She picked AUPRC instead, with
+recall-at-precision as the secondary number reported alongside. AUPRC
+summarised the precision/recall curve in a single value that <em>did not
+get fooled</em> by the majority class; recall-at-precision was the
+operational number a clinician could read.</p>
+<p>The threshold she would deliberately <em>not</em> set yet. The
+threshold was a <em>clinical decision</em> about the cost of false
+alarms relative to missed readmissions, and the cost ratio was a
+conversation she would have with the clinical lead the following week,
+not a number she would optimise on a curve. <em>A missed readmission
+costs a re-admission and a possible adverse event. A false alarm costs a
+follow-up call to a stable patient.</em> Those were not equivalent
+costs; the ratio was the clinical lead&#39;s to set; the threshold was
+Elena&#39;s to pick, <em>given</em> the ratio, <em>after</em> the validation
+curve had been drawn.</p>
+<p>And then she made the move that the chapter was prepared to insist on
+hardest. She created a directory called <code>data/</code>, with three
+sub-directories: <code>train/</code>, <code>validation/</code>, and
+<code>test/</code>. She copied the de-identified extract into the
+appropriate splits —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>70</mn><mi>%</mi><mi>/</mi><mn>15</mn><mi>%</mi><mi>/</mi><mn>15</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">70\%/15\%/15\%</annotation></semantics></math>,
+stratified by the outcome — and <em>immediately</em> moved
+<code>test/</code> into a separate folder on a separate drive, gave it a
+date-stamped name, and wrote a sticky note on her monitor that said
+<code>test data: open exactly once, on $2026$-$06$-$26$</code>. The date
+was three weeks away, the day of the ethics committee defence. Until
+then she would build the model — choose features, tune regularisation,
+set the threshold, write the report — using <em>only</em> the training
+and validation splits. The test was <em>not</em> hers to look at, no
+matter how curious she was about how the model was doing on it.
+<em>Anything she decided after looking at the test — even something as
+small as nudging the
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+penalty up by a factor of two because the training accuracy looked a bit
+high — would turn the test into a training set.</em> The file would
+still be called <code>test.csv</code>; the <em>epistemic property</em>
+of being a held-out sample would be gone. The chapter had a name for
+this discipline too: <strong>protect the test</strong>. <em>Looked at
+exactly once, at the end, and never again.</em></p>
+<p>The two and a half weeks that followed went, on the technical side,
+as the senior had probably anticipated. The logistic regression on the
+six features hit AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.27</mn><annotation encoding="application/x-tex">0.27</annotation></semantics></math>
+on validation — <em>under</em> the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.30</mn><annotation encoding="application/x-tex">0.30</annotation></semantics></math>
+target Elena had written down. So the stop-criterion fired in the
+direction it was designed to fire: she escalated. Gradient boosting on
+the same six features hit
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>;
+gradient boosting on a broader set of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>
+features (still clinically motivated) hit
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.34</mn><annotation encoding="application/x-tex">0.34</annotation></semantics></math>.
+She picked the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>-feature
+gradient boosting model, set the threshold based on the cost ratio her
+clinical lead had given her on the Tuesday of the second week (<em>&quot;a
+missed readmission costs us about three times what a false alarm
+costs&quot;</em>, which translated to a threshold around precision
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.40</mn><annotation encoding="application/x-tex">0.40</annotation></semantics></math>
+at recall
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.55</mn><annotation encoding="application/x-tex">0.55</annotation></semantics></math>
+on the validation curve), wrote up the methodology, and on the morning
+of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2026</mn><annotation encoding="application/x-tex">2026</annotation></semantics></math>-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>06</mn><annotation encoding="application/x-tex">06</annotation></semantics></math>-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>26</mn><annotation encoding="application/x-tex">26</annotation></semantics></math>
+she opened the sealed test folder for the first and only time. The
+numbers held. Slightly under validation, as a faithful test always is,
+but well within the band she had committed to defend.</p>
+<p>She walked into the ethics committee that afternoon with the model
+and the methodology, and the questions came as she had been told they
+would.</p>
+<p><em>&quot;Why this model?&quot;</em> — Because the logistic baseline failed the
+pre-registered target by three percentage points of AUPRC. The
+complexity was earned by a documented failure of the simpler model, not
+by a preference for the complicated one. <em>&quot;Why this metric?&quot;</em> —
+Because
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>
+makes accuracy useless
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+accuracy is the score of doing nothing); AUPRC and recall-at-precision
+are the metrics that survive class imbalance, and the threshold was
+chosen to match the clinical cost ratio our service uses, not to
+optimise the number on the slide. <em>&quot;Why should we trust it on the
+next patient?&quot;</em> — Because the model was evaluated on a test set that
+was not used to make any decision in the development process, and
+because for every prediction the committee will see a SHAP attribution
+that names <em>which features pushed the score in which direction</em> —
+not because SHAP is more interpretable than coefficients, but because
+<em>this specific model</em> (gradient boosting) does not <em>have</em>
+coefficients, and SHAP is the technique that <em>matches</em> this
+family. <em>&quot;Why not logistic regression?&quot;</em> — Because the logistic
+regression model would have under-detected readmissions by a number
+large enough that a clinical lead, presented with the choice, would have
+judged the loss of interpretability <em>worth</em> the gain in
+detection. <em>That</em> was Elena&#39;s argument, and it was a
+<em>clinical</em> argument: a sentence about the <em>patient</em>, not
+about the <em>model</em>.</p>
+<p>The committee approved.</p>
+<p>She walked out, and on the way to her desk she thought about the
+slide her teacher had shown at the end of the course — the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+that had stayed pinned to her mental sketchpad ever since. <em>Dependent
+Outsider</em> in one quadrant: no tools, no awareness, surviving on what
+others build. <em>Exposed Charlatan</em> in another: tools, no
+discipline, producing impressive-looking work that the first audit
+destroys. <em>Resistant Craftsman</em> in a third: awareness, no tools,
+useful but isolated. <em>Modern Alchemist</em> in the fourth: tools
+<em>and</em> discipline, building things that survive both the patient
+and the committee. The course had not made her a <em>Modern
+Alchemist</em> — no course can. The course had <em>taught her to
+recognise where she stood, and which quadrant she now had the means to
+move toward</em>. The disciplines of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+— the stop-criterion before training, the test protected from being
+peeked at, the interpretability technique chosen as a clinical argument
+rather than a technical one — were the <strong>bits of the quadrant the
+course could hand her</strong>. The rest was the project, the audit, the
+next patient, the next defence. <em>That</em> part of the quadrant was
+the part the course could not give her. It was the part she would build,
+project by project, over the years of her career.</p>
+<p>She closed the laptop and stayed at the desk for a moment. The red
+risk score that had opened the course, in the very first scene, was
+still there somewhere in her future — a <em>next</em> red flag on a
+<em>next</em> screen, in a <em>next</em> hospital, on a <em>next</em>
+patient she was about to discharge. By then she would know not only what
+the box was, but how to interrogate it, how to ground its answer in
+evidence, and how — when the evidence said so — to override it <em>in
+writing</em>, with reasons a colleague could read and a committee could
+approve. The course had ended. The practice was about to begin.</p>
+<h2 id="versione-didattica-objectives-recap">Versione didattica
+(objectives recap)</h2>
+<p>Gli obiettivi formali del capitolo vivono in <a href="objectives.md">objectives.md</a>. In sintesi, il payoff narrativo
+li ricalca: <strong>plan a first iteration</strong> come <em>baseline +
+stop-criterion scritto ex ante</em> (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>:
+KISS — più parametri = più rischio di overfitting + perdita di
+interpretabilità + carico di defensibility, e la complessità si
+<strong>guadagna</strong> per fallimento documentato del baseline);
+<strong>choose metrics for the problem you have</strong> in due regole
+separate (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>:
+R1 — accuracy trap su sbilanciati, scegli AUPRC / F1 /
+recall-at-precision e fissa la soglia su <em>clinical cost ratio</em>,
+non su curva astratta; R2 — <em>protect the test</em>, qualunque
+decisione presa dopo aver visto un numero sul test trasforma quel test
+in training, <em>anche se il file si chiama &#39;test.csv&#39;</em> — quindi:
+validation set dedicato al thresholding/tuning, test sigillato fino alla
+defence); <strong>match interpretability to the model family + weigh the
+tradeoff as a clinical decision</strong> (Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>:
+linear → coefficienti, tree → decision path, RF/GB → variable importance
++ SHAP per case-level, NN → SHAP; la <em>scelta</em> fra
+modello-interpretabile-by-default e modello-opaco-con-SHAP è una
+<em>scelta clinica</em> — il box con SHAP è la risposta giusta quando il
+guadagno di accuratezza supera la perdita di interpretabilità built-in,
+e il giudizio è del <em>clinical lead</em>, non del data scientist). Il
+sommativo <em>&quot;Monday&#39;s audit, Friday&#39;s defence&quot;</em> della
+objectives.md mappa
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1:1</annotation></semantics></math>
+ai tre obiettivi (Section
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+= Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+Section
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+= Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+Section
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+= Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>);
+la prosa narrativa qui sopra esegue <strong>lo stesso scenario</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+pazienti,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+feature,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>,
+defence a tre settimane) — in modo che prosa, sommativo e obiettivi
+<em>condividano deliberatamente il caso clinico</em>.</p>
+<h2 id="pre-hook--workshops-applicativi--vita-professionale-ch-10-è-lultimo-capitolo-del-corso">Pre-hook
+→ workshops applicativi + vita professionale (ch. 10 è l&#39;ultimo capitolo
+del corso)</h2>
+<blockquote>
+<p>Friday afternoon, three weeks after the audit folder had first
+opened. The ethics committee had asked the three questions Elena now
+knew to expect — <em>why this model, why this metric, why should I trust
+it on my next patient?</em> — and she had answered them not with
+cleverness, but with discipline. The baseline had failed the
+pre-registered target by three percentage points of AUPRC, and she had
+escalated to gradient boosting only because the failure was documented.
+The test set had stayed sealed in a separate folder for two and a half
+weeks and had been opened exactly once, on the day of the defence
+itself. The interpretability technique had been SHAP, not coefficients,
+because the model was not logistic, and the choice between the two had
+been defended as a <em>clinical</em> argument in front of a clinician,
+not a <em>technical</em> one in front of an engineer. The committee had
+approved.</p>
+<p>She closed the laptop and stayed at the desk for a moment. The course
+had handed her something — <em>eight chapters of tools (chapters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+through
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>),
+two chapters of disciplines (chapters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>)</em>.
+The next two weeks of optional <strong>hands-on workshops</strong> would
+put those disciplines through real data on her own laptop: a session on
+<strong>building a clean ML pipeline end-to-end</strong> (the chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+disciplines applied to a real messy hospital export, with the
+<em>stop-criterion writing</em> and the <em>fresh validation split for
+thresholding</em> and the <em>test sealed until the end</em> enforced in
+code), and a session on <strong>operating an LLM-plus-agent inside a
+clinical research workflow</strong> (the chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+and chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+disciplines applied to a dataset
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">3 \times</annotation></semantics></math>
+the volume of the summative, with the
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>-slot
+prompt</em> and the <em>competence rule</em> and the <em>trust-boundary
+placement</em> tested at scale). The tools would be the same; the
+discipline would be on trial.</p>
+<p>But the deeper test — the one that the workshops would only <em>open
+the door to</em> — came afterwards, when nobody was grading anything.
+Elena had walked into the course as one of two quadrants of the closing
+slide: <em>Dependent Outsider</em> if she had never typed a question
+into a model, <em>Exposed Charlatan</em> if she had. The course had not,
+by itself, moved her quadrant; the course had taught her to
+<em>recognise</em> where she stood. The <em>Modern Alchemist</em>
+quadrant — where the clinician masters the tool and <em>extracts
+value</em> from it rather than being extracted from by it — was not the
+gift of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>240</mn><annotation encoding="application/x-tex">240</annotation></semantics></math>
+minutes of slides. It was the <strong>practice</strong> she would keep
+building over the projects of her career: the next audit, the next
+defence, the next red flag on the next screen, the next patient she was
+about to discharge.</p>
+<p>By then she would know not only what the box was, but how to
+interrogate it, how to ground its answer in evidence, and how — when the
+evidence said so — to override it <em>in writing</em>, with reasons a
+colleague could read and a committee could approve. The course had
+ended. The practice was about to begin.</p>
+</blockquote>
+<p><em>Glossa:</em> il pre-hook <strong>non ritira</strong> nulla del
+corso — le tre discipline di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
++ le sette fasi di strumenti dei capitoli
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>01</mn><annotation encoding="application/x-tex">01</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>
++ i due capitoli di pratica
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>08</mn><annotation encoding="application/x-tex">08</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>
++ le slide di sommativo + il
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+degli AI users sono <em>tutti</em> nominati come acquisiti. <strong>Ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+è l&#39;ultimo capitolo del corso (<code>manifest.next_enabled</code>
+ritorna <code>None</code>)</strong>, quindi il pre-hook ha <em>due</em>
+destinazioni in serie:</p>
+<ol type="1">
+<li><p><strong>Workshop applicativi della settimana successiva</strong>
+(vedi <a href="../../docs/sources/agents-from-storia-workshop.md">docs/sources/agents-from-storia-workshop.md</a>
+per il framing operativo). Due sessioni hands-on di proseguimento del
+corso MLT: una sulla <em>pipeline ML clean end-to-end</em> (che applica
+le discipline di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+— stop-criterion, fresh validation split, test sigillato — a un export
+ospedaliero reale e messy), una sull&#39;<em>LLM + agent in workflow di
+ricerca clinica</em> (che applica le discipline di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+—
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>-slot
+prompt, competence rule — e di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>
+— trust-boundary placement — a un dataset
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>3</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">\sim 3\times</annotation></semantics></math>
+il volume del sommativo, dove lo <em>scale-up</em> mette pressione sulle
+stesse regole). Ponte di <strong>pratica</strong>, non di concetto: gli
+stessi obiettivi degli ultimi tre capitoli, su dati veri.</p></li>
+<li><p><strong>Vita professionale</strong> (il <em>vero</em> pre-hook).
+Il
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+degli <em>AI users</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mi>e</mi><mi>p</mi><mi>e</mi><mi>n</mi><mi>d</mi><mi>e</mi><mi>n</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">Dependent</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mi>u</mi><mi>t</mi><mi>s</mi><mi>i</mi><mi>d</mi><mi>e</mi><mi>r</mi></mrow><annotation encoding="application/x-tex">Outsider</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>x</mi><mi>p</mi><mi>o</mi><mi>s</mi><mi>e</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">Exposed</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mi>h</mi><mi>a</mi><mi>r</mi><mi>l</mi><mi>a</mi><mi>t</mi><mi>a</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">Charlatan</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>e</mi><mi>s</mi><mi>i</mi><mi>s</mi><mi>t</mi><mi>a</mi><mi>n</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">Resistant</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mi>r</mi><mi>a</mi><mi>f</mi><mi>t</mi><mi>s</mi><mi>m</mi><mi>a</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">Craftsman</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>r</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">Modern</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>l</mi><mi>c</mi><mi>h</mi><mi>e</mi><mi>m</mi><mi>i</mi><mi>s</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">Alchemist</annotation></semantics></math>)
+è il <em>frame di lettura della propria pratica</em>, e i quadranti non
+si raggiungono con altre slide — si raggiungono <em>con i progetti
+veri</em>. È esattamente la mossa che la <em>nota docente — chiusura del
+corso</em> in <a href="objectives.md">objectives.md</a> prescriveva:
+<em>&quot;adesso che hai gli strumenti, in quale quadrante stai oggi, e in
+quale vuoi stare a fine residenza?&quot;</em>. Non valutativo,
+<em>generativo</em> — il corso si chiude su una domanda che la carriera
+deve rispondere.</p></li>
+</ol>
+<p><strong>Tre eco strutturali ed espliciti</strong> con il resto del
+corso, ognuno deliberato:</p>
+<ul>
+<li><strong>La defence al comitato etico</strong> chiude esattamente con
+le tre domande seedate da <a href="objectives.md">objectives.md</a>
+(<em>&quot;why this model? why this metric? why should I trust it on my next
+patient?&quot;</em>) — il sommativo aveva <em>prefigurato</em> la scena, la
+prosa la <em>attualizza</em> nel pre-hook, e Elena le risponde <em>in
+voce</em>. Ponte di scenario chiuso. È la <strong>prima volta nel
+corso</strong> che il sommativo viene <em>narrato come accaduto</em>
+invece che <em>posto come da fare</em> — la transizione narrativa da
+<em>spec</em> a <em>event</em> segnala che il corso ha pivotato dalla
+<em>spiegazione</em> alla <em>pratica</em>.</li>
+<li><strong>Il calendario <em>Monday → Wednesday → Friday → Friday
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">+ 3</annotation></semantics></math>
+settimane</em></strong> si chiude. Le ultime tre narrative del corso
+(ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>08</mn><annotation encoding="application/x-tex">08</annotation></semantics></math>
+Monday, ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>
+Wednesday afternoon, ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+Friday morning) hanno strutturato la <strong>prima settimana di lavoro
+reale di Elena</strong>; il pre-hook estende a <em>Friday
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>3</mn></mrow><annotation encoding="application/x-tex">+ 3</annotation></semantics></math>
+settimane</em> la defence che chiude il primo progetto. Continuità
+temporale deliberata: il corso ha portato Elena dentro un <em>calendario
+di lavoro</em>, non più dentro una <em>sequenza espositiva</em>. Dal
+capitolo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+a metà del capitolo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>,
+il tempo del corso è stato <em>narrativo-mitico</em> (<em>&quot;Elena had
+walked out feeling, for the first time in months, that...&quot;</em>); dal
+capitolo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+in poi il tempo è diventato <em>operativo-calendariale</em> (<em>&quot;Monday
+after the lecture&quot;</em>). Ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+chiude su quel calendario <em>espandendolo alla scala della
+carriera</em> — <em>&quot;the next patient she was about to discharge&quot;</em>,
+<em>&quot;the years of her career&quot;</em>.</li>
+<li><strong>Il <em>box</em></strong> (sostantivo-protagonista di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>05</mn><annotation encoding="application/x-tex">05</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>)
+resta nominato, ma cambia funzione una volta in più: da <em>oggetto da
+capire</em> (ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>05</mn><annotation encoding="application/x-tex">05</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>07</mn><annotation encoding="application/x-tex">07</annotation></semantics></math>),
+a <em>oggetto da governare</em> (ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>08</mn><annotation encoding="application/x-tex">08</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>09</mn><annotation encoding="application/x-tex">09</annotation></semantics></math>),
+a <em>oggetto da difendere</em> (ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>).
+Non <em>modello</em>, non <em>sistema</em>, non <em>AI</em> — <em>the
+box</em>, in articolo determinativo, lo stesso oggetto da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+capitoli, ogni capitolo con un dettaglio in più, e adesso con una
+<em>defence operativa</em> davanti. La frase finale del pre-hook —
+<em>&quot;the course had ended; the practice was about to begin&quot;</em> — è
+l&#39;<strong>esatto contrappunto</strong> all&#39;apertura della prosa dello <a href="../_global/spine.md">spine globale</a> (<em>&quot;The risk score
+flashed red on Elena&#39;s screen, recommending a discharge she
+doubted&quot;</em>): la stessa Elena, lo stesso schermo, lo stesso punteggio
+di rischio rosso, ma adesso <em>l&#39;algoritmo non la ha più al
+guinzaglio</em> — <em>&quot;this time Elena read its reasoning, found the
+blind spot, and overruled it with evidence&quot;</em>. Spine globale chiusa,
+<em>open ring closed</em>.</li>
+</ul>
+<p>Niente <em>next_enabled</em> da nominare — il corso finisce qui.
+Quello che si apre è la <strong>carriera</strong>.</p>
+</body>
+</html>

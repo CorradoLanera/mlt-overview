@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 02 — Protect the test (R1): the accuracy trap on $p =
+5\%$</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-02--protect-the-test-r1-the-accuracy-trap-on-p--5">Item 02
+— Protect the test (R1): the accuracy trap on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math></h1>
+<p><strong>ID</strong>: IB-10-best-practices-02 <strong>Learning
+objective</strong>: Choose metrics for the problem you actually have,
+<em>not</em> for the problem accuracy assumes you have. On an
+<strong>imbalanced</strong> problem with positive-class prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+(e.g.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>1</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 1\%</annotation></semantics></math>,
+a rare event), reporting <em>accuracy</em> is misleading because the
+always-predict-majority classifier reaches accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>1</mn><mo>−</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">= 1 - p</annotation></semantics></math>
+while being <em>clinically useless</em> — use
+<strong>precision</strong>, <strong>recall</strong>,
+<strong>F1</strong>, or <strong>AUPRC</strong> instead, and <em>pick the
+threshold deliberately based on the clinical cost of false positives vs
+false negatives</em> (Obj. 2 — Rule R1, <em>accuracy trap</em>).</p>
+<p><strong>Category</strong>: Comprehension/Application
+<strong>Type</strong>: MCQ <strong>Difficulty</strong>: medium
+<strong>Chapter</strong>: 10-best-practices</p>
+<h2 id="question">Question</h2>
+<p>At Tuesday&#39;s lab meeting, a senior colleague — Sara — presents the
+results of her
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission</strong> classifier on the hospital&#39;s de-identified
+extract
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+patients, prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≈</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p \approx 5\%</annotation></semantics></math>,
+logistic regression on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+clinically-chosen features). Her closing slide is titled <em>&quot;Excellent
+classification performance&quot;</em> and reads:</p>
+<blockquote>
+<p><em>&quot;Logistic regression achieves
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+accuracy on the held-out test set.&quot;</em></p>
+</blockquote>
+<p>The room is quiet; the PI nods. You are asked to comment. Which of
+the four critiques below applies the chapter&#39;s <em>accuracy trap</em>
+discipline (Rule R1) correctly?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A)
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+accuracy is roughly the score the always-predict-NO classifier would get
+on this kind of problem — but in our hospital around one-in-five ICU
+patients gets readmitted within
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+days, so the always-predict-NO baseline would actually be near
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">80\%</annotation></semantics></math>,
+not
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>.
+Your model is therefore meaningfully above baseline, but I&#39;d still like
+to see recall.&quot;</em></li>
+<li>B)
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+is essentially the accuracy of the always-predict-NO classifier on this
+prevalence
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1 - p = 95\%</annotation></semantics></math>),
+which has recall
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+on the readmission class. Accuracy alone, on this dataset, cannot
+distinguish your model from always-predict-NO. Can you show recall (or
+AUPRC) on the positive class — at the threshold you would actually use
+in practice?&quot;</em></li>
+<li>C)
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+is well above the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>
+baseline that a random classifier would achieve on a binary problem, so
+the model is clearly doing better than chance. The next step is to
+confirm that this generalises beyond the test set.&quot;</em></li>
+<li>D)
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+accuracy means the model is right
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+of the time across the patient population — that&#39;s the overall hit rate,
+and it&#39;s what matters for clinical deployment. The class imbalance means
+more of the correct calls are on non-readmitted patients, but the model
+is still right most of the time.&quot;</em></li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: B.</strong> Critique B is the only one that names
+<em>the</em> baseline that accuracy cannot, on this dataset, distinguish
+the model from — the <strong>always-predict-NO classifier</strong>,
+whose accuracy is exactly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1 - p = 95\%</annotation></semantics></math>
+on a prevalence of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>
+— and asks for the metric that <em>can</em> make the distinction:</p>
+<ul>
+<li><strong>Names the right comparator.</strong>
+<em>Always-predict-NO</em> (the <em>majority</em> baseline) is the
+relevant baseline on imbalanced data, not the coin-flip random baseline.
+The majority baseline&#39;s accuracy is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">1 - p</annotation></semantics></math>,
+which on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>
+is <em>exactly</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>.
+Sara&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+sits <em>inside</em> the band where always-predict-NO already
+lives.</li>
+<li><strong>Names the right discriminator.</strong> <em>Recall on the
+positive class</em> (i.e. <em>sensitivity on readmission</em>) and
+<em>AUPRC</em> are the metrics that <em>cannot be inflated by
+majority-prediction</em>: always-predict-NO has recall
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">= 0</annotation></semantics></math>
+on the positive class by construction, and AUPRC summarises the
+precision–recall curve without giving the negative class the integration
+weight it dominates in AUROC. Any positive value on these metrics is
+evidence the model is doing real work.</li>
+<li><strong>Names the operational caveat.</strong> <em>&quot;At the threshold
+you would actually use in practice&quot;</em> anchors the metric request to
+the <em>operating point</em> — Sara&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+does not tell you where on the precision–recall curve she is. Reporting
+recall <em>at a specific threshold</em> (the one a clinician would use)
+is what makes the metric <em>clinically</em> informative, not just
+<em>statistically</em> better than accuracy.</li>
+</ul>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A</strong> is wrong on <strong>the prevalence</strong>. The
+critique <em>recognises</em> the always-predict-NO trap as a category —
+that is the half-correct move — but reads the prevalence as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≈</mo><mn>20</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p \approx 20\%</annotation></semantics></math>
+(<em>&quot;one-in-five ICU patients&quot;</em>) instead of the stated
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≈</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p \approx 5\%</annotation></semantics></math>.
+The always-predict-NO baseline is then mis-computed as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">80\%</annotation></semantics></math>,
+and Sara&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+is judged <em>meaningfully above baseline</em> — which is <em>false</em>
+on this dataset, because the real always-predict-NO score is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+and Sara is <em>below</em> it by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.2</mn><annotation encoding="application/x-tex">0.2</annotation></semantics></math>
+percentage points. A student who picks A has the <em>right concept</em>
+(compare against the majority baseline) but applied it with the
+<em>wrong number</em>. This is the
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">80\%</annotation></semantics></math>&quot;</em>
+distractor of Poll 1 in <a href="../objectives.md">objectives.md</a>
+translated into a verbal critique. Diagnostic for the corrector: in
+clinical-ML reading, <em>misreading the prevalence by a factor of three
+or four</em> is a more common failure than <em>not knowing what
+prevalence is</em> — the student knows the concept but does not check
+the number against the stated value before reasoning forward.</li>
+<li><strong>C</strong> is wrong on <strong>the baseline class</strong>.
+The critique compares Sara&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+to the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>
+baseline of a coin-flip random classifier, concluding <em>&quot;clearly above
+chance&quot;</em>. But the relevant baseline on imbalanced data is
+<em>never</em> the coin-flip
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>):
+a coin-flip on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>
+achieves accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.5</mn><mo>⋅</mo><mn>0.05</mn><mo>+</mo><mn>0.5</mn><mo>⋅</mo><mn>0.95</mn><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">0.5 \cdot 0.05 + 0.5 \cdot 0.95 = 0.5</annotation></semantics></math>,
+while the always-predict-majority classifier achieves
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>0.95</mn></mrow><annotation encoding="application/x-tex">1 - p = 0.95</annotation></semantics></math>
+— and the majority classifier is <em>deterministic</em>, requires <em>no
+training</em>, and is the <em>trivial baseline that any non-trivial
+model must clearly beat</em>. Comparing to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>
+instead of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+confuses <em>random-baseline</em> with <em>majority-baseline</em> on
+imbalanced data — exactly the
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>&quot;</em>
+distractor of Poll 1. A student who picks C has carried over the
+binary-classification intuition that
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>
+is the floor&quot;</em> from the balanced-data world, where it holds. On
+imbalanced data the floor is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">1 - p</annotation></semantics></math>,
+not
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.5</mn><annotation encoding="application/x-tex">0.5</annotation></semantics></math>,
+and the floor <em>moves with the prevalence</em> — which is the part of
+the chapter the student has not internalised. The tail clause <em>&quot;the
+next step is to confirm that this generalises beyond the test set&quot;</em>
+is a separate concern (and prematurely touches the leakage rule, R2) but
+does not save the diagnosis: the metric is uninterpretable
+<em>before</em> generalisation is even on the table.</li>
+<li><strong>D</strong> is wrong on <strong>what <em>accuracy</em> on
+imbalanced data means clinically</strong>. The critique reads <em>&quot;the
+model is right
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+of the time&quot;</em> as if <em>&quot;being right&quot;</em> on the patient population
+were the clinically-meaningful target — when in fact the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+of patients on whom <em>being right</em> is easy (the
+always-no-readmission majority) are precisely the patients the model was
+<em>not</em> built to identify. On
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>,
+an accuracy of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+is compatible with sensitivity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>0</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">= 0\%</annotation></semantics></math>
+and specificity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>99.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\approx 99.8\%</annotation></semantics></math>
+— <em>zero readmissions correctly identified</em>, with all the apparent
+score coming from correctly classifying negatives. The clinically-useful
+target is <em>being right on the rare event</em> (readmission), and the
+<em>&quot;overall hit rate is what matters&quot;</em> framing dilutes this signal
+— the model can be right on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+of patients and still recall <em>zero</em> readmissions, which is
+operationally the worst outcome for a tool the clinical lead would
+consider deploying. This is the
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">100\%</annotation></semantics></math>&quot;</em>
+distractor of Poll 1 translated into a misreading: the student equates
+<em>&quot;how often we&#39;re right&quot;</em> (plain English) with <em>&quot;how
+clinically useful we are&quot;</em> (the actual question). The plain-English
+reading of <em>accuracy</em> — <em>&quot;how often we&#39;re right&quot;</em> — is the
+trap; the formal reading (a weighted average where the majority class
+swamps the minority) is what the chapter asks the student to use.</li>
+</ul>
+<p>The single discriminator across A / B / C / D is whether the student
+computes <em>the right baseline on the right prevalence</em> before
+reading any model score:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1 - p = 95\%</annotation></semantics></math>
+on this dataset (which rules in B),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mn>0.2</mn><mo>=</mo><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1 - 0.2 = 80\%</annotation></semantics></math>
+on a <em>different</em> dataset that this isn&#39;t (which rules out A),
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.5</mn><annotation encoding="application/x-tex">0.5</annotation></semantics></math>
+on a <em>random</em> baseline that doesn&#39;t apply to imbalanced data
+(which rules out C), and <em>no baseline computation at all</em> — only
+a plain-English reading of <em>&quot;the model is right
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+of the time&quot;</em> (which rules out D). Only B applies the <em>accuracy
+trap</em> discipline with the <em>correct prevalence</em>, the
+<em>correct baseline class</em>, the <em>correct discriminating
+metric</em>, and the <em>correct operating-point anchor</em>.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>10 — Best practices for ML projects · Learning objectives &amp;
+summative exercise</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="10--best-practices-for-ml-projects--learning-objectives--summative-exercise">10
+— Best practices for ML projects · Learning objectives &amp; summative
+exercise</h1>
+<blockquote>
+<p>Chapter: <strong>Best practices for ML projects</strong> · 15 min ·
+biomedical/clinical graduate students (UBEP). Student-facing text in
+English; teacher design notes (<em>nota docente</em>) in Italian.</p>
+</blockquote>
+<h2 id="learning-objectives">Learning objectives</h2>
+<p>By the end of this chapter, students can:</p>
+<ol type="1">
+<li><strong>Plan a first iteration</strong> of an ML project as the
+<strong>simplest model on the smallest sensible feature set</strong>,
+and write an explicit <strong>stop-criterion</strong> <em>before</em>
+adding complexity. Concretely, given a problem and a dataset, state (a)
+the baseline model (e.g. logistic regression on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+features), (b) the baseline metric and the target value that would make
+the simple model &quot;good enough&quot;, and (c) the single failure mode that
+would justify <em>increasing</em> model complexity — and not before.
+State the rationale in one sentence: <em>more parameters and richer
+features are paid for in robustness, interpretability, and risk of
+overfitting — so each added unit of complexity must be earned by a
+failure of the simpler model</em>.</li>
+<li><strong>Choose metrics for the problem you actually have</strong>,
+<em>not</em> for the problem accuracy assumes you have. Apply two rules:
+<strong>(R1)</strong> on an <strong>imbalanced</strong> problem with
+positive-class prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+(e.g.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>1</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 1\%</annotation></semantics></math>,
+a rare event), reporting <em>accuracy</em> is misleading because the
+always-predict-majority classifier reaches accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>99</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">= 1 - p = 99\%</annotation></semantics></math>
+while being <em>clinically useless</em> — use
+<strong>precision</strong>, <strong>recall</strong>,
+<strong>F1</strong>, or <strong>AUPRC</strong> instead, and <em>pick the
+threshold deliberately based on the clinical cost of false positives vs
+false negatives</em>. <strong>(R2)</strong> <em>the data-leakage
+rule</em>: <strong>any</strong> decision (model choice, hyperparameter,
+feature set, threshold) that is taken <strong>after</strong> having seen
+a performance number on a dataset <em>converts that dataset into a
+training set</em> — even if the file is labelled &quot;test&quot;. A faithful test
+set is one that has been <strong>looked at exactly once, at the end, and
+never again</strong>.</li>
+<li><strong>Match the interpretability technique to the model
+family</strong>, and weigh the <strong>interpretability/performance
+tradeoff</strong> in a healthcare deployment context. The mapping:
+<strong>linear / logistic regression</strong> → read off the
+<strong>coefficients</strong> (each one is the log-odds change per unit
+of feature, with sign and magnitude); <strong>decision tree</strong> →
+read off the <strong>decision path</strong> (a sequence of
+human-readable if-then rules); <strong>random forest / gradient
+boosting</strong> → use <strong>variable importance</strong> (which
+features the ensemble relies on most); <strong>neural network / deep
+model</strong> → use <strong>SHAP</strong> (per-sample additive
+attribution) or surrogate models. State the operational rule for
+healthcare: <em>if the deployment requires clinical defensibility (e.g.
+a clinician must justify a single recommendation to a patient), prefer a
+model whose interpretability is <strong>built-in</strong> (linear or
+single tree) — unless the performance gap to the opaque model is large
+enough that the patient is better off with the box-with-SHAP than with a
+simpler model that misclassifies more often. The tradeoff is a clinical
+decision, not a technical one</em>.</li>
+</ol>
+<p><em>Nota docente:</em> tre obiettivi per 15′ — il limite.
+<strong>L&#39;arco di ch 10 non è &quot;spiegare le best practice&quot;</strong> in
+astratto (sono già nelle slide e in qualsiasi libro): è far sì che lo
+studente UBEP <strong>applichi tre discipline operative</strong> su un
+caso clinico reale negli ultimi
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+min del corso. Obj. 1 è la <em>disciplina della semplicità</em> (KISS +
+stop-criterion <em>ex ante</em> — il vero punto è che la stop-criterion
+vada scritta <em>prima</em> di addestrare, non dopo, altrimenti diventa
+razionalizzazione). Obj. 2 è la <em>disciplina dell&#39;onestà metrica</em>
+— due regole separate ma che vivono insieme: la scelta della metrica
+(accuracy trap) e il rispetto del test set (leakage rule). Quest&#39;ultima
+è la regola più violata nella ricerca applicata e va martellata:
+<em>&quot;ANY decision after having seen the test = leakage&quot;</em>. Obj. 3 è
+la <em>disciplina dell&#39;interpretabilità contestualizzata</em> — non
+&quot;interpretable models are better&quot;, ma <em>la scelta del livello di
+interpretabilità è una scelta clinica, non tecnica</em>. <strong>Voce
+docente — non valutato:</strong> la distinzione concettuale tra
+<em>interpretability</em> (built-in) e <em>explainability</em>
+(post-hoc) — la cito ma non la valuto; il dettaglio matematico di SHAP /
+Shapley values / LIME; nested cross-validation come modo di evitare
+leakage da hyperparameter tuning (importante ma fuori scope nei
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>′);
+fairness / sub-group metrics su sotto-popolazioni protette (lo segnalo
+come direzione, non come materiale d&#39;esame); la classificazione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+degli &quot;AI users&quot; (<em>Dependent Outsider / Exposed Charlatan / Resistant
+Craftsman / Modern Alchemist</em>) è una <em>slide di chiusura
+riflessiva</em> e va commentata a voce — è il pre-hook <em>fuori dal
+corso</em> per la vita professionale dello studente: <em>&quot;adesso che hai
+gli strumenti, in quale quadrante stai oggi, e in quale vuoi stare a
+fine residenza?&quot;</em>; non valutarla.</p>
+<h2 id="summative-live-exercise--mondays-audit-fridays-defence">Summative
+live exercise — &quot;Monday&#39;s audit, Friday&#39;s defence&quot;</h2>
+<p><em>Nota docente:</em> sommativo, gira negli <strong>ultimi
+~7′</strong> (min 8–15) dopo le tre discipline e la slide del
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+degli AI users. <strong>Banco unico, condiviso da tutta la
+classe</strong> (presenza + remoto): uno <strong>scenario clinico
+realistico</strong> stampato e proiettato, costruito per esporre
+<strong>tutte e tre le trappole</strong> che gli obiettivi codificano
+—</p>
+<blockquote>
+<p><strong>Scenario:</strong> <em>You are asked to build a model to
+predict
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+readmission for patients discharged from the ICU of your hospital. The
+dataset has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+patients with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+candidate features (demographics, lab values, comorbidities,
+medications, length of stay). The positive-class prevalence is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≈</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p \approx 5\%</annotation></semantics></math>.
+Three weeks from now you must defend your model to the clinical lead and
+the ethics committee, who will ask: &#39;why this model? why this metric?
+why should I trust it on my next patient?&#39;</em></p>
+</blockquote>
+<p>A fianco, una <strong>planning sheet</strong> stampata in tre sezioni
+— <em>Section 1: first iteration</em> (3 rows: baseline model, baseline
+metric + target, stop-criterion); <em>Section 2: metric + leakage</em>
+(3 rows: chosen metric + 1-sentence why-not-accuracy, threshold rule,
+leakage trap in this scenario); <em>Section 3: model +
+interpretability</em> (3 rows: final model choice if the simple one
+fails, interpretability technique that matches, 1-sentence
+clinical-defensibility argument).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objective verified</td>
+<td>Obj. 1 (first iteration + stop criterion) — verified in Section 1,
+sub-tasks (i)–(iii). Obj. 2 (metric + leakage rule) — verified in
+Section 2, sub-tasks (iv)–(vi). Obj. 3 (interpretability + clinical
+defensibility) — verified in Section 3, sub-tasks (vii)–(ix).</td>
+</tr>
+<tr>
+<td>In-person action</td>
+<td>Table groups receive the scenario + the three-section planning
+sheet. They: <strong>(i)</strong> <strong>baseline model</strong> —
+write <em>logistic regression</em> (or equivalently a simple model) and
+pick
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+features by clinical reasoning (e.g. <em>age, ICU length of stay,
+Charlson comorbidity index, prior
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>90</mn><annotation encoding="application/x-tex">90</annotation></semantics></math>-day
+admissions, discharge-time eGFR</em>); <strong>(ii)</strong>
+<strong>baseline metric + target</strong> — write the metric chosen in
+Section 2 (anticipating Obj. 2: not accuracy) and a target value that
+would mark the simple model as &quot;good enough&quot; (e.g. <em>AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math></em>,
+or equivalently <em>recall
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.60</mn></mrow><annotation encoding="application/x-tex">\ge 0.60</annotation></semantics></math>
+at precision
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">\ge 0.30</annotation></semantics></math></em>);
+<strong>(iii)</strong> <strong>stop-criterion</strong> — write <em>&quot;if
+the baseline reaches the target value on a held-out validation set, we
+<strong>stop</strong> and ship the simple model; we add complexity (more
+features, RF, neural net) only if the baseline fails to reach the
+target&quot;</em>; <strong>(iv)</strong> <strong>metric + 1-sentence
+why-not-accuracy</strong> — write the chosen metric and one sentence
+that names <em>&quot;always-predict-no-readmission would reach
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+accuracy and recall
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>&quot;</em>;
+<strong>(v)</strong> <strong>threshold rule</strong> — write one
+sentence on the cost ratio (e.g. <em>&quot;a missed readmission costs more
+clinically than a false alarm, so we threshold for high recall at the
+price of lower precision&quot;</em>) or the reverse, <em>with a
+justification</em>; <strong>(vi)</strong> <strong>leakage trap</strong>
+— write one sentence naming a <em>concrete</em> way leakage could happen
+on this dataset (expected patterns: <em>&quot;if we use the test set to
+choose the threshold, the test is now a training set — we must use a
+third &#39;validation&#39; split for thresholding&quot;</em>; or <em>&quot;if we engineer
+features (e.g. discretise age) by looking at how they correlate with the
+outcome on the test, we leak&quot;</em>; or <em>&quot;if we &#39;just look once more&#39;
+at the test to confirm a metric after a hyperparameter change, we
+leak&quot;</em>); <strong>(vii)</strong> <strong>final model choice if the
+simple one fails</strong> — write the model (e.g. <em>gradient boosting
+/ random forest</em>); <strong>(viii)</strong> <strong>interpretability
+technique that matches</strong> — write <em>variable importance +
+SHAP</em> (matched to ensemble / boosting), or in case (vii) is
+<em>neural net</em>, write <em>SHAP</em> alone; <strong>(ix)</strong>
+<strong>1-sentence clinical-defensibility argument</strong> — write one
+sentence stating the tradeoff <em>as a clinical decision</em>: e.g.
+<em>&quot;we accept SHAP-based post-hoc explanation over a fully
+interpretable logistic because the simple model misses too many
+readmissions; the cost of a missed readmission outweighs the cost of a
+less-than-perfectly-interpretable model&quot;</em>. Each group photographs
+its three sections and drops them into the shared doc.</td>
+</tr>
+<tr>
+<td>Remote equivalent</td>
+<td>Same scenario + same three-section planning sheet on a shared doc.
+Remote groups type the nine rows directly into their slot. Two Slido
+polls run live, capturing <strong>all</strong> students individually:
+<strong>Poll 1 — &quot;On this dataset, what is the accuracy of the
+always-predict-NO-readmission classifier?&quot;</strong> (options
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">80\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">100\%</annotation></semantics></math>);
+<strong>Poll 2 — &quot;You finish training, look at the test set, see
+accuracy
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>=</mo><mn>92</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">= 92\%</annotation></semantics></math>.
+You bump the regularisation and check the test again:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>93</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">93\%</annotation></semantics></math>.
+Is the second number a faithful test number?&quot;</strong> (options
+<em>yes</em> / <em>no, because we changed the model after seeing a test
+number</em> / <em>no, but only if we report the first number too</em> /
+<em>only after a fresh validation</em>). The polls make the remote
+signal on Obj. 2 (R1 and R2 respectively) visible <em>next to</em> the
+in-person sheets.</td>
+</tr>
+<tr>
+<td>Shared artifact</td>
+<td>A single shared doc / whiteboard with one row per group containing
+the <strong>three sections</strong> in their nine cells. The two Slido
+bar charts (Poll 1 and Poll 2) are projected next to it, visible to
+in-person and remote at once.</td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>9 min, minutes 6–15 (end of course): ~1′ read the scenario + open
+the polls, ~2′30″ fill Section 1 (baseline + metric/target +
+stop-criterion) [Poll 1 closes at min 10 <em>or</em> at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\geq 80\%</annotation></semantics></math>,
+whichever is later; hard cap
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>90</mn><annotation encoding="application/x-tex">90</annotation></semantics></math>″],
+~2′30″ fill Section 2 (metric/why-not-accuracy + threshold + leakage
+trap) [Poll 2 closes at min 12 <em>or</em> at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\geq 80\%</annotation></semantics></math>,
+same floor], ~1′30″ fill Section 3 (final model + interpretability +
+clinical defence), ~1′30″ instructor-led reveal — <em>Nota docente
+sull&#39;esposizione:</em> per liberare
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>9</mn><annotation encoding="application/x-tex">9</annotation></semantics></math>′
+al sommativo la fase espositiva va portata a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>′
+(era previsto
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>′):
+scegli <strong>tre delle cinque slide</strong> delle best practice
+(suggerite: <em>KISS / iterate</em>, <em>accuracy trap</em>, <em>leakage
+rule</em>) e lascia <em>interpretability</em> e <em>Modern
+Alchemist</em> come reveal-only — one group&#39;s three sections are read
+off the board as the canonical example, <em>Poll 1</em> histogram is
+shown (the wrong distractors are <em>named</em>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>
+= &quot;ha confuso <em>bilanciato</em> con <em>casuale</em> — &#39;sempre
+negativo&#39; non è &#39;a caso&#39;, è la maggioranza&quot;,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">80\%</annotation></semantics></math>
+= &quot;ha stimato la prevalenza a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>20</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">20\%</annotation></semantics></math>,
+non
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>;
+controlla i numeri prima di rispondere&quot;,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">100\%</annotation></semantics></math>
+= &quot;ha confuso <em>accuracy</em> con <em>recall</em> sulla classe
+negativa — l&#39;errore opposto&quot;), the answer
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+is read off as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mn>0.05</mn><mo>=</mo><mn>0.95</mn></mrow><annotation encoding="application/x-tex">1 - 0.05 = 0.95</annotation></semantics></math>,
+<em>Poll 2</em> histogram is shown (the wrong distractors are
+<em>named</em>: <em>yes</em> = &quot;non ha applicato R2 — la test è stata
+vista due volte, è leakage&quot;, <em>yes if we report both</em> =
+&quot;trasparenza non basta: il dato è già contaminato&quot;, <em>only after a
+fresh validation</em> = &quot;è la risposta operativamente giusta, ma la
+<strong>regola</strong> è <em>no, perché abbiamo aggiornato il modello
+dopo aver visto il numero</em> — la <em>correzione</em> è usare un set
+ulteriore&quot;), <strong>and the instructor explicitly closes the chapter
+and the course with the spine beat</strong>: <em>&quot;there are no clever
+algorithms that survive bad metrics, leaked test sets, or models you
+cannot defend to a clinician. The discipline of starting simple, of
+being honest about metrics, and of choosing interpretability for the
+deployment context — that is what separates the <strong>Modern
+Alchemist</strong> from the <strong>Exposed Charlatan</strong> in the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+on the previous slide. The tools are in your hands now; the discipline
+is the bit nobody can hand you, you build it.&quot;</em></td>
+</tr>
+<tr>
+<td>Success criterion</td>
+<td>The class produces, on the shared artifact: <strong>(i)</strong>
+Section 1 has a baseline that is <strong>explicitly simple</strong>
+(logistic regression on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+features, <em>not</em> &quot;I&#39;ll start with a random forest because it
+always wins&quot;), a baseline target value that is realistic <em>given
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math></em>,
+and a stop-criterion written <strong>as an if-then</strong>;
+<strong>(ii)</strong> Section 2&#39;s metric is <strong>not
+accuracy</strong> (any of AUPRC, F1, recall-at-precision,
+recall-at-threshold is accepted), the why-not-accuracy sentence
+references the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+accuracy of always-predict-NO, the leakage trap names <em>a concrete
+mechanism</em> (not &quot;we should be careful with the test&quot;) — expected
+mechanisms: <em>test-set thresholding, peeking at the test during
+hyperparameter tuning, leakage via outcome-correlated feature
+engineering</em>; <em>Poll 1</em> shows the modal answer at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>;
+<em>Poll 2</em> shows the modal answer at <em>no, because we changed the
+model after seeing a test number</em>; <strong>(iii)</strong> Section
+3&#39;s model and interpretability technique are <strong>matched</strong> (a
+group that writes &quot;<em>random forest + read off the coefficients</em>&quot;
+is corrected — RF has no coefficients), and the clinical-defensibility
+sentence frames the tradeoff <strong>as a clinical choice</strong>,
+<em>not</em> as &quot;interpretability is always better&quot; (a group that writes
+&quot;<em>we use logistic regression because it is interpretable,
+period</em>&quot; is corrected — that is <em>true</em> but it ducks the
+tradeoff Obj. 3 asks for). <strong>Live signal of mastery:</strong> the
+class can read off the board, without prompting, that <em>the three
+disciplines compose: start simple, measure honestly, defend the choice
+clinically — and that on this scenario the answer is <strong>logistic
+regression on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>10</mn><annotation encoding="application/x-tex">10</annotation></semantics></math>
+features, AUPRC + recall at a clinically-justified threshold, separate
+validation split for thresholding, escalate to gradient boosting + SHAP
+only if the baseline misses the target</strong></em>.</td>
+</tr>
+</tbody>
+</table>
+<p><em>Nota docente — perché duale funziona qui:</em> l&#39;artefatto è
+<strong>uno solo</strong> (lo scenario + planning sheet a tre sezioni),
+tutto il sommativo è cella-da-riempire + frase singola + check su una
+opzione — niente da disegnare ex novo, niente asimmetria
+presenza/remoto. I due poll Slido danno il segnale immediato e
+individuale sui due punti più diagnosticabili (<em>accuracy trap</em> su
+Poll 1, <em>leakage rule</em> su Poll 2). Lo scenario è clinicamente
+plausibile, gestibile in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>
+min lordi, <em>e</em> la planning sheet a tre sezioni mappa
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1:1</annotation></semantics></math>
+ai tre obiettivi — il reviewer ha quindi la traccia osservabile completa
+per <em>ognuno</em> dei tre obiettivi.</p>
+<p><em>Nota docente — sulla scelta dello scenario, della prevalenza, e
+dei distrattori:</em>
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission</em> è scelto perché (a) <strong>realistico</strong> in
+audit ospedalieri; (b) <strong>prevalenza
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math></strong>
+— abbastanza bassa da far funzionare la accuracy trap
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">95\%</annotation></semantics></math>
+è un numero specifico, non astratto), abbastanza alta da non collassare
+in <em>one-class anomaly detection</em> (sarebbe un altro corso); (c)
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+feature candidate</strong> — costringe alla scelta esplicita del feature
+subset in Section 1 (Obj. 1); (d) <strong>defence to clinical lead +
+ethics committee</strong> — fornisce il contesto operativo per Obj. 3
+(clinical defensibility, non &quot;interpretability in astratto&quot;). I
+distrattori del <em>Poll 1</em> sono diagnostici:
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math></strong>
+= ha confuso <em>baseline-random</em> con <em>baseline-majority</em>
+(non sa che &quot;sempre la stessa classe&quot; è la baseline corretta per
+accuracy quando le classi sono sbilanciate);
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>80</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">80\%</annotation></semantics></math></strong>
+= ha stimato male la prevalenza (errore di lettura del problema,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.05</mn><annotation encoding="application/x-tex">0.05</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.20</mn><annotation encoding="application/x-tex">0.20</annotation></semantics></math>);
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>100</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">100\%</annotation></semantics></math></strong>
+= ha confuso <em>accuracy</em> con <em>true-negative rate</em>, ovvero
+ha calcolato la accuracy <em>condizionata</em> sui negativi anziché
+marginale. I distrattori del <em>Poll 2</em> sono progettati per esporre
+<strong>tre fraintendimenti tipici</strong> della regola R2:
+<em>&quot;yes&quot;</em> = non l&#39;ha capita; <em>&quot;yes if we report both
+numbers&quot;</em> = ha confuso <em>trasparenza</em> con
+<em>correttezza</em>; <em>&quot;only after a fresh validation&quot;</em> = ha la
+<strong>soluzione</strong> ma non la <strong>regola</strong>, ed è la
+risposta dello studente che ha già lavorato in un lab serio — premiala
+come <em>operativamente corretta</em> nel reveal, ma sottolinea che la
+<em>regola</em> sotto la soluzione è &quot;il test è già stato contaminato
+nel momento in cui hai <strong>modificato il modello</strong> dopo aver
+visto un numero su quel test&quot; (la chiave non è il <em>guardare</em>, è
+il <em>decidere dopo aver guardato</em>).</p>
+<p><em>Nota docente — anti-trabocchetto su &quot;ma allora il random forest
+perde sempre?&quot;:</em> uno studente attento può obiettare che gradient
+boosting + SHAP è <em>quasi sempre</em> superiore alla logistic
+regression su dati clinici reali, e che insistere sulla logistic è
+arcaico. La risposta — <strong>voce docente nel reveal, non parte della
+valutazione</strong> — è duplice: (a) <strong>empiricamente</strong> sì,
+su dati tabular ricchi il gradient boosting vince, e Obj. 3 lo riconosce
+esplicitamente (&quot;se il gap di performance è abbastanza grande da
+giustificare l&#39;opacità&quot;); (b) <strong>operativamente</strong> la
+logistic regression resta la <strong>baseline corretta</strong> non
+perché vinca, ma perché <em>senza di lei non sai quanto guadagni con il
+modello complicato</em> — e il &quot;quanto guadagni&quot; è il numero che
+giustifica la perdita di interpretabilità davanti al comitato etico.
+Premia lo studente che fa l&#39;osservazione: ha capito che le best practice
+non sono tabù, sono <em>ordini di operazioni</em>.</p>
+<p><em>Nota docente — chiusura del corso:</em> la slide finale del
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+degli AI users (<em>Dependent Outsider</em> / <em>Exposed Charlatan</em>
+/ <em>Resistant Craftsman</em> / <em>Modern Alchemist</em>)
+<strong>non</strong> è un obiettivo valutativo — è il <em>pre-hook fuori
+dal corso</em> per il dopo. Nel reveal il docente la commenta a voce:
+<em>&quot;siete entrati in questo corso probabilmente come &#39;Exposed
+Charlatan&#39; o &#39;Dependent Outsider&#39;. L&#39;obiettivo di questi tre giorni era
+fornirvi gli strumenti per <strong>non rimanerci</strong>. Il prossimo
+passo — diventare &#39;Modern Alchemist&#39; — non è una questione di altre
+slide, è di quanti progetti veri farete applicando queste tre
+discipline&quot;</em>. Chiusura emotiva, non valutativa.</p>
+</body>
+</html>

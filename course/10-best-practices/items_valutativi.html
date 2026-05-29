@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item bank — 10 Best practices for ML projects</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-bank--10-best-practices-for-ml-projects">Item bank — 10
+Best practices for ML projects</h1>
+<blockquote>
+<p>Chapter: <code>10-best-practices</code> · MLT course (UBEP,
+biomedical/clinical graduate students). Generated 2026-05-29. Items
+student-facing in <strong>English</strong>; rubrics 3-level
+(Base/Good/Excellent). Review: <code>assessment-reviewer</code> ✓
+<strong>APPROVED-WITH-FIXES</strong> (2026-05-29) after applying
+<strong>4 must-fix</strong> + <strong>5 should-fix</strong>.
+<strong>MF-1</strong> (Rubric 05, bias <em>fix del leakage</em>): added
+a <em>temporal-logic note</em> distinguishing <strong>ex ante</strong>
+(Anna, <em>prevention</em> via sealed-test + fresh-validation) from
+<strong>ex post</strong> (Davide in Item 03, <em>replacement</em> via
+new test split). The two rules are operationally coherent; the
+difference is the moment of application. Bias resolves <em>both</em>
+directions: do not penalise sealed-test+fresh-validation as Anna&#39;s fix;
+do not promote <em>new-test-split</em> as the <em>only</em> correct fix
+for Anna (over-application of Item 03&#39;s rule on a plan where R2 has not
+yet triggered). <strong>MF-2</strong> (Item 03 option D): added <em>&quot;and
+re-reads the <strong>same</strong> test split he originally used&quot;</em>
+to close the ambiguity that <em>fresh-validation-for-future-tuning</em>
+could be read as <em>fixing-the-already-contaminated-test</em>. D is now
+unambiguous about <em>which</em> test is being reused.
+<strong>MF-3</strong> (Rubric 04 C2 <em>Below Base</em>): removed the
+<em>&quot;variable importance is more interpretable than coefficients&quot;</em>
+failure mode (defensible on a forest where coefficients don&#39;t exist);
+replaced with two genuine wrong reasons — <em>capacity/interpretability
+confusion</em> (<em>&quot;random forests don&#39;t use coefficients because they
+overfit&quot;</em>) and <em>statistical-estimation/interpretability
+confusion</em> (<em>&quot;variable importance has lower bias / is
+statistically more robust&quot;</em>). <strong>MF-4</strong> (Rubric 05 C1
+<em>Below Base</em>): resolved the conflict between <em>&quot;at least three
+of four&quot;</em> and <em>&quot;non-negotiable: leakage + one of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1)/(2)</annotation></semantics></math>&quot;</em>
+by explicitly stating that the two non-negotiables are <em>necessary but
+not sufficient</em> for Base — the third identification is required
+regardless of which two are present (without it, the <em>synthesis</em>
+the item asks for is not visible). <strong>SF-1</strong> (Item 02 option
+D): reformulated <em>&quot;sensitivity AND specificity both excellent —
+internally consistent&quot;</em> (auto-denouncing rhetoric) to <em>&quot;the
+overall hit rate is what matters for clinical deployment&quot;</em>
+(plain-English misreading the student could genuinely write); expected
+answer for D updated to match the new framing (clinical-utility
+misreading rather than mathematical inconsistency); discriminator
+sentence updated. <strong>SF-2</strong> (Item 03 Steps 5 + 6): compacted
+Steps 5 and 6 into a single Step 5 (<em>&quot;Decide
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+bump → retrain → re-open test → read
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.31</mn><annotation encoding="application/x-tex">0.31</annotation></semantics></math>
+→ plan to report as headline&quot;</em>) — <strong>five steps instead of
+six</strong>, identical content, lower parsing overhead.
+<strong>SF-3</strong> (Rubric 04 bias da evitare): added explicit clause
+that <em>variable importance is agnostic</em> between <em>Mean Decrease
+in Impurity</em> (MDI — scikit-learn <code>.feature_importances_</code>)
+and <em>permutation importance</em> — citing a specific variant is
+<em>bonus fuori rubrica</em>, like SHAP/LIME/Shapley values.
+<strong>SF-4</strong> (Item 05 expected answer): moved the
+<em>&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">90\%</annotation></semantics></math>
+sits below the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1 - p = 95\%</annotation></semantics></math>
+baseline&quot;</em> cascade out of part
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(a)</annotation></semantics></math>
+identification (which anchored the <em>Excellent</em> baseline) into
+part
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(b)</annotation></semantics></math>
+operational-diagnosis only, so the cascade is registered as a <em>signal
+of Excellent on C2</em>, not as a <em>Base requirement</em>.
+<strong>SF-5</strong> (Item 01 option D justification): anchored the
+<em>&quot;unreachable AUPRC
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.80</mn><annotation encoding="application/x-tex">0.80</annotation></semantics></math>&quot;</em>
+argument to the <em>historical AUPRC range
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.20</mn><annotation encoding="application/x-tex">0.20</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.45</mn><annotation encoding="application/x-tex">0.45</annotation></semantics></math></em>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission models specifically (instead of generalising to <em>&quot;all
+clinical-tabular problems struggle to exceed
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.50</mn><annotation encoding="application/x-tex">0.50</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.60</mn><annotation encoding="application/x-tex">0.60</annotation></semantics></math>&quot;</em>,
+which is empirically not universal). <strong>Anti-leakage check</strong>
+(cap. 01-09) held cleanly across all five items + both rubrics post-fix.
+<strong>Internal coherence check</strong> on the <em>test-discipline
+sequence</em> (Item 03 Davide <em>ex post</em> / Item 05 Anna <em>ex
+ante</em>) post-fix: the two scenarios now sit on different temporal
+points of R2&#39;s application, and the rubric of Item 05 names this
+distinction explicitly. No further fixes required.</p>
+</blockquote>
+<blockquote>
+<p><strong>Set size note:</strong> chapter 10 closes at <strong>5
+items</strong>, one more than <a href="../09-agents/items_valutativi.md">chapter 9</a> and the
+<em>applicativa</em>-only chapters. The choice is deliberate: cap. 10
+has <strong>three objectives</strong>, but <strong>Obj. 2 contains two
+independent rules</strong> — <em>R1 — accuracy trap</em> (on imbalanced
+data, accuracy is uninterpretable because it cannot distinguish the
+model from always-predict-majority) and <em>R2 — leakage rule</em> (any
+decision taken after observing a performance number on a dataset
+converts that dataset into a training set). The two rules cannot share
+an item: R1 is a <em>metric-choice</em> discipline (which number to
+report), R2 is a <em>test-discipline-over-time</em> rule (when the test
+stops being a test). They fail in <em>different scenarios</em>, expose
+<em>different misconceptions</em>, and require <em>different operational
+fixes</em>. Testing them in a single MCQ would force the student to
+choose <em>which one to apply</em>; testing them in two MCQs measures
+both, separately, on their own diagnostic distractors. Plus the
+<strong>synthesis item</strong> (Item 05 — critique a colleague&#39;s
+project plan that violates all four rules in cascade) — same role as
+Item 04 of cap. 09: detect the <em>integrated misapplication</em> in a
+design the student did not write, which is the operational form of
+<em>all three disciplines together</em>. Three objectives × {Obj.1 +
+Obj.2.R1 + Obj.2.R2 + Obj.3 + synthesis} =
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+items, each at its natural cognitive level.</p>
+</blockquote>
+<blockquote>
+<p><strong>Note on numbers and scenarios:</strong> all five items anchor
+the same clinical scenario as the chapter&#39;s summative exercise
+(<em>Monday&#39;s audit, Friday&#39;s defence</em> —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>-day
+ICU readmission,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+patients,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+candidate features, prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>≈</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p \approx 5\%</annotation></semantics></math>,
+defence to clinical lead + ethics committee in three weeks — see <a href="objectives.md">objectives.md</a>). The anchor is <em>deliberate
+continuity</em>: the chapter teaches <strong>three disciplines on one
+project</strong>, not three disciplines on three abstract problems, so
+the items reuse the project scenario to keep the <em>target of the
+disciplines</em> constant. <strong>Operational variation across
+items</strong> prevents mechanical repetition: each item gives the
+project to a different colleague (Marco for Item 01, Sara for Item 02,
+Davide for Item 03, Anna for Item 05 — the names anchor <em>who is
+making the mistake</em>), with different feature counts
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>12</mn></mrow><annotation encoding="application/x-tex">\sim 12</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>),
+different metric reportings
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>U</mi><mi>P</mi><mi>R</mi><mi>C</mi><mo>≥</mo><mn>0.30</mn></mrow><annotation encoding="application/x-tex">AUPRC \ge 0.30</annotation></semantics></math>
+target /
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+accuracy / sequential
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.29</mn><mo>→</mo><mn>0.31</mn></mrow><annotation encoding="application/x-tex">0.29 \to 0.31</annotation></semantics></math>
+on test /
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.32</mn><annotation encoding="application/x-tex">0.32</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.27</mn><annotation encoding="application/x-tex">0.27</annotation></semantics></math>
+baseline-comparison /
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>90</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\ge 90\%</annotation></semantics></math>
+threshold), and different stages of the project (planning / lab-meeting
+reporting / methodology-sequence narration / post-audit defence writing
+/ Friday-morning plan email). The items measure the <em>rule and its
+operational test</em>, never the <em>recall of the summative&#39;s specific
+planning-sheet rows</em>.</p>
+</blockquote>
+<h2 id="item--objective-map">Item ↔︎ objective map</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Learning objective</th>
+<th>Category</th>
+<th>Type</th>
+<th>Difficulty</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td><strong>Obj. 1 — earn complexity (KISS + stop-criterion <em>ex
+ante</em>)</strong>. Plan a first iteration of an ML project as the
+simplest model on the smallest sensible feature set, write the
+stop-criterion <strong>before</strong> training, and escalate only on
+documented failure of the simpler baseline. Tests the <em>timing</em> of
+the stop-criterion (written ex ante vs rationalisation written ex post),
+the <em>KISS</em> component (baseline as the <em>simplest sensible</em>
+model, not a complex primary choice), and the <em>target-realism</em>
+component (a target achievable on the actual prevalence — a rigged
+target collapses the rule into predetermined escalation)</td>
+<td>Comprehension</td>
+<td>MCQ</td>
+<td>medium</td>
+<td><a href="items/item_01_stop-criterion-ex-ante_mcq.md">item_01_stop-criterion-ex-ante_mcq.md</a></td>
+</tr>
+<tr>
+<td>02</td>
+<td><strong>Obj. 2 — R1 <em>accuracy trap</em></strong>. Choose metrics
+for the problem you actually have, not for the problem accuracy assumes
+you have. Tests the recognition that on prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>
+the always-predict-NO classifier already scores
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1 - p = 95\%</annotation></semantics></math>
+accuracy, the choice of <em>recall on the positive class</em> and
+<em>AUPRC</em> as the metrics that cannot be inflated by
+majority-prediction, and the <em>operating-point</em> anchor (recall at
+a specific threshold rather than AUC alone). Discriminator distractors
+test the three
+Poll-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+archetypes: <em>prevalence misreading</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>20</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 20\%</annotation></semantics></math>
+instead of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>),
+<em>random-vs-majority confusion</em> (compares to coin-flip
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>50</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">50\%</annotation></semantics></math>
+instead of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">1 - p</annotation></semantics></math>),
+<em>accuracy vs class-conditional confusion</em> (reads marginal
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+as balanced sensitivity AND specificity)</td>
+<td>Comprehension/Application</td>
+<td>MCQ</td>
+<td>medium</td>
+<td><a href="items/item_02_accuracy-trap_mcq.md">item_02_accuracy-trap_mcq.md</a></td>
+</tr>
+<tr>
+<td>03</td>
+<td><strong>Obj. 2 — R2 <em>leakage rule</em></strong>. <em>Any decision
+taken after observing a performance number on a dataset converts that
+dataset into a training set.</em> Tests the recognition that R2 triggers
+on the <em>decision</em>, not on the <em>observation</em> (a single look
+without a downstream decision does not contaminate; a model-shaping
+decision after a look does), the recognition that contamination is
+<strong>retrospective and irreversible</strong> (no procedure applied
+afterwards repairs the original test), and the correct fix (a
+<strong>new</strong> held-out split drawn fresh from training data, not
+just a new validation set). Discriminator distractors test the four
+Poll-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+archetypes: <em>yes</em> (textbook-mechanical reading of &quot;test set&quot; as
+&quot;data the model wasn&#39;t fit on&quot;), <em>transparency-fallacy</em> (full
+disclosure restores the test), <em>solution-without-rule</em> (fresh
+validation will-fix-the-second-number — the response of a student who
+has already worked in a serious lab, with the <em>operational
+direction</em> right but the <em>rule</em> wrong)</td>
+<td>Application</td>
+<td>MCQ</td>
+<td>medium-high</td>
+<td><a href="items/item_03_leakage-rule_mcq.md">item_03_leakage-rule_mcq.md</a></td>
+</tr>
+<tr>
+<td>04</td>
+<td><strong>Obj. 3 — match interpretability + clinical
+defensibility</strong>. The mapping: <em>linear/logistic</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>coefficients</em>; <em>single tree</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>decision path</em>; <em>RF / gradient boosting</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>variable importance</em>; <em>neural network</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>SHAP or surrogate models</em>. The choice between <em>built-in
+interpretable</em> (logistic + coefficients) and <em>post-hoc
+interpretable</em> (random forest + variable importance) is a
+<strong>clinical decision</strong> — the subject of the defence sentence
+is the <em>patient</em>, the cost-of-failure is <em>clinically
+named</em>, the tradeoff is <em>posed</em> and <em>resolved by the
+clinical lead&#39;s cost ratio</em>. Tests both components: the <em>matching
+rule</em> (Base/Good levels of the rubric) and the <em>clinical
+framing</em> (Excellent level). Accepts the <em>inverted choice</em>
+(revert to logistic + coefficients) at Excellent if argued
+clinically</td>
+<td>Application</td>
+<td>applicativa</td>
+<td>medium-high</td>
+<td><a href="items/item_04_interpretability-defence_applicativa.md">item_04_interpretability-defence_applicativa.md</a></td>
+</tr>
+<tr>
+<td>05</td>
+<td><strong>Synthesis Obj. 1 + Obj. 2 (R1+R2) + Obj. 3</strong> —
+critique a colleague-built project plan (Anna&#39;s Friday-morning email)
+that violates <strong>all four</strong> operational rules of the chapter
+in four numbered points:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1)</annotation></semantics></math>
+random forest on all
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+features with no baseline → <em>earn complexity</em> violation;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(2)</annotation></semantics></math>
+accuracy with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>90</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\ge 90\%</annotation></semantics></math>
+as success threshold → <em>accuracy trap</em> violation (with the lethal
+detail that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mi>%</mi><mo>&lt;</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">90\% &lt; 1 - p = 95\%</annotation></semantics></math>,
+i.e. Anna&#39;s success criterion sits <em>below</em> the always-predict-NO
+baseline);
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-fold
+cross-validation on combined train+test → <em>leakage rule</em>
+violation;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(4)</annotation></semantics></math>
+<em>&quot;coefficients of the random forest if the committee asks&quot;</em> →
+<em>match interpretability</em> violation (mismatch family +
+afterthought framing). The student must identify each violation by the
+chapter&#39;s vocabulary, articulate the operational consequence (what the
+clinical lead or the ethics committee will reject), and propose a
+corrected plan as <strong>one coherent order of operations</strong> —
+not four patches glued to Anna&#39;s original. The Excellent response frames
+the corrected plan as <em>not predetermining the model</em> (the
+simplest outcome — logistic + coefficients — is named explicitly as the
+<em>most defensible</em>, not as a fallback) and recognises the three
+disciplines as an <em>order of operations</em>, not as independent
+rules</td>
+<td>Argumentation/evaluation</td>
+<td>argomentativa</td>
+<td>high</td>
+<td><a href="items/item_05_critique-the-plan_argomentativa.md">item_05_critique-the-plan_argomentativa.md</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="coverage">Coverage</h2>
+<p><strong>By objective</strong> (all three chapter objectives covered,
+with Obj. 2 testing both rules separately, plus a synthesis item that
+exercises all three together):</p>
+<ul>
+<li><strong>Obj. 1</strong> (earn complexity, KISS + stop-criterion ex
+ante): item 01 (Comprehension, MCQ) covers it directly on the
+<em>timing</em> axis; item 05 (Argumentation) exercises it as the
+<em>recognition that Anna has skipped the baseline and reached for a
+population-prior justification</em> (<em>&quot;random forest is the best
+class for tabular clinical data&quot;</em>).</li>
+<li><strong>Obj. 2 R1</strong> (accuracy trap): item 02
+(Comprehension/Application, MCQ) covers it directly on the
+<em>baseline-against-which-accuracy-must-be-compared</em> axis; item 05
+(Argumentation) exercises it as the <em>recognition that Anna&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≥</mo><mn>90</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">\ge 90\%</annotation></semantics></math>
+threshold sits below the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><mi>p</mi><mo>=</mo><mn>95</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">1 - p = 95\%</annotation></semantics></math>
+baseline</em> — the lethal cascade.</li>
+<li><strong>Obj. 2 R2</strong> (leakage rule): item 03 (Application,
+MCQ) covers it directly on the <em>decision-after-observation</em> axis;
+item 05 (Argumentation) exercises it as the <em>recognition that
+combining train+test for cross-validation is leakage by
+construction</em>.</li>
+<li><strong>Obj. 3</strong> (match interpretability + clinical
+defensibility): item 04 (Application, applicativa) covers it directly on
+both components (matching rule + clinical framing); item 05
+(Argumentation) exercises it as the <em>recognition that
+coefficients-on-random-forest is a mismatch</em> AND that <em>&quot;if the
+committee asks&quot;</em> is an <em>afterthought</em>, not a clinical
+defensibility argument.</li>
+</ul>
+<p><strong>By cognitive category</strong> (three of four categories
+present — multi-categorial, like cap. 9):</p>
+<ul>
+<li>Knowledge:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math></li>
+<li>Comprehension:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(item 01); plus <em>Comprehension/Application</em> mixed:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(item 02)</li>
+<li>Application:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+(items 03 + 04)</li>
+<li>Argumentation/evaluation:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(item 05)</li>
+</ul>
+<p>Cap. 10 is <strong>multi-categorial</strong>, like cap. 9 and unlike
+the <em>applicativa-only</em> chapters (cap. 8). The reason is the
+chapter&#39;s structure: cap. 10 introduces <em>three disciplines</em> (Obj.
+1 + Obj. 2 + Obj. 3), each at its natural cognitive level —
+<em>recognise the rule&#39;s binding form</em> (Comprehension, for Obj. 1&#39;s
+<em>ex ante</em> timing), <em>apply the rule&#39;s metric or decision
+test</em> (Comprehension/Application + Application, for Obj. 2&#39;s R1 and
+R2), <em>apply the matching + frame the tradeoff</em> (Application, for
+Obj. 3) — and the <em>integrated misapplication</em> on someone else&#39;s
+design (Argumentation, for the synthesis). Flattening all five items to
+Application would <em>lose</em> the discrimination between <em>seeing
+when the rule binds</em> (Item 01 — the <em>timing of the stop-criterion
+is the discipline</em>) and <em>applying the rule when triggered</em>
+(Items 03 + 04). The chapter teaches three <em>operational
+disciplines</em>, and the item bank registers each at its natural
+cognitive level.</p>
+<h2 id="rubrics">Rubrics</h2>
+<ul>
+<li><a href="rubriche/rubrica_04_interpretability-defence.md">rubrica_04_interpretability-defence.md</a>
+— item 04 (applicativa).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+criteria (technique matching, technical justification, clinical
+defensibility framing) ×
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+levels (Base / Good / Excellent). Accepts the <em>inverted choice</em>
+(revert to logistic) at Excellent if matching is correct and the
+clinical argument is well-posed; accepts SHAP / LIME / Shapley values as
+<em>bonus</em> at Excellent if anchored operationally (the official
+mapping is RF/GB → variable importance, NN → SHAP/surrogate — citing
+SHAP for RF is a <em>bonus</em>, not a <em>requirement</em>).</li>
+<li><a href="rubriche/rubrica_05_critique-the-plan.md">rubrica_05_critique-the-plan.md</a>
+— item 05 (argomentativa).
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+criteria (identification of violations, operational diagnosis, corrected
+plan) ×
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+levels. Non-negotiable identifications: <em>leakage rule</em> in point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(3)</annotation></semantics></math>
++ at least one of <em>earn complexity</em> in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(1)</annotation></semantics></math>
+or <em>accuracy trap</em> in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(2)</annotation></semantics></math>.
+Critical bias: do not penalise a student whose corrected plan ships
+<em>logistic + coefficients</em> — it is the <em>winning</em> case of
+the discipline, not a retreat.</li>
+</ul>
+<p><em>(Items 01, 02, 03 are MCQ — single correct option, no
+rubric.)</em></p>
+<h2 id="internal-coherence--the-five-items-together-test-the-chapters-three-disciplines-as-one-projects-lifecycle">Internal
+coherence — the five items together test the chapter&#39;s three disciplines
+as one project&#39;s lifecycle</h2>
+<p>The chapter&#39;s narrative closes on a single project: <em>Friday
+morning — the audit folder lands on Elena&#39;s desk, three weeks to defend,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">5\,000</annotation></semantics></math>
+patients,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>50</mn><annotation encoding="application/x-tex">50</annotation></semantics></math>
+features, prevalence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">5\%</annotation></semantics></math>.</em>
+The five items map onto the five operational moves Elena makes between
+Friday and the defence:</p>
+<ul>
+<li><strong>Item 01</strong> (Marco&#39;s planning document) tests the
+<em>first move</em> — <em>before any training</em>, write the baseline +
+the target + the escalation rule, and bind the team to it. A student who
+confuses <em>written-ex-post-as-rationalisation</em> with
+<em>written-ex-ante-as-discipline</em> has not understood what <em>earn
+complexity</em> asks for. The item measures the <em>first thing Elena
+does</em>.</li>
+<li><strong>Item 02</strong> (Sara&#39;s lab-meeting result) tests the
+<em>second move</em> — <em>when a colleague reports a metric</em>, ask
+whether the metric can distinguish the model from the trivial baseline.
+A student who is impressed by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>94.8</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">94.8\%</annotation></semantics></math>
+accuracy on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mn>5</mn><mi>%</mi></mrow><annotation encoding="application/x-tex">p = 5\%</annotation></semantics></math>
+has missed the <em>baseline-against-which-accuracy-must-be-compared</em>
+discipline. The item measures <em>the question Elena asks of someone
+else&#39;s numbers</em>.</li>
+<li><strong>Item 03</strong> (Davide&#39;s five-step sequence) tests the
+<em>third move</em> — <em>during model development, recognise the moment
+the test stops being a test</em>. A student who sees Davide&#39;s
+L<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>-bump-after-test
+as <em>honest reporting if both numbers are shown</em> has confused
+<em>disclosure</em> with <em>correctness</em>. The item measures <em>the
+discipline Elena imposes on her own workflow</em>.</li>
+<li><strong>Item 04</strong> (writing the defence document) tests the
+<em>fourth move</em> — <em>given the model has been chosen, write the
+interpretability paragraph that the clinical lead can read aloud back to
+the ethics committee</em>. A student who writes <em>&quot;SHAP because it&#39;s
+the standard&quot;</em> has produced <em>terminology</em>, not a <em>matching
+argument</em>; a student who writes <em>&quot;interpretability is always
+better&quot;</em> has <em>bypassed the tradeoff</em> rather than <em>posed
+it</em>. The item measures <em>the discipline Elena applies in the
+defence document</em>.</li>
+<li><strong>Item 05</strong> (Anna&#39;s mis-conceived plan) tests the
+<em>fifth move</em> — <em>spotting the integrated misapplication of all
+three disciplines on someone else&#39;s project plan</em>. This is the
+operational <em>meta-skill</em> the chapter is ultimately for. A
+colleague has almost-but-not-quite reached for the disciplines; the
+student must see the <em>four violations</em> and <em>propose a
+corrected plan that composes the three disciplines as an order of
+operations</em>. The item measures <em>the generalisation of Elena&#39;s
+discipline beyond her own audit</em>.</li>
+</ul>
+<p>Together, the five items verify the chapter&#39;s <em>discipline</em>
+rather than its <em>vocabulary</em>. A student who passes all five has
+demonstrated: <em>how to plan</em> (item 01), <em>how to read someone
+else&#39;s metric</em> (item 02), <em>how to protect their own test</em>
+(item 03), <em>how to defend their model clinically</em> (item 04), and
+<em>how to critique a colleague&#39;s plan when all three disciplines are
+violated at once</em> (item 05). The chapter&#39;s summative exercise —
+<em>Monday&#39;s audit, Friday&#39;s defence</em>, with its three-section
+planning sheet — is anchored as <em>the same scenario</em> across all
+items, but <strong>the items measure the rule, not the summative&#39;s
+specific row-fillings</strong>.</p>
+<h2 id="anti-leakage--vocabulary-boundary-with-cap-0109">Anti-leakage —
+vocabulary boundary with cap. 01–09</h2>
+<p>The items stay strictly within cap. 10 vocabulary: <em>baseline</em>,
+<em>logistic regression</em>, <em>random forest</em>, <em>stop-criterion
+(ex ante)</em>, <em>AUPRC</em>, <em>recall-at-precision</em>,
+<em>F<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></em>,
+<em>prevalence</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>),
+<em>always-predict-NO</em> / <em>always-predict-majority</em>,
+<em>train/validation/test split</em>, <em>held-out test</em>, <em>fresh
+validation split</em>, <em>sealed test</em>, <em>leakage</em>,
+<em>interpretability (built-in vs post-hoc)</em>, <em>coefficients</em>,
+<em>decision path</em>, <em>variable importance</em>, <em>clinical
+defensibility</em>, <em>clinical lead</em>, <em>ethics committee</em>,
+<em>audit</em>, <em>cost ratio</em>, <em>order of operations</em>,
+<em>earn complexity</em>, <em>protect the test</em>, <em>accuracy
+trap</em>, <em>match interpretability</em>.</p>
+<p>They do <strong>not</strong> presuppose any concept from earlier
+chapters that has not become part of the cap. 10 register: no
+<em>KNN</em> / <em>decision boundary</em> (cap. 02–03), no <em>CNN</em>
+/ <em>RNN</em> / <em>pre-training</em> (cap. 05–06), no
+<em>Transformer</em> / <em>attention</em> / <em>encoder-decoder</em>
+(cap. 07), no <em>prompt-slot</em> /
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>-slot
+template</em> / <em>competence rule</em> (cap. 08), no <em>agent</em> /
+<em>control loop</em> / <em>interaction mode</em> / <em>trust
+boundary</em> / <em>gate</em> / <em>reversibility test</em> /
+<em>Slack</em> / <em>Teams</em> / <em>webhook</em> / <em>HL7 alert</em>
+/ <em>PDF overwrite</em> / <em>do-stuff mode</em> (cap. 09). The single
+shared term across chapters is <em>clinical defensibility</em>, which is
+introduced in cap. 10 as the proper framing of the interpretability
+tradeoff (Obj. 3) — and is not used in cap. 09 in the same operational
+sense (cap. 09 uses <em>trust-boundary discipline</em>, not <em>clinical
+defensibility</em>).</p>
+<p><strong>Two specific anti-leakage choices</strong>, both relating to
+the chapter&#39;s narrative:</p>
+<ol type="1">
+<li><p><em>SHAP</em> is mentioned in the chapter&#39;s <a href="narrative.md">narrative</a> (Elena uses <em>&quot;SHAP on a
+forest&quot;</em> in the defence) and listed in <a href="objectives.md">objectives.md</a> as the technique for <em>neural
+networks</em>. The official mapping for <em>RF / GB</em> in Obj. 3 is
+<strong>variable importance</strong>, not SHAP. The items therefore use
+<em>variable importance</em> as the <em>required</em> technique for
+random forest; <em>SHAP / LIME / Shapley values</em> are accepted as
+<strong>bonus</strong> at Excellent on Item 04 and Item 05 <em>if</em>
+the citation is anchored operationally (the student names what SHAP
+<em>adds</em> over variable importance — per-patient attribution that
+the global ranking does not provide). The items do <strong>not</strong>
+require the student to have done independent reading on SHAP.</p></li>
+<li><p><em>Gradient boosting</em> is mentioned in the chapter&#39;s <a href="narrative.md">narrative</a> as the model Elena escalates to
+(<em>&quot;SHAP on a forest, because the simple one missed too many&quot;</em>)
+and listed in Obj. 3&#39;s mapping (<em>RF / gradient boosting</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>→</mo><annotation encoding="application/x-tex">\to</annotation></semantics></math>
+<em>variable importance</em>). The items use <strong>random
+forest</strong> as the escalation model rather than gradient boosting,
+because random forest is the model the class has actually seen
+demonstrated in earlier chapters. Item 05 (Anna&#39;s plan) uses random
+forest deliberately to keep the <em>escalation target</em> familiar to
+the student; Anna&#39;s mismatch (<em>coefficients on random forest</em>) is
+testable without relying on independent knowledge of gradient boosting&#39;s
+specific structure.</p></li>
+</ol>
+<h2 id="pre-hook--no-forward-chapter-cap-10-is-the-last-chapter-of-the-course">Pre-hook
+— no forward chapter (cap. 10 is the last chapter of the course)</h2>
+<p>Cap. 10 is the <strong>final chapter</strong> of the MLT course. The
+narrative&#39;s pre-hook closes the global spine and pivots to <em>applied
+workshops + professional life</em> (the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+of <em>AI users</em> — <em>Dependent Outsider / Exposed Charlatan /
+Resistant Craftsman / Modern Alchemist</em>) — see <a href="narrative.md">narrative.md</a> and <a href="storyboard.md">storyboard frame 6</a>. <strong>No item carries
+forward references to a cap. 11</strong>; the post-course bridge is
+staged in the chapter&#39;s narrative and storyboard, not embedded in the
+assessment items. A student who has mastered the five items has
+<em>internalised the three disciplines as one order of operations on one
+project&#39;s lifecycle</em> — which is the operational form of the course&#39;s
+closing payoff: <em>&quot;the course had ended; the practice was about to
+begin.&quot;</em></p>
+</body>
+</html>
