@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 03 — Transfer learning asymmetry: which option is
+realistic, and *for the right reason*?</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-03--transfer-learning-asymmetry-which-option-is-realistic-and-for-the-right-reason">Item
+03 — Transfer learning asymmetry: which option is realistic, and <em>for
+the right reason</em>?</h1>
+<p><strong>ID</strong>: IB-07-llm-transformers-03 <strong>Learning
+objective</strong>: Explain transfer learning as the operational meaning
+of &quot;Pre-trained&quot; — a single expensive pre-training run on a massive
+generic corpus produces a model that already knows the general
+statistics of language; a much cheaper fine-tuning step adapts this
+model to a specific task using a <em>small</em> task-specific dataset.
+State the cost/benefit clearly: fine-tuning needs orders of magnitude
+less data and compute than training from scratch, and that asymmetry is
+what makes biomedical applications of LLMs realistic at all (Obj.
+3).</p>
+<p><strong>Category</strong>: Application <strong>Type</strong>: MCQ
+(scenario) <strong>Difficulty</strong>: medium <strong>Chapter</strong>:
+07-llm-transformers</p>
+<h2 id="question">Question</h2>
+<p>A research group at a teaching hospital wants to build a model that
+<strong>auto-codes ICD-10 diagnoses from free-text discharge
+letters</strong>, to feed a quality-improvement audit. They have:</p>
+<ul>
+<li>a corpus of
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">N = 2\,000</annotation></semantics></math></strong>
+manually-coded discharge letters from their EHR (one diagnosis label per
+letter, validated by senior coders);</li>
+<li>a research grant of
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$</mi><mn>50</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\$50\,000</annotation></semantics></math></strong>
+in total;</li>
+<li>access to a state-of-the-art <strong>pre-trained
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+B-parameter LLM</strong> via a commercial API (the API supports both
+zero-shot inference and fine-tuning on a custom dataset).</li>
+</ul>
+<p>For order-of-magnitude reasoning, take <strong>typical compute
+costs</strong> as: pre-training a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+B LLM <em>from scratch</em> on a generic corpus
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>7</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^7</annotation></semantics></math>;
+fine-tuning the same already-pre-trained
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+B LLM on a small task-specific dataset
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^3</annotation></semantics></math>.</p>
+<p>Among the four options below, <strong>which one uses the chapter&#39;s
+pre-train / fine-tune asymmetry to deliver task-specific quality within
+budget — <em>and for the right reason</em>?</strong></p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) <strong>Train the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+B LLM from scratch</strong> on the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">2\,000</annotation></semantics></math>
+discharge letters: the group would own the model end-to-end, and the
+resulting model would be perfectly specialised on their data.</li>
+<li>B) <strong>Fine-tune the pre-trained
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+B LLM</strong> on the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">2\,000</annotation></semantics></math>
+discharge letters: the pre-trained model already encodes general
+language statistics; fine-tuning <em>adapts</em> that model to the
+ICD-coding task using a small task-specific dataset, at a fraction of
+the cost of training from scratch.</li>
+<li>C) <strong>Pre-train a smaller custom
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+M LLM from scratch</strong> on the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">2\,000</annotation></semantics></math>
+discharge letters, then fine-tune it on the same letters: a smaller
+model from scratch will both fit the budget <em>and</em> be specialised
+on the group&#39;s own data, side-stepping the dependence on the commercial
+provider.</li>
+<li>D) <strong>Use the pre-trained
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+B LLM zero-shot</strong> via the API, with no fine-tuning: the model has
+already seen vast amounts of text including some biomedical writing, so
+zero-shot performance on ICD coding should be acceptable, and the cost
+stays minimal.</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: B.</strong> The chapter&#39;s central economic claim
+about LLMs is the <strong>asymmetry between pre-training and
+fine-tuning</strong>: pre-training costs are on the order of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$</mi><msup><mn>10</mn><mn>7</mn></msup></mrow><annotation encoding="application/x-tex">\$10^7</annotation></semantics></math>
+(or larger, for frontier models), while fine-tuning costs are on the
+order of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$</mi><msup><mn>10</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\$10^3</annotation></semantics></math>
+— a ratio of about
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>4</mn></msup><annotation encoding="application/x-tex">10^4</annotation></semantics></math>,
+<em>four orders of magnitude</em>. This asymmetry is <em>what makes
+biomedical applications of LLMs realistic at all</em>: no clinical
+research group will pre-train its own LLM, but a clinical research group
+with a small task-specific corpus can plausibly <em>fine-tune</em>
+one.</p>
+<p>Option B uses both halves of the asymmetry: it benefits from someone
+else&#39;s expensive pre-training (the commercial provider has already spent
+the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$</mi><msup><mn>10</mn><mn>7</mn></msup></mrow><annotation encoding="application/x-tex">\$10^7</annotation></semantics></math>
+for them) <strong>and</strong> spends the cheap
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$</mi><msup><mn>10</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\$10^3</annotation></semantics></math>
+to adapt the model to the specific ICD-coding task. The pre-trained
+model encodes the <em>general statistics of language</em>; fine-tuning
+<em>adapts</em> that to the <em>specific</em> mapping from
+discharge-letter text to ICD codes. The full
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$</mi><mn>50</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\$50\,000</annotation></semantics></math>
+budget covers fine-tuning many times over, leaving headroom for API
+inference at deployment.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>A</strong> is wrong on <strong>cost</strong>, but also wrong
+on <em>what the cost is for</em>. Training a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+B LLM from scratch on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">2\,000</annotation></semantics></math>
+letters would (i) blow the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$</mi><mn>50</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\$50\,000</annotation></semantics></math>
+budget by roughly <strong>three orders of magnitude</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>7</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^7</annotation></semantics></math>
+versus
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><mn>5</mn><mo>⋅</mo><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$5 \cdot 10^4</annotation></semantics></math>);
+(ii) produce a <strong>catastrophically under-trained</strong> model —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">2\,000</annotation></semantics></math>
+letters is <em>vastly</em> too small a corpus to teach a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+B-parameter network the statistics of language from scratch
+(pre-training corpora are measured in trillions of tokens, not thousands
+of letters). The student who picks A has missed <em>why</em>
+pre-training exists in the first place: to absorb language structure
+from a corpus orders of magnitude larger than any single task could
+provide.</li>
+<li><strong>C</strong> is wrong because it <strong>defeats the asymmetry
+entirely</strong>. Pre-training a custom
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+M model from scratch on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">2\,000</annotation></semantics></math>
+letters has the same disease as A — the corpus is wildly too small for
+from-scratch language modelling — only at a different scale of waste.
+The whole <strong>point</strong> of transfer learning is that <em>you do
+not pre-train; you reuse someone else&#39;s pre-training</em>. Choosing C
+signals that the student has <em>heard</em> the words &quot;pre-train&quot; and
+&quot;fine-tune&quot; but has not internalised that the asymmetry is between
+<em>reusing</em> a pre-trained model and <em>training one from
+scratch</em>, not between <em>two sizes</em> of from-scratch
+training.</li>
+<li><strong>D</strong> is the <strong>trickiest distractor</strong>
+because it is <em>budget-respecting and not obviously wrong</em>.
+Zero-shot use of a strong pre-trained LLM via API is a real, sometimes
+appropriate choice for <em>one-off ad-hoc queries</em> — but it is
+<strong>orthogonal</strong> to building a <em>structured
+task-specific</em> pipeline like ICD-10 coding. For structured
+task-specific work, zero-shot performance is typically <em>mediocre</em>
+— the model has read about ICD codes in passing during pre-training but
+has not been <em>adapted</em> to the specific mapping of <em>this
+hospital&#39;s</em> discharge-letter style to <em>its</em> coding
+conventions. Fine-tuning closes precisely that adaptation gap. The
+student who picks D has <em>used the cheap side</em> of the asymmetry
+but has <em>left task adaptation on the table</em> — and &quot;uses the
+chapter&#39;s asymmetry&quot; requires using <em>both</em> halves (cheap
+fine-tuning <em>of</em> an expensive pre-trained model), not just the
+cheap inference of an unadapted model. <strong>D is &quot;realistic for the
+budget, but for the wrong reason.&quot;</strong></li>
+</ul>
+<p>The single discriminator is whether the student recognises that
+<strong>the pre-train / fine-tune asymmetry is what makes B
+distinctive</strong> — not budget-fit alone, not data-ownership, not
+zero-shot convenience. Only B uses both halves of the asymmetry as the
+chapter introduces it.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

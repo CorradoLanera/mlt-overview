@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item bank — 07 LLMs &amp; Transformers</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-bank--07-llms--transformers">Item bank — 07 LLMs &amp;
+Transformers</h1>
+<blockquote>
+<p>Chapter: <code>07-llm-transformers</code> · MLT course (UBEP,
+biomedical/clinical graduate students). Generated 2026-05-29. Items
+student-facing in <strong>English</strong>; rubrics 3-level
+(Base/Good/Excellent). Review: <code>assessment-reviewer</code> ✓
+<strong>APPROVED</strong> (2026-05-29) after applying two fixes:
+<strong>SI-1</strong> (high priority) — removed an orphan
+forward-reference to <code>ch. 08 Obj. 3</code> from the distractor-D
+paragraph of <a href="items/item_03_transfer-learning-asymmetry_mcq.md">item 03</a>
+expected-answer, which violated the anti-leakage rule the index itself
+declares (no <em>channel taxonomy</em> vocabulary in ch. 07 items); the
+argumentative discrimination B-vs-D is preserved with self-contained
+wording. <strong>SI-2</strong> (cosmetic) — added an explicit
+clarification to <a href="items/item_02_long-range-dependency_applicativa.md">item 02</a>
+that em-dashes and commas are <em>not</em> tokenised in the stylised
+word-level scheme used by the item, removing a possible ambiguity in the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>33</mn></mrow><annotation encoding="application/x-tex">T_x = 33</annotation></semantics></math>
+count. Anti-leakage check from ch. 08+ (7-slot prompt,
+role/context/task/instructions/output/style/examples, competence rule,
+Web/Prompt design/API channel taxonomy, token cost, agent, tool, loop,
+trust boundary, reversibility, human-in-the-loop) held cleanly across
+all three items + the one rubric after fixes. Numerical verification on
+item 02
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>33</mn></mrow><annotation encoding="application/x-tex">T_x = 33</annotation></semantics></math>,
+position 5 → 31 →
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>26</mn><annotation encoding="application/x-tex">26</annotation></semantics></math>
+recurrence applications, entry
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>31</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(31, 5)</annotation></semantics></math>
+of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>,
+sensitivity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>1000</mn><mo>⇒</mo><mn>999</mn></mrow><annotation encoding="application/x-tex">T_x = 1000 \Rightarrow 999</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>)
+passed; clinical plausibility (AF excluded by discharge summary but
+paroxysmal episodes documented on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>48</mn><annotation encoding="application/x-tex">48</annotation></semantics></math>-hour
+Holter) confirmed. Distractor design on items 01 and 03 confirmed sound
+— each distractor maps to a <em>real misconception</em> (B = parametric
+vs pre-trained, C = guard-rail vs autoregressive sampling, D = fine-tune
+step vs Transformer architecture on item 01; A = train-from-scratch
+confusion, C = pre-train-asymmetry on the wrong axis, D =
+use-cheap-side-only on item 03). No further fixes required.</p>
+</blockquote>
+<blockquote>
+<p><strong>Set size note:</strong> chapter 7 closes at <strong>3
+items</strong>, following the same teacher&#39;s-call applied to <a href="../05-deep-learning/items_valutativi.md">chapter 5</a>: the
+Argumentation/evaluation item that would have completed a four-category
+bank was deliberately dropped, for two reasons. (i) The chapter&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>25</mn><mo>′</mo></msup><annotation encoding="application/x-tex">25&#39;</annotation></semantics></math>
+budget is already carrying a dense conceptual load — <em>decode
+Chat-G-P-T</em>, <em>self-attention vs RNN with a concrete
+sentence</em>, <em>transfer-learning economics on a concrete project
+budget</em> — and a fourth open-ended item would dilute, not deepen.
+(ii) The Argumentation move most natural to this chapter — <em>&quot;argue
+whether your group should fine-tune or use zero-shot for the ICD-coding
+task&quot;</em> — is in fact already operationally tested by item 03&#39;s
+distractor analysis (option D), where the wrong choice is &quot;realistic for
+the budget but for the wrong reason&quot;; <strong>the argumentation move is
+built into how the MCQ discriminates between B and D</strong>, rather
+than being delegated to a separate open item. The Argumentation category
+is <em>intentionally absent</em> from this chapter&#39;s item bank; the
+chapter still verifies all three learning objectives across two distinct
+cognitive categories (Comprehension + Application).</p>
+</blockquote>
+<blockquote>
+<p><strong>Note on numbers and scenarios:</strong> the items use
+<strong>architectures, sentences, and budget figures different</strong>
+from those of the chapter&#39;s summative exercise (Sentence S with
+<em>denies / contradicts</em>, the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">4 \times 2</annotation></semantics></math>
+Chat-G-P-T table, and the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^4</annotation></semantics></math>
+Poll 2 on pre-train/fine-tune cost ratio — see <a href="objectives.md">objectives.md</a>). Item 01 uses a <em>new
+candidate decoding</em> of <em>Chat-G-P-T</em> with three distinct
+mis-decodings as distractors (T → Tuned, P → Parametric, G →
+Guard-railed) rather than the four-cell decode-table of the summative.
+Item 02 uses a <strong>different clinical sentence</strong>
+(atrial-fibrillation discharge summary with a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>33</mn></mrow><annotation encoding="application/x-tex">T_x = 33</annotation></semantics></math>,
+dependency between positions
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>31</mn><annotation encoding="application/x-tex">31</annotation></semantics></math>)
+with <strong>explicit position indices</strong> to make the RNN count
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>31</mn><mo>−</mo><mn>5</mn><mo>=</mo><mn>26</mn></mrow><annotation encoding="application/x-tex">31 - 5 = 26</annotation></semantics></math>
+and the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+entry
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>31</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(31, 5)</annotation></semantics></math>
+procedurally derivable — not memorisable. Item 03 uses an
+<strong>ICD-coding scenario</strong> with concrete budget
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$</mi><mn>50</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">\$50\,000</annotation></semantics></math>),
+data
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mspace width="0.167em"></mspace><mn>000</mn></mrow><annotation encoding="application/x-tex">2\,000</annotation></semantics></math>
+letters), and <em>specific</em> cost figures
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>7</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^7</annotation></semantics></math>
+pre-train,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^3</annotation></semantics></math>
+fine-tune), distinct from the fragility-fracture audit on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+ED letters used in the summative. The items measure the
+<em>procedure</em> and the <em>concept</em>, never the recall of the
+summative&#39;s specific instances. Same convention as ch. 04 and ch.
+05.</p>
+</blockquote>
+<h2 id="item--objective-map">Item ↔︎ objective map</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Learning objective</th>
+<th>Category</th>
+<th>Type</th>
+<th>Difficulty</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>Obj. 1 — decode the acronym <em>Chat-G-P-T</em> backwards, mapping
+each letter to its technical contribution: T = Transformer
+(self-attention architecture); P = Pre-trained (massive generic corpus
+before any user task); G = Generative (autoregressive sampling from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">token</mtext><mo>∣</mo><mtext mathvariant="normal">prompt</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\text{token} \mid \text{prompt})</annotation></semantics></math>);
+Chat = multi-turn dialogue wrapper. Recognise that each letter sits at a
+<em>distinct layer of the system</em> — architecture / training regime /
+inference mechanism / interface</td>
+<td>Comprehension</td>
+<td>MCQ</td>
+<td>low–medium</td>
+<td><a href="items/item_01_chat-gpt-decoded_mcq.md">item_01_chat-gpt-decoded_mcq.md</a></td>
+</tr>
+<tr>
+<td>02</td>
+<td>Obj. 2 — contrast Transformer self-attention with the RNN&#39;s
+sequential hidden state on a sequence of length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>.
+Given a clinical sentence with explicit position indices, identify the
+long-range dependency, count the recurrence applications an RNN needs to
+propagate it, and locate the single entry of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+that captures the same dependency in one step</td>
+<td>Application</td>
+<td>applicativa</td>
+<td>medium</td>
+<td><a href="items/item_02_long-range-dependency_applicativa.md">item_02_long-range-dependency_applicativa.md</a></td>
+</tr>
+<tr>
+<td>03</td>
+<td>Obj. 3 — explain transfer learning as the operational meaning of
+&quot;Pre-trained&quot;. Given a clinical-research scenario (ICD-coding from
+discharge letters, fixed budget, fixed corpus size, pre-trained LLM
+available via API), choose the option that uses <strong>both
+halves</strong> of the pre-train / fine-tune asymmetry — at the right
+cost order
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$</mi><msup><mn>10</mn><mn>3</mn></msup></mrow><annotation encoding="application/x-tex">\$10^3</annotation></semantics></math>
+adaptation of someone else&#39;s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$</mi><msup><mn>10</mn><mn>7</mn></msup></mrow><annotation encoding="application/x-tex">\$10^7</annotation></semantics></math>
+pre-training) and for the right reason (task-adaptation, not budget-fit
+alone)</td>
+<td>Application</td>
+<td>MCQ (scenario)</td>
+<td>medium</td>
+<td><a href="items/item_03_transfer-learning-asymmetry_mcq.md">item_03_transfer-learning-asymmetry_mcq.md</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="coverage">Coverage</h2>
+<p><strong>By objective</strong> (all three chapter objectives covered,
+one item per objective):</p>
+<ul>
+<li><strong>Obj. 1</strong> (Chat-G-P-T decoded backwards): item 01
+(Comprehension).</li>
+<li><strong>Obj. 2</strong> (self-attention vs RNN on a sequence of
+length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>
+— long-range dependency + matrix entry): item 02 (Application,
+applicativa).</li>
+<li><strong>Obj. 3</strong> (transfer learning as operational meaning of
+<em>Pre-trained</em> + cost asymmetry): item 03 (Application, MCQ
+scenario). The <em>budget-respecting-but-wrong</em> distractor (option
+D, zero-shot via API) discriminates students who use <em>only</em> the
+cheap side of the asymmetry from those who use <em>both</em> halves —
+the chapter&#39;s pedagogical point.</li>
+</ul>
+<p><strong>By cognitive category</strong> (2 of 4 categories, no
+pure-recall item; Argumentation absent by design — see set-size note
+above):</p>
+<ul>
+<li>Knowledge: 0</li>
+<li>Comprehension: 1</li>
+<li>Application: 2</li>
+<li>Argumentation/evaluation: 0</li>
+</ul>
+<h2 id="rubrics">Rubrics</h2>
+<ul>
+<li><a href="rubriche/rubrica_02_long-range-dependency.md">rubrica_02_long-range-dependency.md</a>
+— item 02 (applicativa).</li>
+</ul>
+<p><em>(Items 01 and 03 are MCQ — single correct option, no
+rubric.)</em></p>
+<h2 id="internal-coherence--items-02-and-03-build-the-operational-fluency-the-chapter-requires">Internal
+coherence — items 02 and 03 build the operational fluency the chapter
+requires</h2>
+<p>The two Application items are deliberately staged so the student must
+<em>operate</em> the two halves of the chapter&#39;s payoff:</p>
+<ul>
+<li><strong>Item 02</strong> asks the student to <em>operate the
+architectural contrast</em> — given a concrete clinical sentence with
+explicit positions, derive <em>numerically</em> that the RNN must apply
+its recurrence
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>26</mn><annotation encoding="application/x-tex">26</annotation></semantics></math>
+times to propagate a dependency that the Transformer captures in
+<strong>one</strong> entry of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>.
+The teachable beat is the sensitivity question at the end: stretching
+the sentence to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>1000</mn></mrow><annotation encoding="application/x-tex">T_x = 1000</annotation></semantics></math>
+blows the RNN count to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>999</mn><annotation encoding="application/x-tex">999</annotation></semantics></math>
+while leaving the Transformer count at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+— the <em>scale-independence</em> of the Transformer&#39;s path length is
+the architectural reason it replaced the RNN.</li>
+<li><strong>Item 03</strong> asks the student to <em>operate the
+economic contrast</em> — given a real-looking clinical-research budget
+and dataset size, pick the option that uses the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^4</annotation></semantics></math>
+pre-train / fine-tune asymmetry as <em>the</em> lever that makes
+biomedical LLM applications realistic. The teachable beat is the
+distractor analysis: option D (zero-shot via API) is
+<em>budget-respecting but for the wrong reason</em>, and a student who
+picks it has used the cheap inference cost of someone else&#39;s
+pre-training without using fine-tuning to <em>adapt</em> the model to
+the task at hand.</li>
+</ul>
+<p>Together, items 02 and 03 cover both axes on which the chapter
+justifies why the Transformer replaced the RNN: the
+<strong>architectural axis</strong> (parallel matrix multiplication
+scales on GPUs in a way that the RNN&#39;s sequential loop cannot — item 02)
+and the <strong>economic axis</strong> (transfer learning makes
+biomedical applications feasible at a fraction of from-scratch cost —
+item 03). Item 01 then anchors the <em>naming</em> that lets both
+contrasts be discussed without ambiguity (T, P, G, Chat as distinct
+layers of the system).</p>
+<h2 id="anti-leakage--vocabulary-boundary-with-ch-08">Anti-leakage —
+vocabulary boundary with ch. 08+</h2>
+<p>The items stay strictly within ch. 07 vocabulary:
+<em>Transformer</em>, <em>self-attention</em>, <em>query / key /
+value</em>,
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math></em>,
+<em>softmax</em>, <em>pre-trained</em>, <em>pre-training</em>,
+<em>fine-tuning</em>, <em>generative</em>, <em>autoregressive</em>,
+<em>Chat</em>, <em>RNN / recurrence</em> (the latter as recap from <a href="../06-unstructured-data/objectives.md">ch. 06</a>, not as new
+content). They do <strong>not</strong> presuppose any concept from ch.
+08+ — no <em>7-slot prompt template</em>, no <em>role / context / task /
+instructions / output / style / examples</em>, no <em>competence
+rule</em>, no <em>Web / Prompt design / API</em> channel taxonomy, no
+<em>token cost rule of thumb</em>, no <em>agent</em>, no <em>tool</em>,
+no <em>loop</em>, no <em>trust boundary</em>, no <em>reversibility</em>,
+no <em>human-in-the-loop</em>, no <em>do stuff / ask for interaction /
+ask for sharing / autonomous search</em>. The chapter&#39;s pre-hook to ch.
+08 (Monday morning,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+ED letters — <em>&quot;how do you ask?&quot;</em>) is staged in the chapter&#39;s <a href="narrative.md">narrative</a> and <a href="storyboard.md">storyboard
+frame 6</a>, <em>not</em> inside the items.</p>
+<h2 id="pre-hook-to-ch-08--left-to-the-chapter-not-embedded-in-items">Pre-hook
+to ch. 08 — left to the chapter, not embedded in items</h2>
+<p>Same convention as ch. 04 → ch. 05 and ch. 05 → ch. 06: the items
+measure what <em>this</em> chapter has taught, with no forward
+references; the <em>narrative</em> and <em>storyboard</em> of the
+chapter carry the bridge to the next one. A student who has mastered the
+three items has <em>named</em> the four letters of <em>Chat-G-P-T</em>,
+<em>operated</em> the serial-vs-parallel contrast on a concrete
+sentence, and <em>picked</em> the right transfer-learning option on a
+concrete budget — and is exactly the student that ch. 08 will then teach
+to <em>use</em> the box on Monday morning.</p>
+</body>
+</html>

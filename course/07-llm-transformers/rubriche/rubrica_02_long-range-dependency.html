@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Rubric — Item 02 (Long-range dependency: RNN traversal vs
+Transformer self-attention)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="rubric--item-02-long-range-dependency-rnn-traversal-vs-transformer-self-attention">Rubric
+— Item 02 (Long-range dependency: RNN traversal vs Transformer
+self-attention)</h1>
+<p><strong>Item</strong>: IB-07-llm-transformers-02
+<strong>Objective</strong>: Contrast the Transformer&#39;s self-attention
+with the RNN&#39;s sequential hidden state on a sequence of length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>
+— identify a long-range dependency in a clinical sentence, quantify how
+many intermediate hidden states an RNN must traverse to propagate that
+dependency, and locate the single entry of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+that captures the same dependency in one step (Obj. 2).</p>
+<p>The rubric scores three criteria, one per sub-question, on three
+levels — <em>Base</em> (sufficiency floor), <em>Good</em> (solid
+command), <em>Excellent</em> (effortless command + the
+<em>parallel-vs-serial</em> insight made explicit).</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Base</th>
+<th>Good</th>
+<th>Excellent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C1 — Long-range dependency identification (sub-q
+1)</strong></td>
+<td>Identifies the pair <em>rules / out</em> (position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>)
+and <em>demonstrates / paroxysmal</em> (position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>31</mn><annotation encoding="application/x-tex">31</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>32</mn><annotation encoding="application/x-tex">32</annotation></semantics></math>)
+— i.e. names words from the <em>negation</em> half of the sentence and
+from the <em>assertion</em> half. The <em>position indices</em> are
+stated. May fail to articulate explicitly why
+<em>atrial<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>7</mn></msub><annotation encoding="application/x-tex">_{7}</annotation></semantics></math>
+/
+paroxysmal<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>32</mn></msub><annotation encoding="application/x-tex">_{32}</annotation></semantics></math></em>
+is the wrong pair.</td>
+<td>All of <em>Base</em>, plus the <strong>logical asymmetry</strong> is
+named explicitly — the early word says <strong>no</strong> (the
+discharge summary excludes), the late word says <strong>yes</strong>
+(the Holter contradicts), and the clinician&#39;s question depends on
+resolving this contradiction. The student does <strong>not</strong>
+confuse <em>topic relatedness</em> with <em>logical
+dependency</em>.</td>
+<td>All of <em>Good</em>, plus the student notes — even in one sentence
+— that this is the <strong>same kind of structure</strong> as the
+<em>denies
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>↔</mo><annotation encoding="application/x-tex">\leftrightarrow</annotation></semantics></math>
+contradicts</em> dependency of <em>Sentence S</em> in the chapter&#39;s
+summative (the structural archetype, not the words): early
+<em>negation</em>, late <em>contradiction</em>, <em>long-range</em> in
+between. Recognising the <em>class of dependency</em>, not just this
+instance, signals chapter-level fluency.</td>
+</tr>
+<tr>
+<td><strong>C2 — RNN traversal count (sub-q 2)</strong></td>
+<td>Arrives at the <strong>correct count
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>𝟐𝟔</mn><annotation encoding="application/x-tex">\mathbf{26}</annotation></semantics></math></strong>
+(or, equivalently,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>25</mn><annotation encoding="application/x-tex">25</annotation></semantics></math>
+intermediate hidden states — <em>both</em> are acceptable, provided the
+convention is internally consistent and the count matches that
+convention) and shows the <strong>calculation</strong> explicitly: the
+two position indices
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>31</mn><annotation encoding="application/x-tex">31</annotation></semantics></math>,
+the subtraction
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>31</mn><mo>−</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">31 - 5</annotation></semantics></math>,
+the result
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>26</mn><annotation encoding="application/x-tex">26</annotation></semantics></math>.
+A bare
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>26</mn><annotation encoding="application/x-tex">26</annotation></semantics></math>&quot;
+without showing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>31</mn><mo>−</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">31 - 5</annotation></semantics></math>
+is <strong>below Base</strong> (it might be a memorised heuristic; the
+chapter is about <em>operating the count</em>, not recalling a
+number).</td>
+<td>All of <em>Base</em>, plus the student <strong>names</strong> what
+each application of the recurrence <em>is</em> operationally — i.e. one
+application of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa} a^{&lt;t-1&gt;} + W_{ax} x^{&lt;t&gt;} + b_a)</annotation></semantics></math>,
+<em>not</em> just &quot;a step&quot; in vague terms. The recurrence formula
+appears, even if only by reference.</td>
+<td>All of <em>Good</em>, plus the student <strong>connects the count to
+fade</strong> — notes, even in one sentence, that each of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>26</mn><annotation encoding="application/x-tex">26</annotation></semantics></math>
+applications is <em>one occasion for the signal of &quot;rules out&quot; to mix
+with the contributions of the intervening words</em> and therefore
+<em>one occasion for the dependency to be lost</em>. Stating <em>why the
+count matters</em> in terms of signal propagation is the chapter&#39;s
+central narrative beat for the RNN side.</td>
+</tr>
+<tr>
+<td><strong>C3 — Transformer attention: matrix entry + sensitivity
+(sub-q 3)</strong></td>
+<td>Identifies <strong>one specific entry</strong> of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+— either
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>31</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(31, 5)</annotation></semantics></math>
+or its symmetric counterpart
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>5</mn><mo>,</mo><mn>31</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(5, 31)</annotation></semantics></math>
+— with both row and column indices explicit. <strong>States the count of
+operations as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math></strong>
+(one inner product, one matrix entry). The bare &quot;one entry&quot; without
+specifying <em>which</em> row and column is <strong>below Base</strong>
+— the pedagogical point is that the entry has a <em>location</em>, not
+that it exists in the abstract.</td>
+<td>All of <em>Base</em>, plus the student <strong>uses the chapter&#39;s
+convention correctly</strong> — names <em>query</em> and <em>key</em> by
+name, and states which position is the query and which is the key.
+(Either direction is acceptable:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>31</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(31, 5)</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>31</mn></msub><annotation encoding="application/x-tex">q_{31}</annotation></semantics></math>
+querying
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>k</mi><mn>5</mn></msub><annotation encoding="application/x-tex">k_5</annotation></semantics></math>
+is the natural reading;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>5</mn><mo>,</mo><mn>31</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(5, 31)</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>5</mn></msub><annotation encoding="application/x-tex">q_5</annotation></semantics></math>
+querying
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>k</mi><mn>31</mn></msub><annotation encoding="application/x-tex">k_{31}</annotation></semantics></math>
+is also acceptable.)</td>
+<td>All of <em>Good</em>, plus the student <strong>handles the
+sensitivity question</strong> — states correctly that if the same two
+words were placed at positions
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1000</mn><annotation encoding="application/x-tex">1000</annotation></semantics></math>
+in a sentence of length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>1000</mn></mrow><annotation encoding="application/x-tex">T_x = 1000</annotation></semantics></math>,
+the <strong>count would still be
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+for the Transformer</strong> (a single inner product, regardless of
+distance), while the <strong>RNN count would grow to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>999</mn><annotation encoding="application/x-tex">999</annotation></semantics></math></strong>.
+Naming this
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>-vs-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>−</mo><mi>k</mi></mrow><annotation encoding="application/x-tex">T_x - k</annotation></semantics></math>
+asymmetry</strong> is the chapter&#39;s payoff insight — the student has
+<em>internalised</em> why the architecture replaces the RNN, not just
+memorised that it does.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Soglia di sufficienza</strong>: <strong>tutti e tre C1, C2 e
+C3 a livello Base o superiore</strong>. Identificare le due parole
+sbagliate (C1 &lt; Base), saltare la sottrazione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>31</mn><mo>−</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">31 - 5</annotation></semantics></math>
+(C2 &lt; Base), o non specificare riga e colonna dell&#39;entry
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+(C3 &lt; Base) equivale a non aver svolto l&#39;esercizio: l&#39;item misura la
+<em>capacità di operare</em> il confronto serial-vs-parallel su una
+frase concreta — i passaggi <em>visibili</em> sono lo strumento di
+misura.</p>
+<p><strong>Bias da evitare in correzione:</strong></p>
+<ul>
+<li><strong>Penalizzare la scelta di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>5</mn><mo>,</mo><mn>31</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(5, 31)</annotation></semantics></math>
+vs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>31</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(31, 5)</annotation></semantics></math>.</strong>
+Entrambe sono accettabili: self-attention calcola <em>tutti</em> i
+prodotti scalari
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><msub><mi>q</mi><mi>i</mi></msub><mo>,</mo><msub><mi>k</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">\langle q_i, k_j \rangle</annotation></semantics></math>,
+e per una dipendenza simmetrica (non causale, non-masked) entrambe le
+entries codificano lo stesso pairing. La convenzione su quale sia &quot;la&quot;
+entry dipende da quale posizione si considera la <em>destinazione</em>
+del flusso informativo; lo studente che giustifica la scelta in modo
+coerente <em>non va penalizzato</em>.</li>
+<li><strong>Non confondere &quot;ha contato bene&quot; con &quot;ha capito&quot;.</strong>
+Uno studente che scrive
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>31</mn><mo>−</mo><mn>5</mn><mo>=</mo><mn>26</mn></mrow><annotation encoding="application/x-tex">31 - 5 = 26</annotation></semantics></math>&quot;
+senza nominare la ricorrenza
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa} a^{&lt;t-1&gt;} + W_{ax} x^{&lt;t&gt;} + b_a)</annotation></semantics></math>
+resta a <em>Base</em> in C2; per arrivare a <em>Good</em> serve nominare
+<em>cosa</em> la ricorrenza <em>fa</em> in ciascun passaggio. La
+differenza fra <em>Base</em> e <em>Good</em> è la differenza fra
+<em>eseguire il calcolo</em> e <em>sapere cosa il calcolo
+rappresenta</em>.</li>
+<li><strong>Non penalizzare le formulazioni equivalenti del
+count.</strong>
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>26</mn><annotation encoding="application/x-tex">26</annotation></semantics></math>
+applicazioni della ricorrenza&quot; e
+&quot;<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>25</mn><annotation encoding="application/x-tex">25</annotation></semantics></math>
+stati intermedi&quot; sono <em>la stessa cosa</em> a meno di una convenzione
+sull&#39;inclusione/esclusione del punto di destinazione. Entrambe sono
+accettabili a <em>Base</em>, purché lo studente sia internamente
+coerente.</li>
+<li><strong>CRITICO — non scambiare <em>topic-relatedness</em> per
+<em>long-range dependency</em>.</strong> Lo studente che identifica
+<em>atrial<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>7</mn></msub><annotation encoding="application/x-tex">_{7}</annotation></semantics></math></em>
+e
+<em>paroxysmal<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>32</mn></msub><annotation encoding="application/x-tex">_{32}</annotation></semantics></math></em>
+come &quot;le due parole legate dalla dipendenza&quot; ha trovato il
+<em>topic</em> (entrambe descrivono un tipo di disturbo cardiaco) ma ha
+<strong>mancato la struttura logica della domanda</strong> (chi afferma
+vs chi contraddice). Questa è la confusione tipica fra <em>attenzione
+semantica generica</em> e <em>attenzione richiesta dalla domanda</em>,
+ed è esattamente l&#39;errore che il sommativo di <a href="../objectives.md">Sentence S</a> usa come distrattore del Poll 1
+<em>(penicillin,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2019</mn><annotation encoding="application/x-tex">2019</annotation></semantics></math>)</em>.
+<strong>Riconoscere questo errore come C1 &lt; Base è
+fondamentale</strong>: passarlo come &quot;abbastanza vicino&quot; significa
+accettare uno studente che non ha capito <em>che cosa</em> il
+Transformer deve fare per rispondere alla domanda.</li>
+<li><strong>Non premiare la prosa sopra il calcolo.</strong> Una
+risposta articolata e ben scritta che però non mostra né
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>31</mn><mo>−</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">31 - 5</annotation></semantics></math>
+in C2 né la coppia di indici
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>31</mn><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(31, 5)</annotation></semantics></math>
+in C3 non va sopra <em>Base</em> indipendentemente da quanto sia
+eloquente. L&#39;item misura <em>operatività</em>, non
+<em>eloquenza</em>.</li>
+</ul>
+</body>
+</html>

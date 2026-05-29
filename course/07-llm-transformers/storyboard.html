@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>07 — LLMs &amp; Transformers · storyboard (6 frames)</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="07--llms--transformers--storyboard-6-frames">07 — LLMs &amp;
+Transformers · storyboard (6 frames)</h1>
+<blockquote>
+<p>Visual plan for the chapter, built from its <a href="narrative.md">arc</a> and <a href="objectives.md">objectives</a>.
+25 min, dual classroom (in-person + remote). On-screen text in
+<strong>English</strong> (≤ 1 sentence/frame, 3-second readable);
+regia/voce docente in <em>italiano</em>. Feeds
+<code>mlt-quarto-build</code>.</p>
+</blockquote>
+<blockquote>
+<p>🎨 La colonna <strong>Visual</strong> è la descrizione sintetica (per
+noi). I <strong>prompt pronti per un generatore di immagini</strong> —
+con lo stesso <em>style-anchor</em> condiviso dei cap. 01–05 — stanno
+nella sezione <strong><code>## Prompt visivi</code></strong> in fondo.
+Eventuali label testuali / matematiche (es. <em>denies</em>,
+<em>contradicts</em>,
+<em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math></em>,
+*<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+/
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+/ <em>Chat</em>, <em>Pre-training
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>8</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^8</annotation></semantics></math></em>
+/ <em>Fine-tuning
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^4</annotation></semantics></math></em>)
+si aggiungono <strong>come overlay</strong> in slide-editor — mai dentro
+l&#39;immagine generata.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Funzione</th>
+<th>Visual</th>
+<th>Testo a video</th>
+<th>Voce docente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Hook visivo</td>
+<td>A <strong>familiar chat-window silhouette</strong> floats centred
+and oversized — recognisable as <em>the</em> chat product without any
+logo or text rendered. Inside, two stacked speech-bubbles suggest a
+typed user line (short) and a flowing model reply (long, dense). A small
+clinician silhouette sits below, looking up — <em>the same posture</em>
+of the silhouette in ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(continuity of pose), but the box above her is <em>no longer
+matte-black</em>: it is the soft, ordinary rectangle of a chat UI. The
+aura around the box is <em>cultural</em>, not technical — a faint halo
+of <em>recognisability</em>.</td>
+<td><em>&quot;The most famous box of her career — and she had never opened
+it.&quot;</em></td>
+<td>Lo stesso oggetto di cui ha sentito parlare <em>zii a cena</em>,
+<em>infermieri al pronto soccorso</em>, <em>residenti col mezzo sorriso
+davanti allo schermo</em>. Sa che si chiama <em>Transformer</em>. Non sa
+che cosa significhi. Oggi lo apriamo.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Contesto (RNN bottleneck on long-range dependency)</td>
+<td><strong>Sentence S laid horizontally as a row of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>18</mn></mrow><annotation encoding="application/x-tex">\sim 18</annotation></semantics></math>
+small rounded &quot;token pills&quot;</strong> (no English text rendered inside
+the pills — just generic pill shapes). Two pills are visibly
+<strong>brighter</strong> than the others: one near the left of the row
+(= <em>denies</em>), one near the right (= <em>contradicts</em>). A
+<strong>long curved arc</strong> connects the two bright pills, spanning
+the entire sentence above the row. <strong>Below</strong> the row, the
+<em>same</em> pills are redrawn unrolled as a sequential RNN: a chain of
+small <em>hidden-state</em> circles
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>,</mo><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>2</mn><mo>&gt;</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>a</mi><mrow><mo>&lt;</mo><msub><mi>T</mi><mi>x</mi></msub><mo>&gt;</mo></mrow></msup></mrow><annotation encoding="application/x-tex">a^{&lt;1&gt;}, a^{&lt;2&gt;}, \ldots, a^{&lt;T_x&gt;}</annotation></semantics></math>)
+with horizontal arrows connecting each to the next; the dependency from
+the leftmost bright pill to the rightmost bright pill must
+<em>traverse</em> every intermediate hidden state, visualised as a faint
+dashed path <strong>threading through every intervening node</strong> of
+the bottom chain.</td>
+<td><em>&quot;Position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+to position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>
+— through every step between.&quot;</em></td>
+<td>La frase di Sentence S contiene una dipendenza a lungo raggio fra
+<em>denies</em> (inizio) e <em>contradicts</em> (fine). La RNN del cap.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+deve <em>propagarla</em> posizione per posizione — il segnale ha
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">T_x - 1</annotation></semantics></math>
+occasioni di sbiadire.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sfida / Dati (self-attention parallel)</td>
+<td><strong>Same row of token pills as in frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math></strong>,
+now redrawn cleanly. From <strong>every</strong> pill, a <em>fan</em> of
+thin straight lines departs and reaches <strong>every</strong> other
+pill — <em>all pairs at once</em>, no sequential ordering. The
+<strong>two bright pills</strong> (= <em>denies</em> and
+<em>contradicts</em>) are connected by <strong>one particularly bold,
+luminous line</strong> that goes <em>directly</em> from one to the other
+— no intermediate hops. To the side, a small badge/box visualises a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>×</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">T_x \times T_x</annotation></semantics></math>
+grid (the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+matrix) with the cell at row-of-<em>denies</em> ×
+column-of-<em>contradicts</em> glowing brightly.</td>
+<td><em>&quot;Every token sees every other — in one shot.&quot;</em></td>
+<td>Il Transformer non propaga: in una sola operazione di
+matrix-multiplication, <strong>ogni</strong> token vede
+<strong>ogni</strong> altro token. La dipendenza tra le due
+parole-chiave è <em>una sola cella</em> della matrice
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+— una sola operazione di distanza.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Nodo / Impatto (Chat-G-P-T decoded backwards)</td>
+<td><strong>Four large stacked tiles arranged horizontally</strong>,
+read <strong>right-to-left</strong> with a single large arrow on top
+pointing right-to-left to mark the decoding direction. From
+<strong>right</strong> to <strong>left</strong>: (i) <strong>&quot;Chat&quot;
+tile</strong> — two speech-bubble icons (UI wrapper); (ii) <strong>&quot;G&quot;
+tile</strong> — a generative chain: one token shape produced, then
+appended, then another, then another (autoregressive cascade); (iii)
+<strong>&quot;P&quot; tile</strong> — a stylised <em>library/corpus</em> icon: a
+stack of books / pages / documents larger than the tile itself,
+suggesting massive scale (pre-trained); (iv) <strong>&quot;T&quot; tile</strong> —
+a stack of self-attention blocks (the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+grid from frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+shown miniaturised, repeated
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+times). Each tile is distinct, the same accent orange is reserved for
+one <em>focal element</em> per tile. The composition reads: <em>Chat ← G
+← P ← T</em>.</td>
+<td><em>&quot;Read it backwards: three engineering choices + one UI
+choice.&quot;</em></td>
+<td><em>Chat-G-P-T</em>, decodificato all&#39;indietro: <strong>T</strong> =
+Transformer / self-attention (frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>);
+<strong>P</strong> = pre-trained su corpus massiccio (mesi di GPU,
+<em>prima</em> di qualunque tua query); <strong>G</strong> = generative,
+sampling autoregressivo da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">token</mtext><mo>∣</mo><mtext mathvariant="normal">prompt</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\text{token} \mid \text{prompt})</annotation></semantics></math>;
+<strong>Chat</strong> = il wrapper di dialogo. Quattro scelte nominate,
+nessuna magia.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Metodo / Soluzione (RNN-vs-Transformer split + transfer-learning
+mini-griglia — summative perno)</td>
+<td><strong>Frame split in two horizontal halves by a thin divider
+line.</strong> <strong>Top half</strong> = the <em>Sentence S</em>
+artefact for the summative: the same row of token pills (with the two
+bright pills <em>denies</em> and <em>contradicts</em>) drawn
+<strong>once</strong>, and then <strong>two diagrams side-by-side below
+it</strong>. <strong>LEFT</strong> = the RNN unrolled chain (as in frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+bottom) with a <em>faint dashed</em> curve threading through every
+intermediate hidden state to connect the two bright pills — <em>long
+path</em>. <strong>RIGHT</strong> = a clean self-attention block (a
+square
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>×</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">T_x \times T_x</annotation></semantics></math>
+grid, fully populated) with <strong>one single bold line</strong> going
+directly between the two bright pills — <em>one step</em>.
+<strong>Bottom half</strong> = the <em>Pre-training vs Fine-tuning
+mini-griglia</em>: a clean
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+table-shape</strong> (no text inside the cells — labels added as
+overlay): rows = <em>Pre-training</em> (top), <em>Fine-tuning</em>
+(bottom); columns = <em>cosa ci serve</em> (left), <em>cosa
+otteniamo</em> (right). To the side, a <strong>comparison-bar</strong>
+visualises the cost asymmetry: a <em>very tall</em> bar for
+pre-training, a <em>very short</em> bar for fine-tuning, with their
+height ratio roughly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">10\,000 : 1</annotation></semantics></math>
+— the visual punchline of the chapter&#39;s economy.</td>
+<td><em>&quot;Circle the two words. Fill the rows.&quot;</em></td>
+<td>Riquadro perno del <strong>sommativo &quot;Read it twice: serial vs
+parallel&quot;</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mo>′</mo></msup></mrow><annotation encoding="application/x-tex">\sim 10&#39;</annotation></semantics></math>,
+min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>25</mn><annotation encoding="application/x-tex">25</annotation></semantics></math>,
+vedi <a href="objectives.md">objectives.md</a>). I gruppi (presenza +
+remoto): <strong>(i)</strong> decode <em>Chat-G-P-T</em> in un
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">4 \times 2</annotation></semantics></math>
+table; <strong>(ii)</strong> cerchi <em>denies</em> /
+<em>contradicts</em> sulla Sentence S; <strong>(iii)</strong> rispondi
+in una frase <em>perché</em> la RNN soffre lì; <strong>(iv)</strong>
+riempi la mini-griglia <em>pre-train</em> / <em>fine-tune</em>. Due
+Slido in parallelo: la coppia di parole + l&#39;ordine di grandezza del
+costo
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>10</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">\sim 10\,000\times</annotation></semantics></math>).</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Payoff / Domanda finale (Monday-morning pre-hook)</td>
+<td>The <strong>chat-window</strong> of frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+has <em>shrunk</em> to a normal, ordinary size on a desk —
+<em>demystified, sized to a tool</em>. Beside it, <strong>on the same
+desk</strong>, a <strong>stack of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">\sim 200</annotation></semantics></math>
+anonymised paper letters</strong> appears — clearly numerous, clearly
+more than a human can copy-paste, clearly clinical (page edges suggest
+medical-letter formatting). Between Elena&#39;s hand (suggested) and the
+chat window floats <strong>a single luminous question mark</strong>. The
+composition&#39;s centre of gravity has shifted from <em>the box itself</em>
+(frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>)
+to <em>the relationship between the human and the work</em> (frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>).</td>
+<td><em>&quot;You know what it is. Monday —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+letters — how do you ask?&quot;</em></td>
+<td>Sappiamo <em>cos&#39;è</em> la scatola: T-P-G in <em>Chat</em>. Non
+sappiamo ancora <em>come usarla</em> lunedì mattina, con un compito
+reale:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere ED da triage, una scadenza, un canale da scegliere. Capitolo
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>:
+un <em>prompt strutturato</em>, una <em>regola di delega</em>, un
+<em>canale dimensionato sul volume</em>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="modalità-duale--dove-si-attiva">Modalità duale — dove si
+attiva</h2>
+<p>Il riquadro <strong>5</strong> è il perno attivo: lì gira il
+sommativo <strong>&quot;Read it twice: serial vs parallel&quot;</strong> (vedi <a href="objectives.md">objectives.md</a>). L&#39;artefatto condiviso è
+<strong>uno solo</strong> — Sentence S + i due diagrammi side-by-side +
+la mini-griglia <em>Pre-training / Fine-tuning</em> — proiettato e
+distribuito su carta. Tutta la classe lavora sullo <strong>stesso
+banco</strong> (presenza + remoto), niente group cards differenziate.
+Due <strong>poll Slido individuali</strong> corrono in parallelo:</p>
+<ul>
+<li><strong>Poll 1 — &quot;On Sentence S, which two words must the model link
+to answer the allergy question?&quot;</strong> (single-select pair, opzioni
+<em>(denies, contradicts)</em> / <em>(penicillin,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2019</mn><annotation encoding="application/x-tex">2019</annotation></semantics></math>)</em>
+/ <em>(resident, allergy)</em> / <em>(this morning, history)</em>) —
+diagnostico sui tre archetipi di distrattore (clinico-saliente /
+semantico-superficiale / temporale-irrilevante; vedi <a href="objectives.md">objectives.md</a>).</li>
+<li><strong>Poll 2 — &quot;Pre-training and fine-tuning cost
+roughly...&quot;</strong> (opzioni <em>&quot;the same&quot;</em> / <em>&quot;pre-training
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>10</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">\sim 10 \times</annotation></semantics></math>
+fine-tuning&quot;</em> / <em>&quot;pre-training
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mn>10</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>×</mo></mrow><annotation encoding="application/x-tex">\sim 10\,000 \times</annotation></semantics></math>
+fine-tuning&quot;</em> / <em>&quot;only pre-training has a cost&quot;</em>) —
+diagnostico sull&#39;asimmetria
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^4</annotation></semantics></math>
+che rende biomedicamente realistica un&#39;applicazione di LLM.</li>
+</ul>
+<p>Il doc condiviso raccoglie cinque colonne per gruppo:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">4 \times 2</annotation></semantics></math>
+Chat-G-P-T table · coppia di parole circled ·
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>-sentence
+on serial vs parallel · riga <em>Pre-training</em> · riga
+<em>Fine-tuning</em>. Riquadri
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+espositivi
+(~<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>15</mn><mo>′</mo></msup><annotation encoding="application/x-tex">15&#39;</annotation></semantics></math>),
+riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+ospita i
+~<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mo>′</mo></msup><annotation encoding="application/x-tex">10&#39;</annotation></semantics></math>
+di sommativo (min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>15</mn><annotation encoding="application/x-tex">15</annotation></semantics></math>–<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>25</mn><annotation encoding="application/x-tex">25</annotation></semantics></math>),
+riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+chiude e fa ponte
+(~<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>30</mn><mo>″</mo></msup><annotation encoding="application/x-tex">30&#39;&#39;</annotation></semantics></math>
+alla fine, sovrapposto al min
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>25</mn><annotation encoding="application/x-tex">25</annotation></semantics></math>).</p>
+<h3 id="nota-meta--la-bold-line-nel-frame-3-e-nel-frame-5-right">Nota
+meta — la <em>bold line</em> nel frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+e nel frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-RIGHT</h3>
+<p>I prompt visivi dei riquadri
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>-RIGHT
+chiedono al generatore di rendere <strong>una singola linea di attention
+più luminosa</strong> fra <em>denies</em> e <em>contradicts</em> — il
+resto della fan/grid resta più tenue. Questa è una scelta pedagogica: la
+formula
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">softmax</mtext><mo stretchy="false" form="prefix">(</mo><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup><mi>/</mi><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{softmax}(Q K^{\top} / \sqrt{d_k})</annotation></semantics></math>
+produce pesi <em>non uniformi</em>, e <em>quel particolare peso</em> fra
+le due parole della dipendenza è atteso dominare. Se il generatore
+produce un fan <em>uniforme</em> (tutte le linee della stessa
+intensità), va <strong>richiesto un re-roll</strong> o aggiunta come
+<em>post-processing in slide-editor</em> una sovra-traccia di evidenza
+sulla linea giusta — è il segnale visivo principale del frame, non un
+dettaglio.</p>
+<h2 id="prompt-visivi">Prompt visivi</h2>
+<p>Prompt pronti per un generatore di immagini. Lo
+<strong><code>style-anchor</code></strong> è definito <em>una volta</em>
+(stesso dei cap. 01–05, per coerenza di serie tra capitoli) e va
+premesso a ogni prompt come parametro. Mai testo / lettere / numeri
+dentro l&#39;immagine — le label di parole, le frecce dell&#39;acronimo, le
+righe del
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">4 \times 2</annotation></semantics></math>
+Chat-G-P-T table e i numeri della comparison-bar si aggiungono
+<strong>come overlay in slide-editor</strong>.</p>
+<p><strong><code>style-anchor</code></strong> = <em>&quot;Coherent image set,
+one shared visual identity: warm orange (#E8741E) as the single accent
+colour on a dark-slate background, soft cinematic lighting, 16:9, crisp
+and high quality, no text, letters or numbers rendered anywhere in the
+image.&quot;</em></p>
+<ul>
+<li><strong>Riquadro 1 (Hook — the famous chat box)</strong>:
+<code>style-anchor</code> + <em>a clean and oversized chat-window
+silhouette floating centred in the frame, recognisable as a generic chat
+application without any logo, brand mark or written text; inside the
+window-shape, two stacked speech-bubble shapes — one small and crisp (a
+user query), one large, soft and dense (a verbose model reply); a small
+human silhouette sits at the bottom of the frame, hands suggested near a
+keyboard, looking up at the chat window in calm interrogation; the same
+warm rim-light on the silhouette as the same posture in the
+deep-learning chapter&#39;s opening frame (continuity callback), but the box
+above is no longer matte-black — it is the soft ordinary rectangle of a
+chat UI, slightly luminous, slightly mundane.</em> <strong>(Continuity
+callback to ch. 05 frame 1 — same silhouette pose, demystified
+object.)</strong></li>
+<li><strong>Riquadro 2 (Contesto — Sentence S + RNN long-range
+bottleneck)</strong>: <code>style-anchor</code> + <em>two horizontal
+rows stacked vertically. <strong>Top row:</strong> approximately
+eighteen small rounded pill-shapes arranged in a single line from left
+to right, each pill a generic capsule of the same size and shape, no
+text or symbols inside them; two of the pills — one near the left, one
+near the right — glow in the warm accent orange while all others are
+darker and matte; above the row, a long graceful curved arc connects the
+two bright pills, spanning the entire width of the row. <strong>Bottom
+row:</strong> the same eighteen pills redrawn as a chain — each pill
+connected to the next by a short horizontal arrow forming a
+left-to-right sequential flow (suggesting recurrent hidden states); from
+the leftmost bright pill, a faint dashed path threads through every
+intervening pill of the bottom chain, reaching the rightmost bright pill
+only after passing through every step in between.</em></li>
+<li><strong>Riquadro 3 (Sfida / Dati — self-attention
+parallel)</strong>: <code>style-anchor</code> + <em>the same single row
+of approximately eighteen rounded pill-shapes as the top row of the
+previous frame, with the same two bright pills (one near the left, one
+near the right) and all others darker. From every pill, a fan of thin
+straight lines departs and reaches every other pill — a dense web of all
+pairwise connections drawn in soft tone, suggesting parallel access.
+Among all these connections, exactly one single line — the one directly
+connecting the two bright pills — is rendered as a bold, distinctly
+luminous orange line, clearly the brightest and thickest line in the
+entire web. To the right of the row, a small square inset shows a clean
+grid of cells (suggesting a square attention matrix); within the grid,
+exactly one cell glows in the same warm orange, visibly brighter than
+the rest of the grid.</em></li>
+<li><strong>Riquadro 4 (Nodo — Chat-G-P-T decoded backwards)</strong>:
+<code>style-anchor</code> + <em>four large square tiles arranged
+horizontally side by side, with a single arrow above the entire row of
+tiles pointing from right to left (the decoding direction). The four
+tiles, read from right to left, each contain a single distinct visual
+emblem and no text. Rightmost tile: two stacked speech-bubble shapes
+(suggesting a chat interface). Second-from-right tile: a small chain of
+three token-pill shapes appearing one after another from left to right,
+each newly produced pill slightly larger than the previous (suggesting
+autoregressive generation, one token at a time). Second-from-left tile:
+a stylised library — a large stack of book-spine shapes piled up beyond
+the edge of the tile, suggesting massive scale of accumulated text.
+Leftmost tile: a stack of layered square grids of cells (miniature
+attention matrices), stacked vertically as a small tower of L layers.
+The accent orange is used for one focal element in each tile and nothing
+more; the rest stays in the dark-slate base. The four tiles are visually
+distinct and read clearly left-to-right or right-to-left.</em></li>
+<li><strong>Riquadro 5 (Metodo + summative perno — RNN-vs-Transformer
+split + transfer-learning bars)</strong>: <code>style-anchor</code> +
+<em>the frame is split into two halves by a thin horizontal divider
+line. <strong>Top half:</strong> a single row of approximately eighteen
+rounded pill-shapes is drawn near the top, with the same two bright
+pills (one near the left, one near the right) glowing in warm accent
+orange and all others darker. Below this single row, two diagrams are
+arranged side by side. The LEFT diagram is a sequential chain of small
+hidden-state circles, one per pill, connected left-to-right by
+horizontal arrows; a faint dashed curve threads from the leftmost bright
+pill down into the chain, snakes through every intermediate state, and
+emerges to the rightmost bright pill — a clearly long path through many
+intermediate nodes. The RIGHT diagram is a clean square grid of cells (a
+fully drawn attention matrix); inside the grid, exactly one single bold
+luminous orange line connects directly the cell corresponding to the
+leftmost bright pill and the cell corresponding to the rightmost bright
+pill — a single direct connection. <strong>Bottom half:</strong> on the
+left side of the bottom half, a clean empty two-by-two table shape — two
+rows by two columns, four cells, gridlines clearly visible, all cells
+empty of any text or content. On the right side of the bottom half, two
+vertical bar shapes stand next to each other: one bar is extremely tall
+(reaching near the top of the bottom half), one bar next to it is
+extremely short (only a small fraction of the tall bar&#39;s height); the
+visible height ratio between the two bars is roughly ten thousand to one
+— the dramatic asymmetry must read at a glance. No text, letters or
+numbers rendered anywhere in the image — all labels added in
+slide-editor overlay.</em></li>
+<li><strong>Riquadro 6 (Payoff + pre-hook ch. 08 — Monday morning
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+letters)</strong>: <code>style-anchor</code> + <em>the centre of the
+frame is occupied by a chat-window silhouette of ordinary tool size —
+smaller and more mundane than the oversized chat window of the opening
+frame (the box has been demystified, sized down). The chat window sits
+on what reads as a clinician&#39;s desk surface. To the right of the chat
+window, on the same desk, an organised stack of approximately two
+hundred sheets of paper rises — clearly numerous, the sheets neatly
+aligned but tall enough that the stack is the dominant object on the
+desk; each sheet&#39;s edge is clean and crisp, evoking medical-letter
+formatting (header band suggested, body text suggested without any
+actual readable text). Hovering in the empty space between the chat
+window and the stack of letters, a single glowing question-mark symbol
+catches the light in the warm accent orange — the only luminous element
+in the frame apart from a soft rim-light on the desk. A small human
+silhouette is suggested at the edge of the desk, head bowed slightly
+toward the work, in a working-clinician posture.</em> <strong>(Pre-hook
+to ch. 08 — same
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>-letters
+scenario seeded by ch. 06 pre-hook, now visualised.)</strong></li>
+</ul>
+<h2 id="verifica-post-output-auto-check">Verifica post-output
+(auto-check)</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" checked></input>Riquadro 1 aggancia in 3
+secondi? — sì: la <em>familiar chat-window silhouette</em> + la posa di
+Elena identica al ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
++ <em>&quot;the most famous box of her career — and she had never opened
+it&quot;</em> triggera <em>immediatamente</em> il riflesso di riconoscimento
+(&quot;è ChatGPT, l&#39;ho già visto&quot;), ma sposta l&#39;aspettativa da <em>uso</em> a
+<em>apertura</em>. La continuity callback alla posa di ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+è <em>deliberata</em> — è la prima volta nella serie che la stessa
+silhouette appare in due capitoli, ed è il segnale che <em>l&#39;asse del
+corso sta per girare</em> (la stessa clinica, ma davanti a un oggetto
+qualitativamente diverso).</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 3 il dato chiave
+è VISIBILE? — sì: il <strong>fan di tutti gli edge a tutti gli
+edge</strong> + la <strong>singola linea luminosa</strong> fra
+<em>denies</em> e <em>contradicts</em> sono la traduzione visiva
+<em>non-mediata</em> di <em>&quot;every position attends every position, in
+parallel, with non-uniform weights&quot;</em>. Lo studente vede
+<em>direttamente</em> che (a) tutte le coppie sono raggiunte (parallel
+access, contro la chain serial del riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>),
+e (b) <em>quella</em> coppia ha peso più alto (softmax non uniforme). La
+cella luminosa nella mini-grid del
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+a fianco è il <em>ponte algebrico-visivo</em> alla formula del riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 4 il nodo è il
+concetto centrale del capitolo? — sì: <strong>Chat-G-P-T decoded
+backwards</strong> <em>è</em> l&#39;Obj.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+del capitolo, e i quattro tile sono <em>la versione visiva</em> della
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">4 \times 2</annotation></semantics></math>
+table del sommativo. La freccia right-to-left in cima fissa la direzione
+di decoding e dà allo studente la <em>mossa operativa</em> per il
+sommativo: &quot;leggi all&#39;indietro l&#39;acronimo che hai sempre letto in
+avanti&quot;.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 5 il sommativo è
+ospitato correttamente? — sì: tutti gli elementi del <em>Field
+&quot;In-person action&quot;</em> in <a href="objectives.md">objectives.md</a>
+sono visivamente presenti — Sentence S in pill-shapes, due diagrammi
+side-by-side (RNN chain vs attention grid), mini-griglia
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math>
+con quattro celle vuote, comparison-bar
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">10\,000 : 1</annotation></semantics></math>
+per il Poll
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>.
+L&#39;artefatto è <em>uno solo</em> (no asimmetria presenza/remoto) e le
+quattro sub-task del sommativo trovano tutte un <em>correlato
+visivo</em> su questa singola scena.</label></li>
+<li><label><input type="checkbox" checked></input>Riquadro 6 lascia una
+domanda-ponte? — sì: <em>&quot;You know what it is. Monday —
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+letters — how do you ask?&quot;</em> è una domanda secca, e la stack di
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere + il chat ridimensionato + il question-mark sono il
+<em>correlato visivo</em> del primo paragrafo del pre-hook in
+narrative.md. Continuità diegetica esplicita: ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+aveva seedato <em>&quot;discharge letter&quot;</em> nel pre-hook, ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+rende quella stessa pila visibile, ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+la userà come scena.</label></li>
+<li><label><input type="checkbox" checked></input>Solo i 6 riquadri (senza
+voce) raccontano l&#39;arco? — sì: chat-window-famosa-mai-aperta → frase con
+dipendenza che la RNN deve attraversare → fan di tutte le coppie con
+<em>una</em> linea dominante → quattro tile (Chat ← G ← P ← T) → split
+RNN-vs-Transformer + griglia pre-train/fine-tune + bar
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mspace width="0.167em"></mspace><mn>000</mn><mo>:</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">10\,000:1</annotation></semantics></math>
+→ chat ridimensionata +
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere + question-mark. L&#39;arco <em>Hook → Challenge → Resolution →
+Payoff + pre-hook</em> è leggibile senza una sola riga di
+prosa.</label></li>
+<li><label><input type="checkbox" checked></input>Stile coerente coi cap.
+01–06? — sì: stesso <code>style-anchor</code> (#E8741E, dark-slate,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn><mo>:</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">16{:}9</annotation></semantics></math>,
+no text). Continuity callback strutturale <strong>al ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math></strong>
+(silhouette identica nel frame
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>,
+da <em>intimorita davanti alla scatola</em> a <em>interrogativa davanti
+alla scatola famosa</em>). Continuity lessicale visiva al <strong>ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math></strong>
+(i <em>token pills</em> del riquadro
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+e
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+sono la trasposizione visuale dei <em>generic position markers</em> che
+ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+aveva indicizzato come
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">t = 1, \ldots, T_x</annotation></semantics></math>).
+Forward-hook visivo al <strong>ch.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math></strong>
+(pile di lettere + chat dimensionato + question-mark).</label></li>
+</ul>
+</body>
+</html>

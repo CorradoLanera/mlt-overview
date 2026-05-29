@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 01 — Chat-G-P-T decoded backwards</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-01--chat-g-p-t-decoded-backwards">Item 01 — Chat-G-P-T
+decoded backwards</h1>
+<p><strong>ID</strong>: IB-07-llm-transformers-01 <strong>Learning
+objective</strong>: Decode the acronym <em>Chat-G-P-T</em> backwards,
+naming for each letter the <strong>technical contribution</strong> that
+letter encodes — <strong>T</strong> = Transformer (the architecture
+built around self-attention, in which every token&#39;s representation is
+computed as a weighted combination of every other token in the input, in
+parallel); <strong>P</strong> = Pre-trained (the model has already
+learned a general statistical model of language by reading a massive
+generic corpus, <em>before</em> it sees any user task);
+<strong>G</strong> = Generative (at inference the model produces the
+next token by sampling from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">token</mtext><mo>∣</mo><mtext mathvariant="normal">prompt</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\text{token} \mid \text{prompt})</annotation></semantics></math>
+and feeding that token back as input — <em>autoregressive</em>);
+<strong>Chat</strong> = the multi-turn dialogue wrapper (Obj. 1).</p>
+<p><strong>Category</strong>: Comprehension <strong>Type</strong>: MCQ
+<strong>Difficulty</strong>: low–medium <strong>Chapter</strong>:
+07-llm-transformers</p>
+<h2 id="question">Question</h2>
+<p>A clinical colleague at a journal club says: <em>&quot;OK so it&#39;s
+Chat-G-P-T — four letters. Walk me through them, backwards, and tell me
+what each one actually means.&quot;</em> Among the four decodings below,
+<strong>which one correctly maps each letter of <em>Chat-G-P-T</em> to
+the technical contribution that letter encodes</strong>, as introduced
+in this chapter?</p>
+<h2 id="options">Options</h2>
+<ul>
+<li>A) <strong>T</strong> = <em>Transformer</em>: a stack of
+self-attention blocks in which every token attends every other token in
+parallel. <strong>P</strong> = <em>Pre-trained</em>: the model has
+already learned a general statistical model of language by reading a
+massive corpus, <em>before</em> it sees any user task.
+<strong>G</strong> = <em>Generative</em>: at inference, the model
+produces the next token by sampling from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">token</mtext><mo>∣</mo><mtext mathvariant="normal">prompt</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\text{token} \mid \text{prompt})</annotation></semantics></math>
+and feeds that token back as input — autoregressive generation, one
+token at a time. <strong>Chat</strong> = the multi-turn dialogue wrapper
+that keeps the conversation as part of the prompt.</li>
+<li>B) <strong>T</strong> = <em>Transformer</em>: a stack of
+self-attention blocks (every token attends every other in parallel).
+<strong>P</strong> = <em>Parametric</em>: the model is parametric — it
+has billions of learnable parameters, in contrast to non-parametric
+methods such as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-nearest-neighbours.
+<strong>G</strong> = <em>Generative</em>: autoregressive sampling from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">token</mtext><mo>∣</mo><mtext mathvariant="normal">prompt</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\text{token} \mid \text{prompt})</annotation></semantics></math>.
+<strong>Chat</strong> = the multi-turn dialogue wrapper.</li>
+<li>C) <strong>T</strong> = <em>Transformer</em>: a stack of
+self-attention blocks. <strong>P</strong> = <em>Pre-trained</em> on a
+massive corpus. <strong>G</strong> = <em>Guard-railed</em>: the model
+has built-in safety filters that prevent it from producing harmful or
+off-policy outputs. <strong>Chat</strong> = the multi-turn dialogue
+wrapper.</li>
+<li>D) <strong>T</strong> = <em>Tuned</em>: the model has been
+fine-tuned to follow user instructions. <strong>P</strong> =
+<em>Pre-trained</em>: the model was first pre-trained on a generic
+corpus, then tuned. <strong>G</strong> = <em>Generative</em>:
+autoregressive next-token sampling. <strong>Chat</strong> = the
+multi-turn dialogue wrapper.</li>
+</ul>
+<h2 id="expected-answer">Expected answer</h2>
+<p><strong>Correct: A.</strong> The chapter decodes <em>Chat-G-P-T</em>
+backwards as a stack of <strong>three engineering choices</strong> (T →
+Transformer architecture; P → Pre-training on a massive generic corpus;
+G → autoregressive generative sampling) <strong>wrapped in one UI
+choice</strong> (Chat → multi-turn dialogue protocol). Each of the four
+contributions is <em>operationally distinct</em> and is named in the
+chapter&#39;s <a href="../narrative.md">arc</a> and <a href="../objectives.md">Obj. 1 of objectives.md</a>. A is the only
+option that maps each letter correctly.</p>
+<p>Why the distractors are plausible but wrong:</p>
+<ul>
+<li><strong>B</strong> is wrong on the <strong>P</strong>. Calling the
+model &quot;Parametric&quot; is <em>true</em> of the model — every neural network
+has parameters — but it is <strong>not what the letter encodes</strong>.
+The &quot;P&quot; of <em>GPT</em> refers to <strong>Pre-training</strong> as a
+<em>temporal/economic</em> concept: the model has been <em>trained on a
+corpus before any user task arrives</em>. That temporal &quot;pre-&quot; is what
+makes <strong>transfer learning</strong> (Obj. 3) realistic — a
+fine-tuning step on a small task-specific dataset adapts the
+already-pre-trained model at a fraction of the cost. Conflating
+<em>parametric</em> with <em>pre-trained</em> loses the chapter&#39;s core
+economic insight (the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">\sim 10^4</annotation></semantics></math>
+pre-training/fine-tuning asymmetry).</li>
+<li><strong>C</strong> is wrong on the <strong>G</strong>.
+<em>Guard-railing</em> (RLHF / instruction-tuning to refuse certain
+outputs) is a real, important <em>post-hoc safety intervention</em> that
+several deployed LLMs receive — but it is <strong>not what the letter
+encodes</strong>. The &quot;G&quot; of <em>GPT</em> refers to
+<strong>Generative</strong>, i.e. the model produces output by
+<em>autoregressive sampling</em> from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">token</mtext><mo>∣</mo><mtext mathvariant="normal">prompt</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\text{token} \mid \text{prompt})</annotation></semantics></math>.
+A student who picks C has confused a <em>product-level safety
+feature</em> with the <em>architectural mechanism</em> of generation.
+The chapter is explicit about this: the autoregressive token-by-token
+cascade is <em>how</em> the box generates; guard-rails are
+<em>which</em> generations are kept.</li>
+<li><strong>D</strong> is wrong on the <strong>T</strong>. Calling T =
+&quot;Tuned&quot; <em>swaps</em> the architectural meaning of T (Transformer) for
+an <em>operational</em> meaning that does not fit. <em>Fine-tuning</em>
+is real (it is exactly Obj. 3), but it does not belong inside the four
+letters — the letter &quot;T&quot; refers to the <strong>2017 <em>&quot;Attention is
+all you need&quot;</em> architecture</strong> built around self-attention. A
+student who picks D has lost the distinction between the
+<em>architecture</em> (what kind of object the model is) and the
+<em>training stage</em> (how it was prepared). In particular: the same
+Transformer architecture can be used with no fine-tuning at all
+(pre-trained-only models), so &quot;T&quot; cannot mean <em>tuned</em>.</li>
+</ul>
+<p>The single discriminator is whether <strong>each letter is mapped to
+the right technical layer of the system</strong>: architecture (T),
+training regime (P), inference mechanism (G), interface (Chat). Only A
+holds all four at the right layer.</p>
+<h2 id="rubric">Rubric</h2>
+<p>N/A (MCQ — single correct option).</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>

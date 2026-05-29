@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>07 — LLMs &amp; Transformers · narrative</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="07--llms--transformers--narrative">07 — LLMs &amp; Transformers
+· narrative</h1>
+<blockquote>
+<p>Chapter narrative, hanging off the course <a href="../_global/spine.md">spine</a>. Student-facing prose in
+<strong>English</strong>; design glosses in <em>italiano</em>. Six-word,
+100-word, chapter arc, and an explicit pre-hook to the next chapter
+(<code>08-chatgpt-usage</code>).</p>
+</blockquote>
+<h2 id="six-words">Six words</h2>
+<blockquote>
+<p><strong>Every token attends every; pre-train, fine-tune.</strong></p>
+</blockquote>
+<p><em>Glossa:</em> scelto via <code>narratore-critico</code> su 5
+varianti. Mantiene la struttura a due clausole con punto e virgola della
+serie (01 <em>&quot;Programs follow rules; learners find them.&quot;</em>, 02
+<em>&quot;Draw the line; count the cost.&quot;</em>, 03 <em>&quot;Same data; three
+algorithms, three boundaries.&quot;</em>, 04 <em>&quot;Decisions cost data; hold
+the test.&quot;</em>, 05 <em>&quot;Stack logistic units; descent finds
+weights.&quot;</em>, 06 <em>&quot;Match the structure; share the weights.&quot;</em>) —
+la coerenza tipografica è ormai cifra della serie e va rispettata.
+<strong>&quot;Every token attends every&quot;</strong> è il primo dei due beat del
+capitolo:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">attention</mtext><mo stretchy="false" form="prefix">(</mo><mi>Q</mi><mo>,</mo><mi>K</mi><mo>,</mo><mi>V</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mtext mathvariant="normal">softmax</mtext><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="true"><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">\text{attention}(Q, K, V) = \text{softmax}\!\left(\dfrac{Q K^{\top}}{\sqrt{d_k}}\right) V</annotation></semantics></math>
+in una frase di inglese clinico — <em>parallel, direct access</em> da
+ogni posizione a ogni altra, senza il loop ricorrente del ch. 06.
+<strong>&quot;Pre-train, fine-tune&quot;</strong> è il secondo beat: l&#39;economia
+che rende un LLM <em>usabile</em> per un clinico — pre-training massivo
+una sola volta
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>8</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^8</annotation></semantics></math>),
+fine-tuning su corpus task-specific molto più cheap
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^4</annotation></semantics></math>),
+un&#39;asimmetria di ordine
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>4</mn></msup><annotation encoding="application/x-tex">10^4</annotation></semantics></math>.
+Lessico-perno <strong>attend</strong> (radice di <em>attention</em>)
+seminato per le slide e per la <em>Sentence S</em> del sommativo;
+<strong>pre-train / fine-tune</strong> seminati per la mini-griglia. Eco
+esplicito a ch. 06 <em>&quot;share the weights&quot;</em> → ch. 07 <em>&quot;attends
+every&quot;</em>: in entrambi la mossa è strutturale; ma qui per la prima
+volta la <strong>regola di ripetizione</strong> del ch. 06 <em>non viene
+rifinita — viene abbandonata</em>. Niente <em>self-attention</em>,
+<em>Q/K/V</em>, <em>encoder/decoder</em>, <em>autoregressive</em> nel
+six-word — vocabolario tecnico riservato all&#39;arc e alla prosa.
+Anti-pattern evitati: <em>&quot;Transformer beats RNN&quot;</em> (il capitolo non
+è una gara), <em>&quot;Attention is all you need&quot;</em> (slogan extra-serie),
+<em>&quot;GPT is just a Transformer&quot;</em> (cancellerebbe i beat di P e
+G).</p>
+<h2 id="100-words-3-acts">100 words (3 acts)</h2>
+<p>The famous box of Elena&#39;s career arrived as a chat window: people
+typed, it answered. She had heard it called a Transformer, but did not
+know what that meant. So she read the acronym backwards. T — every token
+saw every other token in parallel, no serial loop, no propagation
+through hidden states. P — the box had already swallowed the statistics
+of language before her query. G — it sampled the next token
+autoregressively, one at a time. Chat was the wrapper. Three engineering
+choices and one UI choice. Only the rule of repetition had changed; this
+time it had dropped entirely.</p>
+<p><em>Struttura:</em> Bing = Elena incontra il manufatto culturale che
+ha sentito nominare ovunque (ChatGPT, <em>the famous box of her
+career</em>) come <em>chat window</em> — semplice, anonimo,
+anticlimatico | Bang = lo <strong>decodifica all&#39;indietro</strong>,
+lettera per lettera (T → ogni token vede ogni altro <em>in
+parallelo</em>, niente loop seriale; P → ha già <em>digerito</em> la
+statistica del linguaggio <em>prima</em> della sua query; G → samplea il
+prossimo token <em>autoregressivamente</em>); <em>Chat</em> è solo
+l&#39;imballaggio | Bongo = riformula il payoff in chiave-di-serie: <em>la
+regola di ripetizione del ch. 06 è cambiata di nuovo — stavolta è stata
+abbandonata</em>. (Verificato
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>100</mn><annotation encoding="application/x-tex">100</annotation></semantics></math>
+parole esatte.) Anaphora deliberata con la chiusura del pre-hook di ch.
+06 (<em>&quot;only the rule of repetition does — one more time&quot;</em>) —
+chiude esplicitamente l&#39;arco <em>&quot;share the weights along an axis&quot;</em>
+di ch. 06 e apre quello <em>&quot;drop the recurrence axis altogether&quot;</em>
+di ch. 07. La frase finale <em>&quot;this time it had dropped entirely&quot;</em>
+è il pivot meccanico della narrativa.</p>
+<h2 id="chapter-arc--hook--challenge--resolution--payoff">Chapter arc —
+Hook → Challenge → Resolution → Payoff</h2>
+<table>
+<thead>
+<tr>
+<th>Punto</th>
+<th>Funzione</th>
+<th>Contenuto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hook</strong></td>
+<td>aggancio culturale</td>
+<td><em>ChatGPT</em> — il manufatto ML più nominato della carriera di
+Elena, e l&#39;unico che lei abbia sentito chiamare da pazienti, parenti,
+giornali. Sa che dietro la chat c&#39;è un <em>Transformer</em>; non sa che
+cosa significhi. Il capitolo non è &quot;spiegare come funziona davvero un
+Transformer&quot; (in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>25</mn><mo>′</mo></msup><annotation encoding="application/x-tex">25&#39;</annotation></semantics></math>
+non si fa) — è <strong>smitizzare</strong> la scatola: nominarla nei
+suoi pezzi e dire perché ha sostituito le RNN del ch. 06.</td>
+</tr>
+<tr>
+<td><strong>Challenge / Data</strong></td>
+<td>problema concreto</td>
+<td>Una frase clinica corta — <em>&quot;The patient denies a history of
+penicillin allergy, however the chart from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2019</mn><annotation encoding="application/x-tex">2019</annotation></semantics></math>
+that the resident finally located this morning explicitly contradicts
+him.&quot;</em> — contiene una <strong>dipendenza a lungo raggio</strong>:
+per rispondere <em>&quot;è allergico?&quot;</em> il modello deve
+<strong>collegare</strong> <em>denies</em> (posizione iniziale) e
+<em>contradicts</em> (posizione finale). La RNN del ch. 06 propaga
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa} a^{&lt;t-1&gt;} + W_{ax} x^{&lt;t&gt;} + b_a)</annotation></semantics></math>
+posizione per posizione — la dipendenza tra posizione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+e posizione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>
+deve <em>attraversare</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">T_x - 1</annotation></semantics></math>
+stati intermedi, ad ogni passo c&#39;è una <em>occasione di perdere il
+segnale</em>. Tre domande in una: (i) c&#39;è un meccanismo che <em>salti il
+loop</em>? (ii) come si chiama la scatola costruita attorno a quel
+meccanismo? (iii) perché un clinico (non un ingegnere ML) può
+ragionevolmente <em>usarla</em> lunedì mattina?</td>
+</tr>
+<tr>
+<td><strong>Resolution</strong></td>
+<td>come si affronta</td>
+<td><strong>(i) Self-attention.</strong> A ogni posizione, la
+rappresentazione del token è calcolata come <em>combinazione pesata di
+ogni altro token dell&#39;input</em>, in parallelo:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">attention</mtext><mo stretchy="false" form="prefix">(</mo><mi>Q</mi><mo>,</mo><mi>K</mi><mo>,</mo><mi>V</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mtext mathvariant="normal">softmax</mtext><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="true"><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">\text{attention}(Q, K, V) = \text{softmax}\!\left(\dfrac{Q K^{\top}}{\sqrt{d_k}}\right) V</annotation></semantics></math>,
+dove ad ogni token si associano una <em>query</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>,
+una <em>key</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+e un <em>value</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>.
+La dipendenza tra posizione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+e posizione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>
+è ora <em>una sola operazione di distanza</em> — la matrice
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+è
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>×</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">T_x \times T_x</annotation></semantics></math>
+e mette in relazione <em>tutte le coppie</em> di posizioni in un colpo.
+È <em>matrix multiplication</em>, che le GPU calcolano massivamente in
+parallelo — il loop sequenziale della RNN non era solo lento, era
+<em>non parallelizzabile</em>. <strong>(ii) Transformer.</strong> È
+l&#39;<strong>architettura</strong> del paper <em>&quot;Attention is all you
+need&quot;</em>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2017</mn><annotation encoding="application/x-tex">2017</annotation></semantics></math>),
+costruita attorno a stack di self-attention (più, in modelli
+encoder/decoder, cross-attention). <strong>Chat-G-P-T</strong>,
+decodificato all&#39;indietro: <strong>T</strong> = <em>Transformer</em>;
+<strong>P</strong> = <em>Pre-trained</em> (la rete ha già imparato un
+modello statistico generale del linguaggio leggendo un corpus enorme,
+<em>prima</em> di vedere qualunque task dell&#39;utente); <strong>G</strong>
+= <em>Generative</em> (a inference il modello produce il token
+successivo campionando da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">token</mtext><mo>∣</mo><mtext mathvariant="normal">prompt</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\text{token} \mid \text{prompt})</annotation></semantics></math>
+e ri-feeda quel token come input — <em>autoregressivo</em>, un token
+alla volta); <strong>Chat</strong> = il <em>wrapper</em> multi-turn che
+mantiene la conversazione come parte del prompt. <strong>(iii) Transfer
+learning.</strong> <em>Pre-trained</em> ha un significato operativo: un
+singolo pre-training costoso
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>8</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^8</annotation></semantics></math>
+per i modelli di frontiera) produce un modello che <em>già sa</em> la
+statistica generale del linguaggio; un <strong>fine-tuning</strong>
+molto più cheap
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^4</annotation></semantics></math>
+su un corpus task-specific, p. es. lettere di dimissione + ICD coding)
+lo <em>adatta</em> a un compito specifico, con ordini di grandezza meno
+dati e meno compute. L&#39;asimmetria
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>4</mn></msup><mo>×</mo></mrow><annotation encoding="application/x-tex">\sim 10^4 \times</annotation></semantics></math>
+è <em>ciò che rende realistica un&#39;applicazione biomedica di un LLM</em>
+— un dipartimento universitario non pre-trena un LLM, ma può
+ragionevolmente fine-tunarlo.</td>
+</tr>
+<tr>
+<td><strong>Payoff</strong></td>
+<td>cosa resta</td>
+<td>ChatGPT è <em>tre scelte ingegneristiche in un wrapper UI</em> —
+Transformer, Pre-training, Generative, in un&#39;interfaccia Chat. Non è una
+nuova specie di computazione, non è una scatola sigillata; è
+<strong>un&#39;architettura nominabile</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+è scrivibile in una riga) e <strong>un&#39;economia nominabile</strong>
+(pre-train caro, fine-tune cheap). La sostituzione delle RNN non è solo
+qualità della rappresentazione: è <strong>parallelismo</strong>, e
+quindi <em>scalabilità sulla GPU</em> — la ragione per cui
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2017</mn><annotation encoding="application/x-tex">2017</annotation></semantics></math>
+ha cambiato di scala il campo. Elena non sa ancora <em>come</em> parlare
+al modello (ch. 08), non sa ancora <em>quando</em> l&#39;autonomia diventa
+pericolosa (ch. 09); ma sa cos&#39;è la cosa con cui sta per parlare.
+L&#39;opacità di scala del ch. 05 e di struttura del ch. 06 è ora completata
+dall&#39;opacità di <strong>corpus</strong>: la scatola è stata plasmata da
+un <em>qualcosa che Elena non ha letto</em>. Quell&#39;opacità non sparirà —
+diventerà la base operativa della <em>regola di competenza</em> del ch.
+08.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="narrative-version-prose">Narrative version (prose)</h3>
+<p>Of every box Elena had met that year — the classifier of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+the algorithms of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>,
+the cross-validation of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>,
+the deep network of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>,
+the CNNs and RNNs of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+— <em>this</em> was the one her patients named. Her uncle had said the
+word at dinner; the discharge nurse had typed into it that morning to
+draft a letter; the trauma resident had asked it for a differential and
+shown her the screen with half-pride and half-suspicion.
+<em>ChatGPT.</em> The most famous box of her career, and the one she had
+never opened. She had heard it called a <em>Transformer</em>; what that
+word meant on the inside, no one she trusted had ever explained to
+her.</p>
+<p>She began with the kind of sentence the model would actually have to
+read:</p>
+<blockquote>
+<p><em>&quot;The patient denies a history of penicillin allergy, however the
+chart from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2019</mn><annotation encoding="application/x-tex">2019</annotation></semantics></math>
+that the resident finally located this morning explicitly contradicts
+him.&quot;</em></p>
+</blockquote>
+<p>To answer <em>&quot;is the patient allergic to penicillin?&quot;</em> the box
+had to <strong>connect</strong> <em>denies</em>, early in the sentence,
+with <em>contradicts</em>, late in the sentence — a dependency that
+<em>spanned</em> the sentence. The recurrent network of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>
+would have walked through that sentence position by position, updating
+its hidden state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa}\, a^{&lt;t-1&gt;} + W_{ax}\, x^{&lt;t&gt;} + b_a)</annotation></semantics></math>
+one step at a time, carrying the trace of <em>denies</em> through every
+intervening word — through the chart, through the year, through the
+resident, through &quot;this morning&quot; — until it reached
+<em>contradicts</em>. The signal had ample opportunity to fade. And the
+loop was <em>serial</em>: position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+could not even be computed until position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t-1</annotation></semantics></math>
+had been. A modern GPU&#39;s parallelism stood idle.</p>
+<p>The Transformer, she read, did the opposite. At every position, the
+representation of the token was computed as a <em>weighted combination
+of every other token in the input</em>, in parallel, in one shot:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">attention</mtext><mo stretchy="false" form="prefix">(</mo><mi>Q</mi><mo>,</mo><mi>K</mi><mo>,</mo><mi>V</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mtext mathvariant="normal">softmax</mtext><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="true"><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mi>V</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\text{attention}(Q, K, V) = \text{softmax}\!\left(\dfrac{Q K^{\top}}{\sqrt{d_k}}\right) V.</annotation></semantics></math></p>
+<p>Each token was projected into three vectors — a <em>query</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Q</mi><annotation encoding="application/x-tex">Q</annotation></semantics></math>,
+a <em>key</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>,
+and a <em>value</em>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>.
+The matrix product
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+was a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>×</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">T_x \times T_x</annotation></semantics></math>
+table of <em>all</em> pairs of positions at once, the softmax normalised
+it into weights, and the value matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
+recombined the tokens according to those weights. The dependency between
+<em>denies</em> and <em>contradicts</em> was no longer a path of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">T_x - 1</annotation></semantics></math>
+intermediate states; it was a <em>single entry</em> in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+— <em>one operation away</em>. That move had a second consequence Elena
+had not initially seen: it turned sequence modelling into a problem of
+<strong>matrix multiplication</strong>, which a GPU could parallelise
+across thousands of cores. The RNN had been <em>slow</em> not because it
+was clever, but because it was <em>serial</em>. The Transformer was
+<em>fast</em> because it had abandoned that constraint. By the late
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2020</mn><annotation encoding="application/x-tex">2020</annotation></semantics></math>s
+it had replaced the RNN in nearly every sequence task that mattered.</p>
+<p>That was the <strong>T</strong>. Three more letters to go.</p>
+<p><strong>P</strong> was <em>Pre-trained</em>. The box she was about to
+type into had not been built <em>for her query</em>. It had been built —
+months earlier, on cluster GPUs that drew the electricity of a small
+town — by being shown a generic corpus of text the size of, roughly,
+every published book and a substantial fraction of the public web, and
+asked, billions of times, to predict the next token. By the time the
+training run ended, the parameters had absorbed an <em>enormous
+statistical model</em> of how language is structured: which words follow
+which, how sentences are built, what answers questions of which form.
+The pre-training did not yet know any task — but it had digested the
+<em>substrate</em> every task is written on.</p>
+<p><strong>G</strong> was <em>Generative</em>. At inference, the model
+did not return a class label or a regression value the way the
+classifiers of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+did. It returned a <em>token</em> — and then another, and then another.
+Each token was sampled from a conditional distribution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">token</mtext><mo>∣</mo><mtext mathvariant="normal">prompt</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\text{token} \mid \text{prompt})</annotation></semantics></math>
+that the pre-training had taught it; the sampled token was
+<em>appended</em> to the input, and the model was asked again, until it
+produced an end-of-sequence signal or the user stopped it.
+<em>Autoregressive</em>. That was why the answer arrived one word at a
+time on her screen.</p>
+<p><strong>Chat</strong> was the simplest of the four: a multi-turn
+dialogue wrapper. The conversation history was kept in the prompt; the
+model was made to play <em>the assistant</em> role. A UI choice, not an
+architectural one.</p>
+<p>Three engineering choices, one interface choice. <em>Chat-G-P-T</em>,
+in reverse: a <em>Transformer</em> (T), <em>pre-trained</em> on a
+massive corpus (P), running <em>autoregressively</em> to generate text
+(G), wrapped in a <em>chat</em> protocol. The famous box of Elena&#39;s
+career had been <em>named</em>.</p>
+<p>What was left was the question every clinician would, sooner or
+later, want to ask: <em>can my group actually use one of these?</em> The
+answer was the deepest part of the chapter, and it had a name:
+<strong>transfer learning</strong>. A pre-training run on the open web
+cost on the order of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>8</mn></msup><annotation encoding="application/x-tex">10^8</annotation></semantics></math>
+dollars; a <em>fine-tuning</em> run that took the same pre-trained model
+and adapted it to a specific task — say, summarising discharge letters,
+or coding diagnoses to ICD-10 — cost, on a credible biomedical corpus of
+a few thousand examples, on the order of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>4</mn></msup><annotation encoding="application/x-tex">10^4</annotation></semantics></math>
+dollars. <em>Four orders of magnitude.</em> The pre-training was not
+something Elena&#39;s department would do; the fine-tuning was. The economy
+was what made the architecture <em>appropriable</em>. Without it,
+ChatGPT would have been a curiosity for the labs that could afford to
+build their own; with it, the same box could land on a clinical research
+budget.</p>
+<p>By the end of the afternoon, the famous box was no longer famous, and
+no longer a box. It was a <em>Transformer</em> — a stack of
+self-attention layers — <em>pre-trained</em> on a corpus Elena had not
+seen and could not audit, <em>generative</em> one token at a time,
+<em>chatted</em> through a UI choice. It had replaced the RNN not
+because attention was philosophically deeper than recurrence, but
+because
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+ran on a GPU in a way that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><mi>…</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa} a^{&lt;t-1&gt;} + \dots)</annotation></semantics></math>
+never would. The opacity of scale (chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>)
+and the opacity of structure (chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>6</mn><annotation encoding="application/x-tex">6</annotation></semantics></math>)
+were now joined by a new one: the opacity of <strong>corpus</strong>.
+The box had been shaped by something Elena had not read. She did not yet
+know what to do with that fact. She was about to find out.</p>
+<h2 id="versione-didattica-objectives-recap">Versione didattica
+(objectives recap)</h2>
+<p>Gli obiettivi formali del capitolo vivono in <a href="objectives.md">objectives.md</a>. In sintesi, il payoff narrativo
+li ricalca: <strong>decode</strong> <em>Chat-G-P-T</em> all&#39;indietro
+nominando il contributo tecnico di ogni lettera — <strong>T</strong> =
+<em>Transformer / self-attention</em>, ogni token come combinazione
+pesata di ogni altro token in parallelo via
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">attention</mtext><mo stretchy="false" form="prefix">(</mo><mi>Q</mi><mo>,</mo><mi>K</mi><mo>,</mo><mi>V</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mtext mathvariant="normal">softmax</mtext><mo stretchy="false" form="prefix">(</mo><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup><mi>/</mi><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt><mo stretchy="false" form="postfix">)</mo><mi>V</mi></mrow><annotation encoding="application/x-tex">\text{attention}(Q, K, V) = \text{softmax}(Q K^{\top} / \sqrt{d_k}) V</annotation></semantics></math>;
+<strong>P</strong> = <em>Pre-trained</em>, modello statistico generale
+del linguaggio appreso <em>prima</em> di qualunque task dell&#39;utente;
+<strong>G</strong> = <em>Generative</em>, sampling autoregressivo da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">token</mtext><mo>∣</mo><mtext mathvariant="normal">prompt</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(\text{token} \mid \text{prompt})</annotation></semantics></math>
+con feedback del token campionato; <strong>Chat</strong> = wrapper di
+dialogo multi-turn; <strong>contrast</strong> self-attention vs
+ricorrenza del ch. 06
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa} a^{&lt;t-1&gt;} + W_{ax} x^{&lt;t&gt;} + b_a)</annotation></semantics></math>):
+la dipendenza tra posizione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+e posizione
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>
+percorre
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">T_x - 1</annotation></semantics></math>
+stati nell&#39;RNN, è <em>una sola operazione</em> nel Transformer —
+<em>parallel</em> invece di <em>serial</em>, <em>matrix
+multiplication</em> invece di <em>loop</em>, <em>GPU-scalable</em>
+invece di <em>bottle-necked</em> sulla sequenzialità;
+<strong>explain</strong> transfer learning come significato operativo di
+<em>Pre-trained</em> — un pre-training costoso
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>8</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^8</annotation></semantics></math>)
++ un fine-tuning cheap
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><mi>$</mi><msup><mn>10</mn><mn>4</mn></msup></mrow><annotation encoding="application/x-tex">\sim \$10^4</annotation></semantics></math>)
+= asimmetria
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∼</mo><msup><mn>10</mn><mn>4</mn></msup><mo>×</mo></mrow><annotation encoding="application/x-tex">\sim 10^4 \times</annotation></semantics></math>,
+<em>ciò che rende biomedicamente realistica un&#39;applicazione di LLM</em>.
+La <em>Sentence S</em> del sommativo (<em>denies</em> ↔︎
+<em>contradicts</em>) rende visibile a occhio nudo, allo studente
+clinico, la differenza serial-vs-parallel — l&#39;arco narrativo qui sopra
+usa esattamente quella frase, in modo che la prosa e la verifica
+condividano l&#39;esempio.</p>
+<h2 id="pre-hook--08-using-chatgpt-in-practice">Pre-hook → 08 Using
+ChatGPT in practice</h2>
+<blockquote>
+<p>Elena knew what ChatGPT <em>was</em>, but she had not yet typed a
+single word into it. The Monday after the lecture,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+anonymised ED discharge letters were waiting on her shared drive —
+<em>trauma</em> vs <em>non-trauma</em>, for an audit her senior wanted
+by Friday. She opened a chat window. She typed <em>&quot;classify these as
+trauma or non-trauma&quot;</em>. The answer was unusable. She rewrote. The
+answer was less unusable but still wrong. By the third attempt she was
+rewriting <em>the prompt itself</em>, not the question — and she
+realised, with the small annoyance of a discipline she had not been
+taught, that <strong>structure</strong> was a thing one could put inside
+a prompt, the way one puts structure inside a SQL query or a study
+protocol. And: was <em>chat</em> even the right <em>channel</em> for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+letters, or did she need a different way to deliver the same instruction
+at volume? And, most uncomfortably: which of these classifications would
+she be unable to <em>check</em> on her own — and therefore, by the
+simplest possible argument, unable to <em>delegate</em> in the first
+place? The next chapter answers exactly those three questions: a
+<em>structured</em> prompt, a <em>rule</em> for what to delegate and
+what to keep, and a <em>channel</em> matched to the size of the job. The
+box of chapter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+has not changed. The question has: from <em>what is this thing</em> to
+<em>what do I do with it on Monday</em>.</p>
+</blockquote>
+<p><em>Glossa:</em> il pre-hook <strong>non ritira</strong> nulla di ch.
+07 — Transformer / pre-trained / generative / chat sono
+<em>acquisiti</em> e <em>nominati come acquisiti</em>. Introduce invece
+il <strong>pivot pedagogico del corso</strong>: per la prima volta in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+capitoli, lo strumento <em>non cambia</em> (resta il box di ch. 07) e
+cambia <em>invece</em> la posizione del clinico rispetto allo strumento
+— da <em>capire l&#39;oggetto</em> a <em>governare l&#39;uso</em>. È un cambio
+d&#39;<strong>asse</strong> della spine, non un cambio di meccanismo. Tre
+cliff-hanger lessicali piantati per ch. 08, uno per obiettivo:
+<strong>structure</strong> (in un prompt → 7-slot template, Obj. 1),
+<strong>check / delegate</strong> (regola della competenza, Obj. 2),
+<strong>channel</strong> (Web / Prompt design / API, Obj. 3) — niente
+<em>role / context / task / instructions / output / style /
+examples</em> ancora rivelati, niente <em>token cost</em>, niente
+<em>API</em> nominata: vivono in objectives.md di ch. 08 e nella sua
+narrativa. Tre eco strutturali ed espliciti:</p>
+<ul>
+<li>lo <strong>scenario clinico</strong>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>200</mn><annotation encoding="application/x-tex">200</annotation></semantics></math>
+lettere ED, trauma vs non-trauma) è <em>esattamente</em> il sommativo di
+ch. 08 — e era <em>già stato seedato</em> nel pre-hook di ch. 06
+(&quot;<em>the most famous machine-learning artefact of Elena&#39;s career</em>&quot;
++ &quot;<em>discharge letter</em>&quot;). Ponte di scenario, non solo di concetto:
+per la prima volta nel corso, il <em>summative dataset</em> di ch. 08 è
+<em>stato annunciato due capitoli prima</em>. Coerenza diegetica
+deliberata.</li>
+<li>la frase di chiusura <strong>&quot;from <em>what is this thing</em> to
+<em>what do I do with it on Monday</em>&quot;</strong> è il segnale che il
+corso, dal punto di vista narrativo, <strong>passa al pre-mattino del
+lunedì</strong> — il framing operativo che dominerà ch. 08, ch. 09 e ch.
+10. Ricalca esplicitamente il payoff dello spine globale
+(&quot;<em>understand → evaluate → use</em>&quot;): ch. 01–07 hanno fatto
+<em>understand</em>, ch. 08 inizia <em>use</em>.</li>
+<li><em>box</em>, ripreso letteralmente da ch. 05 / ch. 06 / ch. 07,
+resta il sostantivo-protagonista. Non <em>modello</em>, non
+<em>sistema</em>, non <em>AI</em>: la <em>box</em> di Elena, in lower
+case, lo stesso oggetto da
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>7</mn><annotation encoding="application/x-tex">7</annotation></semantics></math>
+capitoli — solo, ogni capitolo, con un dettaglio in più sopra.</li>
+</ul>
+<p>Ponte deterministico a <code>08-chatgpt-usage</code> (per
+<code>manifest.next_enabled</code> il capitolo non è ancora
+<em>enabled</em> — entrambi <code>include: false</code> — ma l&#39;ordine
+naturale del corso è esplicito nello spine, in ch. 05 e in ch. 06, e
+questa convenzione è ormai consolidata).</p>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Item 02 — Long-range dependency on a clinical sentence: RNN
+traversal vs Transformer self-attention</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+</style>
+  <style type="text/css">:root { --accent:#E8741E; --ink:#1a1a1a; --bg:#ffffff; --muted:#6b6b6b; --code:#f4f1ec; }
+@media (prefers-color-scheme: dark){ :root{ --ink:#ececec; --bg:#16130f; --muted:#a89e92; --code:#211c16; } }
+html{font-family:"Noto Sans",system-ui,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+body{max-width:48rem;margin:2rem auto;padding:0 1.2rem}
+h1,h2,h3{font-family:"Cabin","Noto Sans",sans-serif;line-height:1.2}
+h1{color:var(--accent);border:0}
+h2{border-bottom:2px solid var(--accent);padding-bottom:.2rem}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;margin:1rem 0}
+th,td{border:1px solid #ddd;padding:.4rem .6rem;text-align:left}
+th{background:var(--accent);color:#fff}
+pre,code{font-family:"Source Code Pro",Consolas,monospace}
+pre{background:var(--code);padding:.8rem;border-radius:6px;overflow:auto}
+code{background:var(--code);padding:.1rem .3rem;border-radius:4px}
+blockquote{border-left:4px solid var(--accent);margin:1rem 0;padding:.2rem 1rem;color:var(--muted)}
+math{font-size:1.05em}
+</style>
+</head>
+<body>
+<h1 id="item-02--long-range-dependency-on-a-clinical-sentence-rnn-traversal-vs-transformer-self-attention">Item
+02 — Long-range dependency on a clinical sentence: RNN traversal vs
+Transformer self-attention</h1>
+<p><strong>ID</strong>: IB-07-llm-transformers-02 <strong>Learning
+objective</strong>: Contrast the Transformer&#39;s self-attention with the
+RNN&#39;s sequential hidden state on a sequence of length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>
+— identify a long-range dependency in a clinical sentence, quantify how
+many intermediate hidden states an RNN must traverse to propagate that
+dependency, and locate the <em>single</em> entry of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+attention matrix that captures the same dependency in one step (Obj.
+2).</p>
+<p><strong>Category</strong>: Application <strong>Type</strong>:
+applicativa <strong>Difficulty</strong>: medium
+<strong>Chapter</strong>: 07-llm-transformers</p>
+<h2 id="question">Question</h2>
+<p>Consider the following clinical sentence, taken from a fictional
+discharge letter. The words have been numbered so you can refer to
+positions unambiguously.</p>
+<blockquote>
+<p>The<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>1</mn></msub><annotation encoding="application/x-tex">_{1}</annotation></semantics></math>
+discharge<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>2</mn></msub><annotation encoding="application/x-tex">_{2}</annotation></semantics></math>
+summary<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>3</mn></msub><annotation encoding="application/x-tex">_{3}</annotation></semantics></math>
+explicitly<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>4</mn></msub><annotation encoding="application/x-tex">_{4}</annotation></semantics></math>
+<strong>rules</strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>5</mn></msub><annotation encoding="application/x-tex">_{5}</annotation></semantics></math>
+<strong>out</strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>6</mn></msub><annotation encoding="application/x-tex">_{6}</annotation></semantics></math>
+atrial<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>7</mn></msub><annotation encoding="application/x-tex">_{7}</annotation></semantics></math>
+fibrillation<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>8</mn></msub><annotation encoding="application/x-tex">_{8}</annotation></semantics></math>,
+although<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>9</mn></msub><annotation encoding="application/x-tex">_{9}</annotation></semantics></math>
+the<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>10</mn></msub><annotation encoding="application/x-tex">_{10}</annotation></semantics></math>
+48-hour<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>11</mn></msub><annotation encoding="application/x-tex">_{11}</annotation></semantics></math>
+Holter<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>12</mn></msub><annotation encoding="application/x-tex">_{12}</annotation></semantics></math>
+recording<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>13</mn></msub><annotation encoding="application/x-tex">_{13}</annotation></semantics></math>
+from<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>14</mn></msub><annotation encoding="application/x-tex">_{14}</annotation></semantics></math>
+the<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>15</mn></msub><annotation encoding="application/x-tex">_{15}</annotation></semantics></math>
+prior<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>16</mn></msub><annotation encoding="application/x-tex">_{16}</annotation></semantics></math>
+week<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>17</mn></msub><annotation encoding="application/x-tex">_{17}</annotation></semantics></math>
+—
+attached<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>18</mn></msub><annotation encoding="application/x-tex">_{18}</annotation></semantics></math>
+as<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>19</mn></msub><annotation encoding="application/x-tex">_{19}</annotation></semantics></math>
+appendix<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>20</mn></msub><annotation encoding="application/x-tex">_{20}</annotation></semantics></math>
+C<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>21</mn></msub><annotation encoding="application/x-tex">_{21}</annotation></semantics></math>
+and<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>22</mn></msub><annotation encoding="application/x-tex">_{22}</annotation></semantics></math>
+reviewed<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>23</mn></msub><annotation encoding="application/x-tex">_{23}</annotation></semantics></math>
+only<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>24</mn></msub><annotation encoding="application/x-tex">_{24}</annotation></semantics></math>
+by<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>25</mn></msub><annotation encoding="application/x-tex">_{25}</annotation></semantics></math>
+the<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>26</mn></msub><annotation encoding="application/x-tex">_{26}</annotation></semantics></math>
+on-call<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>27</mn></msub><annotation encoding="application/x-tex">_{27}</annotation></semantics></math>
+cardiologist<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>28</mn></msub><annotation encoding="application/x-tex">_{28}</annotation></semantics></math>
+this<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>29</mn></msub><annotation encoding="application/x-tex">_{29}</annotation></semantics></math>
+afternoon<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>30</mn></msub><annotation encoding="application/x-tex">_{30}</annotation></semantics></math>
+—
+<strong>demonstrates</strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>31</mn></msub><annotation encoding="application/x-tex">_{31}</annotation></semantics></math>
+<strong>paroxysmal</strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>32</mn></msub><annotation encoding="application/x-tex">_{32}</annotation></semantics></math>
+episodes<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>33</mn></msub><annotation encoding="application/x-tex">_{33}</annotation></semantics></math>.</p>
+</blockquote>
+<p>The sentence&#39;s total length, after this stylised word-level
+tokenisation, is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>33</mn></mrow><annotation encoding="application/x-tex">T_x = 33</annotation></semantics></math>
+tokens. <em>(Em-dashes are punctuation and are not counted as tokens in
+this stylised scheme; the commas are also not separately
+tokenised.)</em> A clinician reads this sentence and asks the model the
+question: <em>&quot;According to this letter, does the patient have atrial
+fibrillation, yes or no?&quot;</em></p>
+<p>Answer the three sub-questions below in order.</p>
+<h3 id="sub-question-1--identify-the-long-range-dependency">Sub-question
+1 — identify the long-range dependency</h3>
+<p>State the <strong>two words</strong> (with their position indices)
+that the model must <em>connect</em> in order to answer the clinician&#39;s
+question correctly, and explain in <strong>one sentence</strong> why the
+connection between <em>those</em> two specific words is the one that
+matters — rather than, say,
+<em>atrial</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>7</mn></msub><annotation encoding="application/x-tex">_{7}</annotation></semantics></math>
+and
+<em>paroxysmal</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>32</mn></msub><annotation encoding="application/x-tex">_{32}</annotation></semantics></math>.</p>
+<h3 id="sub-question-2--rnn-traversal-cost">Sub-question 2 — RNN
+traversal cost</h3>
+<p>Assume the model is the RNN of <a href="../../06-unstructured-data/objectives.md">ch. 06</a>, with
+recurrence
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo><mspace width="2.0em"></mspace><mrow><mtext mathvariant="normal">for </mtext><mspace width="0.333em"></mspace></mrow><mi>t</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>T</mi><mi>x</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa} \, a^{&lt;t-1&gt;} + W_{ax} \, x^{&lt;t&gt;} + b_a) \qquad \text{for } t = 1, \ldots, T_x.</annotation></semantics></math></p>
+<p>Starting from the hidden state at the position of the
+<em>earlier</em> of the two words you identified in sub-question 1,
+<strong>count exactly how many applications of the recurrence are
+needed</strong> to propagate the dependency forward to the hidden state
+at the position of the <em>later</em> word. Show the calculation
+explicitly (the two positions, the subtraction, the result).</p>
+<h3 id="sub-question-3--transformer-attention-the-single-matrix-entry">Sub-question
+3 — Transformer attention: the single matrix entry</h3>
+<p>Assume the model is the Transformer of this chapter, with
+self-attention
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">attention</mtext><mo stretchy="false" form="prefix">(</mo><mi>Q</mi><mo>,</mo><mi>K</mi><mo>,</mo><mi>V</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mtext mathvariant="normal">softmax</mtext><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="true"><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">\text{attention}(Q, K, V) = \text{softmax}\!\left(\dfrac{Q K^{\top}}{\sqrt{d_k}}\right) V</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo>,</mo><mi>K</mi><mo>,</mo><mi>V</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>×</mo><mi>d</mi></mrow></msup></mrow><annotation encoding="application/x-tex">Q, K, V \in \mathbb{R}^{T_x \times d}</annotation></semantics></math>
+are matrices of <em>queries</em>, <em>keys</em> and <em>values</em>, one
+row per token of the sentence.</p>
+<p><strong>State the single entry
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>
+of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>×</mo><msub><mi>T</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">T_x \times T_x</annotation></semantics></math>
+matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+that carries the long-range dependency you identified</strong> (give
+both row and column indices, using the convention that row
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+is the <em>query</em> of position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+and column
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+is the <em>key</em> of position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>).
+Then state, in <strong>one sentence</strong>, how many
+<em>operations</em> the dependency takes through the attention matrix —
+and <strong>how that count changes</strong> if the same two words were
+placed at the two extreme ends of a sentence of length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>1000</mn></mrow><annotation encoding="application/x-tex">T_x = 1000</annotation></semantics></math>
+instead of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>33</mn></mrow><annotation encoding="application/x-tex">T_x = 33</annotation></semantics></math>.</p>
+<h2 id="expected-answer">Expected answer</h2>
+<h3 id="sub-question-1">Sub-question 1</h3>
+<p>The two words are
+<strong>rules<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>5</mn></msub><annotation encoding="application/x-tex">_{5}</annotation></semantics></math></strong>
+(or equivalently the bigram <em>rules
+out</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mrow><mn>5</mn><mtext mathvariant="normal">–</mtext><mn>6</mn></mrow></msub><annotation encoding="application/x-tex">_{5\text{–}6}</annotation></semantics></math>,
+but a single position is sufficient) and
+<strong>demonstrates<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>31</mn></msub><annotation encoding="application/x-tex">_{31}</annotation></semantics></math></strong>
+(or equivalently the bigram <em>demonstrates
+paroxysmal</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mrow><mn>31</mn><mtext mathvariant="normal">–</mtext><mn>32</mn></mrow></msub><annotation encoding="application/x-tex">_{31\text{–}32}</annotation></semantics></math>).</p>
+<p><em>&quot;Rules&quot;</em> (position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>)
+is the verb that says <strong>no</strong>: the discharge summary asserts
+<em>atrial fibrillation</em> is <strong>excluded</strong>.
+<em>&quot;Demonstrates&quot;</em> (position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>31</mn><annotation encoding="application/x-tex">31</annotation></semantics></math>)
+is the verb that says <strong>yes</strong>: the Holter recording,
+attached as appendix C, <strong>contradicts</strong> the discharge
+summary by showing paroxysmal episodes. The clinician&#39;s question is
+<em>&quot;yes or no on atrial fibrillation?&quot;</em>, and the correct answer
+requires the model to <em>connect</em> these two specific verbs and
+recognise that the later evidence <em>overrides</em> the earlier
+conclusion.</p>
+<p>Why <strong>not</strong>
+<em>atrial</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>7</mn></msub><annotation encoding="application/x-tex">_{7}</annotation></semantics></math>
+and
+<em>paroxysmal</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>32</mn></msub><annotation encoding="application/x-tex">_{32}</annotation></semantics></math>:
+these two words are semantically related at the <em>topic</em> level
+(both refer to a kind of cardiac rhythm disturbance), but they are
+<em>not</em> the words that carry the logical contradiction. A model
+that links
+<em>atrial</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>7</mn></msub><annotation encoding="application/x-tex">_{7}</annotation></semantics></math>
+to
+<em>paroxysmal</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>32</mn></msub><annotation encoding="application/x-tex">_{32}</annotation></semantics></math>
+has identified the <em>topic</em> of the sentence but has missed
+<em>who-contradicts-whom</em> — and would answer the clinician&#39;s
+question incorrectly.</p>
+<p>(A response that names <em>rules out</em> /
+<em>contradicts</em>-style words — even using
+<em>out</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>6</mn></msub><annotation encoding="application/x-tex">_{6}</annotation></semantics></math>
+instead of
+<em>rules</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>5</mn></msub><annotation encoding="application/x-tex">_{5}</annotation></semantics></math>,
+or
+<em>paroxysmal</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>32</mn></msub><annotation encoding="application/x-tex">_{32}</annotation></semantics></math>
+instead of
+<em>demonstrates</em><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi></mi><mn>31</mn></msub><annotation encoding="application/x-tex">_{31}</annotation></semantics></math>
+— is acceptable, provided the <em>negation–assertion</em> asymmetry is
+correctly named.)</p>
+<h3 id="sub-question-2">Sub-question 2</h3>
+<p>The RNN&#39;s hidden state at position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>5</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;5&gt;}</annotation></semantics></math>;
+the hidden state at position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>31</mn><annotation encoding="application/x-tex">31</annotation></semantics></math>
+is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>31</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;31&gt;}</annotation></semantics></math>.
+To propagate the dependency forward from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>5</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;5&gt;}</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>31</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;31&gt;}</annotation></semantics></math>,
+the recurrence</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>=</mo><mi>g</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>a</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>a</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>−</mo><mn>1</mn><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>W</mi><mrow><mi>a</mi><mi>x</mi></mrow></msub><mspace width="0.167em"></mspace><msup><mi>x</mi><mrow><mo>&lt;</mo><mi>t</mi><mo>&gt;</mo></mrow></msup><mo>+</mo><msub><mi>b</mi><mi>a</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a^{&lt;t&gt;} = g(W_{aa} \, a^{&lt;t-1&gt;} + W_{ax} \, x^{&lt;t&gt;} + b_a)</annotation></semantics></math></p>
+<p>must be applied for every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>6</mn><mo>,</mo><mn>7</mn><mo>,</mo><mn>8</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>31</mn></mrow><annotation encoding="application/x-tex">t = 6, 7, 8, \ldots, 31</annotation></semantics></math>.</p>
+<p>That is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>31</mn><mo>−</mo><mn>5</mn><mo>=</mo><mn>𝟐𝟔</mn></mrow><annotation encoding="application/x-tex">31 - 5 = \mathbf{26}</annotation></semantics></math>
+applications of the recurrence. (Equivalently: there are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>25</mn><annotation encoding="application/x-tex">25</annotation></semantics></math>
+<em>intermediate</em> hidden states
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>6</mn><mo>&gt;</mo></mrow></msup><mo>,</mo><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>7</mn><mo>&gt;</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>30</mn><mo>&gt;</mo></mrow></msup></mrow><annotation encoding="application/x-tex">a^{&lt;6&gt;}, a^{&lt;7&gt;}, \ldots, a^{&lt;30&gt;}</annotation></semantics></math>
+strictly between
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>5</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;5&gt;}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>31</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;31&gt;}</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>a</mi><mrow><mo>&lt;</mo><mn>31</mn><mo>&gt;</mo></mrow></msup><annotation encoding="application/x-tex">a^{&lt;31&gt;}</annotation></semantics></math>
+as the final destination.)</p>
+<p>The teachable beat: each of these
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>26</mn><annotation encoding="application/x-tex">26</annotation></semantics></math>
+applications is <strong>one occasion for the signal of <em>rules
+out</em> to fade</strong> as it is mixed with the contributions of the
+intervening words (<em>atrial</em>, <em>fibrillation</em>,
+<em>although</em>, <em>the</em>, <em>48-hour</em>, <em>Holter</em>, ...,
+<em>afternoon</em>). The longer the sentence, the more occasions for
+fade.</p>
+<h3 id="sub-question-3">Sub-question 3</h3>
+<p>The single entry of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">Q K^{\top}</annotation></semantics></math>
+that carries the long-range dependency is
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup><msub><mo stretchy="false" form="postfix">)</mo><mrow><mn>31</mn><mo>,</mo><mn>5</mn></mrow></msub></mrow><annotation encoding="application/x-tex">(Q K^{\top})_{31, 5}</annotation></semantics></math></strong>:
+row
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>31</mn><annotation encoding="application/x-tex">31</annotation></semantics></math>
+is the query of <em>demonstrates</em>, column
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>5</mn><annotation encoding="application/x-tex">5</annotation></semantics></math>
+is the key of <em>rules</em>. This entry is a scalar — a single inner
+product
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">⟨</mo><msub><mi>q</mi><mn>31</mn></msub><mo>,</mo><msub><mi>k</mi><mn>5</mn></msub><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">\langle q_{31}, k_5 \rangle</annotation></semantics></math>
+— and after the row-wise softmax + multiplication by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
+it contributes directly to the representation at position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>31</mn><annotation encoding="application/x-tex">31</annotation></semantics></math>.</p>
+<p>The symmetric entry
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup><msub><mo stretchy="false" form="postfix">)</mo><mrow><mn>5</mn><mo>,</mo><mn>31</mn></mrow></msub></mrow><annotation encoding="application/x-tex">(Q K^{\top})_{5, 31}</annotation></semantics></math>
+is also acceptable as the answer, since self-attention computes
+<em>all</em> pairwise inner products and either direction encodes the
+same pairing.</p>
+<p>The dependency takes <strong>one operation</strong> through the
+attention matrix (one inner product / one matrix entry).</p>
+<p><strong>Crucial sensitivity property:</strong> if the same two words
+were placed at the two extreme ends of a sentence of length
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>x</mi></msub><mo>=</mo><mn>1000</mn></mrow><annotation encoding="application/x-tex">T_x = 1000</annotation></semantics></math>
+— i.e. at positions
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1000</mn><annotation encoding="application/x-tex">1000</annotation></semantics></math>
+— the entry
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>Q</mi><msup><mi>K</mi><mi>⊤</mi></msup><msub><mo stretchy="false" form="postfix">)</mo><mrow><mn>1000</mn><mo>,</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">(Q K^{\top})_{1000, 1}</annotation></semantics></math>
+would still be <strong>a single entry</strong>, computed by a single
+inner product, in the same one operation. The RNN&#39;s count would explode
+from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>26</mn><annotation encoding="application/x-tex">26</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>999</mn><annotation encoding="application/x-tex">999</annotation></semantics></math>;
+the Transformer&#39;s count would stay at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>.
+<em>That</em> is the chapter&#39;s central architectural claim — <em>the
+dependency between position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+and position
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>
+is one operation away in the Transformer, regardless of how large
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>x</mi></msub><annotation encoding="application/x-tex">T_x</annotation></semantics></math>
+is</em>.</p>
+<h2 id="rubric">Rubric</h2>
+<p>See <a href="../rubriche/rubrica_02_long-range-dependency.md">rubrica_02_long-range-dependency.md</a>.</p>
+<h2 id="note-di-revisione">Note di revisione</h2>
+<p><em>(da compilare dopo il check <code>assessment-reviewer</code> a
+fine set.)</em></p>
+</body>
+</html>
