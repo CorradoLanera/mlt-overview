@@ -1,0 +1,14 @@
+workshop:
+  title: "Practical AI for Medical Data Analyses with R - Basic"
+  slug: mlt-r-basic
+  language: en
+  total_minutes_gross: 240
+  dataset: "medicaldata::indo_rct"
+summative: "build -> tune (workflow_set) -> validate (last_fit) -> reproducible report"
+steps:
+  - { slug: 00-setup,    title: "Setup",               mode: demo,     minutes: 10, include: true }
+  - { slug: 01-import,   title: "Import & wrangle",    mode: hands-on, minutes: 32, include: true }
+  - { slug: 02-eda,      title: "Clinical EDA",        mode: hands-on, minutes: 22, include: true }
+  - { slug: 03-logistic, title: "Logistic spine",      mode: hands-on, minutes: 38, include: true }
+  - { slug: 04-zoo,      title: "The zoo, tuned",      mode: hands-on, minutes: 68, include: true }
+  - { slug: 05-report,   title: "Reproducible report", mode: demo,     minutes: 13, include: true }

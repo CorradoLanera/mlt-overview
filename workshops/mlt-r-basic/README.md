@@ -1,0 +1,46 @@
+# Practical AI for Medical Data Analyses with R — Basic
+
+A ~4-hour, live-coded workshop in which we build and validate a clinical machine-learning
+model in R, reproducibly, from raw data to a rendered report. We work hands-on in RStudio,
+type every line together, and end with a model we can trust and a report we can re-run.
+
+## What you will build
+
+Starting from a real randomized-trial dataset, we import and wrangle the data, explore it
+with clinically meaningful summaries, fit a logistic-regression spine, then tune and compare
+a small "zoo" of models with a `workflow_set`, validate the winner on held-out data with
+`last_fit`, and wrap everything in a reproducible Quarto report.
+
+## How to start
+
+You need R (>= 4.5) and RStudio.
+
+1. In R, fetch the workshop materials:
+
+   ```r
+   usethis::use_course("CorradoLanera/mlt-r-basic")
+   ```
+
+2. Open the project (`mlt-r-basic.Rproj`) so its own `renv` activates, then restore the
+   pinned package environment:
+
+   ```r
+   renv::restore()
+   ```
+
+That gives you exactly the package versions used to build the workshop.
+
+## How the `steps/` folders work
+
+The workshop is split into numbered step folders, `steps/NN-slug/`. Each folder is a
+**complete, cumulative snapshot** of the project up to that point — not just a diff. The
+solution to step N is simply step N+1.
+
+If you fall behind during the live coding, do not panic: just open the **next** step folder
+and continue from there. You will always have a clean, runnable starting point.
+
+## Dataset
+
+We use `medicaldata::indo_rct`, a randomized controlled trial of indomethacin for the
+prevention of post-ERCP pancreatitis (602 patients, ~13% event rate). The outcome is
+`outcome` (post-ERCP pancreatitis: yes / no).
