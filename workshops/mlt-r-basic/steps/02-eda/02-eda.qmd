@@ -1,0 +1,83 @@
+---
+title: "Step 02 — Clinical EDA"
+subtitle: "Read the imbalance, choose the metric"
+params:
+  solved: true
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  warning: false
+  message: false
+---
+
+## Where we are
+
+Cumulative snapshot: load (Step 00) and wrangle (Step 01) are given below; the new
+beat is exploratory analysis — a stratified summary table and one figure that read
+the class imbalance and motivate our metric choice.
+
+<!--
+Nota docente (IT): step HANDS-ON (~22 min). load + wrangle sono "given" (beat
+precedenti, già risolti agli step 00-01). Il beat nuovo è la EDA: `tbl_summary`
+stratificata per outcome + un boxplot di `age`. Messaggio chiave: l'evento è raro
+(~13%), quindi l'accuracy inganna -> sceglieremo ROC-AUC come metrica primaria.
+-->
+
+# Given — load & wrangle {#sec-given}
+
+From Steps 00–01.
+
+```{r given}
+#| code-fold: true
+library(here)
+library(rio)
+library(tidyverse)
+library(janitor)
+
+indo_raw <- import(here("data-raw", "indo_rct.csv"), setclass = "tibble")
+
+indo <- indo_raw |>
+  clean_names() |>
+  select(outcome, age, risk, gender, sod, rx, type) |>
+  filter(!is.na(age)) |>
+  mutate(outcome = factor(outcome, levels = c("0_no", "1_yes")))
+
+glimpse(indo)
+```
+
+# Explore — summarise & visualise {#sec-eda}
+
+A stratified summary across the outcome, then a quick look at `age` by outcome.
+
+```{r eda}
+#| code-fold: false
+library(gtsummary)
+
+# Stratified summary table ----
+indo |>
+  tbl_summary(
+    by = outcome,
+    include = c(age, risk, gender, sod, rx, type),
+  )
+```
+
+```{r age-plot}
+#| code-fold: false
+# Age distribution by outcome ----
+age_plot <- indo |>
+  ggplot(aes(x = outcome, y = age, fill = outcome)) +
+  geom_boxplot() +
+  theme_minimal()
+
+ggsave(here("output", "age_by_outcome.png"), plot = age_plot, width = 6, height = 4)
+age_plot
+```
+
+## Reading the table
+
+The event (`1_yes`) is the minority class — roughly **13%** of patients. With such
+imbalance, plain accuracy is misleading: a model that always predicts "no event"
+would already score ~87%. That is why, from the next step on, we score models with
+**ROC-AUC** (and keep accuracy only as a secondary reference).

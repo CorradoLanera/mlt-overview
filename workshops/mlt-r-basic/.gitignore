@@ -7,6 +7,7 @@ renv/local/
 renv/cellar/
 renv/staging/
 /steps/**/output/*.rds
+/steps/**/output/*.png
 !/steps/**/output/.keep
 /**/*_files
 /**/*_cache
