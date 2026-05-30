@@ -93,10 +93,10 @@ Aside metriche — ~60-90″, non valutata.
 
 ## Aside — Threshold-free: AUC-ROC vs AUC-PR
 
-Most classifiers output a **score** (often a probability); the threshold turns it into a label. Sweeping the threshold traces two curves:
+Most classifiers output a **score** $g$ (often a probability — ch. 2's $g$); the threshold $\tau$ turns it into a label $f_\tau$. Sweeping the threshold traces two curves:
 
 - **ROC curve** — sensitivity vs $1 - \text{specificity}$ across thresholds. Its area, **AUC-ROC** $\in [0, 1]$ ($0.5 =$ random, $1 =$ perfect), is the probability that a random positive scores higher than a random negative.
-- **PR curve** — precision vs recall. Its area, **AUC-PR**, is more informative when the **positive class is rare**.
+- **PR curve** — precision vs recall. Its area, **AUC-PR**, is more informative when the **positive class is rare** (its baseline is the prevalence, not $0.5$).
 
 Rule of thumb: **AUC-ROC** when classes are roughly balanced; **AUC-PR** under heavy imbalance (rare disease, fraud, anomaly detection).
 
@@ -167,7 +167,7 @@ The validation step, done practically:
 2. For $k = 1, \ldots, K$: train on the other $K - 1$ blocks; estimate error on block $k$.
 3. **Average** the $K$ per-fold error rates → the **CV error**.
 
-**Standard $K \in [5, 10]$:** smaller $K$ trains on less data (high bias); larger $K$ has smaller folds (high variance).
+**Standard $K \in [5, 10]$:** smaller $K$ → each fit sees a smaller *fraction* of the data (high bias); larger $K$ → smaller folds (high variance).
 
 The CV error **estimates** the prediction error of the chosen model on *unseen* patients.
 
@@ -211,11 +211,11 @@ VIMP — ~60″. Idea: permuti $X_j$, se l'errore non cambia non contribuisce. G
 
 VIMP tells you *which features matter on average*. **SHAP** tells you *how each feature contributed to a single patient's prediction*.
 
-- Borrowed from cooperative **game theory** (Shapley values, 1953): each feature is a "player"; its SHAP value is its **fair share** of the prediction's deviation from the average.
+- Borrowed from cooperative **game theory** (Shapley values, 1953): each feature is a "player"; its SHAP value is its **fair share** of the prediction's deviation from the average — like splitting a bill by what each guest actually ordered.
 - For one patient: a positive SHAP value pushes the prediction *up*; a negative one pushes it *down*. Contributions are **additive**.
 - Aggregated across patients, SHAP also yields a *global* view that is consistent with the local explanations.
 
-Model-agnostic; standard tooling for tree ensembles, deep nets, and LLMs.
+Model-agnostic; standard tooling for tree ensembles today — and the deep nets and LLMs of later chapters.
 
 ::: {.notes}
 SHAP — ~60″. Idea: scomposizione additiva per-paziente → *"why was THIS patient flagged?"*.

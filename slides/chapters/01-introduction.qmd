@@ -53,7 +53,7 @@ Voce: software classico = voi scrivete le regole + date i dati. ML = date dati *
 
 - you provide **training input** (data)
 - you provide **training answers** (labels)
-- you obtain the **rule** itself: $Y \simeq f(X)$
+- you obtain the **rule** itself: $Y \simeq f(X)$ *(only approximate — data is noisy)*
 :::
 ::::
 
@@ -140,9 +140,9 @@ Distinzione a voce: il task è *cosa* fa su un nuovo input, **non** il training.
 
 | Task **$T$** | Performance **$P$** |
 |---|---|
-| classify readmission yes/no | $\%$ correctly classified (balanced! — class imbalance) |
+| classify readmission yes/no | $\%$ correctly classified (*needs a balanced metric* — class imbalance; ch. 4) |
 | classify handwritten characters | $\%$ correctly classified |
-| drive A → B | average distance before a human-judged error |
+| drive A → B | average distance driven before a human intervention |
 | classify EHR by disease | $\%$ of EHRs correctly classified |
 | monitor in-bed dynamics | average error on position / dynamics |
 

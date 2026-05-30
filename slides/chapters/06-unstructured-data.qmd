@@ -38,18 +38,18 @@ L'MLP non rispetta nessuna delle due.
 ::: {.columns}
 ::: {.column width="50%"}
 
-**Multi-dimensional spatial single-information**
+**Spatial data — a 2D grid, single channel**
 
 ![](../img/imagetypegrayscale.png){fig-align="center" width="100%"}
 
 A chest X-ray, a CT slice, a histology tile — a $2$D matrix $X \in \mathbb{R}^{H \times W}$ where *the same edge or lesion can appear at different positions of the field of view*.
 
-**Prior**: translation invariance.
+**Prior**: translation equivariance.
 
 :::
 ::: {.column width="50%"}
 
-**One-dimension privileged sequential single-information**
+**Sequential data — a 1D ordered stream**
 
 ![](../img/sequences.png){fig-align="center" width="100%"}
 
@@ -121,7 +121,7 @@ The **same** $K$ at every position.
 
 - **Weight count**: $9$ weights *for the whole layer*, independent of image size — vs $\sim 10^{4}$–$10^{6}$ for a fully-connected layer on the same input.
 
-- **Translation invariance**: the kernel that learned to detect an edge will detect that edge *wherever it appears* — the geometric prior is encoded *in the architecture*, not learned from data.
+- **Translation equivariance**: the kernel that learned to detect an edge detects it *wherever it appears* (true *invariance* follows after pooling) — the geometric prior is encoded *in the architecture*, not learned from data.
 
 :::
 :::
@@ -164,7 +164,7 @@ The **same** matrices $W_{aa}, W_{ax}, W_{ya}$ at every position $t$.
 
 - **Parameter count is independent of $T_x$** — the same $W$ matrices process a $5\,000$-sample ECG and a $5 \times 10^{5}$-sample one.
 
-- **Memory** — because $a^{<t>}$ depends on $a^{<t-1>}$, the hidden state at $t$ carries the network's record of *everything it has read so far*.
+- **Memory** — because $a^{<t>}$ depends on $a^{<t-1>}$, the hidden state at $t$ carries, *in principle*, the network's record of everything it has read so far.
 
 :::
 :::

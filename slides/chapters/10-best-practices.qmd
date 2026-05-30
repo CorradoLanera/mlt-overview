@@ -125,7 +125,7 @@ On a prevalence $p$, the *always-predict-majority* classifier reaches accuracy $
 :::
 ::: {.column width="50%"}
 
-**R$2$ — leakage rule.**
+**R$2$ — leakage rule** *(ch. 4's contamination principle, sharpened)*.
 
 > *Any decision (model, hyperparameter, feature set, threshold) taken **after** having seen a performance number on a dataset converts that dataset into a training set — even if the file is labelled "test".*
 

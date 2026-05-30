@@ -107,7 +107,7 @@ Punto da far atterrare: *la quarta è l'unica che lascia un'impronta fuori dal s
 :::
 :::
 
-*Three modes are **information moves**; only **do stuff** leaves an external trace.*
+*Three modes are **information moves**; only **do stuff** changes external state the agent can't undo.*
 
 ::: {.notes}
 Screenshot Operator (deck storico), ricontestualizzati. Framing: non "ecco Operator", ma "ecco *come si vede* ciascun modo in un prodotto reale".
@@ -140,7 +140,7 @@ Nodo formale del capitolo. Punto da far atterrare: solo il quadrante in basso a 
 
 |                                   | **Reversible** ($Y$)              | **Irreversible** ($N$)                    |
 |-----------------------------------|----------------------------------|------------------------------------------|
-| **Human-in-the-loop** ($Y$)       | $\text{SAFE}$ — read $+$ undoable | $\text{SAFE}$ — read before sending       |
+| **Human-in-the-loop** ($Y$)       | $\text{SAFE}$ — read $+$ undoable | $\text{SAFE}$ — pre-action read (the gate) |
 | **No human-in-the-loop** ($N$)    | $\text{SAFE}$ — undoable          | $\textbf{DANGEROUS}$ — no read, no undo  |
 
 **Reversibility test.** Can the action be undone in $\sim 30$ seconds by closing a tab, deleting a file, or rolling back a draft? *Yes $\Rightarrow$ reversible.*

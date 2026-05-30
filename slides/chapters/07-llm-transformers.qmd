@@ -152,7 +152,7 @@ The model has already learned the general statistics of language by reading a **
 
 ![](../img/transformer_decoding_2.gif){fig-align="center" width="60%"}
 
-At inference, the model produces output **one token at a time** by sampling from $p(\text{token} \mid \text{prompt})$, then **appending** that token to the input and asking again. *Autoregressive*.
+At inference, the model produces output **one token at a time** by sampling from $p(\text{next token} \mid \text{prompt} + \text{tokens so far})$, then **appending** that token to the input and asking again. *Autoregressive*.
 
 ::: {.notes}
 **G** = terza scelta. Contrasto da fare: non una classe/regressione (ch. 2 classifiers), ma un token dopo l'altro. La GIF spiega perché la risposta arriva una parola alla volta.
@@ -178,7 +178,7 @@ A **UI choice**, not an architectural one.
 |---|---|---|---|
 | **T** | Transformer | self-attention architecture: every token attends every other in parallel | **architecture** |
 | **P** | Pre-trained | massive generic corpus absorbed before any user task | **training regime** |
-| **G** | Generative | autoregressive sampling from $p(\text{token} \mid \text{prompt})$ | **inference mechanism** |
+| **G** | Generative | autoregressive sampling from $p(\text{next token} \mid \text{prompt} + \text{tokens so far})$ | **inference mechanism** |
 | **Chat** | (wrapper) | multi-turn dialogue protocol keeping the conversation as prompt | **interface** |
 
 ::: {.notes}

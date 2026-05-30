@@ -112,8 +112,8 @@ Punto da landare: **match channel to volume**; il token è l'unità di costo ($1
 
 | Channel | When |
 |---|---|
-| **Web chat** | ad-hoc one-shot ($1$–$10$) |
-| **Prompt design in chat** | small batch by hand ($10$–$100$) |
+| **Web chat** | ad-hoc one-shot ($1$–$9$) |
+| **Prompt design in chat** | small batch by hand ($10$–$99$) |
 | **API** | volume **OR** schedule **OR** integration |
 
 :::
@@ -125,7 +125,7 @@ $$200 \text{ letters} \times 300 \text{ words} = 60\,000 \text{ words}$$
 
 $$60\,000 \times \dfrac{4}{3} \approx \mathbf{80\,000} \text{ tokens of input}$$
 
-Plus $\sim 200$ tokens of output (one label per letter): $\sim 80\,000$ tokens total — *less than the price of a coffee.*
+Plus $\sim 200$ tokens of output (one label per letter): $\sim 80\,000$ tokens total — *cents to well under a coffee, at current pricing.*
 
 :::
 :::
