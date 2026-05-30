@@ -1,0 +1,53 @@
+flowchart TD
+  PROJ["Reproducible project<br/>(renv + here + rio)"]
+  IMPORT["Import & tidy data<br/>(rio + janitor + dplyr/tidyr)"]
+  EDA["Clinical EDA<br/>(tbl_summary + ggplot)"]
+  OUT["Binary clinical outcome<br/>(indo_rct: PEP yes/no)"]
+  SPLIT["Train/test split<br/>(rsample)"]
+  RECIPE["Recipe / preprocessing<br/>(recipes)"]
+  MODEL["Model spec<br/>(parsnip)"]
+  ENGINE["Engine-swap idiom<br/>(one line = new algorithm)"]
+  WF["Workflow<br/>(recipe + model)"]
+  METRIC["Metrics / ROC-AUC<br/>(yardstick)"]
+  GLM["Plain glm baseline"]
+  ALGOS["The four algorithms<br/>(pen-logistic, kNN, SVM, RF)"]
+  PARAM["Hyperparameters<br/>(penalty, neighbors, cost, mtry...)"]
+  BV["Bias-variance / overfitting"]
+  CV["Cross-validation<br/>(vfold_cv v=5)"]
+  OPT["Optimism gap<br/>(single split lies)"]
+  WFSET["workflow_set + workflow_map<br/>(tune all at once)"]
+  TUNE["tune_grid<br/>(tiny grids, parallel)"]
+  COMPARE["rank_results / autoplot"]
+  BEST["select_best + finalize"]
+  LASTFIT["last_fit on test set<br/>(honest estimate)"]
+  REPORT["Rendered Quarto report<br/>(cached) + renv::snapshot"]
+
+  PROJ -->|enables| IMPORT
+  IMPORT -->|feeds| EDA
+  EDA -->|describes| OUT
+  OUT -->|is-target-of| MODEL
+  PROJ -->|underpins| REPORT
+  IMPORT -->|required-by| SPLIT
+  SPLIT -->|produces-train-for| RECIPE
+  RECIPE -->|combined-in| WF
+  MODEL -->|combined-in| WF
+  ENGINE -->|is-a-knob-of| MODEL
+  WF -->|scored-by| METRIC
+  GLM -->|is-baseline-for| ALGOS
+  GLM -->|same-task-as| MODEL
+  ALGOS -->|are-instances-of| MODEL
+  PARAM -->|is-a-knob-of| ALGOS
+  PARAM -->|controls| BV
+  BV -->|motivates| CV
+  OPT -->|motivates| CV
+  SPLIT -->|single-split-causes| OPT
+  CV -->|estimates| METRIC
+  ALGOS -->|bundled-in| WFSET
+  WFSET -->|tuned-by| TUNE
+  TUNE -->|resamples-over| CV
+  TUNE -->|compared-with| COMPARE
+  COMPARE -->|leads-to| BEST
+  BEST -->|finalized-then| LASTFIT
+  LASTFIT -->|closes| OPT
+  METRIC -->|reported-in| REPORT
+  LASTFIT -->|reported-in| REPORT

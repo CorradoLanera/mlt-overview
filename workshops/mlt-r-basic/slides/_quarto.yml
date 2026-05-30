@@ -1,0 +1,11 @@
+project:
+  type: default
+format:
+  revealjs:
+    width: 1648
+    height: 1080
+    theme: [default, theme.scss]
+    slide-number: true
+    code-link: true
+    chalkboard: true
+    footer: "Practical AI for Medical Data Analyses with R — Basic"

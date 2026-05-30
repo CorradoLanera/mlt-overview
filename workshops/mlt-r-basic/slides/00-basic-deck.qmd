@@ -1,0 +1,58 @@
+---
+title: "Practical AI for Medical Data Analyses with R — Basic"
+subtitle: "Build and validate a clinical ML model in R, reproducibly"
+author: "Corrado Lanera (UBEP)"
+format: revealjs
+---
+
+## Setup {#sec-00-setup}
+
+<!-- Step 00 (demo, 10 min): open `.Rproj`, `renv::restore`, load with `here` + `rio`. -->
+
+::: {.notes}
+Sezione di apertura: ambiente sano, progetto riproducibile.
+:::
+
+## Import & wrangle {#sec-01-import}
+
+<!-- Step 01 (hands-on, 32 min): tidyverse primer; clean/recode with dplyr/tidyr and `|>`; outcome to factor. -->
+
+## Clinical EDA {#sec-02-eda}
+
+<!-- Step 02 (hands-on, 22 min): tbl_summary(by = outcome); one ggplot; read imbalance -> metric choice. -->
+
+## Logistic spine {#sec-03-logistic}
+
+<!-- Step 03 (hands-on, 38 min): object-map rsample -> recipes -> parsnip -> workflows -> yardstick; glm baseline. -->
+
+## The zoo, tuned {#sec-04-zoo}
+
+<!-- Step 04 (hands-on, 68 min): workflow_set + workflow_map; tune over vfold_cv; rank_results; finalize; last_fit. -->
+
+# Hyperparameters, one algorithm at a time
+
+## Penalized logistic — `penalty` / `mixture`
+
+<!-- Placeholder: penalty (regularization strength), mixture (ridge<->lasso). bias-variance knob. -->
+
+## kNN — `neighbors`
+
+<!-- Placeholder: small k = low bias / high variance; large k = high bias / low variance. -->
+
+## SVM (RBF) — `cost` / `rbf_sigma`
+
+<!-- Placeholder: cost (margin/violations tradeoff), rbf_sigma (kernel width). -->
+
+## Random forest — `mtry` / `min_n`
+
+<!-- Placeholder: mtry (predictors per split), min_n (min node size). -->
+
+## Reproducible report {#sec-05-report}
+
+<!-- Step 05 (demo, 13 min): render cached Quarto report + renv::snapshot; pre-hook to Advanced. -->
+
+## Concept map
+
+```{mermaid}
+%%| file: concept-graph.mmd
+```
