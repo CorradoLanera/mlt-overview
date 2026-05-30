@@ -75,7 +75,7 @@ Punto chiave: "$f$ è un classificatore" e "le regioni partizionano $\mathbb{R}^
 
 ## …but the label is usually a thresholded probability {.smaller}
 
-So far we have read a classifier's output as a hard *label*. But that label is rarely produced directly: most "classifiers" first estimate a **probability**, then cut it at a threshold:
+So far we have read a classifier's output as a hard *label*. But that label is rarely produced directly: most "classifiers" first estimate a **probability**, then cut it at a threshold *(binary task: $K = 2$, labels $\{0,1\}$, $1 =$ positive)*:
 
 $$g : \mathbb{R}^d \to [0, 1], \qquad g(x) = \widehat{P}(Y = 1 \mid X = x).$$
 
@@ -83,7 +83,7 @@ $$f_\tau(x) = \begin{cases} 1 & \text{if } g(x) \ge \tau \\ 0 & \text{otherwise,
 
 - The model that is actually *fit* is the continuous $g$ — a regression onto $[0, 1]$. The hard label appears **only** once we pick a threshold $\tau$.
 - One $g$ therefore spawns a *whole family* of classifiers $\{f_\tau : \tau \in [0, 1]\}$ — one per cut, each making different mistakes.
-- The habitual $\tau = 0.5$ is a **convention** — natural only when the two kinds of error cost the same — *not* a clinical law: when a missed case costs more than a false alarm, the best cut moves.
+- The habitual $\tau = 0.5$ is a **convention** — natural only when the two kinds of error cost the same (and $g$ is well-calibrated) — *not* a clinical law: when a missed case costs more than a false alarm, the best cut moves.
 
 So two different things deserve evaluation — the probabilistic model $g$ itself (threshold-free) *and* each derived classifier $f_\tau$. **We'll resolve how at ch. 4** (evaluation metrics).
 
