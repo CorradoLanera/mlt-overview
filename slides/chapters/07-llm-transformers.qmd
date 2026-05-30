@@ -1,7 +1,11 @@
 ## Every token attends every; pre-train, fine-tune. {.center .inverse background-color="#1F4257"}
 
 ::: {.notes}
-Cover del capitolo 7 — 25 minuti. Sei-parole approvata: due clausole con punto e virgola, in serie con cap. 01–06. *Every token attends every* è il primo dei due beat del capitolo ($\text{attention}(Q, K, V) = \text{softmax}(Q K^{\top} / \sqrt{d_k}) V$ in una frase): *parallel, direct access* da ogni posizione a ogni altra, senza il loop ricorrente di ch. 06. *Pre-train, fine-tune* è il secondo beat: l'economia che rende un LLM *appropriabile* — pre-training massivo una sola volta ($\sim \$10^8$), fine-tuning task-specifico molto più cheap ($\sim \$10^4$), un'asimmetria di ordine $10^4$. Lessico-perno **attend** (radice di *attention*) seminato per le slide e per la *Sentence S* del sommativo. Eco esplicito a ch. 06 *"share the weights"* → ch. 07 *"attends every"*: in entrambi la mossa è strutturale; ma qui per la prima volta la **regola di ripetizione** del ch. 06 *non viene rifinita — viene abbandonata*. Il sommativo live ("Read it twice: serial vs parallel") gira negli ultimi ~10′ (min 15–25).
+Cover cap. 7 — 25 min. Due beat: *attends every* (accesso parallelo, no loop di ch. 06) + *pre-train/fine-tune* (asimmetria $\sim 10^4$).
+
+- Gancio a ch. 06: lì *"share the weights"*, qui la regola di ripetizione **viene abbandonata, non rifinita**.
+- Semina a voce il perno **attend** (→ *attention*, ritorna nella *Sentence S* del sommativo).
+- Sommativo live negli ultimi $\sim 10$′ (min 15–25).
 :::
 
 <!-- BEAT 1 — Hook: the famous box never opened -->
@@ -11,7 +15,10 @@ Cover del capitolo 7 — 25 minuti. Sei-parole approvata: due clausole con punto
 ![](../img/storyboard/sb-07_01.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Hook culturale. ChatGPT è il manufatto ML più nominato della carriera di Elena: lo zio a cena, l'infermiera al pronto soccorso, il residente col mezzo sorriso. Sa che dietro la chat c'è un *Transformer*; non sa che cosa significhi. **Continuity callback al ch. 05 frame 1**: stessa silhouette del clinico, stessa posa interrogativa, ma la scatola sopra non è più *matte-black* — è il rettangolo ordinario di una chat UI. È la prima volta nella serie che la stessa silhouette appare in due capitoli — segnale che *l'asse del corso sta per girare* (da *understand* a *use*). Il capitolo **non è "spiegare come funziona davvero un Transformer"** (in 25′ non si fa). È **smitizzare** la scatola: nominarla nei suoi pezzi, dire perché ha sostituito le RNN, e mostrare perché Elena può ragionevolmente usarla lunedì mattina.
+Hook culturale: Elena sa che dietro la chat c'è un *Transformer*, non sa cosa significhi.
+
+- Callback a ch. 05 frame 1: stessa silhouette/posa, ma la scatola ora è un rettangolo di chat UI ordinario → l'asse del corso gira (*understand* → *use*).
+- Di' chiaro l'obiettivo: **non** spiegare il Transformer (in 25′ impossibile), ma **smitizzare** la scatola — nominarne i pezzi, dire perché ha sostituito le RNN.
 :::
 
 <!-- BEAT 2 — Contesto: the RNN bottleneck on a long-range dependency -->
@@ -21,7 +28,7 @@ Hook culturale. ChatGPT è il manufatto ML più nominato della carriera di Elena
 ![](../img/storyboard/sb-07_02.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-La frase di *Sentence S* contiene una dipendenza a lungo raggio fra *denies* (inizio) e *contradicts* (fine). La RNN del cap. 6 deve *propagarla* posizione per posizione — il segnale ha $T_x - 1$ occasioni di sbiadire. Lascia respirare l'immagine 5 secondi prima di scrivere la frase sulla lavagna alla slide successiva.
+Punto chiave: la RNN propaga la dipendenza *denies*–*contradicts* posizione per posizione → $T_x - 1$ occasioni di sbiadire. Lascia respirare l'immagine 5s prima di scrivere la frase sulla lavagna (slide dopo).
 :::
 
 ## Sentence S — a clinical long-range dependency
@@ -31,7 +38,7 @@ La frase di *Sentence S* contiene una dipendenza a lungo raggio fra *denies* (in
 To answer *"is the patient allergic to penicillin?"* the model must **connect** *denies* (early in the sentence) with *contradicts* (late in the sentence) — a dependency that **spans** the sentence.
 
 ::: {.notes}
-La frase scelta deliberatamente per il sommativo. La domanda clinica *"è allergico?"* richiede di collegare le due parole-chiave; tutte le altre parole intermedie (*chart, $2019$, resident, this morning*) sono *contesto rumoroso* — distrattori semantici, temporali, salienti. La dipendenza è *visibile a occhio nudo* allo studente clinico, anche senza preparazione NLP. Esattamente questa frase tornerà al sommativo.
+Questa è la frase del sommativo. Di' a voce: le parole intermedie (*chart, $2019$, resident, this morning*) sono distrattori (semantici/temporali/salienti); la dipendenza *denies*–*contradicts* è visibile a occhio nudo anche senza NLP.
 :::
 
 ## RNN — every position needs every previous one
@@ -45,7 +52,9 @@ $$a^{<t>} = g\!\left(W_{aa}\, a^{<t-1>} + W_{ax}\, x^{<t>} + b_a\right) \qquad \
 Position $t$ **cannot be computed** until $t-1$ has been computed — the loop is *serial*. The trace of *denies* must travel through every intermediate word until it reaches *contradicts*: **$T_x - 1$ occasions to fade**, and **zero parallelism** on the GPU.
 
 ::: {.notes}
-Il *bottleneck* è doppio: (i) **fade** del segnale — ad ogni applicazione di $g(W_{aa} a^{<t-1>} + \ldots)$ il contributo di *denies* si mescola coi contributi delle parole intermedie, e per dipendenze lunghe il segnale rischia di perdersi (è uno dei motivi storici dietro vanishing gradient + LSTM/GRU — fuori scope qui); (ii) **non-parallelizzabilità** — la dipendenza $t \leftarrow t-1$ rende la sequenza intrinsecamente seriale, anche su una GPU con migliaia di core. *Non era solo lento — era non-parallelizzabile*. Questo è il punto strutturale che il Transformer affronta.
+Bottleneck doppio: (i) **fade** del segnale; (ii) **non-parallelizzabilità** ($t \leftarrow t-1$ è seriale anche su GPU). Frase da landare: *"non era solo lento — era non-parallelizzabile"*.
+
+- Vanishing gradient / LSTM-GRU: solo se chiedono, fuori scope.
 :::
 
 <!-- BEAT 3 — Sfida / Dati: self-attention parallel -->
@@ -55,7 +64,9 @@ Il *bottleneck* è doppio: (i) **fade** del segnale — ad ogni applicazione di 
 ![](../img/storyboard/sb-07_03.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Il *gem* visivo del capitolo. Il Transformer non propaga: in una sola operazione di matrix-multiplication, **ogni** token vede **ogni** altro token. La dipendenza fra *denies* e *contradicts* è *una sola cella* della matrice $Q K^{\top}$ — *una sola operazione di distanza*. La singola linea luminosa fra le due pill brillanti (e la cella luminosa nella mini-grid del $Q K^{\top}$) traducono visivamente *non-uniform attention weights*: la softmax non distribuisce equamente, *quel* particolare peso fra le due parole della dipendenza è atteso dominare.
+Gem visivo del capitolo. Punto da landare: il Transformer non propaga — la dipendenza *denies*–*contradicts* è **una cella** di $Q K^{\top}$, una sola operazione di distanza.
+
+- La linea luminosa fra le due pill = *non-uniform attention weights*: la softmax non distribuisce equamente, quel peso domina.
 :::
 
 ## Self-attention — the formula in one line {.smaller}
@@ -81,7 +92,10 @@ $$\text{attention}(Q, K, V) \;=\; \text{softmax}\!\left(\dfrac{Q K^{\top}}{\sqrt
 :::
 
 ::: {.notes}
-La formula va presentata e *usata*, non *derivata*. È il *segnale visivo* del fatto che ogni token vede ogni altro token. Le tre proiezioni $Q$, $K$, $V$ sono lineari; il prodotto $Q K^{\top}$ è una *single matrix multiplication* che le GPU calcolano massivamente in parallelo — è la ragione strutturale per cui il Transformer ha rimpiazzato la RNN. Lo studente clinico deve poter dire: *"every token sees every other, in parallel, weighted by softmax of $Q K^{\top}$"*. Tutto il resto (multi-head, positional encoding, RoPE, layer norm, residual connections) è **fuori scope** in 25′. Lasciato esplicitamente alle *Voce docente — non valutato* di [objectives.md](../../course/07-llm-transformers/objectives.md).
+La formula va **presentata e usata, non derivata**. $Q K^{\top}$ = single matmul parallela su GPU → ragione strutturale del sorpasso sulla RNN.
+
+- Soundbite che lo studente deve saper dire: *"every token sees every other, in parallel, weighted by softmax of $Q K^{\top}$"*.
+- Fuori scope (non valutato): multi-head, positional encoding, RoPE, layer norm, residual.
 :::
 
 <!-- BEAT 4 — Nodo / Impatto: Chat-G-P-T decoded backwards -->
@@ -91,7 +105,9 @@ La formula va presentata e *usata*, non *derivata*. È il *segnale visivo* del f
 ![](../img/storyboard/sb-07_04.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-**Tesi del capitolo.** *Chat-G-P-T*, decodificato all'indietro: **T** = Transformer / self-attention; **P** = Pre-trained su corpus massiccio; **G** = Generative, sampling autoregressivo; **Chat** = wrapper di dialogo multi-turn. Quattro scelte nominate, nessuna magia. La direzione di lettura *right-to-left* è la mossa operativa che lo studente userà al sommativo (sub-task i): si parte da quello che si vede (Chat) e si risale alle scelte ingegneristiche sotto.
+Tesi del capitolo. *Chat-G-P-T* all'indietro: **T** Transformer · **P** Pre-trained · **G** Generative · **Chat** wrapper. Quattro scelte, nessuna magia.
+
+- La lettura right-to-left è la mossa operativa del sommativo (sub-task i): si parte dal visibile (Chat) e si risale.
 :::
 
 ## Chat G·P·**T** — *Transformer* {.smaller}
@@ -112,7 +128,11 @@ The **architecture** of the $2017$ paper *"Attention is all you need"* — a sta
 :::
 
 ::: {.notes}
-La **T** è la prima delle tre scelte ingegneristiche. Il paper *"Attention is all you need"* (Vaswani et al., NeurIPS 2017 — *the day everything changed*) introduce il Transformer come architettura encoder/decoder costruita attorno alla self-attention. Quello che lo studente UBEP deve trattenere: (a) Transformer = *architettura* (non training regime, non interfaccia); (b) il dispositivo *core* è la self-attention che abbiamo già scritto nel BEAT 3. La figura di destra (`full_transformer.png`) è la canonica scatola-con-blocchi del paper — *non chiedere allo studente di leggerla*, è un'icona culturale ("è quella scatola che vedi nei paper"). Lessico avanzato (multi-head, encoder/decoder, residual) **non valutato** in objectives.
+**T** = prima scelta ingegneristica. Paper Vaswani et al., NeurIPS 2017.
+
+- Da trattenere: (a) Transformer = *architettura* (non training, non interfaccia); (b) core = self-attention già scritta al BEAT 3.
+- `full_transformer.png`: **non** farla leggere, è un'icona culturale ("la scatola dei paper").
+- Multi-head/encoder-decoder/residual: non valutato.
 :::
 
 ## Chat G·**P**·T — *Pre-trained* {.smaller}
@@ -122,7 +142,10 @@ La **T** è la prima delle tre scelte ingegneristiche. Il paper *"Attention is a
 The model has already learned the general statistics of language by reading a **massive generic corpus** — on the order of every published book + a substantial fraction of the public web — *before* it sees any user task.
 
 ::: {.notes}
-La **P** è la seconda scelta ingegneristica — quella che ha il maggiore impatto *economico* sul capitolo (vedi BEAT 5 e item 03). I parametri assorbono una *enorme* statistica del linguaggio (trilioni di token, modelli di frontiera con $10^{11}$–$10^{12}$ parametri). Il punto pedagogico: il pre-training *non sa ancora alcun task*, ma ha digerito il *substrato* su cui ogni task è scritto. La figura mostra l'asimmetria di scala fra i corpora dei modelli più noti — la lettura della bubble chart è qualitativa (*"vedi quanto è grande GPT-4 rispetto agli altri"*), non quantitativa. **Fonte:** Alan D. Thompson, AI Bubbles Rev. 7b ($2023$) — `lifearchitect.ai/models`.
+**P** = seconda scelta, la più carica economicamente (→ BEAT 5, item 03). Punto pedagogico: il pre-training *non sa ancora alcun task*, ma ha digerito il *substrato* su cui ogni task è scritto.
+
+- Bubble chart: lettura **qualitativa** (*"quanto è grande GPT-4 vs gli altri"*), non quantitativa.
+- Fonte: Alan D. Thompson, AI Bubbles Rev. 7b (2023) — `lifearchitect.ai/models`.
 :::
 
 ## Chat **G**·P·T — *Generative*
@@ -132,7 +155,9 @@ La **P** è la seconda scelta ingegneristica — quella che ha il maggiore impat
 At inference, the model produces output **one token at a time** by sampling from $p(\text{token} \mid \text{prompt})$, then **appending** that token to the input and asking again. *Autoregressive*.
 
 ::: {.notes}
-La **G** è la terza scelta ingegneristica. A inference, il modello *non* restituisce una classe o un valore di regressione (come i classifiers di ch. 2): restituisce un *token*, poi un altro, poi un altro. La GIF mostra la cascata autoregressive — è il motivo *visivo* per cui la risposta di ChatGPT arriva *una parola alla volta sullo schermo*. Voce docente: il sampling può essere *greedy* (sempre il token più probabile) o *stochastic* (con temperatura $\tau$ che modula la distribuzione) — dettaglio operativo che verrà ripreso in ch. 8, qui basta *autoregressive*.
+**G** = terza scelta. Contrasto da fare: non una classe/regressione (ch. 2 classifiers), ma un token dopo l'altro. La GIF spiega perché la risposta arriva una parola alla volta.
+
+- Voce docente: sampling *greedy* vs *stochastic* (temperatura $\tau$) — ripreso in ch. 8; qui basta *autoregressive*.
 :::
 
 ## **Chat**·G·P·T — the wrapper
@@ -142,7 +167,9 @@ The model is **wrapped in a multi-turn dialogue protocol**: the conversation his
 A **UI choice**, not an architectural one.
 
 ::: {.notes}
-La **Chat** è la più semplice delle quattro: il *wrapper* di interfaccia. Non un'architettura, non un training regime, non un meccanismo di inference — solo una scelta di prodotto: il modello è chiamato a giocare il ruolo *the assistant*, la cronologia della conversazione viene riempita nel prompt ad ogni turno. Questo è il punto da cui *parte* il prossimo capitolo: lunedì mattina Elena scriverà in una chat — e scoprirà che *come* si scrive in quella chat è una disciplina a sé.
+**Chat** = la più semplice: wrapper di prodotto (ruolo *assistant* + cronologia nel prompt), non architettura/training/inference.
+
+- Gancio a ch. 8: lunedì Elena scriverà in una chat — e *come* si scrive è una disciplina a sé.
 :::
 
 ## Chat-G-P-T — four contributions, four layers of the system {.smaller}
@@ -155,7 +182,9 @@ La **Chat** è la più semplice delle quattro: il *wrapper* di interfaccia. Non 
 | **Chat** | (wrapper) | multi-turn dialogue protocol keeping the conversation as prompt | **interface** |
 
 ::: {.notes}
-La tabella che chiude il *nodo*. Lo studente esce dal beat 4 con questa tabella in testa. La colonna *Layer of the system* è la chiave per non confondersi (vedi item 01: il distrattore *T = Tuned* sbaglia perché *tuned* sta sul layer *training regime*, non sul layer *architecture*; *P = Parametric* sbaglia perché *parametric* è una proprietà generale di ogni rete, non il contributo che la lettera *P* encoda). Quattro contributi, quattro layer, niente sovrapposizioni.
+Tabella che chiude il nodo: 4 contributi, 4 layer, niente sovrapposizioni. La colonna *Layer* è la chiave anti-confusione (item 01).
+
+- Anticipa i trabocchetti: *T=Tuned* sbaglia layer (training, non architettura); *P=Parametric* è proprietà generale, non ciò che encoda la P.
 :::
 
 <!-- BEAT 5 — Metodo / Soluzione (perno sommativo) -->
@@ -165,7 +194,7 @@ La tabella che chiude il *nodo*. Lo studente esce dal beat 4 con questa tabella 
 ![](../img/storyboard/sb-07_05.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Perno del capitolo. Sentence S + RNN-vs-Transformer split + mini-griglia *Pre-training / Fine-tuning*. Vedi `course/07-llm-transformers/objectives.md` per il summative completo: ~$10$′ di lavoro, minuti $15$–$25$.
+Perno del capitolo: Sentence S + split RNN-vs-Transformer + mini-griglia Pre-training/Fine-tuning. Summative completo in `objectives.md`: $\sim 10$′, min $15$–$25$.
 :::
 
 ## Serial vs parallel — the dependency path between *denies* and *contradicts* {.smaller}
@@ -180,7 +209,10 @@ Perno del capitolo. Sentence S + RNN-vs-Transformer split + mini-griglia *Pre-tr
 The path length is $\mathbf{1}$ regardless of how large $T_x$ is — $T_x = 33$ or $T_x = 10\,000$, still one operation. *This* is why the Transformer replaced the RNN: not because attention is *philosophically deeper* than recurrence, but because $Q K^{\top}$ runs on a GPU in a way $a^{<t>} = g(W_{aa}\, a^{<t-1>} + \ldots)$ never will.
 
 ::: {.notes}
-Prima delle due take-home del capitolo — la ragione **architetturale** per cui il Transformer ha rimpiazzato la RNN. La path length costante a $1$ è il *gem* dell'item 02 sub-q 3 (sensitivity question). Voce docente: *"il loop non era solo lento — era non-parallelizzabile, e una GPU con migliaia di core stava ferma"*. Slide successiva: la seconda take-home (economica).
+Take-home 1 (architetturale): path length costante a $1$ → gem dell'item 02 sub-q 3.
+
+- Voce docente: *"il loop non era solo lento — era non-parallelizzabile, e una GPU con migliaia di core stava ferma"*.
+- Slide dopo: take-home 2 (economica).
 :::
 
 ## Pre-training vs fine-tuning — the $10^4$ economics
@@ -195,7 +227,9 @@ Prima delle due take-home del capitolo — la ragione **architetturale** per cui
 *Pre-training is what you don't do; fine-tuning is what you do.* This is what makes biomedical applications of LLMs realistic at all.
 
 ::: {.notes}
-Seconda delle due take-home — la ragione **economica** per cui un dipartimento clinico può ragionevolmente usare un LLM. L'asimmetria $10^4 \times$ è ciò che item 03 distrattore D (zero-shot via API) misura: chi sceglie D ha usato *solo* il lato cheap, chi sceglie B (corretta) ha usato *entrambi* i lati. Voce docente: *"un dipartimento clinico non pre-trena un LLM; ma può ragionevolmente fine-tunarlo su un corpus di poche migliaia di esempi"*.
+Take-home 2 (economica): l'asimmetria $10^4 \times$ è ciò che misura il distrattore D di item 03 (D usa solo il lato cheap; B usa entrambi).
+
+- Voce docente: *"un dipartimento clinico non pre-trena un LLM; ma può fine-tunarlo su poche migliaia di esempi"*.
 :::
 
 <!-- BEAT 6 — Payoff / Domanda finale (Monday-morning pre-hook) -->
@@ -205,7 +239,10 @@ Seconda delle due take-home — la ragione **economica** per cui un dipartimento
 ![](../img/storyboard/sb-07_06.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Payoff narrativo del capitolo. La scatola di ch. 7 è *nominata*: T-P-G in *Chat*. Sappiamo *cos'è*; non sappiamo ancora *come usarla* lunedì mattina, con un compito reale: $200$ lettere ED da triage, una scadenza, un canale da scegliere. **Continuity diegetica**: ch. 6 aveva seedato *"discharge letter"* nel pre-hook, ch. 7 rende quella stessa pila visibile, ch. 8 la userà come scena sommativa. Il chat-window è *demystified, sized to a tool* — la scatola gigante del frame 1 è ora un oggetto ordinario sulla scrivania.
+Payoff: la scatola è *nominata* (T-P-G in *Chat*). Sappiamo cos'è, non come usarla lunedì: 200 lettere ED, scadenza, canale da scegliere.
+
+- Continuity diegetica: ch. 6 seedò *"discharge letter"*, ch. 7 rende la pila visibile, ch. 8 la usa come scena sommativa.
+- La scatola gigante del frame 1 è ora un oggetto ordinario sulla scrivania.
 :::
 
 ## Pre-hook → chapter 8: Using ChatGPT in practice
@@ -221,13 +258,19 @@ By the third attempt she was rewriting *the prompt itself* — and realised, wit
 *Three questions for Monday: what **structure** for the prompt, what **rule** for what to delegate, what **channel** for $200$ letters at once.*
 
 ::: {.notes}
-Pre-hook a ch. 8 — tre cliff-hanger lessicali, uno per obiettivo del prossimo capitolo: **structure** (in un prompt → 7-slot template, Obj. 1 di ch. 8); **rule / delegate** (regola della competenza, Obj. 2); **channel** (Web / Prompt design / API, Obj. 3). Niente *role / context / task / instructions / output / style / examples* ancora rivelati, niente *token cost*, niente *API* nominata: vivono in ch. 8. **Pivot pedagogico**: per la prima volta in 7 capitoli lo strumento *non cambia* (resta il box di ch. 7) e cambia *invece* la posizione del clinico rispetto allo strumento — da *capire l'oggetto* a *governare l'uso*. È un cambio d'**asse** della spine: ch. 1–7 hanno fatto *understand*, ch. 8 inizia *use*.
+Pre-hook a ch. 8 — tre cliff-hanger lessicali = i tre obiettivi del prossimo cap.:
+
+- **structure** → 7-slot template (Obj. 1); **rule/delegate** → regola della competenza (Obj. 2); **channel** → Web/Prompt design/API (Obj. 3).
+- **Non** rivelare ancora: i 7 slot, *token cost*, *API* — vivono in ch. 8.
+- Pivot d'asse: lo strumento non cambia (resta il box), cambia la posizione del clinico — *understand* (ch. 1–7) → *use* (ch. 8).
 :::
 
 ## Exercises {.inverse .center background-color="#1F4257"}
 
 ::: {.notes}
-Blocco esercizi. I 3 item formativi sono recap/self-study; il sommativo live (*"Read it twice: serial vs parallel"*) gira negli ultimi $\sim 10$′ (min $15$–$25$). **Nota di set-size:** ch. 7 chiude a 3 item *senza* Argumentation — stessa scelta di ch. 5: il sommativo è già denso ($4$ sub-task), un quarto item open-ended diluirebbe. La mossa argomentativa naturale del capitolo (*"fine-tune vs zero-shot?"*) è già operativamente testata dal distrattore D di item 03 — *budget-respecting but for the wrong reason*. Argumentation deliberatamente assente, per design.
+Blocco esercizi: 3 item formativi (recap/self-study) + sommativo live negli ultimi $\sim 10$′ (min $15$–$25$).
+
+- Set-size: niente Argumentation (come ch. 5) — il sommativo è già denso (4 sub-task). La mossa *"fine-tune vs zero-shot?"* è già testata dal distrattore D di item 03. Assenza per design — dillo se chiedono.
 :::
 
 <!-- Item 01 — MCQ — Chat-G-P-T decoded backwards -->
@@ -242,7 +285,9 @@ A clinical colleague at a journal club says: *"OK so it's Chat-G-P-T — four le
 - **D)** **T** = **Tuned** (fine-tuned to follow user instructions). **P** = Pre-trained on a generic corpus, then tuned. **G** = Generative. **Chat** = dialogue wrapper.
 
 ::: {.notes}
-Item 01 — Comprehension / MCQ / low–medium. Obj. 1 (Chat-G-P-T decoded backwards). Distrattori progettati per testare la *confusione di layer* del sistema: B sbaglia su **P** (parametric ≠ pre-trained); C sbaglia su **G** (guard-rail post-hoc ≠ autoregressive sampling); D sbaglia su **T** (tuned = training regime, non architettura). Lascio 30–45 secondi.
+Item 01 — Comprehension/MCQ/low-medium. Obj. 1. Lascio 30–45s.
+
+- Distrattori = confusione di layer: B su **P** (parametric≠pre-trained); C su **G** (guard-rail≠autoregressive); D su **T** (tuned=training, non architettura).
 :::
 
 ## Item 01 — Solution (write yours)
@@ -250,7 +295,9 @@ Item 01 — Comprehension / MCQ / low–medium. Obj. 1 (Chat-G-P-T decoded backw
 *Discuss with your neighbour: which option, and what is the **single discriminator**?*
 
 ::: {.notes}
-Buffer time. Lo studente che esita fra A e D ha probabilmente confuso *architecture* (Transformer) con *training stage* (fine-tuning); chi esita fra A e B ha confuso una proprietà generale (*parametric*) con un contributo specifico (*pre-trained*); chi esita fra A e C ha confuso una *safety intervention* con un *meccanismo di generazione*. Tutti e tre gli errori sono diagnosticamente puliti — premiali nominando *quale layer* il distrattore confonde.
+Buffer. Esitazioni: A/D = architecture vs training stage; A/B = proprietà generale vs contributo specifico; A/C = safety vs meccanismo di generazione.
+
+- Mossa: premia chi sa nominare *quale layer* il distrattore confonde.
 :::
 
 ## Item 01 — Solution {.smaller}
@@ -262,7 +309,7 @@ Buffer time. Lo studente che esita fra A e D ha probabilmente confuso *architect
 - **D (**Tuned**·P·G·Chat)** — *fine-tuning* is real (it is Obj. 3) but does **not** belong inside the four letters. The same Transformer can be used with *no* fine-tuning at all — so "T" cannot mean *Tuned*.
 
 ::: {.notes}
-**Take-home didattico**: gli errori non sono *vicini-a-giusti* nello stesso senso. B perde *l'economia* (la radice di ch. 8 e oltre); C confonde *safety vs mechanism* (un layer di prodotto vs un layer architetturale); D collassa due training stages distinti. Premia in classe chi sa nominare *quale layer* il distrattore confonde — è la prova che ha capito che il sistema è *stratificato*.
+Take-home: gli errori non sono equivalenti — B perde l'economia (radice di ch. 8), C confonde safety vs mechanism, D collassa due training stage. Premia chi nomina *quale layer* si confonde: prova che ha capito la stratificazione.
 :::
 
 <!-- Item 02 — Applicativa — Long-range dependency on a clinical sentence -->
@@ -278,7 +325,9 @@ Total length (stylised word-level tokenisation, em-dashes and commas *not* token
 3. **State the single entry $(i, j)$ of $Q K^{\top}$** that carries the same dependency in the Transformer — and how the count changes if the same two words sat at positions $1$ and $1000$.
 
 ::: {.notes}
-Item 02 — Application / applicativa / medium. Obj. 2 (self-attention vs RNN su sequenza di lunghezza $T_x$). **Numeri diversi dal sommativo** (Sentence S nel sommativo, *rules / demonstrates* qui — convenzione di non-memorizzazione). Lascio 4–5 minuti. Il distrattore concettuale più frequente: studenti che propongono *atrial$_{7}$ / paroxysmal$_{32}$* (topic relatedness invece di logical dependency) — è esattamente l'errore *(penicillin, $2019$)* del Poll 1 del sommativo, in forma scritta.
+Item 02 — Application/medium. Obj. 2 (self-attention vs RNN). Lascio 4–5 min. Numeri diversi dal sommativo (qui *rules/demonstrates*) — convenzione di non-memorizzazione.
+
+- Distrattore frequente: *atrial$_{7}$/paroxysmal$_{32}$* (topic vs logic) = la stessa trappola *(penicillin, $2019$)* del Poll 1, in scritto.
 :::
 
 ## Item 02 — Solution (write yours)
@@ -286,7 +335,10 @@ Item 02 — Application / applicativa / medium. Obj. 2 (self-attention vs RNN su
 *Take 4 minutes. Use the recurrence formula on the board.*
 
 ::: {.notes}
-Buffer time. Mentre scrivono: passa fra i banchi, intercetta chi sta scrivendo *atrial$_{7}$ / paroxysmal$_{32}$* — non correggerlo subito, lascialo terminare; poi al reveal chiediglielo a voce *"perché non *atrial* e *paroxysmal*?"* — questo costringe la classe a nominare *topic vs logic*. Chi sta facendo $31 - 5$ in modo silenzioso: ok, sta andando bene. Chi sta scrivendo $\mathbf{q}_{31}^{\top} \mathbf{k}_5$ esplicitamente: bonus — sta dimostrando il livello *Excellent* della rubrica C3.
+Buffer. Passa fra i banchi:
+
+- chi scrive *atrial$_{7}$/paroxysmal$_{32}$*: non correggere subito, al reveal chiedi a voce *"perché non atrial e paroxysmal?"* → forza la classe a nominare topic vs logic.
+- chi fa $31-5$: ok. Chi scrive $\mathbf{q}_{31}^{\top} \mathbf{k}_5$: bonus, è *Excellent* C3.
 :::
 
 ## Item 02 — Solution {.smaller}
@@ -298,7 +350,9 @@ Buffer time. Mentre scrivono: passa fra i banchi, intercetta chi sta scrivendo *
 **(3)** The single entry is $(Q K^{\top})_{31,\,5}$: row $31$ = query of *demonstrates*, column $5$ = key of *rules* (the symmetric $(5, 31)$ is equally acceptable). **One operation** — one inner product $\langle q_{31}, k_5\rangle$. If the two words sat at positions $1$ and $1000$ instead, the **RNN count would explode from $26$ to $999$**; the **Transformer count would stay at $1$**. *That* is the chapter's central architectural claim — *the dependency between position $1$ and position $T_x$ is one operation away, regardless of how large $T_x$ is*. See [rubric](../../course/07-llm-transformers/rubriche/rubrica_02_long-range-dependency.md) (C1/C2/C3 — Base/Good/Excellent).
 
 ::: {.notes}
-**Take-home didattico**: la sub-question (3) sensibilità è il *gem dell'item*. Il count della RNN scala lineare con $T_x$; il count del Transformer è *costante a $1$*. Su $T_x = 33$ il rapporto è $26:1$, su $T_x = 1000$ è $999:1$, e *quel rapporto cresce indefinitamente con la lunghezza della sequenza*. Questo è il motivo strutturale per cui i Transformer hanno rimpiazzato le RNN su documenti lunghi (lettere cliniche, EHR, articoli scientifici, codice sorgente). Voce docente — *anti-trabocchetto*: studente che chiede *"ma allora le RNN sono morte?"* — risposta no, edge/streaming + State-Space Models (Mamba/S4) restano competitivi su sequenze molto lunghe; premia la curiosità, non valutato qui.
+Take-home: la sub-q (3) sensibilità è il gem — RNN scala lineare con $T_x$, Transformer costante a $1$; il rapporto cresce indefinitamente → motivo strutturale del sorpasso su documenti lunghi.
+
+- Anti-trabocchetto: se chiedono *"le RNN sono morte?"* → no, edge/streaming + State-Space (Mamba/S4) restano competitivi su sequenze lunghe. Non valutato.
 :::
 
 <!-- Item 03 — MCQ scenario — Transfer learning asymmetry -->
@@ -321,7 +375,9 @@ Which option uses the chapter's pre-train / fine-tune **asymmetry** to deliver t
 - **D)** **Use the pre-trained $7$ B LLM zero-shot** via the API — no fine-tuning needed, cost stays minimal.
 
 ::: {.notes}
-Item 03 — Application / MCQ scenarizzato / medium. Obj. 3 (transfer learning). **D è il distrattore più ricco**: *budget-respecting*, non *obviously* wrong, ma usa *solo* il lato cheap dell'asimmetria senza spendere per task adaptation. Lascio 2–3 minuti.
+Item 03 — Application/MCQ scenario/medium. Obj. 3 (transfer learning). Lascio 2–3 min.
+
+- D = distrattore più ricco: budget-respecting, non *obviously* wrong, ma usa solo il lato cheap (niente task adaptation).
 :::
 
 ## Item 03 — Solution (write yours)
@@ -329,7 +385,7 @@ Item 03 — Application / MCQ scenarizzato / medium. Obj. 3 (transfer learning).
 *Discuss with your neighbour: which option uses **both halves** of the asymmetry?*
 
 ::: {.notes}
-Buffer time. Chi sta esitando fra B e D ha colto il *budget* ma deve ancora chiedersi *"cosa sto effettivamente comprando con quei $\$10^3$?"* — la risposta è *task adaptation*, che D *non* fa. È il distrattore più educativo della serie: chi lo sceglie non è *sbagliato sul budget*, è *fermo a metà ragionamento*.
+Buffer. Chi esita B/D ha colto il budget ma deve chiedersi *"cosa compro con quei $\$10^3$?"* → task adaptation, che D non fa. Chi sceglie D non sbaglia sul budget: è fermo a metà ragionamento.
 :::
 
 ## Item 03 — Solution {.smaller}
@@ -341,7 +397,9 @@ Buffer time. Chi sta esitando fra B e D ha colto il *budget* ma deve ancora chie
 - **D** — the **trickiest** distractor: *budget-respecting, not obviously wrong*. Zero-shot via API is fine for *one-off ad-hoc queries* — but it is **orthogonal** to building a *structured task-specific* pipeline like ICD coding. Zero-shot on hospital-specific coding conventions is typically *mediocre*. **D uses only the cheap side** of the asymmetry; B uses *both halves* (cheap fine-tuning *of* an expensive pre-trained model). **D is "realistic for the budget, but for the wrong reason."**
 
 ::: {.notes}
-**Take-home didattico**: distinguere B-vs-D è la *prova operativa* di Obj. 3. Chi sceglie B ha capito che *transfer learning* significa **reuse + adapt**, non solo *reuse*. Chi sceglie D ha letto solo la prima metà del messaggio. Voce docente per il debrief: il caso *D è giustamente la scelta giusta* esiste — *one-off triage* di una manciata di lettere, no audit ricorrente, no obbligo di reproducibility — ma *non* è il caso descritto qui ($N = 2\,000$, audit istituzionale, budget $\$50\,000$ pensato per spenderlo).
+Take-home: B-vs-D è la prova di Obj. 3 — transfer learning = **reuse + adapt**, non solo reuse.
+
+- Debrief: D *è* giusta nel caso one-off (poche lettere, no audit ricorrente) — ma non qui ($N=2000$, audit istituzionale, budget $\$50\,000$ pensato per spenderlo).
 :::
 
 <!-- Summative — Read it twice: serial vs parallel -->
@@ -373,7 +431,11 @@ Buffer time. Chi sta esitando fra B e D ha colto il *budget* ma deve ancora chie
 **Two live polls:** *Sentence S word pair* — *(denies, contradicts)* / *(penicillin, $2019$)* / *(resident, allergy)* / *(this morning, history)* · *Pre-train vs fine-tune cost ratio* — *same* / $\sim 10\times$ / $\sim 10\,000\times$ / *only pre-training has a cost*.
 
 ::: {.notes}
-Sommativo — gira negli ultimi $\sim 10$′ (min $15$–$25$). ~$1$′ leggi Sentence S + apri polls + $\sim 2$′ Chat-G-P-T table + $\sim 2$′ cerchia parole + 1-sentence serial-vs-parallel (Poll 1 chiude min $21$ o $\geq 80\%$) + $\sim 2$′ griglia pre-train/fine-tune (Poll 2 chiude min $23$ o $\geq 80\%$) + $\sim 3$′ reveal. **Banco unico condiviso** — capitolo da $25$′ troppo breve per group cards differenti. **Tre archetipi di distrattore in Poll 1**: *(penicillin, $2019$)* = clinico-saliente irrilevante; *(resident, allergy)* = semantica superficiale; *(this morning, history)* = temporale irrilevante. **Reveal Poll 2**: $10\times$ = sottostimato di $3$ ordini di grandezza; *same / only pre-training has a cost* = ha confuso *usare* con *addestrare* o ha letto solo metà storia. **Reveal finale:** chiude con la spine beat *"the box is named, the new mechanism is named, the economics are named — but how do you actually drive this box on Monday? That is ch. 8."*.
+Sommativo — ultimi $\sim 10$′ (min $15$–$25$). Run-of-show:
+
+- $\sim 1$′ leggi S + apri polls · $\sim 2$′ table · $\sim 2$′ cerchia (Poll 1 chiude min $21$ o $\geq 80\%$) · $\sim 2$′ griglia (Poll 2 chiude min $23$ o $\geq 80\%$) · $\sim 3$′ reveal. Banco unico (25′ troppo brevi per group cards).
+- Poll 1, 3 archetipi: *(penicillin, $2019$)* saliente, *(resident, allergy)* semantico, *(this morning, history)* temporale. Poll 2: $10\times$ = sottostima di 3 ordini; *same/only pre-training* = confonde *usare* con *addestrare*.
+- Reveal finale (spine beat): *"the box is named… but how do you drive it on Monday? That is ch. 8."*
 :::
 
 ## Summative — Solution {.smaller}
@@ -389,5 +451,8 @@ Sommativo — gira negli ultimi $\sim 10$′ (min $15$–$25$). ~$1$′ leggi Se
 **Take-home.** Chat-G-P-T is a stack of **three engineering choices** (Transformer, Pre-training, Generative) wrapped in **one UI choice** (Chat). It works on Sentence S where an RNN would struggle because of **one specific dispositive**: every token sees every other token *in parallel*, with non-uniform attention weights.
 
 ::: {.notes}
-Reveal finale e chiusura del capitolo. Lo studente deve uscire dalla classe sapendo nominare a memoria le quattro lettere + il dispositivo central (attention parallel) + il rapporto di costo ($10^4$). Voce docente — closing spine beat: *"la scatola ha un nome, il meccanismo nuovo ha un nome, l'economia ha un nome — ma come si **guida** questa scatola lunedì mattina, con un compito reale? È esattamente il prossimo capitolo."* Pausa di $5$ secondi sul question mark del frame 6 del sommativo prima di chiudere.
+Chiusura. Lo studente deve uscire sapendo a memoria: 4 lettere + dispositivo (attention parallel) + rapporto di costo ($10^4$).
+
+- Closing spine beat: *"la scatola ha un nome, il meccanismo ha un nome, l'economia ha un nome — ma come si **guida** lunedì mattina? È il prossimo capitolo."*
+- Pausa 5s sul question mark del frame 6 prima di chiudere.
 :::

@@ -1,7 +1,10 @@
 ## Decisions cost data; hold the test. {.center .inverse background-color="#1F4257"}
 
 ::: {.notes}
-Cover del capitolo 4 — 30 minuti. Sei-parole approvata: due clausole con punto e virgola, in serie con cap. 01-03. Riprende esplicitamente il verbo *cost* del cap. 02 (lì era il costo della classificazione sbagliata; qui è il costo *informazionale* di ogni decisione presa su una stima). *"Hold the test"* è la regola operativa del capitolo. I 4 item formativi sono in coda; il sommativo live ("Catch the overfitter") gira negli ultimi ~10′.
+Cap. 4 — 30 min. Gancio al cap. 02: *cost* qui = costo informazionale di ogni decisione su una stima.
+
+- regola del capitolo: *"hold the test"*.
+- 4 item formativi in coda; sommativo "Catch the overfitter" negli ultimi ~10′.
 :::
 
 <!-- BEAT 1 — Hook -->
@@ -11,7 +14,7 @@ Cover del capitolo 4 — 30 minuti. Sei-parole approvata: due clausole con punto
 ![](../img/storyboard/sb-04_01.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Callback visivo esplicito al cap. 03 frame 6 — il "classificatore migliore" ($k$NN $k=1$, errore zero sul training) sbaglia il primo paziente nuovo. **Il supposto migliore era il peggiore.** Lasciate parlare l'immagine 5 secondi.
+Callback al cap. 03 frame 6: il "migliore" ($k$NN $k=1$, errore zero su training) sbaglia il primo paziente nuovo. Il supposto migliore era il peggiore. Lascia parlare l'immagine 5s.
 :::
 
 <!-- BEAT 2 — Contesto: fit the seen, miss the unseen -->
@@ -21,7 +24,7 @@ Callback visivo esplicito al cap. 03 frame 6 — il "classificatore migliore" ($
 ![](../img/storyboard/sb-04_02.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-L'errore sul training misura *come il modello aderisce ai pazienti già visti*, non come si comporterà su quelli nuovi. È la stessa pushback del cap. 02 (Clinician A, item 04) che torna a chiedere conto.
+A voce: train error = aderenza ai già-visti, non comportamento sui nuovi. È la pushback del cap. 02 (Clinician A, item 04) che torna a chiedere conto.
 :::
 
 ## What does training error actually measure?
@@ -33,7 +36,7 @@ It does **not** tell us how the model will do on patients we have not measured.
 The more *flexible* the model, the better it can fit any specific training set — at the cost of fitting *that one set* rather than the underlying pattern.
 
 ::: {.notes}
-È il quadro concettuale dell'overfitting prima ancora di nominarlo. Riprendete esplicitamente il cap. 02 item 04 ("but on a different group of patients?") — quella era la stessa domanda, oggi la chiudiamo.
+Overfitting concettuale prima di nominarlo. Gancio cap. 02 item 04 ("but on a different group of patients?"): stessa domanda, oggi la chiudiamo.
 :::
 
 <!-- BEAT 3 — Sfida / U-curve -->
@@ -43,7 +46,7 @@ The more *flexible* the model, the better it can fit any specific training set �
 ![](../img/storyboard/sb-04_03.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-La curva canonica dell'overfitting: training-error scende monotonicamente verso zero; new-data-error scende, tocca un minimo, poi *risale* — la classica U. Il gap si allarga oltre il minimo. **Questo è overfitting:** il modello impara il *campione*, non il *segnale*.
+Punto chiave: la U. Train scende verso zero; new-data scende, minimo, poi risale; il gap si allarga oltre il minimo. Overfitting = impara il campione, non il segnale.
 :::
 
 ## Overfitting — the signature
@@ -58,7 +61,7 @@ It has captured *idiosyncrasies of the sample*, not the underlying signal.
 The opposite failure — *underfitting* — is when **both** errors are *high*: the model is too rigid to capture even the training data.
 
 ::: {.notes}
-Diagnosi differenziale: overfit ≠ "alto errore", overfit = *basso train + grande gap*. Underfit ≠ "alto errore in generale", underfit = *entrambi alti e vicini*. Item 01 testa proprio questa diagnosi differenziale.
+Insisti sulla diagnosi differenziale: overfit = basso train + grande gap; underfit = entrambi alti e vicini. Item 01 testa proprio questo.
 :::
 
 <!-- ASIDE — what does "error" actually mean? threshold-based metrics + threshold-free metrics -->
@@ -81,7 +84,11 @@ From it, the most-used metrics:
 - **Precision** (PPV) $= \dfrac{TP}{TP + FP}$ — of those flagged positive, how many really are.
 
 ::: {.notes}
-Aside di metriche — ~60-90″, panoramica *non valutata*. Punto chiave clinico: in classi sbilanciate (es. malattia rara al $5\%$) un classificatore che predice sempre "sano" ha **accuracy $= 95\%$** ma **sensitivity $= 0$** — sopravvalutato. La *balanced accuracy* media sensitivity e specificity e neutralizza il bias di prevalenza. **Sensitivity ↔ recall**: stessa formula, vocabolario clinico vs ML. **Precision ↔ PPV**: stessa formula, vocabolario ML vs clinico. Tutte queste metriche presuppongono una **soglia di decisione** fissata: sulla slide dopo la togliamo.
+Aside metriche — ~60-90″, non valutata.
+
+- a voce: malattia rara al $5\%$, "sempre sano" → accuracy $95\%$ ma sensitivity $0$. Balanced accuracy neutralizza il bias di prevalenza.
+- sinonimi: sensitivity ↔ recall; precision ↔ PPV (clinico vs ML).
+- gancio: tutte presuppongono una soglia fissa — slide dopo la togliamo.
 :::
 
 ## Aside — Threshold-free: AUC-ROC vs AUC-PR
@@ -94,7 +101,10 @@ Most classifiers output a **score** (often a probability); the threshold turns i
 Rule of thumb: **AUC-ROC** when classes are roughly balanced; **AUC-PR** under heavy imbalance (rare disease, fraud, anomaly detection).
 
 ::: {.notes}
-Threshold-free — ~60-90″. Idea: una *buona* metrica non dipende da *una* soglia, riassume la performance su *tutte*. AUC-ROC $= 0.5$ è random, $= 1$ perfetto. **AUC-PR ha baseline $=$ prevalenza** (non $0.5$): per classi sbilanciate è il termometro onesto, perché ROC può sembrare alta ($0.85$+) anche quando in pratica il modello fa *pochi veri positivi tra molti falsi positivi*. Nello screening di malattie rare, **AUC-PR** è quasi sempre la misura clinicamente significativa. Le nomino e basta — chi vuole approfondire ne troverà i dettagli in `index-full.Rmd`.
+Threshold-free — ~60-90″. Idea: buona metrica = non dipende da una soglia, riassume tutte.
+
+- a voce: AUC-PR baseline = prevalenza (non $0.5$); ROC può sembrare alta ($0.85$+) con pochi veri positivi tra molti falsi → screening malattie rare, usa AUC-PR.
+- nominale e basta; dettagli in `index-full.Rmd`.
 :::
 
 <!-- BEAT 4 — Nodo: contamination principle -->
@@ -104,7 +114,7 @@ Threshold-free — ~60-90″. Idea: una *buona* metrica non dipende da *una* sog
 ![](../img/storyboard/sb-04_04.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-**Regola del capitolo: la contamination principle.** Ogni volta che usi un numero per *scegliere*, quel numero è stato *speso* — non vale più come stima onesta. Per questo il test set sta dietro vetro: non si tocca finché la scelta non è fatta.
+Regola del capitolo: contamination principle. Ogni numero usato per scegliere è speso, non è più stima onesta. Per questo il test sta dietro vetro fino a scelta fatta.
 :::
 
 ## The contamination principle
@@ -119,7 +129,10 @@ Concretely:
 The only honest number is one *that was not used to decide anything*.
 
 ::: {.notes}
-Punto critico — è la lente che unifica train/validation/test. Lo studente medio sa intuitivamente che serve un test set; la sottigliezza qui è *perché*: ogni decisione costa un numero. Insistere sulla frase: *"every decision taken after looking at a number contaminates that number as a future estimate"*. Riprendere il vocabolario sopra al sommativo.
+Lente che unifica train/val/test. Lo studente sa che serve un test; la sottigliezza è il *perché*: ogni decisione costa un numero.
+
+- frase da incidere: *"every decision after looking at a number contaminates that number as a future estimate"*.
+- vocabolario richiamato al sommativo.
 :::
 
 <!-- BEAT 5 — Metodo: 3-way split + K-fold CV (perno del sommativo) -->
@@ -129,7 +142,7 @@ Punto critico — è la lente che unifica train/validation/test. Lo studente med
 ![](../img/storyboard/sb-04_05.png){fig-align="center" width="84%"}
 
 ::: {.notes}
-Si divide in **tre**: *train* fitta, *validation* (qui $K$-fold CV) sceglie, *test* conferma. Sotto, la **4-row table** del sommativo: $M_A$/$M_B$/$M_C$/$M_D$ con training error vs CV error. È il perno del capitolo.
+Tre set: train fitta, validation ($K$-fold CV) sceglie, test conferma. Perno del capitolo: anticipa la tabella a 4 righe del sommativo ($M_A$–$M_D$, train vs CV).
 :::
 
 ## Train / Validation / Test — one role each
@@ -143,7 +156,7 @@ Si divide in **tre**: *train* fitta, *validation* (qui $K$-fold CV) sceglie, *te
 The same data **cannot** play two roles. Choosing a model on a set spends that set's number as a future estimate.
 
 ::: {.notes}
-Il *perché* sono tre, non due: serve un set per *fittare* + un set per *scegliere* (consumato dalla scelta) + un set *intatto* per stimare onestamente. Riprendete la contamination rule del beat precedente.
+A voce il *perché* tre e non due: fittare + scegliere (consuma il set) + un set intatto per stimare. Richiama la contamination rule del beat prima.
 :::
 
 ## $K$-fold cross-validation — the recipe
@@ -159,7 +172,7 @@ The validation step, done practically:
 The CV error **estimates** the prediction error of the chosen model on *unseen* patients.
 
 ::: {.notes}
-$K$-fold CV è la procedura canonica del passo di validation. Notare che dopo la scelta col CV, quel numero è *speso* — è esattamente la pushback dell'item 03 e del sommativo. La regola sui $K$ è la tipica bias-variance del numero di fold; voce docente, non valutato.
+Procedura canonica del validation. Dopo la scelta col CV quel numero è speso → pushback item 03 + sommativo. La regola sui $K$ è bias-variance dei fold: voce docente, non valutato.
 :::
 
 <!-- BEAT 6 — Payoff -->
@@ -169,7 +182,7 @@ $K$-fold CV è la procedura canonica del passo di validation. Notare che dopo la
 ![](../img/storyboard/sb-04_06.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Callback al cap. 03 frame 5 — le tre colonne ($k$NN · SVM · RF) tornano, ma ora *una* è etichettata con un numero affidabile ("test: $18\%$"). Sullo sfondo, l'orizzonte sfumato di una rete di neuroni: pre-hook al cap. 05.
+Callback cap. 03 frame 5: le tre colonne ($k$NN · SVM · RF) tornano, ma ora una ha un numero affidabile ("test: $18\%$"). Rete di neuroni sullo sfondo: pre-hook al cap. 05.
 :::
 
 <!-- ASIDE — once the model is validated: what did it learn? global (VIMP) + local (SHAP) -->
@@ -187,7 +200,11 @@ After validating *that* a model predicts well, a second question follows: **whic
 Born with **random forests**, but works for *any* fitted model (**model-agnostic**).
 
 ::: {.notes}
-VIMP — ~60″. Idea: se permutando $X_j$ l'errore non cambia, quel predittore non sta contribuendo. È **globale**: una sola classifica per l'intero dataset. **Caveat clinici:** (a) VIMP **non è causalità** — può rilevare confondenti correlati (es. "ICU room number" come proxy di gravità); (b) in presenza di forti correlazioni tra predittori, l'importanza si "spalma" — permutare $X_j$ mentre $X_k$ è ancora intatto sottostima entrambi. La cito *come strumento di sanity check post-fit*, non come spiegazione causale.
+VIMP — ~60″. Idea: permuti $X_j$, se l'errore non cambia non contribuisce. Globale: una classifica per l'intero dataset.
+
+- caveat a voce: NON è causalità — può pescare confondenti (es. "ICU room number" proxy di gravità).
+- predittori correlati: l'importanza si "spalma", sottostima entrambi.
+- vendila come sanity check post-fit, non spiegazione causale.
 :::
 
 ## Aside — Why *this* prediction? Local explanations (SHAP)
@@ -201,7 +218,11 @@ VIMP tells you *which features matter on average*. **SHAP** tells you *how each 
 Model-agnostic; standard tooling for tree ensembles, deep nets, and LLMs.
 
 ::: {.notes}
-SHAP — ~60″. Idea: ogni paziente ha una *scomposizione* additiva della propria previsione, contributo per contributo. Clinicamente utile perché risponde alla domanda *"why was THIS patient flagged?"*. Onestà intellettuale: SHAP spiega il **modello**, non la **biologia** — descrive *come* quel modello combina le feature, non *perché* la malattia esista. **Take-home dell'aside:** VIMP (globale) + SHAP (locale) coprono i due bisogni clinici più comuni — *quale fattore conta in generale* e *cosa ha guidato questa diagnosi*. Nei deep net (cap. 05) SHAP resta utile, ma l'interpretabilità diventa più costosa: gancio implicito al prossimo capitolo.
+SHAP — ~60″. Idea: scomposizione additiva per-paziente → *"why was THIS patient flagged?"*.
+
+- onestà: spiega il modello, non la biologia (come combina le feature, non perché la malattia esista).
+- take-home: VIMP globale + SHAP locale = i due bisogni clinici.
+- gancio cap. 05: nei deep net SHAP resta utile ma più costoso.
 :::
 
 ## Pre-hook → chapter 5: deep learning
@@ -213,7 +234,7 @@ But what if the **model itself** can be made arbitrarily complex — a network o
 The cross-validation discipline still holds. But the *architecture* of the model becomes a new question. **Deep neural networks** — next.
 
 ::: {.notes}
-Pre-hook esplicito al cap. 05. La disciplina del cap. 04 sopravvive — anzi, è ancora più importante. Ma c'è un nuovo asse di scelta: non più *quale algoritmo* né *quale hyperparametro*, ma *quale architettura*. Lasciate aperto il vocabolario *neurons + layers* senza ancora il meccanismo (backprop) — è il gancio narrativo.
+Pre-hook cap. 05. La disciplina sopravvive, anzi conta di più. Nuovo asse di scelta: non più quale algoritmo/hyperparametro ma quale architettura. Lascia aperto *neurons + layers* senza il meccanismo (backprop): è il gancio.
 :::
 
 <!-- ============================================================ -->
@@ -223,7 +244,7 @@ Pre-hook esplicito al cap. 05. La disciplina del cap. 04 sopravvive — anzi, è
 ## Exercises {.inverse .center background-color="#1F4257"}
 
 ::: {.notes}
-Blocco esercizi. I 4 item formativi sono recap/self-study (item 04 è argumentation di livello alto sul cross-technique trap); il sommativo live ("Catch the overfitter") gira negli ultimi ~10′ (min 20-30).
+Blocco esercizi. 4 item formativi recap/self-study (item 04 = argumentation alta, cross-technique trap). Sommativo live "Catch the overfitter": ultimi ~10′ (min 20-30).
 :::
 
 <!-- Item 01 — MCQ — Diagnose overfitting -->
@@ -244,13 +265,16 @@ Which **one** shows the clearest signature of **overfitting**?
 - **A)** $M_1$ &nbsp;·&nbsp; **B)** $M_2$ &nbsp;·&nbsp; **C)** $M_3$ &nbsp;·&nbsp; **D)** $M_4$
 
 ::: {.notes}
-Item 01 — Comprehension / MCQ / low-medium. Obj. 1 (diagnose overfitting). Vedi `course/04-model-selection/items/item_01_diagnose-overfitting_mcq.md`. Distrattore D ("low training = overfit") cattura il misconception "basso training error = overfit"; in realtà richiede *basso train + grande gap*.
+Item 01 — Comprehension / MCQ / low-med. Obj. 1 (diagnose overfitting).
+
+- distrattore D pesca il misconception "basso training = overfit": serve basso train + grande gap.
+- file: `course/04-model-selection/items/item_01_diagnose-overfitting_mcq.md`.
 :::
 
 ## Item 01 — Solution (write yours)
 
 ::: {.notes}
-Lascio 60 secondi. Il misconception più frequente è scegliere C ($M_3$) per "errore alto = sbagliato" — ma quello è underfitting. La sequenza diagnostica giusta: guardare prima il *gap*.
+Lascia 60s. Misconception frequente: scegliere C ($M_3$) per "errore alto = sbagliato" → è underfitting. Regola: guarda prima il *gap*.
 :::
 
 ## Item 01 — Solution
@@ -266,7 +290,7 @@ Why the distractors are wrong:
 - **D** ($M_4$, $7/9\%$) — **healthy fit**: both low and close. *Low training error alone is not overfit.*
 
 ::: {.notes}
-Take-away: il discriminante è il *gap* + la *bassezza* del training. Non l'errore alto generico (underfit), né il basso errore in solitaria (healthy).
+Discriminante: gap grande + train basso. Non errore alto generico (underfit), non train basso da solo (healthy).
 :::
 
 <!-- Item 02 — Applicativa — Compute K-fold CV -->
@@ -288,13 +312,13 @@ A classifier evaluated on $20$ patients with **5-fold CV** (4 patients per fold)
 3. **Describe** what would change with $K = 10$ on the same 20 patients: (a) the procedure, (b) one trade-off.
 
 ::: {.notes}
-Item 02 — Application / applicativa / medium. Obj. 3 ($K$-fold CV computation + what it estimates + $K$ trade-off). Rubrica: `course/04-model-selection/rubriche/rubrica_02_compute-kfold-cv.md`.
+Item 02 — Application / applicativa / medium. Obj. 3 (calcolo $K$-fold CV + cosa stima + trade-off $K$). Rubrica: `course/04-model-selection/rubriche/rubrica_02_compute-kfold-cv.md`.
 :::
 
 ## Item 02 — Solution (write yours)
 
 ::: {.notes}
-Slide bianca per i calcoli. CV error = $(25+25+50+0+50)/5 = 30\%$. Oppure più direttamente: $6/20 = 30\%$. Punto chiave del sub-2: la CV error stima *l'errore di predizione su pazienti non visti* — NON il training error, NON il test error.
+Slide bianca per i calcoli. Risposta crib: CV $= (25+25+50+0+50)/5 = 30\%$ (o $6/20$). Punto chiave: la CV error stima la prediction error sui non-visti, NON train, NON test.
 :::
 
 ## Item 02 — Solution {.smaller}
@@ -311,7 +335,7 @@ Equivalent: $(1+1+2+0+2)/20 = 6/20 = 30\%$.
 - **(b)** Trade-off: more training data per fold → less bias *but* smaller folds → noisier per-fold rates → more variance. Standard $K \in [5, 10]$ balances both.
 
 ::: {.notes}
-Reveal: la $K$-fold CV è la procedura canonica del *validation step*. La CV error è una stima onesta della prediction error — ma *solo se non è ancora stata usata per scegliere*. Quella usata per la scelta diventa lo *spent number* dell'item 03.
+A voce: CV error è stima onesta *solo se non ancora usata per scegliere*. Quella usata per la scelta = lo spent number dell'item 03.
 :::
 
 <!-- Item 03 — MCQ — After CV: next step -->
@@ -326,13 +350,16 @@ A team uses **5-fold CV** on training+validation to compare four candidates ($M_
 - **D)** Pool train+val+test into one combined dataset; report $M_B$'s average error on the pool.
 
 ::: {.notes}
-Item 03 — Application / MCQ / medium. Obj. 2 (contamination principle applied after a CV winner). A è il distrattore più attraente (sembra una performance number, ma è già *spent* nella scelta); D è quello più dannoso (contamina il test set come training).
+Item 03 — Application / MCQ / medium. Obj. 2 (contamination dopo un vincitore CV).
+
+- A: distrattore più attraente — sembra performance, ma è già spent nella scelta.
+- D: il più dannoso — contamina il test come training.
 :::
 
 ## Item 03 — Solution (write yours)
 
 ::: {.notes}
-Lascio 60-90 secondi. Se la classe esita tra A e B, è il momento giusto per richiamare la contamination rule. **A** è sbagliato perché $18\%$ è il numero che ha scelto $M_B$ tra quattro — è ottimisticamente biased.
+Lascia 60-90s. Se esitano tra A e B, richiama la contamination rule. A è sbagliato: $18\%$ ha scelto $M_B$ tra quattro → ottimisticamente biased.
 :::
 
 ## Item 03 — Solution {.smaller}
@@ -346,7 +373,7 @@ Why the distractors are wrong:
 - **D** — uses the test set as training data, destroying its role. Worst of all.
 
 ::: {.notes}
-Take-away: il discriminante è "is there a dataset that has not yet been used in any decision about $M_B$?" Solo B. Reveal: il test set serve *una volta sola*, dopo *tutte* le scelte.
+Domanda discriminante: *"is there a dataset not yet used in any decision about $M_B$?"* → solo B. Il test serve una volta sola, dopo tutte le scelte.
 :::
 
 <!-- Item 04 — Argomentativa — Cross-technique trap -->
@@ -369,13 +396,16 @@ A colleague compares **3 ML techniques** ($k$-NN, SVM-kernel, RF), each with its
 2. **Propose the correct procedure** and explain why it has no flaw.
 
 ::: {.notes}
-Item 04 — Argumentation / medium-high. Obj. 1 + Obj. 2 (cross-technique trap). Il punto sottile: la *seconda* selezione (al passo 4–5) avviene sul test set. Rubrica: `course/04-model-selection/rubriche/rubrica_04_skip-the-test-critique.md`. Soglia di sufficienza: entrambi C1 *e* C2 a Base.
+Item 04 — Argumentation / medium-high. Obj. 1 + 2 (cross-technique trap).
+
+- punto sottile: la *seconda* selezione (passo 4–5) avviene sul test set.
+- soglia: C1 *e* C2 a Base. Rubrica: `course/04-model-selection/rubriche/rubrica_04_skip-the-test-critique.md`.
 :::
 
 ## Item 04 — Solution (write yours)
 
 ::: {.notes}
-Slide bianca per il ragionamento in 2 parti. È un livello argomentativo alto: lo studente medio coglie che "qualcosa non quadra" ma non sempre nomina la *seconda selezione*. Usare la slide per costruire il "validation chooses among candidate models" come *anche* "chooses among candidate techniques".
+Slide bianca, ragionamento in 2 parti. Argomentativo alto: lo studente sente che "qualcosa non quadra" ma non nomina la *seconda selezione*. Costruisci: validation sceglie tra modelli = anche tra tecniche.
 :::
 
 ## Item 04 — Solution {.smaller}
@@ -392,7 +422,9 @@ Slide bianca per il ragionamento in 2 parti. È un livello argomentativo alto: l
 When the test set is consulted, no decision is open: it is used *purely* to estimate.
 
 ::: {.notes}
-**Bonus per gli studenti curiosi:** la fix non è "più partizioni" — è *disciplina*. Un quarto set introdotto per "schermare" la scelta tra tecniche subirebbe lo stesso problema. La regola è "tutte le selezioni sulla validation, una sola valutazione sul test, mai più di una". *Note*: questo è l'item più tecnicamente sottile del corso finora — premiare la coerenza del ragionamento più del vocabolario.
+Bonus a voce: la fix non è "più partizioni" ma disciplina — un quarto set subirebbe lo stesso problema. Regola: tutte le selezioni sulla validation, una sola valutazione sul test.
+
+- grading: item più sottile finora → premia la coerenza del ragionamento più del vocabolario.
 :::
 
 <!-- Summative -->
@@ -416,13 +448,17 @@ For each group:
 4. Assign the three subsets: **training** is used to ___, **validation (5-fold CV)** is used to ___, **test** is used to ___.
 
 ::: {.notes}
-Sommativo — gira negli ultimi ~10′ (min 20-30). ~2′ leggi+assegna + ~5′ riempi (foto upload *durante*) + ~3′ reveal. Poll Slido sull'**overfitter id** (4 opzioni $M_A$/$M_B$/$M_C$/$M_D$). **Duale:** la tabella + le 4 risposte di gruppo nel doc condiviso. **Reveal cap. 02-03:** *"this is what was at stake when Clinician A asked us in ch. 02 'but on a different group?' — and this is why $1$NN's paper-thin wrap in ch. 03 was a trap."*
+Sommativo — ultimi ~10′ (min 20-30). Tempi: ~2′ leggi+assegna · ~5′ riempi (foto upload *durante*) · ~3′ reveal.
+
+- Slido poll: overfitter id (4 opzioni $M_A$/$M_B$/$M_C$/$M_D$).
+- duale: tabella + 4 risposte di gruppo nel doc condiviso.
+- reveal cap. 02-03: *"this is what was at stake when Clinician A asked us in ch. 02 'but on a different group?' — and this is why $1$NN's paper-thin wrap in ch. 03 was a trap."*
 :::
 
 ## Summative — Solution (write yours)
 
 ::: {.notes}
-Slide bianca per le 4 risposte di gruppo. Riempio la shared board mano a mano. **Teachable moment:** un gruppo che pick $M_C$ "perché ha il gap più piccolo" ha letto male il criterio (è "lowest CV", non "smallest gap") — non penalizzare, usare per il reveal.
+Slide bianca, 4 risposte di gruppo sulla shared board. Teachable moment: chi pick $M_C$ "per il gap più piccolo" ha letto male il criterio (è lowest CV, non smallest gap) — non penalizzare, usa per il reveal.
 :::
 
 ## Summative — Solution {.smaller}
@@ -444,5 +480,9 @@ Slide bianca per le 4 risposte di gruppo. Riempio la shared board mano a mano. *
 *Take-home:* this chapter's discipline answers both prior cliff-hangers — *"but on a different group of patients?"* (ch. 02) and the $1$NN paper-thin wrap (ch. 03). The architecture question opens at chapter 5.
 
 ::: {.notes}
-Reveal pedagogico: **$M_D$** ($k = 51$) è il caso *underfit* — training error alto perché il modello è troppo rigido. Lo proponi dopo come "*e $M_D$? perché ha errore alto sia sul training sia in CV?*" — apre il bias-variance. **$M_C$** ha *no gap* ma comunque non vincente: l'assenza di overfit non basta. **Pre-hook ch. 05** nelle ultime righe.
+Reveal pedagogico:
+
+- $M_D$ ($k=51$) = underfit, train alto perché troppo rigido. Chiedi "perché alto sia su train sia in CV?" → apre il bias-variance.
+- $M_C$: no gap ma non vince — assenza di overfit non basta.
+- pre-hook ch. 05 nelle ultime righe.
 :::

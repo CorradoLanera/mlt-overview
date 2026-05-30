@@ -1,7 +1,12 @@
 ## Same data; three algorithms, three boundaries. {.center .inverse background-color="#1F4257"}
 
 ::: {.notes}
-Cover del capitolo 3 — 35 minuti. Sei-parole approvata: stesso ritmo a due clausole con punto e virgola dei cap. 01-02, ora con il *paradosso apparente* "stessi pazienti, decisioni diverse". Riprende la parola **boundary** dal cap. 02 e la fa esplodere in tre. Pre-hook al cap. 04 (overfitting) seminato nel beat 6. I 4 item formativi sono in coda; il sommativo live ("Three algorithms, one dataset") gira negli ultimi ~10′.
+Cover cap. 3 — 35 min totali.
+
+- Paradosso d'apertura: stessi pazienti, decisioni diverse.
+- Riprende **boundary** dal cap. 02, la esplode in tre.
+- Pre-hook overfitting (cap. 04) nel beat 6.
+- 4 formativi in coda; sommativo live negli ultimi ~10′.
 :::
 
 <!-- BEAT 1 — Hook -->
@@ -11,7 +16,9 @@ Cover del capitolo 3 — 35 minuti. Sei-parole approvata: stesso ritmo a due cla
 ![](../img/storyboard/sb-03_01.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Stesso banco di pazienti, tre algoritmi diversi: **tre confini diversi**. Lasciate la slide 3-5 secondi. L'occhio dello studente prende subito la contraddizione: stessi dati, decisioni differenti — *perché?* È la domanda del capitolo.
+Lasciate la slide 3-5s in silenzio: la contraddizione si legge da sola.
+
+A voce: stessi dati, decisioni diverse — *perché?* È la domanda del capitolo.
 :::
 
 <!-- BEAT 2 — Contesto: who draws the line, and how -->
@@ -33,7 +40,7 @@ Nel cap. 02 il confine lo tracciava la mano di Elena. Ora lo traccia *l'algoritm
 Each family carries its own *prior* on what a sensible boundary looks like.
 
 ::: {.notes}
-Tre famiglie, tre prior. Anticipo qui la cifra del capitolo: a parità di dati, la *forma di confine* che ogni algoritmo è capace di produrre è diversa — e quella forma, più ancora del campione, decide cosa lo studente vede sullo schermo.
+Cifra del capitolo (da landare a voce): a parità di dati, la *forma di confine* che ogni famiglia sa produrre è diversa — e quella forma, più del campione, decide cosa si vede.
 :::
 
 <!-- BEAT 3 — Sfida / kNN -->
@@ -43,7 +50,7 @@ Tre famiglie, tre prior. Anticipo qui la cifra del capitolo: a parità di dati, 
 ![](../img/storyboard/sb-03_03.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-$k$NN non costruisce regole: **memorizza** il training. Per un nuovo paziente guarda i $k$ più vicini e copia la classe di maggioranza. Il confine *si incolla ai dati*.
+A voce: $k$NN non fa regole, **memorizza** il training; copia la maggioranza dei $k$ vicini. Il confine *si incolla ai dati*.
 :::
 
 ## $k$-Nearest Neighbor — the recipe
@@ -59,7 +66,8 @@ For a new point $x$:
 The decision regions are *defined by the training points themselves* — **piecewise** boundaries that hug each cluster's edge.
 
 ::: {.notes}
-Punto critico: $k$NN **non** ha parametri *appresi* nel senso classico — il training set *è* il modello. Per questo si chiama lazy learner. La scelta di $k$ è un *hyper-parametro*: piccolo $k$ → confine sinuoso (overfit prone, è il gancio del cap. 04); grande $k$ → confine smussato.
+- A voce: niente parametri appresi, il training set *è* il modello (lazy learner).
+- $k$ è un *iperparametro*: $k$ piccolo → confine sinuoso (overfit, gancio cap. 04); $k$ grande → smussato.
 :::
 
 <!-- BEAT 4 — Nodo: kernel trick -->
@@ -69,7 +77,10 @@ Punto critico: $k$NN **non** ha parametri *appresi* nel senso classico — il tr
 ![](../img/one-cut-star.jpg){fig-align="center" width="72%"}
 
 ::: {.notes}
-Analogia fisica del kernel trick. **Teorema fold-and-cut (Demaine–Demaine–Lubiw, 1998):** qualsiasi forma poligonale può essere ritagliata da un foglio con **un singolo taglio dritto**, se piegato opportunamente. Lasciate la slide qualche secondo prima di parlare; gli studenti riconoscono il giochino dell'infanzia (la stella di carta), ma stavolta il punto è la *struttura*. *Il taglio è uno; è la piega che decide la forma.* Stessa mossa del kernel trick: il classificatore lineare non cambia, è la rappresentazione (la "piega") che decide il confine.
+Analogia fisica del kernel trick. Lasciate la slide qualche secondo (riconoscono la stella di carta).
+
+- Teorema fold-and-cut (Demaine–Demaine–Lubiw, 1998): ogni poligono da un foglio con **un solo taglio dritto**, se piegato bene.
+- Punch line: *il taglio è uno; è la piega che decide la forma.* = classificatore fermo, cambia la rappresentazione.
 :::
 
 ## *Bend the space, not the algorithm.*
@@ -77,7 +88,7 @@ Analogia fisica del kernel trick. **Teorema fold-and-cut (Demaine–Demaine–Lu
 ![](../img/storyboard/sb-03_04.png){fig-align="center" width="84%"}
 
 ::: {.notes}
-Tradotto in dati: quando i dati non sono separabili da una linea, SVM **non** cambia algoritmo (le forbici restano dritte): cambia *coordinate* (piega il foglio). Una feature map $\phi$ porta i dati in alto, lì la linea torna a funzionare, e la riproietti come curva. Il classificatore è sempre lo stesso. Il **kernel trick** è una *re-coordinatizzazione*.
+A voce: dati non separabili → SVM non cambia algoritmo, cambia *coordinate* (la $\phi$). La linea torna a funzionare in alto, la riproietti come curva. Kernel trick = re-coordinatizzazione.
 :::
 
 ## Linear SVM and the kernel trick
@@ -93,7 +104,9 @@ Then cut with a hyperplane *in the $\phi$-space*; project back as a **smooth cur
 The classifier did *not* change — *what it sees* did.
 
 ::: {.notes}
-Take-away operativo: il kernel trick **non è** un nuovo algoritmo. È un cambio di rappresentazione che fa apparire linearmente-separabili dati che non lo erano. Il classificatore lineare resta identico; il *dato che osserva* è diverso. Esempio canonico (item 02): cerchi concentrici → $(y_1, y_2) \mapsto (y_1^2, y_2^2)$ → due rette parallele.
+Take-away: kernel trick = cambio di rappresentazione, non nuovo algoritmo.
+
+Aggancia all'item 02: cerchi concentrici → $(y_1, y_2) \mapsto (y_1^2, y_2^2)$ → separabili.
 :::
 
 <!-- BEAT 5 — Metodo: ensembles + 3-column board (perno del sommativo) -->
@@ -103,7 +116,9 @@ Take-away operativo: il kernel trick **non è** un nuovo algoritmo. È un cambio
 ![](../img/storyboard/sb-03_05.png){fig-align="center" width="84%"}
 
 ::: {.notes}
-Random Forest: tanti alberelli (ciascuno solo *appena* meglio del caso) votano per maggioranza. La probabilità del voto giusto cresce con $m$ — purché ogni albero abbia accuratezza $p > 0.5$. Sotto, il **3-column board** dei confini (kNN · SVM · RF) — è il perno del sommativo a fine capitolo.
+A voce: tanti alberelli ($p$ appena $> 0.5$) votano; il voto migliora con $m$ solo se $p > 0.5$.
+
+Flag: il **3-column board** (kNN · SVM · RF) è il perno del sommativo.
 :::
 
 ## Random Forest and the majority vote
@@ -118,7 +133,7 @@ For $m$ independent weak classifiers each with per-classifier accuracy $p$:
 Voting *amplifies whichever direction $p$ points*. Hence the **$p > 0.5$ requirement**.
 
 ::: {.notes}
-È il punto quantitativo del capitolo: la binomial-vote intuition. Voto di maggioranza ≠ media aritmetica delle probabilità — è una *binomial tail* che si concentra al crescere di $m$. L'item 03 testa proprio la direzione di concentramento.
+Punto quantitativo: voto di maggioranza ≠ media — è una *binomial tail* che si concentra al crescere di $m$. L'item 03 testa la direzione.
 :::
 
 ## Three families, three boundary shapes
@@ -133,7 +148,9 @@ Voting *amplifies whichever direction $p$ points*. Hence the **$p > 0.5$ require
 Same data, different priors → different region shapes.
 
 ::: {.notes}
-Slide-tabella riassuntiva — è la *checklist visiva* del sommativo. Ogni colonna del 3-column board ricade in una di queste shape. Voce docente: il termine tecnico per "kind of boundary capable of producing" è *inductive bias*, ma — come da nota assessment-reviewer — NON lo promuoviamo in vocabolario studente.
+Checklist visiva del sommativo: ogni colonna del board ricade in una di queste shape.
+
+Cautela: il termine tecnico è *inductive bias* — NON promuoverlo in vocabolario studente.
 :::
 
 <!-- BEAT 6 — Payoff -->
@@ -143,7 +160,7 @@ Slide-tabella riassuntiva — è la *checklist visiva* del sommativo. Ogni colon
 ![](../img/storyboard/sb-03_06.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-$k$NN con $k=1$ azzecca **tutti** i pazienti del training — errore zero. Ma il primo paziente nuovo finisce dal lato sbagliato. Il *paradosso dell'iperaderenza*: il modello che meglio si attacca ai dati visti è quello che peggio generalizza. Cliff-hanger esplicito al cap. 04.
+A voce — *paradosso dell'iperaderenza*: chi si attacca meglio ai dati visti generalizza peggio. $k=1$ = errore zero sul training, sbaglia il primo nuovo paziente. Cliff-hanger al cap. 04.
 :::
 
 ## Pre-hook → chapter 4: model selection
@@ -155,7 +172,7 @@ Among them, $k$-NN with $k=1$ *never* misclassifies a single training patient �
 How do we tell *good fits* from *fakes*? That is **model selection** — next.
 
 ::: {.notes}
-Pre-hook scriptato al cap. 04. Volutamente uso la parola *"fake"* — è il vocabolario clinico che il cap. 04 svilupperà con train/validation/test e CV. Lasciate aperto il paradosso.
+Pre-hook scriptato al cap. 04. La parola *"fake"* è voluta: il cap. 04 la sviluppa con train/validation/test e CV. Lasciate aperto il paradosso.
 :::
 
 <!-- ============================================================ -->
@@ -228,7 +245,7 @@ Item 02 — Application / applicativa / medium. Obj. 2 (kernel trick come re-coo
 ## Item 02 — Solution (write yours)
 
 ::: {.notes}
-Slide bianca per la tabella $(X_1, X_2)$: tutti i red mappano in $\{(1,0), (0,1)\}$, tutti i blue in $\{(9,0), (0,9)\}$. La somma $X_1 + X_2$ è $1$ per i red e $9$ per i blue — separazione lineare ovvia con $X_1 + X_2 < 5$.
+Soluzione a portata di mano mentre scrivono: red → $\{(1,0),(0,1)\}$, blue → $\{(9,0),(0,9)\}$. Somma $X_1+X_2$: $1$ red, $9$ blue → taglio $X_1+X_2 < 5$.
 :::
 
 ## Item 02 — Solution {.smaller}
@@ -340,13 +357,18 @@ Three groups, **one** scatter (non-linearly separable). Each group is assigned o
 All sketches go on a **3-column board** ($k$NN · SVM · RF), in-person + remote side by side.
 
 ::: {.notes}
-Sommativo — gira negli ultimi ~10′ (min 24-34). ~2′ assegnare + ~5′ sketch + 1-liner + ~30″ silent all-class beat (ciascuno scrive sull'objective che non ha toccato) + ~2′30″ reveal. Poll Slido sulla *predicted region shape* (5 opzioni, non 3 — evita matching banale): *piecewise around points · smooth curve enclosing a class · axis-aligned staircase · single straight line · concentric circles*. **Duale:** la lavagna a 3 colonne (foto sketch + drawing tool remoti) è l'unico artefatto. **Non dichiarare vincitori** — la domanda "qual è il migliore su pazienti NUOVI?" resta aperta come gancio al cap. 04.
+Sommativo — ultimi ~10′ (min 24-34). Timing:
+
+- ~2′ assegnare · ~5′ sketch + 1-liner · ~30″ silent beat (ognuno scrive sull'objective non toccato) · ~2′30″ reveal.
+- Poll Slido sulla shape (5 opzioni, non 3): piecewise · smooth curve · staircase · straight line · concentric circles.
+- Duale: lavagna 3 colonne (foto + drawing tool remoti) = unico artefatto.
+- **Non dichiarare vincitori**: "il migliore su pazienti NUOVI?" resta aperta → gancio cap. 04.
 :::
 
 ## Summative — Solution (write yours)
 
 ::: {.notes}
-Slide bianca: io nomino le tre colonne nel reveal — *piecewise · max-margin (or smooth curve) · vote-of-cuts* — e leggo la shape caratteristica direttamente dal board. Poi leggo 3 random "cross-objective" one-liner dei silent-beat per verificare gli obiettivi 2 e 3 anche oltre la riga del gruppo.
+Reveal: nomino le 3 colonne — piecewise · max-margin/smooth curve · vote-of-cuts — leggendo la shape dal board. Poi 3 one-liner cross-objective a caso dai silent-beat (verifica obj. 2 e 3 oltre il gruppo).
 :::
 
 ## Summative — Solution {.smaller}
@@ -362,5 +384,5 @@ Slide bianca: io nomino le tre colonne nel reveal — *piecewise · max-margin (
 *Take-home challenge:* among these three, which one will hold on **patients never seen**? — Chapter 4.
 
 ::: {.notes}
-Reveal pedagogico: chiudere col cliff-hanger del cap. 04. Se un gruppo dichiara "il nostro è il più accurato", rispondere "su questi 12 pazienti, sì — ma su un paziente che non hai mai visto?" Non chiudere. È quel gancio che tiene la classe per il prossimo capitolo.
+Chiudi col cliff-hanger cap. 04. Se un gruppo dice "il nostro è il più accurato" → rispondi "su questi 12 sì — ma su un paziente mai visto?" Non chiudere: è il gancio.
 :::

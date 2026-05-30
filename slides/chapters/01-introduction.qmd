@@ -9,7 +9,10 @@
 ## Programs follow rules; learners find them. {.center .inverse background-color="#1F4257"}
 
 ::: {.notes}
-Cover del capitolo 1 — 25 minuti. Titolo = sei-parole approvata: due clausole simmetriche con lo stesso oggetto (`rules`) che cambia ruolo (input nella programmazione tradizionale, output dal learner). È *il* contenuto del capitolo in sei parole, prima ancora di chiamarlo "What is ML". Le esercitazioni stanno **in coda al capitolo**: 4 item formativi + 1 sommativo (T/E/paradigma in aula, la P quantitativa come sfida da casa) che gira negli ultimi 8′.
+Cover cap. 1 — 25 min totali.
+
+- Titolo = sei-parole: `rules` cambia ruolo (input nel software classico, output dal learner). Il capitolo in 6 parole.
+- Esercizi in coda: 4 formativi + 1 sommativo (T/E/paradigma in aula, P come sfida da casa) negli ultimi 8′.
 :::
 
 <!-- BEAT 1 — Hook visivo -->
@@ -19,7 +22,10 @@ Cover del capitolo 1 — 25 minuti. Titolo = sei-parole approvata: due clausole 
 ![](../img/storyboard/sb-01_01.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Elena fissa un punteggio di rischio che le raccomanda una dimissione di cui dubita — e nessuno sa dirle *perché*. È il problema-cornice di tutto il corso: l'opacità, non l'algoritmo, è l'antagonista. Lasciate la slide qualche secondo prima di parlare; l'immagine fa il lavoro.
+Lasciate la slide 3-5s muta: l'immagine fa il lavoro.
+
+- Elena: risk score raccomanda dimissione di cui dubita, nessuno sa *perché*.
+- Punto-chiave: l'antagonista del corso è l'**opacità**, non l'algoritmo.
 :::
 
 <!-- BEAT 2 — Contesto (the input/output swap) -->
@@ -29,7 +35,7 @@ Elena fissa un punteggio di rischio che le raccomanda una dimissione di cui dubi
 ![](../img/storyboard/sb-01_02.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Nel software classico le regole le scrivete voi e date in input i dati; nel machine learning date i dati *e* le risposte, e la *regola* ve la restituisce la macchina. È un'inversione del rapporto input/output.
+Voce: software classico = voi scrivete le regole + date i dati. ML = date dati *e* risposte, la macchina restituisce la **regola**. Inversione input/output.
 :::
 
 ## Two ways of writing software
@@ -52,7 +58,9 @@ Nel software classico le regole le scrivete voi e date in input i dati; nel mach
 ::::
 
 ::: {.notes}
-Stessi blocchi, frecce invertite: nel ML l'algoritmo è *output*, non input. Il modello è $Y \simeq f(X)$, dove la $f$ è quello che si è imparato dai dati di training. *Take-away:* il ML è un problema di **ottimizzazione**, non di programmazione esplicita.
+Stessi blocchi, frecce invertite: l'algoritmo è *output*. La $f$ in $Y \simeq f(X)$ si impara dal training.
+
+Take-away (a voce): il ML è **ottimizzazione**, non programmazione esplicita.
 :::
 
 ## ML vs traditional programming — at a glance
@@ -60,7 +68,9 @@ Stessi blocchi, frecce invertite: nel ML l'algoritmo è *output*, non input. Il 
 ![](../img/MLvsTrad.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Schema storico del corso: a sinistra la programmazione tradizionale, a destra il ML. Notate dove i dati entrano e dove escono le regole. Citate brevemente la frase di Samuel (1959): *"algorithms that give computers the capability to learn without being explicitly programmed"*.
+A voce: dove entrano i dati, dove escono le regole.
+
+Citare Samuel (1959): *"algorithms that give computers the capability to learn without being explicitly programmed"*.
 :::
 
 <!-- BEAT 3 — Sfida / Dati (accuracy trap) -->
@@ -70,7 +80,10 @@ Schema storico del corso: a sinistra la programmazione tradizionale, a destra il
 ![](../img/storyboard/sb-01_03.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Su un esito raro (es. 5% di positivi), un modello che predice sempre "negativo" raggiunge il 95% di accuracy *senza prendere un solo caso reale*. L'accuracy da sola inganna. **L'esito che vi importa, in clinica, è quasi sempre lo sbilanciato.** Lo riprenderemo al beat 4 quando definiremo $P$ (la misura di performance giusta).
+Punto: su esito raro (5%) il "sempre-negativo" fa 95% accuracy senza prendere un caso. L'accuracy inganna.
+
+- A voce: in clinica l'esito che conta è quasi sempre lo sbilanciato.
+- Gancio al beat 4: lo riprendiamo definendo $P$.
 :::
 
 ## Warning: unbalanced data need balanced metrics
@@ -80,7 +93,9 @@ Su un esito raro (es. 5% di positivi), un modello che predice sempre "negativo" 
 - We will need *other* measures (and other procedures — chapter 04) to do better.
 
 ::: {.notes}
-La metrica giusta dipende dall'asimmetria clinica: sensibilità/specificità, AUC, balanced accuracy, etc. — non insegnati qui (sono per cap. 04); qui basta seminare l'idea che *"accuracy" non basta*. Il sommativo a fine capitolo li costringerà a *scegliere* una $P$ quantitativa per ogni scenario.
+Qui solo seminare: *accuracy non basta*. Le metriche (sens/spec, AUC, balanced acc) NON si insegnano ora → gancio al cap. 04.
+
+Il sommativo finale li costringe a *scegliere* una $P$ per scenario.
 :::
 
 <!-- BEAT 4 — Nodo / Impatto: T, P, E -->
@@ -90,7 +105,9 @@ La metrica giusta dipende dall'asimmetria clinica: sensibilità/specificità, AU
 ![](../img/storyboard/sb-01_04.png){fig-align="center" width="72%"}
 
 ::: {.notes}
-Mitchell, 1997. Qualunque learner è descritto da **tre coordinate**: il *compito* $T$ che svolge, la *misura di performance* $P$ con cui lo valutiamo, l'*esperienza* $E$ (i dati) da cui ha imparato. Se sapete nominare $T$, $P$, $E$ per un sistema ML, sapete già metà di quello che serve per giudicarlo.
+Mitchell 1997. Tre coordinate: $T$ compito, $P$ misura, $E$ dati.
+
+Punto da far atterrare: nominare $T/P/E$ di un sistema = metà del lavoro per giudicarlo.
 :::
 
 ## Mitchell's definition
@@ -102,7 +119,7 @@ Mitchell, 1997. Qualunque learner è descritto da **tre coordinate**: il *compit
 ![](../img/Tom-Mitchell-2.webp){fig-align="center" width="22%"}
 
 ::: {.notes}
-Definizione operativa: il *learning* è un miglioramento misurabile di $P$ su $T$ man mano che si accumula $E$. **Non** è il "diventare intelligente": è il salire di un numero.
+Punto: learning = $P$ su $T$ migliora al crescere di $E$. **Non** "diventare intelligente": è un numero che sale.
 :::
 
 ## $T$ — the task
@@ -116,7 +133,7 @@ Definizione operativa: il *learning* è un miglioramento misurabile di $P$ su $T
 | In-bed patient monitoring | output position + dynamics at any given time |
 
 ::: {.notes}
-Il *task* è *cosa* il modello deve fare su un nuovo input — *non* il "training". Il training produce *modelli* capaci di svolgere il task; il task è una caratteristica del problema, non del processo di apprendimento.
+Distinzione a voce: il task è *cosa* fa su un nuovo input, **non** il training. Il training produce il modello; il task è del problema, non del processo.
 :::
 
 ## $P$ — the performance measure
@@ -130,7 +147,9 @@ Il *task* è *cosa* il modello deve fare su un nuovo input — *non* il "trainin
 | monitor in-bed dynamics | average error on position / dynamics |
 
 ::: {.notes}
-$P$ è un *numero* — quantitativo. Per ogni task scegliete una misura compatibile col tipo di output e con la distribuzione delle classi. Su esiti rari, "$\%$ correctly classified" da solo non basta (riprendete il beat 3: 95% trivial-accuracy).
+$P$ = un *numero*, compatibile con output e distribuzione delle classi.
+
+Richiamo beat 3: su esiti rari "$\%$ correctly classified" non basta (95% trivial-accuracy).
 :::
 
 ## $E$ — the experience (the data)
@@ -144,7 +163,9 @@ $P$ è un *numero* — quantitativo. Per ogni task scegliete una misura compatib
 | monitor in-bed dynamics | time-series from wearables + bed sensors + ground-truth video |
 
 ::: {.notes}
-$E$ = che *dati* il learner ha visto. La struttura di $E$ — etichettato? non etichettato? sequenziale? interattivo? — determina quale **tipo di apprendimento** serve (prossimo beat). Notate l'asimmetria $E$ pre-esistente (training set) vs $E$ generata dall'interazione (RL).
+$E$ = i *dati* visti. La sua struttura (etichettato? sequenziale? interattivo?) determina il **tipo di apprendimento** → gancio al prossimo beat.
+
+Aside: $E$ pre-esistente (training set) vs $E$ generata dall'interazione (RL).
 :::
 
 <!-- BEAT 5 — Metodo / Soluzione: where do labels come from? -->
@@ -154,7 +175,7 @@ $E$ = che *dati* il learner ha visto. La struttura di $E$ — etichettato? non e
 ![](../img/storyboard/sb-01_05.png){fig-align="center" width="76%"}
 
 ::: {.notes}
-Domanda che smista i quattro tipi di apprendimento. È anche il quadro che apre il sommativo, ora in coda al capitolo: dato uno scenario, basta chiedersi *dove sono le label e quando arrivano* per scegliere il paradigma.
+Domanda-chiave che smista i 4 tipi. È anche la chiave del sommativo: *dove sono le label e quando arrivano* → paradigma.
 :::
 
 ## Four kinds, in box order
@@ -165,7 +186,9 @@ Domanda che smista i quattro tipi di apprendimento. È anche il quadro che apre 
 - **Reinforcement** *(trophy)* — an *agent* takes actions and receives *rewards*; it learns a policy that maximises long-term gain.
 
 ::: {.notes}
-Ricucio esplicita alle 4 icone della slide precedente, lette da sinistra a destra: *tag* → supervised, *pattern* → unsupervised, *mano alzata* → active, *trofeo* → reinforcement. La distinzione operativa: *da dove arrivano le label e quando?* Tutte in anticipo → supervised; nessuna → unsupervised; su richiesta del modello → active; come reward di un'interazione → RL. Nessuno dei quattro è "meglio" — dipende dal problema.
+Ricucire alle 4 icone della slide precedente (da sinistra): tag → supervised, pattern → unsupervised, mano alzata → active, trofeo → reinforcement.
+
+Aside da far atterrare: nessuno è "meglio" — dipende dal problema.
 :::
 
 <!-- BEAT 6 — Payoff / Domanda finale -->
@@ -175,7 +198,7 @@ Ricucio esplicita alle 4 icone della slide precedente, lette da sinistra a destr
 ![](../img/storyboard/sb-01_06.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Elena ora sa **cos'è** un sistema ML ($T/P/E$) e che **tipo** di apprendimento usa il suo punteggio di rischio. Ma non sa ancora *come* la macchina arriva al verdetto. Quella è la domanda del capitolo 2.
+Elena ora sa **cos'è** ($T/P/E$) e che **tipo** di apprendimento. Ma non *come* decide → gancio al cap. 2.
 :::
 
 ## Pre-hook → chapter 2: classifiers
@@ -185,7 +208,9 @@ The simplest learner makes **one** decision: it draws a line on a chart of featu
 That line-drawer is a **classifier** — and it is where the black box opens next.
 
 ::: {.notes}
-Il pre-hook è scriptato. Date 30 secondi al "*draws a line*" perché è il gancio visivo letterale del riquadro 1 dello storyboard del cap. 02. **Non rivelare** ancora il vocabolario ($f:\mathbb{R}^d \to \{1,\ldots,K\}$, partizione dello spazio, 0/1 loss): lasciare lo studente con la *domanda*.
+Pre-hook scriptato. 30s sul "*draws a line*" = gancio al riquadro 1 dello storyboard cap. 02.
+
+**Non rivelare** il vocabolario ($f:\mathbb{R}^d \to \{1,\ldots,K\}$, partizione, 0/1 loss): lasciare la *domanda* aperta.
 :::
 
 <!-- ============================================================ -->
@@ -197,7 +222,11 @@ Il pre-hook è scriptato. Date 30 secondi al "*draws a line*" perché è il ganc
 ## Exercises {.inverse .center background-color="#1F4257"}
 
 ::: {.notes}
-Blocco esercizi. In aula, i 4 item formativi (MCQ + applicativi + argomentativi) sono di solito uno strumento di **recap o di studio post-lezione**: li proietto come "self-check", lascio 1-2 minuti per pensare, poi rivelo la soluzione. Il sommativo (l'ultimo) è quello che gira **live** negli ultimi 8 minuti del capitolo (min 17–25). La slide bianca dopo ogni question serve a me per scrivere a mano la risposta in classe (lavagna / tavoletta); poi proietto la solution slide completa per il confronto.
+Blocco esercizi.
+
+- 4 formativi = self-check / studio post-lezione: 1-2 min a pensare, poi reveal.
+- Sommativo (ultimo) = **live**, min 17–25 (ultimi 8′).
+- Slide bianca dopo ogni question = scrivo a mano la risposta, poi proietto la solution.
 :::
 
 <!-- ---------------- Item 01 — MCQ — ML vs traditional programming -->
@@ -212,13 +241,15 @@ A hospital deploys a model that predicts 30-day readmission from each patient's 
 - **D)** Machine learning is guaranteed to be more accurate than any hand-written rule, because learning from data removes human bias.
 
 ::: {.notes}
-Item 01 — *IB-01-introduction-01* — Comprehension / MCQ / difficoltà low–medium. Obiettivo: contrasto ML vs programmazione tradizionale (Obj. 2). Tempo di risposta atteso: ~60 secondi. Vedi `course/01-introduction/items/item_01_ml-vs-programming_mcq.md`.
+Item 01 — MCQ Comprehension, low–medium. Obj. 2 (ML vs programmazione tradizionale). ~60s.
+
+Ref: `course/01-introduction/items/item_01_ml-vs-programming_mcq.md`.
 :::
 
 ## Item 01 — Solution (write yours)
 
 ::: {.notes}
-Slide bianca: la uso per scrivere a mano la risposta in classe (lavagna o tavoletta). Lascio 60-90 secondi agli studenti per scegliere mentalmente A/B/C/D, poi accolgo l'opzione più votata e la giustifico. Avanzo alla prossima slide quando il consenso si è formato.
+Slide bianca. 60-90s per scegliere A/B/C/D, poi accolgo l'opzione più votata e la giustifico. Avanzo al consenso.
 :::
 
 ## Item 01 — Solution
@@ -232,7 +263,7 @@ Why the distractors are wrong:
 - **D** is the "ML is objective / always better" misconception: a model can score 95% accuracy and still be clinically useless on imbalanced data, and it inherits whatever bias is in its training data.
 
 ::: {.notes}
-Rinforzo del beat 2 ("you write the rules. a learner finds them"). Se qualcuno sceglie D, è il gancio perfetto per richiamare l'accuracy trap del beat 3 (95% trivial-accuracy).
+Rinforza beat 2. Se scelgono D → gancio all'accuracy trap del beat 3 (95% trivial-accuracy).
 :::
 
 <!-- ---------------- Item 02 — Applicativa — T/P/E + balanced accuracy -->
@@ -249,13 +280,15 @@ An ICU team wants a system that, **at admission**, predicts whether a patient wi
    *(b)* Use your answer to explain why balanced accuracy is the more appropriate choice of $P$.
 
 ::: {.notes}
-Item 02 — *IB-01-introduction-02* — Application / open-ended / medium. Obiettivo Obj. 1 ($T/P/E$ + scelta di $P$). Vedi `course/01-introduction/items/item_02_tpe-framing_applicativa.md` e rubrica `rubriche/rubrica_02_tpe-framing.md`. Tempo di risposta atteso live: ~4 minuti (compresi i calcoli) — in aula tipicamente lo lascio come homework e in lezione ne discuto solo le risposte.
+Item 02 — Application open-ended, medium. Obj. 1 ($T/P/E$ + scelta di $P$). ~4 min live (calcoli inclusi); di norma homework, in aula solo discussione.
+
+Ref: `items/item_02_tpe-framing_applicativa.md`, rubrica `rubriche/rubrica_02_tpe-framing.md`.
 :::
 
 ## Item 02 — Solution (write yours)
 
 ::: {.notes}
-Slide bianca per scrivere a mano $T/P/E$ + i due numeri (96% / 50%). Se gli studenti hanno già provato a casa, qui basta raccogliere a voce; se è la prima volta in aula, lascio 4 minuti.
+Slide bianca: scrivo $T/P/E$ + i numeri-chiave **96% / 50%**. Se già fatto a casa, raccolgo a voce; altrimenti 4 min.
 :::
 
 ## Item 02 — Solution
@@ -273,7 +306,9 @@ Slide bianca per scrivere a mano $T/P/E$ + i due numeri (96% / 50%). Se gli stud
 - *(b)* Plain accuracy is inflated by the 96% majority of negatives, so a clinically useless model still scores ≈ 96%. Balanced accuracy weighs the two classes equally; missing the rare class drags it to chance (50%) — honestly revealing the model is useless for the task that matters.
 
 ::: {.notes}
-Punto pedagogico: la *balanced accuracy* è definita nell'enunciato — non presuppone che sia stata insegnata prima. Valutare il *ragionamento*, non il vocabolario. Se uno studente arriva al "50% = no better than chance" con altre parole, è già *Good*. Rubrica completa (3 criteri × 3 livelli): `course/01-introduction/rubriche/rubrica_02_tpe-framing.md`.
+Grading: balanced accuracy è definita nell'enunciato → valutare il *ragionamento*, non il vocabolario. "50% = no better than chance" con altre parole = già *Good*.
+
+Rubrica: `rubriche/rubrica_02_tpe-framing.md`.
 :::
 
 <!-- ---------------- Item 03 — MCQ — Learning paradigm -->
@@ -290,13 +325,15 @@ A team builds a model that classifies chest X-rays as *normal* or *abnormal*. La
 - **D)** Unsupervised learning, because the model scans many X-rays that have no labels.
 
 ::: {.notes}
-Item 03 — *IB-01-introduction-03* — Application / scenario-based MCQ / medium. Obj. 3 (paradigma di apprendimento). Vedi `course/01-introduction/items/item_03_learning-paradigm_mcq.md`. Distrattore seducente: **A** (l'underlying model *è* supervised). Il fattore distintivo è la *richiesta selettiva* di label all'oracolo.
+Item 03 — scenario MCQ, medium. Obj. 3 (paradigma). Distrattore seducente: **A** (underlying model *è* supervised); discriminante = *richiesta selettiva* di label all'oracolo.
+
+Ref: `items/item_03_learning-paradigm_mcq.md`.
 :::
 
 ## Item 03 — Solution (write yours)
 
 ::: {.notes}
-Slide bianca. Se in aula ho tempo, faccio prima votare (poll Slido a 4 opzioni); se la maggioranza sceglie A, è esattamente l'occasione per insegnare la distinzione *active vs supervised*.
+Slide bianca. Se c'è tempo, poll Slido a 4 opzioni; se vince A → momento perfetto per insegnare *active vs supervised*.
 :::
 
 ## Item 03 — Solution
@@ -312,7 +349,7 @@ Why the distractors are plausible but wrong:
 - **D** — many X-rays *are* unlabelled, but the model is trained on labels (just sparingly requested), so it is not unsupervised.
 
 ::: {.notes}
-"Active learning = supervised + scelta delle label da richiedere" è il take-away. Se serve, richiamate lo scenario D del sommativo che segue (disease coding) — è lo stesso schema.
+Take-away: active = supervised + scelta delle label da richiedere. Se serve, link allo scenario D del sommativo (disease coding): stesso schema.
 :::
 
 <!-- ---------------- Item 04 — Argomentativa — Critique a framing -->
@@ -328,13 +365,15 @@ A colleague argues: *"We already have each patient's ICD diagnostic codes — le
 3. Under what (different) goal would the colleague's supervised approach be exactly the right choice?
 
 ::: {.notes}
-Item 04 — *IB-01-introduction-04* — Argumentation / argomentativa / medium–high. Obj. 3 + Obj. 1. Vedi `course/01-introduction/items/item_04_critique-framing_argomentativa.md` e rubrica `rubriche/rubrica_04_critique-framing.md`. Tempo di risposta atteso live: ~3 minuti; tipicamente lo do come **homework argomentativo** e in aula proietto la solution per il confronto.
+Item 04 — Argumentation, medium–high. Obj. 3 + 1. ~3 min live; di norma **homework argomentativo**, in aula proietto la solution.
+
+Ref: `items/item_04_critique-framing_argomentativa.md`, rubrica `rubriche/rubrica_04_critique-framing.md`.
 :::
 
 ## Item 04 — Solution (write yours)
 
 ::: {.notes}
-Slide bianca per costruire l'argomentazione a tre punti in classe — molto utile da gestire alla lavagna, mostrando esplicitamente il **swap di obiettivo** ("predire l'ICD esistente" vs "scoprire fenotipi nuovi"). Se non c'è tempo live, salto direttamente alla solution.
+Slide bianca: costruisco l'argomentazione a 3 punti alla lavagna, mostrando lo **swap di obiettivo** (predire ICD esistente vs scoprire fenotipi nuovi). Senza tempo → salto alla solution.
 :::
 
 ## Item 04 — Solution
@@ -347,7 +386,9 @@ Slide bianca per costruire l'argomentazione a tre punti in classe — molto util
 3. The colleague's **supervised** approach would be exactly right under a *different* goal: **predicting a patient's existing ICD diagnosis from their lab panels.** There the ICD codes are legitimately the target labels, and assigning new patients to known categories is supervised classification.
 
 ::: {.notes}
-Il payoff cognitivo dell'item è la separazione *goal vs availability of labels*. Premiare la coerenza argomentativa, non le parole-chiave: "clustering" / "unsupervised" / descrizione equivalente valgono allo stesso modo. Rubrica completa (3 criteri × 3 livelli): `course/01-introduction/rubriche/rubrica_04_critique-framing.md`.
+Payoff: separare *goal vs availability of labels*. Grading: premiare la coerenza, non le keyword ("clustering"/"unsupervised"/equivalenti valgono uguale).
+
+Rubrica: `rubriche/rubrica_04_critique-framing.md`.
 :::
 
 <!-- ---------------- Summative — Live (LAST) -->
@@ -364,13 +405,18 @@ For each scenario, write its **Task ($T$)**, **Experience ($E$)** and the **lear
 *Take-home challenge:* propose a quantitative **performance measure $P$** for each — we'll revisit at chapter 4 (model validation).
 
 ::: {.notes}
-**Sommativo** — ultimi ~8′ del capitolo. Chiedo solo $T$, $E$ e il paradigma — la $P$ quantitativa è prematura: le metriche le introduciamo seriamente al cap. 4. La "sfida da casa" su $P$ è un gancio esplicito al prossimo round. Aspettative del paradigma: A → supervised; B → unsupervised; C → reinforcement; D → active. Spotlight nel reveal sui due controintuitivi (C e D); A e B si auto-correggono via poll Slido. **Duale:** un'unica tabella condivisa con 4 righe, in cui remoto e presenza convergono sullo stesso oggetto. Se la classe è piccola, distribuisco A, B, C e tengo D come reveal collettivo.
+**Sommativo** — ultimi ~8′. Chiedo solo $T$, $E$, paradigma; la $P$ è prematura (cap. 4) → la sfida da casa su $P$ è il gancio al cap. 4.
+
+- Paradigmi: A supervised, B unsupervised, C reinforcement, D active.
+- Spotlight nel reveal sui controintuitivi **C e D**; A/B si auto-correggono via poll Slido.
+- Duale: unica tabella condivisa a 4 righe (remoto + presenza convergono).
+- Classe piccola: distribuisco A/B/C, tengo D come reveal collettivo.
 :::
 
 ## Summative — Solution (write yours)
 
 ::: {.notes}
-Slide bianca: riempio la tabella a 4 righe **in tempo reale** sulla shared board / lavagna mano a mano che gli studenti riportano. Il riempimento *durante* la fase di lavoro è il segnale di mastery del success criterion ("≥ 3 of 4 rows correct on first pass").
+Slide bianca: riempio la tabella a 4 righe in tempo reale mentre riportano. Success criterion: ≥ 3 of 4 rows correct on first pass.
 :::
 
 ## Summative — Solution {.smaller}
@@ -383,5 +429,9 @@ Slide bianca: riempio la tabella a 4 righe **in tempo reale** sulla shared board
 | **D** | Classify EHR notes by disease | Notes + labels on asked-for cases | **active** |
 
 ::: {.notes}
-**Reveal C:** in RL la $E$ **non** è un dataset etichettato ma uno *stream* di interazioni — accettate la cella se lo studente nomina l'interazione/feedback sequenziale. **Reveal D:** se uno cerchia "supervised" non sbaglia del tutto (l'underlying model *è* supervised); la risposta più precisa è "active" perché distingue lo scenario è la **richiesta selettiva di label**. Usate questi due reveal per *insegnare* la distinzione, non per penalizzare. **Take-home:** la $P$ sarà rivista al cap. 4 (model selection & validation).
+Reveal per insegnare, non penalizzare:
+
+- **C:** in RL $E$ NON è dataset etichettato ma *stream* di interazioni → accetto se nomina interazione/feedback sequenziale.
+- **D:** "supervised" non è del tutto sbagliato (model *è* supervised); preciso = "active" per la **richiesta selettiva di label**.
+- Take-home: $P$ rivista al cap. 4 (model selection & validation).
 :::

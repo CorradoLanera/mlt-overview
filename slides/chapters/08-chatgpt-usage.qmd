@@ -1,7 +1,11 @@
 ## Structure the ask; check the answer. {.center .inverse background-color="#1F4257"}
 
 ::: {.notes}
-Cover del capitolo 8 — 15 minuti, il più stretto del corso. Sei-parole approvata: due clausole con punto e virgola, in serie con cap. 01–07. **Pivot d'asse pedagogico**: per la prima volta nella serie, le due clausole sono entrambe *imperative* e il soggetto implicito non è la scatola, è il clinico. Sette capitoli hanno descritto *cosa fa il modello* ("*programs*", "*learners*", "*units*", "*tokens*"); ch. 08 descrive *cosa fa lo studente*. *Structure the ask* = Obj. 1 (7-slot template); *check the answer* = Obj. 2 (regola della competenza). Obj. 3 (canale + token) sta nei beat 4-5 ma non nel six-word — è una decisione tattica, non un'etica. Sommativo live ("Monday morning: rank the ED letters") gira negli ultimi ~7′ (min 8–15).
+Cover cap. 8 — 15 min, il più stretto del corso.
+
+- **Pivot pedagogico**: prima volta che le clausole sono *imperative* — soggetto è il clinico, non la scatola. Ch. 01–07 = *cosa fa il modello*; ch. 08 = *cosa fa lo studente*.
+- *Structure the ask* = Obj. 1 (7-slot); *check the answer* = Obj. 2 (regola competenza); Obj. 3 (canale+token) nei beat 4-5.
+- Sommativo live ("rank the ED letters") negli ultimi ~7′ (min 8–15).
 :::
 
 <!-- BEAT 1 — Hook: Monday morning, unusable answer -->
@@ -11,7 +15,11 @@ Cover del capitolo 8 — 15 minuti, il più stretto del corso. Sei-parole approv
 ![](../img/storyboard/sb-08_01.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Lunedì mattina dopo la lezione del cap. 7. Elena conosce *cosa è* ChatGPT — *Transformer, Pre-trained, Generative, Chat*. Sul drive condiviso, $200$ lettere ED da triage entro venerdì. Apre la chat, digita *"classify these as trauma or non-trauma"*. La risposta è quasi utile e completamente non-attivabile. *Sapere cos'è la scatola non era sapere come parlarci.* La pila di $200$ lettere è il **filo visivo continuo** del capitolo (frame 1, 3, e indirettamente 5). Lasciate respirare l'immagine 5 secondi prima di passare al perché.
+Lunedì mattina dopo cap. 7. Elena sa *cos'è* ChatGPT ma non come parlarci.
+
+- Storia: $200$ lettere ED, prompt *"classify these as trauma or non-trauma"* → risposta quasi utile, completamente non-attivabile.
+- Punto da landare: *sapere cos'è la scatola ≠ saperci parlare*.
+- La pila di $200$ lettere è il **filo visivo** del capitolo (frame 1, 3, 5). Lascia respirare l'immagine 5s.
 :::
 
 <!-- BEAT 2 — Contesto: the 7-slot prompt template -->
@@ -21,7 +29,10 @@ Lunedì mattina dopo la lezione del cap. 7. Elena conosce *cosa è* ChatGPT — 
 ![](../img/storyboard/sb-08_02.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-La richiesta non è prosa, è **architettura**. Sette slot — ciascuno sopprime un *failure mode specifico*. La card centrata + la one-liner *faded and crossed out* a sinistra mostrano *"out of one line, into seven slots"*. Le due bande della card subtly brighter (slot 3 *task* e slot 5 *output*) preannunciano i due slot *load-bearing* che il sommativo richiederà di cerchiare.
+Da dire a voce: la richiesta non è prosa, è **architettura** — 7 slot, ciascuno uccide un failure mode.
+
+- Visual: one-liner barrata a sinistra → card a 7 slot ("out of one line, into seven slots").
+- Le due bande più luminose (slot 3 *task*, slot 5 *output*) preannunciano i load-bearing del sommativo.
 :::
 
 ## The 7-slot prompt template {.smaller}
@@ -37,7 +48,10 @@ La richiesta non è prosa, è **architettura**. Sette slot — ciascuno sopprime
 | **examples** | $1$–$3$ worked input/output pairs | drift on edge cases — clean cases work, ambiguous ones don't |
 
 ::: {.notes}
-La tabella del capitolo. Ogni slot ha un *target operativo* preciso. Lo studente deve poter nominare almeno *role / task / output* come slot-firma e dire *"se manca X il modello sbaglia in modo Y"*. Slot $3$ (*task*) e slot $5$ (*output*) sono i due *load-bearing* del sommativo — vedi item $01$ per la discussione *task-dependent* di quali siano *most/least load-bearing* in altri task (es. *output* è dominante in extraction tasks, ma *role* domina in patient-facing leaflet writing).
+Obiettivo: lo studente sa nominare *role/task/output* e dire *"se manca X, sbaglia in modo Y"*.
+
+- *task* (3) + *output* (5) = load-bearing del sommativo.
+- Gancio a item $01$: *most/least* è **task-dependent** — *output* domina in extraction, *role* domina in leaflet patient-facing.
 :::
 
 <!-- BEAT 3 — Sfida: competence rule, two letters held back -->
@@ -47,7 +61,10 @@ La tabella del capitolo. Ogni slot ha un *target operativo* preciso. Lo studente
 ![](../img/storyboard/sb-08_03.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Due lettere si fermano. Hanno fraseggio non standard (es. *fragility fall* in un'$92$-yo descritta in linguaggio geriatrico, dove la regola clinica *"caduta da fragilità = trauma"* non è evidente dal lessico). La normatività della regola è resa **spaziale**: i $198$ rimangono nella pila (delegabili), i $2$ sono *fisicamente fuori* (non delegabili). Il cervello caldo = competenza posseduta; il question-mark scuro = competenza mancante. *Show* precede *tell*.
+Da dire a voce: due lettere si fermano — fraseggio non standard.
+
+- Esempio: *fragility fall* in $92$-yo, linguaggio geriatrico, dove *"caduta da fragilità = trauma"* non è ovvio dal lessico.
+- Visual = normatività spaziale: $198$ nella pila (delegabili), $2$ fuori (non delegabili). Cervello caldo = competenza; question-mark scuro = competenza mancante.
 :::
 
 ## The competence rule — operational form {.smaller}
@@ -62,7 +79,11 @@ For every candidate task, identify:
 If you do not have that expertise, the task is **not delegable**. The rule is **normative**, not optional — *delegating well is not delegating everything*.
 
 ::: {.notes}
-Cuore etico/operativo del capitolo. La regola è in due pezzi: (1) un *failure mode plausibile* (non "il modello allucina" generico, ma una citazione inventata che suona reale, un dosaggio arrotondato a un numero verosimile, una linea-guida che sembra esistere); (2) la *capability* per *catturarlo* (espressa come capacità, non come credenziale — *"ability to distinguish HR from RR"*, non *"an MD degree"*). Item $02$ scenario B esplora il caso speciale *non delegabile a prescindere dall'expertise* (interaction screening su lista di $8$ farmaci — l'unico modo *onesto* per verificare è consultare la fonte autoritativa, cioè la mossa che avresti fatto al posto del chatbot).
+Cuore etico/operativo. Insisti a voce sui due pezzi:
+
+- (1) *failure mode plausibile* — non "allucina" generico, ma citazione inventata che suona reale / dosaggio verosimile.
+- (2) *capability* per catturarlo, espressa come capacità non credenziale (*"distinguish HR from RR"*, non *"an MD degree"*).
+- Gancio item $02$ scenario B: caso speciale *non delegabile a prescindere*.
 :::
 
 <!-- BEAT 4 — Nodo: three channels + volume axis + token unit -->
@@ -72,7 +93,10 @@ Cuore etico/operativo del capitolo. La regola è in due pezzi: (1) un *failure m
 ![](../img/storyboard/sb-08_04.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-*Match the channel to the volume.* Il **token** è l'unità di costo: $1$ token $\approx \dfrac{3}{4}$ parola. Per $200$ lettere $\times 300$ parole $= 60\,000$ parole $\Rightarrow 80\,000$ token di input. Sotto i $\sim 10$ item, Web. Fino al centinaio, prompt design a mano. Oltre, API. Per $200$, API. Il *marker luminoso* sull'asse cade in zona API. **Regola disgiuntiva, non congiuntiva** — vedi item $03$ distrattore B: *volume* **OR** *repeatability* **OR** *integration* fa scattare API.
+Punto da landare: **match channel to volume**; il token è l'unità di costo ($1$ tok $\approx \dfrac{3}{4}$ parola).
+
+- $200 \times 300 = 60\,000$ parole $\Rightarrow 80\,000$ token input → zona API.
+- **Regola disgiuntiva, non congiuntiva**: *volume* OR *repeatability* OR *integration* → API. Gancio item $03$ distrattore B.
 :::
 
 ## Channel rule + token unit {.smaller}
@@ -107,7 +131,10 @@ Plus $\sim 200$ tokens of output (one label per letter): $\sim 80\,000$ tokens t
 :::
 
 ::: {.notes}
-**Disjunctive trigger** — ogni studente che legge la regola *conjunctively* ("API solo se TUTTI e tre") sbaglia su item $03$ scelta B. Il pattern numerico ($60\,000$ parole → $80\,000$ token) è il calcolo che Poll 1 del sommativo richiede; il distrattore $60\,000$ tokens di Poll 1 è proprio l'errore di unità (parole anziché token), $600\,000$ è ordine di grandezza off (*$\times 10$* — quando un risultato è così off, non aggiustare il numero, verifica il *modello mentale*).
+Trappola: chi legge la regola *congiuntivamente* ("API solo se TUTTI e tre") sbaglia item $03$ B.
+
+- Il calcolo $60\,000$ parole → $80\,000$ token è quello di Poll 1.
+- Distrattori Poll 1: $60\,000$ = errore di unità (parole≠token); $600\,000$ = ordine off ($\times 10$) → dillo: se così off, verifica il *modello mentale*, non aggiustare il numero.
 :::
 
 <!-- BEAT 5 — Metodo / Soluzione (perno sommativo) -->
@@ -117,7 +144,9 @@ Plus $\sim 200$ tokens of output (one label per letter): $\sim 80\,000$ tokens t
 ![](../img/storyboard/sb-08_05.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Perno del capitolo. Tutti gli elementi del sommativo *"Monday morning: rank the ED letters"* sono visibili come singola scena: scenario banner, 7-slot card con due slot cerchiati, *Failure mode / Expertise* blanks, calcolatore $200 \times 300 \times 4/3$, *tre modi* box con API cerchiato, due poll-bar ghostate. Vedi `course/08-chatgpt-usage/objectives.md` per il summative completo: ~$7$′ di lavoro, minuti $8$–$15$.
+Perno del capitolo: la scena anticipa tutto il sommativo (banner, 7-slot con 2 cerchiati, blanks Failure/Expertise, calcolo $200 \times 300 \times 4/3$, box tre modi con API cerchiato, due poll ghostate).
+
+- Summative completo in `course/08-chatgpt-usage/objectives.md`: ~$7$′, min $8$–$15$.
 :::
 
 <!-- BEAT 6 — Payoff + pre-hook ch. 09 -->
@@ -127,7 +156,10 @@ Perno del capitolo. Tutti gli elementi del sommativo *"Monday morning: rank the 
 ![](../img/storyboard/sb-08_06.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Payoff narrativo del capitolo. La regola di competenza diventa **spaziale**. Il modello acquista *strumenti* (search, mail), un *loop* che decide cosa chiamare dopo, e punti di decisione. Da *chat* a *agent*. Il *check* del cap. $8$ è il *gate* del cap. $9$. La **gate-line tratteggiata fluttuante** *non* è ancorata a una posizione precisa — *deve* leggersi come *"qualcuno deve metterla qui, ma chi e dove?"*. È il correlato visivo della domanda di apertura del cap. $9$.
+Payoff: la regola di competenza diventa **spaziale**. Da *chat* a *agent*.
+
+- Gancio cap. $9$: il *check* del cap. $8$ è il *gate* del cap. $9$. Modello acquista tool (search/mail) + loop che decide cosa chiamare.
+- La gate-line tratteggiata fluttuante NON è ancorata: deve leggersi *"qualcuno deve metterla qui, ma chi e dove?"*.
 :::
 
 ## Pre-hook → chapter 9: Agents {.smaller}
@@ -146,13 +178,20 @@ By step $4$, no human was scheduled to read *between* the model's reasoning and 
 *Step $1$ is reversible; step $4$ is irreversible the moment the SMTP socket closes.* **Where does the gate go?**
 
 ::: {.notes}
-Pre-hook a ch. 09 — cliff-hanger lessicali piantati su ognuno degli ingredienti di Obj. 1 di ch. 09: **tool** (search/mail), **loop** ("a loop that decided after each step which to call next"), **agent** (il nome dell'oggetto), **trust boundary** (la *posizione* del check). Niente *reversibility / human-in-the-loop / 4 interaction modes* ancora rivelati: vivono in objectives.md di ch. 09. **Pivot pedagogico**: in ch. $8$ il *check* era *un evento temporale*; in ch. $9$ diventa *una posizione in un grafo*. Stessa idea, asse diverso. *Monday → Wednesday* è la **prima volta nel corso** che la narrazione ha un avanzamento temporale a giorni invece che a capitoli — pivot a *use* della spine globale.
+Pre-hook a ch. 09 — cliff-hanger lessicali piantati: **tool** (search/mail), **loop**, **agent**, **trust boundary** (posizione del check).
+
+- NON rivelare ancora *reversibility / human-in-the-loop / 4 interaction modes* (stanno in objectives.md ch. 09).
+- Pivot: il *check* da evento temporale (ch. 8) a posizione in un grafo (ch. 9).
+- *Monday → Wednesday* = prima volta che la narrazione avanza a giorni, non a capitoli.
 :::
 
 ## Exercises {.inverse .center background-color="#1F4257"}
 
 ::: {.notes}
-Blocco esercizi. I 3 item formativi sono recap/self-study; il sommativo live (*"Monday morning: rank the ED letters"*) gira negli ultimi $\sim 7$′ (min $8$–$15$). **Nota di set-size:** ch. 8 chiude a 3 item, *tutti Application* — stessa scelta di ch. 5 e ch. 7. La mossa Argumentation naturale del capitolo (*"argomenta se delegare un task borderline"*) è già operativamente testata dal verdict B di item $02$ (scenario *not-delegable-regardless-of-expertise*). Argumentation deliberatamente assente, *by design*. Item bank **mono-categoriale** per coerenza con la natura del capitolo: insegna una *pratica*, non un *meccanismo*.
+Esercizi: 3 item formativi (recap/self-study) + sommativo live negli ultimi $\sim 7$′ (min $8$–$15$).
+
+- Set-size: 3 item, tutti Application (come ch. 5, 7). Argumentation assente *by design*: già coperta dal verdict B di item $02$.
+- Item bank mono-categoriale: il capitolo insegna una *pratica*, non un *meccanismo*.
 :::
 
 <!-- Item 01 — Applicativa — 7-slot prompt for surgical procedure extraction -->
@@ -166,7 +205,10 @@ A clinical research team has $\sim 100$ **surgical operative notes** ($\sim 350$
 3. **Most & least load-bearing for this task**: pick the **one slot** whose removal would degrade output the most, and the **one slot** whose removal would degrade output the least — and *justify both with task-specific reasoning* (a slot that's least load-bearing here may dominate elsewhere).
 
 ::: {.notes}
-Item 01 — Application / applicativa / medium. Obj. 1 (7-slot prompt construction + *most/least* discrimination *task-relative*). Diverso dal sommativo: lì la coppia *task + output* è la canonical answer; qui (extraction task) *output* è dominante ma il vero gem dell'item è la sub-q $3$ — identificare *least load-bearing* costringe lo studente a ragionare *task-relative*. Lascio $5$–$6$ minuti.
+Item 01 — Application / medium. Obj. 1 (7-slot + *most/least* task-relative).
+
+- Diverso dal sommativo: qui (extraction) *output* domina; il gem è sub-q $3$ — il *least load-bearing* forza il ragionamento task-relative.
+- Lascio $5$–$6$ minuti.
 :::
 
 ## Item 01 — Solution (write yours)
@@ -174,7 +216,11 @@ Item 01 — Application / applicativa / medium. Obj. 1 (7-slot prompt constructi
 *Take 5 minutes. Use the 7-slot card. Be specific.*
 
 ::: {.notes}
-Buffer time. Chi sta scrivendo *"role: you are an expert"* — generic boilerplate — è sotto-Base; intercetta a voce. Chi sta scrivendo *"output: a single short label e.g. 'laparoscopic cholecystectomy', UNCLEAR if not clearly named"* — `UNCLEAR` literal escape — è verso *Good*. Chi aggiunge in *instructions* la regola di disambiguazione multi-procedure ("*if multiple procedures named, return the one listed first in the heading*") è verso *Excellent*.
+Buffer. Gira e intercetta a voce per livello:
+
+- *"role: you are an expert"* (boilerplate) = sotto-Base.
+- *output* con escape literal `UNCLEAR` = verso Good.
+- *instructions* con disambiguazione multi-procedure ("*return the one listed first in the heading*") = verso Excellent.
 :::
 
 ## Item 01 — Solution {.smaller}
@@ -186,7 +232,10 @@ Buffer time. Chi sta scrivendo *"role: you are an expert"* — generic boilerpla
 **(3) Most load-bearing: *output*** — without it the model produces **prose**, unusable for the audit's aggregation on *every* note, not just the hard ones. (*task* also defensible.) **Least load-bearing: *role*** (*for this task*) — the combination *task + output + examples* already forces a parseable label; *role* is here a *style amplifier*. **Role is highly load-bearing in *other* tasks** (e.g. patient-facing leaflet writing): the answer is **task-specific**, not a generic ranking. See [rubric](../../course/08-chatgpt-usage/rubriche/rubrica_01_seven-slot-prompt.md).
 
 ::: {.notes}
-**Take-home didattico**: la mossa *task-relative* in sub-q $3$ è il distintivo dell'item. Lo studente che dà una *generic ranking* dei slot (*"role è sempre il più importante"*) non ha capito il messaggio. Quello che identifica *output* come most + *role* come least *e* aggiunge "*per questo task*" è a *Excellent*. **`UNCLEAR` literal escape** è l'unico modo per impedire al modello di *inventare* una procedura quando la nota non la nomina — è la differenza fra un audit affidabile e un audit con *plausibilmente* allucinate.
+Take-home: la mossa *task-relative* (sub-q $3$) è il distintivo.
+
+- *Generic ranking* ("role è sempre il più importante") = non ha capito. *output* most + *role* least + "per questo task" = Excellent.
+- Dillo: `UNCLEAR` literal escape impedisce al modello di *inventare* una procedura non nominata.
 :::
 
 <!-- Item 02 — Applicativa — Competence rule on two scenarios -->
@@ -204,7 +253,10 @@ For **each scenario**, answer:
 3. **verdict** (delegable / not delegable) + one-sentence justification. Watch for the **special case**: a task may be *not delegable regardless of expertise*.
 
 ::: {.notes}
-Item 02 — Application / applicativa / medium–high. Obj. 2 (competence rule applicata a 2 scenari contrastivi). **Scenario A è delegabile con expertise**; **Scenario B è non delegabile a prescindere** — l'unico modo onesto per verificare $7$ altre interazioni non-note è consultare un drug-interaction database, cioè la mossa che il collega avrebbe fatto al posto del chatbot. Lascio $6$–$8$ minuti.
+Item 02 — Application / medium–high. Obj. 2 (competence rule su 2 scenari contrastivi).
+
+- A = delegabile con expertise; B = non delegabile a prescindere (verificare le altre $7$ interazioni richiede il database = la mossa che avresti fatto al posto del chatbot).
+- Lascio $6$–$8$ minuti.
 :::
 
 ## Item 02 — Solution (write yours)
@@ -212,7 +264,9 @@ Item 02 — Application / applicativa / medium–high. Obj. 2 (competence rule a
 *Take 6 minutes. Two scenarios, three sub-questions each.*
 
 ::: {.notes}
-Buffer time. Chi sta scrivendo per scenario B *"delegable, an experienced clinician would catch amiodarone-warfarin"* — è la *trap pedagogica* dell'item: ha letto la regola ma ha mancato la sua forma di ordine superiore (*delegating well is not getting lucky and catching the error*). Intercetta a voce: *"sai che la regola chiede 'puoi giudicare l'output **nel suo complesso**' — e nell'output 'non significant interactions found' ci sono *$7$* affermazioni implicite di non-interazione che richiedono il database per essere verificate"*.
+Buffer. Trap dell'item: chi su B scrive *"delegable, un clinico esperto coglierebbe amiodarone-warfarin"* ha mancato la forma di ordine superiore (*delegating well ≠ getting lucky*).
+
+- Intercetta a voce: la regola chiede *"puoi giudicare l'output **nel suo complesso**"* — e in *"no significant interactions"* ci sono $7$ non-interazioni implicite che richiedono il database.
 :::
 
 ## Item 02 — Solution {.smaller}
@@ -222,7 +276,10 @@ Buffer time. Chi sta scrivendo per scenario B *"delegable, an experienced clinic
 **Scenario B — *not delegable, regardless of expertise*** *— the special case.* Failure mode: LLM reports *"no significant interactions"* missing the well-known **amiodarone–warfarin** interaction (CYP2C9 + P-gp inhibition, INR rises $1$–$3$ weeks, guideline-level dose reduction required). Expertise to catch: knowing the specific interaction, or **cross-checking every output against a maintained drug-interaction database** (UpToDate, Lexicomp, BNF). Verdict: ***not delegable, regardless of expertise***. *Even if* the colleague happened to know amiodarone–warfarin, verifying that the LLM has not missed *any* of the other $7$ interactions requires the **same database the colleague would have consulted instead of the chatbot**. *A task is not delegable when the only honest check is to re-do the task with the authoritative source.* See [rubric](../../course/08-chatgpt-usage/rubriche/rubrica_02_competence-rule-two-scenarios.md).
 
 ::: {.notes}
-**Take-home didattico**: la differenza fra *delegating well* e *getting lucky and catching the error* è il cuore della regola di ordine superiore. Lo studente che marca B come *delegable* — anche con una buona argomentazione — ha mancato il punto: la regola non chiede *"riusciresti a catturare uno specifico errore"*, chiede *"puoi giudicare l'output **nel suo complesso**"*. Per drug-interaction screening su $8$ farmaci la risposta onesta è "no, il database fa il lavoro che vorrei delegare al chatbot". *Delegating well is not delegating everything.*
+Take-home: la differenza *delegating well* vs *getting lucky* è il cuore.
+
+- B come *delegable* (anche ben argomentato) = mancato il punto. La regola chiede *"giudicare l'output nel complesso"*, non *"catturare uno specifico errore"*.
+- Chiusura: *Delegating well is not delegating everything.*
 :::
 
 <!-- Item 03 — MCQ scenario — Channel choice + token cost -->
@@ -245,7 +302,11 @@ For an estimate within $\sim \pm 20\%$, use $1$ token $\approx \dfrac{3}{4}$ wor
 - **D)** *Do it by hand without an LLM*, $0$ tokens — $40$ notes/month a trained reviewer can do in an afternoon.
 
 ::: {.notes}
-Item 03 — Application / MCQ scenario / medium. Obj. 3 (channel choice + token estimate). **B è il distrattore più sottile**: token count corretto, ma legge la regola API *conjunctively* ("solo se TUTTI e tre"). C la legge *disjunctively*, come il capitolo la enuncia. **D è il principled answer** che il capitolo invita a considerare — premia chi lo propone, poi correggi sulla *ricorrenza che moltiplica lo sforzo umano mentre l'API no*. Lascio $2$–$3$ minuti.
+Item 03 — Application / MCQ / medium. Obj. 3 (channel + token). Risposta: C.
+
+- B = distrattore più sottile: token giusto, regola letta *conjunctively*. C = *disjunctively* (corretto).
+- D = principled answer: premia chi lo propone, poi correggi (la ricorrenza moltiplica lo sforzo umano, l'API no).
+- Lascio $2$–$3$ minuti.
 :::
 
 ## Item 03 — Solution (write yours)
@@ -253,7 +314,7 @@ Item 03 — Application / MCQ scenario / medium. Obj. 3 (channel choice + token 
 *Discuss with your neighbour: which option, and why is the **discriminator** between B and C?*
 
 ::: {.notes}
-Buffer time. Chi sta esitando fra B e C ha colto il volume + l'unità di misura ma sta leggendo la regola API in modo congiuntivo. Chi propone D ha senso del costo — premia, poi correggi sulla ricorrenza.
+Buffer. Esitazione B/C = ha colto volume+unità ma legge la regola in modo congiuntivo. D = senso del costo, premia poi correggi sulla ricorrenza.
 :::
 
 ## Item 03 — Solution {.smaller}
@@ -267,7 +328,9 @@ Token estimate: $40 \times 250 = 10\,000$ words $\Rightarrow 10\,000 \times \dfr
 - **D** — *principled answer*, reward the cost-sense — but $40$/month × $6$ = $240$ classifications with audit-level consistency expectation; recurrence *multiplies* human effort while API does not. *Good question, wrong scenario.*
 
 ::: {.notes}
-**Take-home didattico**: la regola API è **disgiuntiva**, non congiuntiva. Lo studente che sceglie B ha letto solo metà della regola. Voce docente al reveal: distrattore D è premiato come *"hai fatto la domanda giusta — *do I even need an LLM here?* — ma in questo scenario la ricorrenza ti torna addosso"*. La differenza fra B e C è il *single discriminator* dell'item.
+Take-home: regola API **disgiuntiva**. B = ha letto metà regola. B vs C = il single discriminator dell'item.
+
+- Voce al reveal su D: *"domanda giusta — do I even need an LLM here? — ma qui la ricorrenza ti torna addosso"*.
 :::
 
 <!-- Summative — Monday morning: rank the ED letters -->
@@ -299,7 +362,11 @@ Token estimate: $40 \times 250 = 10\,000$ words $\Rightarrow 10\,000 \times \dfr
 **Two live polls:** *Token estimate* — $\sim 60\,000$ / $\sim 80\,000$ / $\sim 200\,000$ / $\sim 600\,000$ · *Access mode* — *Web chat* / *Prompt design in chat* / *API* / *"do it by hand without an LLM"*.
 
 ::: {.notes}
-Sommativo — gira negli ultimi $\sim 7$′ (min $8$–$15$). ~$1$′ leggi scenario + apri polls + ~$2$′$30$″ fill 7-slot + cerchia *task* + *output* (Poll $1$ chiude min $11$ o $\geq 80\%$, hard cap $90$″) + ~$1$′ blanks Failure mode/Expertise + ~$1$′ token estimate + access mode (Poll $2$ chiude min $13$ o $\geq 80\%$) + ~$1$′$30$″ reveal. **Banco unico condiviso**. **Distrattori Poll 1**: $60\,000$ = parole anziché token (unità); $200\,000$ = duplica template per chiamata (premia osservazione, correggi); $600\,000$ = ordine off ($\times 10$, *campanello d'allarme* — verifica modello mentale, non aggiustare numero). **Distrattori Poll 2**: *Web* = non sa volume; *Prompt design* = sa il prompt non la delivery; *"by hand"* = risposta *seria*, premia chi la dà. **Reveal finale:** *"hai scritto il prompt, l'hai consegnato, leggeresti ogni output prima di farne qualcosa. Quello è **chat**. Ma se il sistema **agisce** sull'output senza che tu legga? Quello è un **agent** — capitolo 9."*
+Sommativo — ultimi $\sim 7$′ (min $8$–$15$). Banco unico condiviso. Timing:
+
+- $\sim 1$′ scenario+polls · $\sim 2$′$30$″ fill 7-slot + cerchia *task*/*output* (Poll 1 chiude min $11$ o $\geq 80\%$, hard cap $90$″) · $\sim 1$′ blanks Failure/Expertise · $\sim 1$′ token+access (Poll 2 chiude min $13$ o $\geq 80\%$) · $\sim 1$′$30$″ reveal.
+- Distrattori Poll 1: $60\,000$=unità (parole≠token); $200\,000$=duplica template (premia, correggi); $600\,000$=ordine off $\times 10$ (verifica modello, non numero). Poll 2: Web=non sa volume; Prompt design=sa prompt non delivery; *by hand*=risposta seria, premia.
+- Reveal: *"hai scritto il prompt, l'hai consegnato, leggeresti ogni output. Quello è **chat**. Ma se il sistema **agisce** senza che tu legga? Quello è un **agent** — cap. 9."*
 :::
 
 ## Summative — Solution {.smaller}
@@ -315,5 +382,8 @@ Sommativo — gira negli ultimi $\sim 7$′ (min $8$–$15$). ~$1$′ leggi scen
 **Take-home.** A usable Monday-morning LLM workflow is **one part prompt-engineering** (the seven slots), **one part competence-honesty** (the rule + the *not-delegable-regardless* special case), **one part channel choice** (Web → Prompt design → API, with the token as cost unit). For $200$ letters of an audit, the answer is **API, not chat**. *Delegating well is not delegating everything.*
 
 ::: {.notes}
-Reveal finale e chiusura del capitolo. Voce docente — *closing spine beat* a ch. 9: *"in questo esercizio hai scritto il prompt, l'hai consegnato, e leggeresti ogni uno dei $200$ output prima di farne qualcosa. Quella è **chat**. Ma se il sistema **agisce** sull'output senza che tu legga? Quello è un **agent** — e quello è il capitolo $9$."* Pausa di $5$ secondi sul question mark del frame $6$ del payoff prima di chiudere.
+Reveal finale + chiusura capitolo. Closing spine beat a ch. 9:
+
+- Voce: *"hai scritto il prompt, l'hai consegnato, leggeresti ognuno dei $200$ output. Quella è **chat**. Ma se il sistema **agisce** senza che tu legga? Quello è un **agent** — capitolo $9$."*
+- Pausa $5$s sul question mark del frame $6$ prima di chiudere.
 :::
