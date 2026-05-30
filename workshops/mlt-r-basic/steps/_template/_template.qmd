@@ -1,0 +1,50 @@
+---
+title: "Step template"
+params:
+  solved: true
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  warning: false
+  message: false
+---
+
+<!--
+TEMPLATE — documents the dual-mode (solved / blank) convention for every step.
+
+Ogni step driver (`steps/NN-slug/NN-slug.qmd`) viene reso in DUE modi dallo stesso
+sorgente, pilotato dal parametro `params$solved`:
+
+  * `params$solved == TRUE`  -> versione "solved": il codice di soluzione gira e si vede.
+  * `params$solved == FALSE` -> versione "blank":  si mostra solo il prompt "your turn"
+                                (il file `yourturn-blank.R`), senza la soluzione.
+
+Render di entrambe le versioni con l'helper di repo:
+
+    Rscript _solved.R steps/NN-slug/NN-slug.qmd
+
+Convenzione: ogni blocco "da fare a lezione" è una COPPIA di chunk gemelli.
+- Il chunk SOLVED ha `eval=params$solved`  -> esegue (e mostra) la soluzione.
+- Il chunk BLANK  ha `eval=!params$solved` -> NON esegue; fa solo l'echo del file
+  `yourturn-blank.R`, che contiene lo scheletro/prompt che lo studente completa dal vivo.
+-->
+
+## Your turn
+
+Prompt for the live exercise goes here (ENGLISH, student-facing).
+
+```{r solved, eval=params$solved}
+#| code-fold: false
+# --- SOLVED: la soluzione gira e si vede solo quando params$solved == TRUE.
+# Esempio (da rimpiazzare nello step reale):
+1 + 1
+```
+
+```{r blank, eval=!params$solved, file="yourturn-blank.R", echo=TRUE}
+#| code-fold: false
+# --- BLANK: quando params$solved == FALSE mostriamo (echo) il contenuto di
+#     `yourturn-blank.R` SENZA eseguirlo. Quel file contiene lo scheletro
+#     "your turn" che si completa dal vivo. `eval=!params$solved` lo tiene inerte.
+```
