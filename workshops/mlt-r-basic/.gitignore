@@ -13,3 +13,5 @@ renv/staging/
 .quarto/
 *-solved.html
 *-blank.html
+# Rendered step driver HTML (demo steps 00/02/05) — regenerable from the .qmd
+/steps/**/*.html
