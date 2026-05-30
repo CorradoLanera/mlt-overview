@@ -1,7 +1,12 @@
 ## Earn complexity; protect the test. {.center .inverse background-color="#1F4257"}
 
 ::: {.notes}
-Cover del capitolo 10 — 15 minuti, lo stesso footprint di cap. 8 e cap. 9. La sei-parole chiude la trilogia post-pivot (cap. 8 *"Structure the ask; check the answer."*, cap. 9 *"Check the answer; gate the act."*, cap. 10 *"Earn complexity; protect the test."*) — tutte e tre imperative, soggetto implicito *il clinico*. La serie ha pivotato da *cosa fa il modello* a *cosa fa lo studente*, e ch. $10$ chiude il corso in quella stessa voce. *Earn* è il verbo-firma di Obj. $1$ (la complessità si **guadagna** per fallimento documentato del baseline); *protect* è la versione *agonistica* dello *hold* di cap. $4$ (sei tu contro il tuo lab che ti dice *"guarda questo numero!"*). Obj. $3$ — match interpretability + tradeoff clinico — **non** sta nei sei-parole: vive nella prosa e nel sommativo. Cap. $10$ è l'**ultimo capitolo** — `manifest.next_enabled` ritorna `None` — quindi il pre-hook non punta a un cap. $11$ ma a *workshop applicativi* + *vita professionale*.
+Cover cap. 10 — 15′, stesso footprint di cap. 8/9.
+
+- Chiude la trilogia: cap. 8 *structure/check*, cap. 9 *check/gate*, cap. 10 *earn/protect* — tutte imperative, soggetto *il clinico*.
+- *Earn* = Obj. 1 (complessità guadagnata); *protect* = versione agonistica dello *hold* di cap. 4.
+- Obj. 3 (interpretability + tradeoff clinico) non sta nei sei-parole: vive in prosa + sommativo.
+- **Ultimo capitolo**: pre-hook non a un cap. 11 ma a workshop + carriera.
 :::
 
 <!-- BEAT 1 — Hook: Friday morning, the audit folder -->
@@ -11,7 +16,35 @@ Cover del capitolo 10 — 15 minuti, lo stesso footprint di cap. 8 e cap. 9. La 
 ![](../img/storyboard/sb-10_01.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Venerdì mattina. La settimana operativa di Elena chiude qui — lunedì il *triage* di cap. $8$, mercoledì il *gate* di cap. $9$, oggi il *prossimo audit*. Il senior lascia la cartella e se ne va: *ICU readmission a $30$ giorni, $5\,000$ pazienti, $50$ feature candidate, prevalenza $\sim 5\%$, defence al clinical lead e al comitato etico fra tre settimane*. Elena ha **otto capitoli di strumenti**. Sente, per la prima volta, che non bastano. Sopra la cartella aleggiano *tre* trappole — non cinque: tre. Il week-calendar in basso chiude su Friday brillante (Mon/Wed faded — referenze a cap. $8$ e cap. $9$). *The box* è dormiente sul laptop in background — stesso oggetto di cinque capitoli fa, ma adesso fuori scena. Lascio respirare la scena $\sim 5$ secondi, poi pivoto sul *"non sono cinque pitfall, sono tre discipline"*.
+Venerdì mattina — chiude la settimana di Elena (lun cap. 8, mer cap. 9, oggi audit).
+
+- Scenario cartella: ICU readmission $30$gg, $5\,000$ pz, $50$ feature, $p \sim 5\%$, defence fra 3 settimane.
+- Punto-chiave: Elena ha 8 capitoli di strumenti e per la prima volta sente che non bastano.
+- Lascia respirare $\sim 5$s, poi avanza alla slide-ponte (*five places* $\to$ tre discipline).
+:::
+
+<!-- BRIDGE — cap. 09 promette "five places"; qui il payoff visibile: cinque buche → tre discipline -->
+
+## You were promised *five places*. There are **three disciplines**. {.smaller}
+
+The folklore warns of *"five common pitfalls."* They are real — but not five rules to memorise: they **collapse into three disciplines**, applied in order.
+
+| Where a project falls | Discipline that catches it |
+|---|---|
+| 1. Reaching for complexity *before* a simpler model has **documentedly** failed | **① Earn complexity** |
+| 2. Trusting **accuracy** on imbalanced data ($95\%$ at $p = 5\%$) | **② Protect the test** |
+| 3. Setting the threshold without the **clinical cost** of FP vs FN | **② Protect the test** |
+| 4. **Deciding** anything after peeking at the test $\to$ contamination | **② Protect the test** |
+| 5. Shipping a model you **cannot defend** at the bedside | **③ Match interpretability** |
+
+*Not a checklist of five — an **order of operations** of three.*
+
+::: {.notes}
+Payoff visibile del cliff-hanger di cap. 09 (i *five dot-markers* di sb-09_06): il numero tondo del folklore si scioglie — cinque "buche" $\to$ tre discipline.
+
+- Il pivot che prima era solo a voce ora è a slide: dillo in una riga e prosegui.
+- 2-3-4 cadono tutte sotto *Protect the test* (R1 metrica $+$ soglia, R2 leakage).
+- Ordine, non menu: senza la 1ª il modello è scommessa; senza la 2ª ogni numero è dubbio; senza la 3ª è indifendibile.
 :::
 
 <!-- BEAT 2 — Discipline 1: Earn complexity -->
@@ -21,7 +54,11 @@ Venerdì mattina. La settimana operativa di Elena chiude qui — lunedì il *tri
 ![](../img/storyboard/sb-10_02.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Disciplina **uno**. Prima riga del notebook, *prima* del training: *baseline = logistic regression su $5$–$10$ feature scelte clinicamente, target = AUPRC $\ge 0.30$, escalate solo se il baseline fallisce sul validation*. Lo stop-criterion va scritto **prima** — scritto *dopo* è razionalizzazione, non disciplina. La complessità si **guadagna**: ogni unità di parametri in più va pagata in robustezza, interpretabilità, rischio di overfitting. Sali la scala (rung $1$ = logistic, rung $2$ = tree, rung $3$ = RF, rung $4$ = GB, rung $5$ = NN) **solo quando il rung sotto ha fallito documentato**. Il *signed-before* + *fail-to-climb* + *bottom-glows-brightest* è la *triade visiva* della disciplina.
+Disciplina **uno** — *earn complexity*.
+
+- Stop-criterion scritto **prima** del training: scritto *dopo* è razionalizzazione, non disciplina.
+- Complessità si **guadagna**: ogni unità in più pagata in robustezza/interpretabilità/overfitting.
+- Sali la scala (logistic → tree → RF → GB → NN) solo quando il rung sotto ha fallito *documentato*.
 :::
 
 ## Earn complexity — write the rule *before* training {.smaller}
@@ -32,7 +69,7 @@ Disciplina **uno**. Prima riga del notebook, *prima* del training: *baseline = l
 **The first three lines of the planning document — written *before* any model is trained.**
 
 1. **Baseline** — *the simplest model on the smallest sensible feature set*. E.g. logistic regression on $5$–$10$ clinically-chosen features (*age, ICU LOS, Charlson, prior $90$-day admissions, eGFR at discharge, number of medications*).
-2. **Baseline metric $+$ target** — *a number the baseline could plausibly reach.* E.g. AUPRC $\ge 0.30$ on the held-out **validation** split (or recall $\ge 0.60$ at precision $\ge 0.30$).
+2. **Baseline metric $+$ target** — *a number the baseline could plausibly reach.* E.g. AUPRC (ch. 4's AUC-PR) $\ge 0.30$ on the held-out **validation** split (or recall $\ge 0.60$ at precision $\ge 0.30$).
 3. **Escalation rule** — *one named failure, one named direction, one named "ship the baseline" branch.* E.g. *"if the baseline reaches the target on validation, **ship the baseline**; otherwise escalate to gradient boosting on a wider clinical feature set."*
 
 :::
@@ -50,7 +87,11 @@ A binding stop-criterion has **two** real branches: *escalate* **and** *ship the
 :::
 
 ::: {.notes}
-La tabella operativa di Obj. $1$. Il punto pedagogico che porta il peso: la *temporalità* della stop-criterion. Scriverla *prima* è disciplina; scriverla *dopo* è razionalizzazione — è esattamente il distrattore A dell'item $01$ (Marco scrive la stop-criterion nei *Methods* dopo aver visto entrambi i risultati). Il distrattore D dell'item $01$ è la versione più sottile: target *sintatticamente corretto* ($0.80$) ma *irraggiungibile* su $p = 5\%$ — l'*if-then* ha solo un ramo reale (escalate). La stop-criterion deve avere *due rami reali*, altrimenti è un *piano travestito da regola*. Reveal-only: in classe leggo solo i tre punti della colonna sinistra e la box-quote sulla destra; il resto lo sa il deck.
+Tabella di Obj. 1. Punto che porta il peso: la **temporalità** della stop-criterion.
+
+- Gancio item 01: distrattore A = scritta *dopo* (Methods, Marco); D = target $0.80$ irraggiungibile su $p=5\%$, un solo ramo reale.
+- Da dire: stop-criterion deve avere *due rami reali*, altrimenti è un piano travestito da regola.
+- Reveal-only: leggo i 3 punti a sinistra + la box-quote a destra; il resto lo sa il deck.
 :::
 
 <!-- BEAT 3 — Discipline 2: Protect the test -->
@@ -60,7 +101,10 @@ La tabella operativa di Obj. $1$. Il punto pedagogico che porta il peso: la *tem
 ![](../img/storyboard/sb-10_03.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Disciplina **due**, in due regole che vivono insieme. **R$1$** — *accuracy trap*: l'*accuracy meter pegged at the top* è cablato a *una sola classe* della distribuzione $95\%$ / $5\%$ — la metrica è *rotta* prima che la voce docente lo dica. **R$2$** — *leakage rule*: il *locked drawer* + le *ghostly hands* bloccate da una *warm-orange chain* + il *$1\times$-only marker* è la visualizzazione operativa del *protect the test*. Il *connector "R1 + R2"* in basso lega le due metà: **una disciplina, due regole**.
+Disciplina **due** — *protect the test*. Una disciplina, due regole che vivono insieme.
+
+- R1 *accuracy trap*: $95\%$ su $p=5\%$ è la maggioranza, metrica rotta.
+- R2 *leakage rule*: il test si apre una volta sola, alla fine.
 :::
 
 ## Protect the test — two rules, one discipline {.smaller}
@@ -97,7 +141,11 @@ The test is **looked at exactly once, at the end, and never again**.
 :::
 
 ::: {.notes}
-Le due regole di Obj. $2$. **R$1$** è l'item $02$ (Sara presenta $94.8\%$ di accuracy, *exactly inside the always-predict-NO band*) — distrattori canonici: $80\%$ = prevalenza letta male; $50\%$ = confusione baseline-random con baseline-majority; $100\%$ = confusione accuracy con true-negative rate. **R$2$** è l'item $03$ (Davide guarda il test, bumpa L$2$, riguarda il test) — il punto sottile è che la regola si attiva sul *decidere*, non sul *guardare*; e la contaminazione è *retrospettiva*: un *fresh validation split* (item $03$ distrattore D) fixa il futuro ma **non** ripara il test già contaminato — serve un *new test*, non solo una *fresh validation*. Reveal-only sui dettagli matematici della baseline-on-prevalence; leggo a voce solo le due frasi-box.
+Le due regole di Obj. 2. Gancio agli item:
+
+- R1 → item 02 (Sara, $94.8\%$). Distrattori: $80\%$ prevalenza letta male; $50\%$ baseline-random vs majority; $100\%$ accuracy vs TN-rate.
+- R2 → item 03 (Davide). Punto sottile: si attiva sul *decidere* non sul *guardare*; contaminazione retrospettiva, serve *new test* non *fresh validation* (distrattore D).
+- Reveal-only sulla matematica baseline-on-prevalence; leggo a voce le due frasi-box.
 :::
 
 <!-- BEAT 4 — Discipline 3: Match interpretability -->
@@ -107,7 +155,10 @@ Le due regole di Obj. $2$. **R$1$** è l'item $02$ (Sara presenta $94.8\%$ di ac
 ![](../img/storyboard/sb-10_04.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Disciplina **tre**. La tecnica di interpretabilità segue la **famiglia del modello** (mappatura $1{:}1$, colonna sinistra → colonna destra). La connessione *RF/GB ↔ variable importance + SHAP* è in warm orange acceso: è la coppia che la narrativa sceglie (Elena ship un gradient boosting con SHAP, non una logistic cieca). **Crucially**: la *balance-scale* a destra con il *clinical-lead silhouette* in posa di pivot — il tradeoff *interpretability vs performance* **non è una scelta tecnica**, è una **scelta clinica**, e la prende il clinical lead, non il data scientist. Slide *reveal-only* in classe (lascio respirare l'immagine $\sim 5$ secondi e cito a voce solo la signature line *"the tradeoff is clinical"*); la tabella espansiva la lasci al deck per consultazione asincrona.
+Disciplina **tre** — *match interpretability*. Tecnica segue la famiglia del modello ($1{:}1$).
+
+- Punto-chiave da dire: il tradeoff interpretability vs performance **non è tecnico, è clinico** — lo prende il clinical lead, non il data scientist.
+- Reveal-only: respira l'immagine $\sim 5$s, cito solo *"the tradeoff is clinical"*; tabella al deck.
 :::
 
 ## Match interpretability — the $1{:}1$ mapping {.smaller}
@@ -126,7 +177,10 @@ Disciplina **tre**. La tecnica di interpretabilità segue la **famiglia del mode
 *The committee's question is not "is the model interpretable?" — it is "why **this** model on **this** patient?". The answer is owed to the **patient**, before the committee even asks.*
 
 ::: {.notes}
-La regola operativa di Obj. $3$. **Mossa critica**: la *scelta* del livello di interpretabilità è **clinica**, non tecnica — se il SHAP-su-forest cattura abbastanza readmission da giustificare la perdita di interpretabilità built-in, il paziente è meglio servito dal *box con attribution* che dal *semplice cieco*. Il giudizio è del *clinical lead*, non del data scientist. Item $04$ (applicativa): la risposta *invertita* — *"revert to logistic + coefficients because the extra recall is below the cost-ratio threshold"* — è **accettata a Excellent** se il framing clinico è ben posto. La rubrica misura *applicare il tradeoff come scelta clinica*, non *scegliere random forest*.
+Regola operativa di Obj. 3. Mossa critica: la scelta del livello di interpretabilità è **clinica**, non tecnica — la fa il clinical lead.
+
+- Gancio item 04: la risposta *invertita* (revert to logistic + coefficients) è accettata a Excellent se il framing clinico è ben posto.
+- Da dire: la rubrica misura *applicare il tradeoff*, non *scegliere random forest*.
 :::
 
 <!-- BEAT 5 — Method + summative perno: Monday's audit, Friday's defence -->
@@ -136,7 +190,9 @@ La regola operativa di Obj. $3$. **Mossa critica**: la *scelta* del livello di i
 ![](../img/storyboard/sb-10_05.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Perno del capitolo. Tutti gli elementi del sommativo *"Monday's audit, Friday's defence"* sono visibili come singola scena: banner scenario (ICU readmission a $30$gg, $5\,000$ pazienti, $50$ feature, $p = 5\%$), grid $3 \times 3$ con i tre discipline-icon nella prima colonna (ladder+scroll / locked-drawer+broken-meter / mapping+scale) e colonne $2$–$3$ vuote per gli studenti, due bar-chart ghostate (Poll $1$ con la barra $95\%$ taller — accuracy trap; Poll $2$ con la barra *no, because we changed the model* taller — leakage rule), slot di giustificazione *"Why this model?"* a una riga. Banco **unico condiviso** (presenza + remoto); $\sim 9$′ di sommativo (min $6$–$15$).
+Perno: anticipa il sommativo *"Monday's audit, Friday's defence"* — la scena mostra già scenario, grid $3\times3$ delle tre discipline e le due poll.
+
+- $\sim 9$′ di sommativo (min $6$–$15$), banco unico condiviso (presenza + remoto).
 :::
 
 ## Summative — *Monday's audit, Friday's defence* {.inverse .smaller background-color="#1F4257"}
@@ -170,7 +226,12 @@ Plus **one sentence**: *"Why this model?"*
 :::
 
 ::: {.notes}
-Sommativo — gira negli ultimi $\sim 9$′ (min $6$–$15$). $\sim 1$′ leggi scenario + apri polls + $\sim 2$′$30$″ fill Section $1$ (baseline + metric/target + stop-criterion) [Poll $1$ chiude min $10$ o $\geq 80\%$, hard cap $90$″] + $\sim 2$′$30$″ Section $2$ (metric + threshold + leakage trap) [Poll $2$ chiude min $12$ o $\geq 80\%$] + $\sim 1$′$30$″ Section $3$ (final model + interpretability + clinical defence) + $\sim 1$′$30$″ instructor-led reveal. **Distrattori Poll $1$** nominati nel reveal: $50\%$ = "ha confuso baseline-random con baseline-majority"; $80\%$ = "ha letto la prevalenza come $20\%$ invece di $5\%$"; $100\%$ = "ha confuso *accuracy* con *true-negative rate*". La risposta corretta $95\%$ si legge da $1 - 0.05$. **Distrattori Poll $2$**: *yes* = "non ha applicato R$2$"; *yes if both reported* = "ha confuso trasparenza con correttezza"; *only after a fresh validation* = "ha la soluzione operativa ma non la regola — la *correzione* è usare un *new test*, non solo una *fresh validation*". **Nota di tempistica**: per liberare $9$′ al sommativo la fase espositiva va portata a $\sim 6$′ — leggo a voce solo *KISS / iterate*, *accuracy trap*, *leakage rule*; *interpretability* e *Modern Alchemist* restano *reveal-only* (la classe le legge sul deck).
+Sommativo — ultimi $\sim 9$′ (min $6$–$15$). Tempi:
+
+- $\sim 1$′ scenario + apri polls; $\sim 2$′$30$″ Section 1 [Poll 1 chiude min $10$ o $\ge 80\%$, cap $90$″]; $\sim 2$′$30$″ Section 2 [Poll 2 chiude min $12$ o $\ge 80\%$]; $\sim 1$′$30$″ Section 3; $\sim 1$′$30$″ reveal.
+- Distrattori Poll 1 (corretta $95\% = 1-0.05$): $50\%$ random vs majority; $80\%$ prevalenza $20\%$; $100\%$ accuracy vs TN-rate.
+- Distrattori Poll 2: *yes* = no R2; *if both reported* = trasparenza ≠ correttezza; *only after fresh validation* = soluzione ma non regola (serve *new test*).
+- Tempistica: per liberare i $9$′ porta l'esposizione a $\sim 6$′ — leggo a voce solo KISS/iterate, accuracy trap, leakage rule; interpretability + Modern Alchemist reveal-only.
 :::
 
 ## Summative — canonical solution {.smaller}
@@ -193,7 +254,10 @@ Sommativo — gira negli ultimi $\sim 9$′ (min $6$–$15$). $\sim 1$′ leggi 
 :::
 
 ::: {.notes}
-Reveal finale del sommativo. Voce docente sulla regola di ordine superiore: *"sai che le best practice non sono un menu — sono un **ordine di operazioni**. Senza la prima (stop-criterion ex ante), qualunque modello complicato è una scommessa non motivata. Senza la seconda (metrica per il problema che hai + test sigillato), qualunque numero su qualunque slide è dubbio. Senza la terza (interpretability matched + tradeoff clinico), qualunque sistema 'che funziona' è indifendibile al primo paziente che chiede 'perché lei mi ha dimesso/non dimesso'."* La frase *"the three disciplines compose; they do not stack as four patches"* è il take-home dell'item $05$ (la critica al piano di Anna) — pre-shadowing dell'argomentativa.
+Reveal finale del sommativo. Voce docente (regola di ordine superiore):
+
+- Le best practice non sono un menu, sono un **ordine di operazioni**: senza la 1ª il modello complesso è scommessa non motivata; senza la 2ª ogni numero è dubbio; senza la 3ª ogni sistema è indifendibile al primo paziente.
+- *"three disciplines compose; not four patches"* = take-home dell'item 05 (Anna) — pre-shadow dell'argomentativa.
 :::
 
 <!-- BEAT 6 — Payoff + pre-hook: course closes, practice begins -->
@@ -203,7 +267,11 @@ Reveal finale del sommativo. Voce docente sulla regola di ordine superiore: *"sa
 ![](../img/storyboard/sb-10_06.png){fig-align="center" width="80%"}
 
 ::: {.notes}
-Il corso ha consegnato **due cose** in $240$ minuti: gli strumenti (cap. $1$–$7$) e l'inizio di una disciplina (cap. $8$–$10$). Il $2 \times 2$ degli *AI users* nel quadrante in alto a destra è il **frame di lettura della propria pratica** — non valutativo, *generativo*: *"in quale quadrante stai oggi? in quale vuoi stare a fine residenza?"*. **Tre quadranti** (*Dependent Outsider* / *Exposed Charlatan* / *Resistant Craftsman*) sono *stati di partenza* — visivamente identici (cold tint), tutti svantaggiati per ragioni diverse; **uno solo** (*Modern Alchemist*) è la *destinazione professionale* — warm-saturated, warm-glow rim, figura luminosa. Stessa grammatica visiva del $2 \times 2$ trust-boundary di cap. $9$ frame $4$, **segno semantico invertito**: lì il quadrante unique era *dangerous* (warning-glyph); qui è *aspirational* (luminous figure). Elena è in transito sulla diagonale (*Exposed Charlatan → Modern Alchemist*) — *body language registering forward motion, but not yet arrived*. Il time-bar in basso chiude la settimana (Mon/Wed/Fri faded) e si estende su *years* (sketched calendar grid). I due workshop-icon ancorati al time-bar pre-shadowano i workshop applicativi. **The box** è *still there* sul laptop in foreground-sinistro, ma **Elena lo copre parzialmente** — la composizione si inverte rispetto a cap. $5$ (lì il box dominava, qui Elena domina). Al far-right il ghosted hospital-monitor con il *red risk score* — la *stessa scena* dell'apertura del corso, chiusa: Elena ha la *audit folder* in mano, una *SHAP-style force plot* sulla pagina, e un *override* scritto a margine. **Open ring closed**.
+Payoff: il corso ha consegnato due cose in $240$′ — gli strumenti (cap. 1–7) e l'inizio della disciplina (cap. 8–10).
+
+- Da dire sul $2\times2$ AI users: frame generativo, non valutativo — *"in quale quadrante stai oggi? in quale vuoi stare a fine residenza?"*.
+- 3 quadranti = stati di partenza svantaggiati; solo *Modern Alchemist* è la destinazione. Stessa griglia del trust-boundary di cap. 9, segno invertito (lì *dangerous*, qui *aspirational*).
+- Open ring closed: il *red risk score* della prima scena torna, ma ora Elena lo interroga e fa override.
 :::
 
 ## Pre-hook → workshops $+$ a clinical career {.smaller}
@@ -223,9 +291,10 @@ Il corso ha consegnato **due cose** in $240$ minuti: gli strumenti (cap. $1$–$
 :::
 ::: {.column width="45%"}
 
-**Next two weeks — hands-on workshops:**
+**Hands-on workshops to follow:**
 
-- *clean ML pipeline end-to-end* — ch. $10$ disciplines on a real messy hospital export (stop-criterion in code, fresh validation split, sealed test);
+- **Practical Artificial Intelligence for Medical Data Analyses with R — Basic**;
+- **Practical Artificial Intelligence for Medical Data Analyses with R — Advanced**.
 
 **Then the career.** Project by project, audit by audit, defence by defence — the *Modern Alchemist* quadrant is not the gift of $240$ minutes of slides. *The course had ended; the practice was about to begin.*
 
@@ -233,7 +302,11 @@ Il corso ha consegnato **due cose** in $240$ minuti: gli strumenti (cap. $1$–$
 :::
 
 ::: {.notes}
-Pre-hook *fuori dal corso* — il pre-hook *vero* è la **carriera**, non un cap. $11$ (`manifest.next_enabled` ritorna `None`). Il $2 \times 2$ è il **frame di lettura della pratica** — commento a voce, *non valutato*: *"siete entrati in questo corso probabilmente come 'Exposed Charlatan' o 'Dependent Outsider'. L'obiettivo di questi tre giorni era fornirvi gli strumenti per **non rimanerci**. Il prossimo passo — diventare 'Modern Alchemist' — non è una questione di altre slide, è di quanti progetti veri farete applicando queste tre discipline"*. **Tre eco strutturali da nominare a voce**: (a) la *defence al comitato etico* della narrativa chiude esattamente con le tre domande seedate (*"why this model? why this metric? why should I trust it on my next patient?"*) — il sommativo le aveva prefigurate, la prosa le attualizza, Elena le risponde *in voce*; (b) il calendario *Monday → Wednesday → Friday → Friday $+$ $3$ settimane* chiude — le ultime tre narrative ($08$ Monday, $09$ Wednesday afternoon, $10$ Friday morning) hanno strutturato la **prima settimana di lavoro reale di Elena**, e adesso si estende alla *carriera*; (c) il *red risk score* della prima scena del corso è ancora rosso — ma adesso Elena lo *interroga, lo motiva, lo **override** in scritto*. Open ring closed. **Closing line, in voce**: *"the course had ended; the practice was about to begin."*
+Pre-hook fuori dal corso: il vero pre-hook è la **carriera**, non un cap. 11.
+
+- Voce docente (non valutato): *"siete entrati come Exposed Charlatan / Dependent Outsider. Diventare Modern Alchemist non è altre slide, è quanti progetti veri farete con queste tre discipline."*
+- Tre eco da nominare: (a) la defence chiude sulle 3 domande seedate (*why this model/metric/trust?*); (b) calendario Mon→Wed→Fri→+3sett si estende alla carriera; (c) red risk score della prima scena, ora interrogato e override. Open ring closed.
+- Closing line, in voce: *"the course had ended; the practice was about to begin."*
 :::
 
 
@@ -241,7 +314,11 @@ Pre-hook *fuori dal corso* — il pre-hook *vero* è la **carriera**, non un cap
 ## Exercises {.inverse .center background-color="#1F4257"}
 
 ::: {.notes}
-Blocco esercizi. **Cinque** item (uno in più di cap. $09$, perché Obj. $2$ contiene due regole indipendenti — R$1$ accuracy trap e R$2$ leakage rule — che non possono condividere un item). Mappatura: item $01$ = Obj. $1$ (timing della stop-criterion), item $02$ = Obj. $2$.R$1$ (accuracy trap su $p = 5\%$), item $03$ = Obj. $2$.R$2$ (leakage retroattivo), item $04$ = Obj. $3$ (interpretability matching + tradeoff clinico), item $05$ = **synthesis** (critica al piano di Anna che viola tutte e quattro le regole — Comprehension/Application/Application/Argumentation). Item $05$ ha lo stesso ruolo di item $04$ di cap. $09$: detect the *integrated misapplication* in a design the student did not write. Niente sub-units in cap. $10$ ($15$′ troppo brevi per un'ulteriore divisione interna).
+Blocco esercizi — **5** item (uno in più di cap. 9: Obj. 2 ha due regole indipendenti).
+
+- Mappatura: 01 = Obj. 1 (timing stop-criterion); 02 = R1 (accuracy trap $p=5\%$); 03 = R2 (leakage retroattivo); 04 = Obj. 3 (interpretability + tradeoff); 05 = **synthesis** (piano di Anna, viola tutte e 4).
+- Item 05 = stesso ruolo di item 04 cap. 9: detect the integrated misapplication in a design non scritto dallo studente.
+- Niente sub-units ($15$′ troppo brevi).
 :::
 
 <!-- Item 01 — MCQ — Stop-criterion ex ante -->
@@ -270,7 +347,9 @@ Item $01$ — Comprehension / MCQ / medium. Obj. $1$. **A è il distrattore più
 *Discriminator: a binding stop-criterion is **temporally ex ante** $\wedge$ **starts simple** $\wedge$ **has a real not-escalate branch**.*
 
 ::: {.notes}
-**Take-home**: la disciplina di *earn complexity* è *temporale* (prima del training) + *strutturale* (baseline semplice) + *realistica* (target raggiungibile). D è il caso che separa lo studente che ha colto la *forma sintattica* della regola da quello che ha colto la sua *forza vincolante*: in D la sintassi è perfetta (baseline + target + if-then) ma il *not-escalate* non può mai firing — escalation è già decisa.
+Take-home: earn complexity = temporale + strutturale + realistico.
+
+- Da dire su D: separa chi ha colto la *forma sintattica* da chi ha colto la *forza vincolante* — sintassi perfetta ma not-escalate non può mai firing, escalation già decisa.
 :::
 
 <!-- Item 02 — MCQ — Accuracy trap on p=5% -->
@@ -299,7 +378,9 @@ Item $02$ — Comprehension/Application / MCQ / medium. Obj. $2$.R$1$. **A** = p
 *Discriminator: compute the **right baseline on the right prevalence** before reading any model score.*
 
 ::: {.notes}
-**Take-home**: la disciplina di *accuracy trap* su sbilanciati è *non-leggere-accuracy-da-sola*. La trappola operativa: studenti che sanno il concetto ma sbagliano il numero (A) o usano la baseline del balanced-data world (C, $50\%$) o leggono accuracy *in plain English* (D, "right is right"). Voce docente: *"$95\%$ accuracy non significa il modello è quasi perfetto — significa che la classe maggioritaria è il $95\%$, e qualunque modello che non distingua le due classi vince a quel gioco. La domanda da fare per prima, su qualunque tabella di metriche di un classificatore, è: qual è la prevalenza?"*
+Take-home: accuracy trap = non-leggere-accuracy-da-sola. Trappola: sanno il concetto ma sbagliano numero (A), baseline balanced (C, $50\%$), accuracy in plain English (D).
+
+- Voce docente: *"$95\%$ accuracy non vuol dire modello quasi perfetto — vuol dire che la maggioranza è il $95\%$. La prima domanda su ogni tabella di metriche: qual è la prevalenza?"*
 :::
 
 <!-- Item 03 — MCQ — Leakage rule (Davide's sequence) -->
@@ -340,7 +421,9 @@ Item $03$ — Application / MCQ / medium-high. Obj. $2$.R$2$. **A** = legge R$2$
 *Discriminator: read R$2$ as a rule about **decisions on a dataset**, applied **retrospectively to the moment of the decision**.*
 
 ::: {.notes}
-**Take-home**: la regola R$2$ non è "non fit on test" — è "*nessuna decisione presa dopo un'osservazione sul test*". Voce docente sulla D (la risposta più matura): *"hai capito la direzione operativa giusta — una fresh validation è esattamente quello che si fa per evitare leakage di tuning. Ma la regola sotto è più dura: il test che hai guardato due volte è già un training set, e non c'è una procedura applicata dopo che lo ripara. Devi sacrificare un secondo split dal training pool — non puoi recuperare il primo."*
+Take-home: R2 non è "non fit on test" — è "nessuna decisione dopo un'osservazione sul test".
+
+- Voce docente su D (la più matura): *"direzione giusta, ma la regola è più dura: il test guardato due volte è già un training set, nessuna procedura dopo lo ripara. Sacrifichi un secondo split dal training pool — il primo non lo recuperi."*
 :::
 
 <!-- Item 04 — Applicativa — Interpretability defence -->
@@ -367,7 +450,9 @@ Item $04$ — Application / applicativa / medium-high. Obj. $3$. **C$1$** techni
 > **(b)** *The random forest catches meaningfully more readmissions than the logistic baseline ($0.32$ vs $0.27$ AUPRC, an extra recall margin clinically material on this service) — and the clinical cost of a missed $30$-day readmission (re-admission, possible adverse event, longer LOS) substantially exceeds the cost of explaining each prediction with a feature-importance ranking rather than a logistic coefficient, so on this audit the patient is better served by the more accurate model with a variable-importance defence than by the simpler logistic that misses more events.*
 
 ::: {.notes}
-La risposta Excellent. **C$1$** technique matching: *variable importance* per RF; rules out *coefficients*; distingue *global* (committee) da *per-patient* (clinical lead). **C$2$** technical justification: built-in/post-hoc come *regola* non come *menu*. **C$3$** clinical framing: il soggetto della frase è il *paziente*; il cost-of-failure è *clinicamente nominato* (re-admission, adverse event, LOS); il tradeoff è *posto* e *risolto dal clinical lead*. Vedi `rubrica_04_interpretability-defence.md`.
+Risposta Excellent — segnali a voce: C1 distingue *global* (committee) da *per-patient* (clinical lead); C3 soggetto = il *paziente*, cost-of-failure nominato clinicamente, tradeoff risolto dal clinical lead.
+
+- Rubrica: `rubrica_04_interpretability-defence.md`.
 :::
 
 ## Item 04 — Solution: what the rubric rewards {.smaller}
@@ -394,7 +479,9 @@ The rubric measures *applying the tradeoff as a clinical decision*, **not** pick
 :::
 
 ::: {.notes}
-Voce docente sull'*answer invertita*: *"se mi scrivi 'torno alla logistic perché su questo audit il guadagno di recall del random forest è sotto la soglia di accettabilità di opacità del nostro clinical lead', e poi mi nomini la soglia con il cost ratio — è una risposta Excellent. La rubrica misura se hai applicato il tradeoff come scelta clinica, non se hai scelto random forest. La logistic + coefficients è il **caso vincente** della disciplina, non un ripiego."* Bonus a Excellent per *SHAP* solo se ancorata operativamente (cosa aggiunge a variable importance: per-patient attribution che il global ranking non dà).
+Voce docente sull'answer invertita: *"se torni alla logistic perché il recall del RF è sotto la soglia di opacità del clinical lead, e nomini la soglia col cost ratio — è Excellent. La rubrica misura il tradeoff come scelta clinica, non la scelta del RF. Logistic + coefficients è il caso vincente, non un ripiego."*
+
+- Bonus SHAP a Excellent solo se ancorata: cosa aggiunge a variable importance = per-patient attribution.
 :::
 
 <!-- Item 05 — Argomentativa — Critique Anna's plan -->
@@ -436,7 +523,7 @@ Item $05$ — Argumentation / argomentativa / high. **Synthesis** di Obj. $1$ + 
 The earn-complexity violation gives the committee no answer to *"why this model?"* — only a general-superiority claim. The accuracy-trap violation collapses Anna's *"ready"* threshold to **below** what doing nothing scores. The leakage violation removes the held-out evidence that answers *"why should I trust it on my next patient?"*. The interpretability violation breaks the defence **twice** — the matching error (no coefficients on RF) **and** the framing error (interpretability as afterthought, not as patient-owed argument).
 
 ::: {.notes}
-Slide $1$/$2$ della soluzione di item $05$. La *cascade lethal* — $90\% < 95\%$ — è il segnale di Excellent sul C$2$ della rubrica (operational diagnosis). Lo studente che la nomina ha letto i due punti $(1)$ e $(2)$ *insieme*, non come violazioni isolate.
+Soluzione 1/2 item 05. Segnale Excellent (C2): la *cascade lethal* $90\% < 95\%$ — chi la nomina ha letto i punti (1) e (2) insieme, non isolati.
 :::
 
 ## Item 05 — Solution (c): the corrected plan {.smaller}
@@ -452,5 +539,8 @@ Slide $1$/$2$ della soluzione di item $05$. La *cascade lethal* — $90\% < 95\%
 > *The plan does not predetermine the model; it predetermines the **discipline** that decides between models. The three disciplines compose — **start simple, measure honestly, defend clinically** — as an **order of operations**, not as four independent patches.*
 
 ::: {.notes}
-Slide $2$/$2$ — la revisione corretta. **Excellent-level marker**: il piano non predetermina il modello ma la *disciplina*. La frase di chiusura — *"three disciplines compose; not four patches"* — è il take-home del capitolo intero. **Bias da non commettere**: se uno studente propone *logistic + coefficients* come outcome finale, è il **winning case** della disciplina (built-in, simpler, smaller risk per unit error), non un ripiego — vedi `rubrica_05_critique-the-plan.md`. Voce docente di chiusura del corso, dopo l'item: *"queste tre discipline non sono regole d'arte separate. Sono un ordine di operazioni. Senza la prima, il modello complicato è una scommessa non motivata. Senza la seconda, qualunque numero è dubbio. Senza la terza, qualunque sistema è indifendibile al primo paziente che chiede 'perché mi ha dimesso?'."*
+Soluzione 2/2 — revisione corretta. Excellent marker: il piano predetermina la *disciplina*, non il modello. Take-home capitolo: *"three disciplines compose; not four patches"*.
+
+- Bias da non commettere: logistic + coefficients come outcome è il *winning case*, non un ripiego — `rubrica_05_critique-the-plan.md`.
+- Voce docente di chiusura corso: *"non sono regole separate, sono un ordine di operazioni. Senza la 1ª il modello è scommessa; senza la 2ª ogni numero è dubbio; senza la 3ª ogni sistema è indifendibile al primo paziente che chiede 'perché mi ha dimesso?'."*
 :::
