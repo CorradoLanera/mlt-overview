@@ -17,19 +17,23 @@ execute:
 Cumulative snapshot: data + split + recipe are given. The new beat is the heart of
 the workshop — a **`workflow_set`** of four candidate models (penalized logistic,
 kNN, RBF-SVM, random forest), each **tuned by 5-fold cross-validation**. We rank
-them by ROC-AUC, finalize the winner, and validate it once on the held-out test set
-with `last_fit()`.
+them by ROC-AUC (watching PR-AUC too), finalize the winner, and validate it once on
+the held-out test set with `last_fit()`.
 
 <!--
 Nota docente (IT): step HANDS-ON (~68 min), il CUORE del workshop. I beat
 precedenti (load/wrangle/split/recipe) sono "given". Il beat nuovo: definiamo 4
 spec con iperparametri `tune()`, li impacchettiamo in un `workflow_set`, e
-`workflow_map("tune_grid", ...)` li tuna tutti su 5-fold CV (grid = 8).
-Il "Your turn" CULMINANTE è il post-tuning: rank_results -> extract -> select_best
--> finalize_workflow -> last_fit (R/yourturn-04.R con i `___`).
-Wall-clock del tuning misurato: ~18s (dataset piccolo, `plan(multisession)`),
-quindi NESSUNA riduzione della griglia svm necessaria.
-L'evento è `1_yes` (secondo livello) -> `event_level = "second"` nel roc_curve.
+`workflow_map("tune_grid", ...)` li tuna tutti su 5-fold CV (grid = 8) con DUE
+metriche (roc_auc, pr_auc). Il "Your turn" CULMINANTE è il post-tuning:
+rank_results -> extract -> select_best -> finalize_workflow -> last_fit
+(R/yourturn-04.R con i `___`). Convenzione EVENT-FIRST: `died` è il primo livello,
+quindi roc_curve/pr_curve puntano a `.pred_died` senza `event_level`.
+PUNTO DIDATTICO (rumore del piccolo N): il glm "vanilla" dello step 03 segnava
+~0.88 su UN singolo test split, ma in CV la logistica regolarizzata sta molto più
+in basso e il RANDOM FOREST è in testa -> il singolo numero era ottimistico, la CV
+è il confronto onesto. Il parallelo `future` è un TOGGLE opzionale (a N=299 il
+tuning è di ~secondi; commenta la riga `plan()` e gira lo stesso, in sequenziale).
 -->
 
 # Given — data, split, recipe {#sec-given}
@@ -45,20 +49,26 @@ library(janitor)
 library(tidymodels)
 set.seed(123)
 
-indo_raw <- import(here("data-raw", "indo_rct.csv"), setclass = "tibble")
+hf_raw <- import(here("data-raw", "heart_failure.csv"), setclass = "tibble")
 
-indo <- indo_raw |>
+hf <- hf_raw |>
   clean_names() |>
-  select(outcome, age, risk, gender, sod, rx, type) |>
-  filter(!is.na(age)) |>
-  mutate(outcome = factor(outcome, levels = c("0_no", "1_yes")))
+  select(-time) |>
+  mutate(
+    outcome = factor(
+      if_else(death_event == 1, "died", "survived"),
+      levels = c("died", "survived"),
+    ),
+  ) |>
+  select(-death_event) |>
+  mutate(across(c(anaemia, diabetes, high_blood_pressure, sex, smoking), factor))
 
 # Split ----
-data_split <- initial_split(indo, prop = 0.75, strata = outcome)
+data_split <- initial_split(hf, prop = 0.75, strata = outcome)
 train <- training(data_split)
 test  <- testing(data_split)
 
-# Recipe ----
+# Recipe (no imputation: heart_failure has no missing values) ----
 base_rec <- recipe(outcome ~ ., data = train) |>
   step_dummy(all_nominal_predictors()) |>
   step_zv(all_predictors()) |>
@@ -69,13 +79,16 @@ base_rec <- recipe(outcome ~ ., data = train) |>
 
 Each spec leaves its key hyper-parameters as `tune()`. We bundle them with the one
 recipe into a `workflow_set`, then `workflow_map()` tunes every workflow over a
-size-8 grid on 5-fold cross-validation.
+size-8 grid on 5-fold cross-validation, scoring **both** ROC-AUC and PR-AUC.
 
 ```{r tune}
 #| code-fold: false
 library(workflowsets)
 library(future)
-plan(multisession)
+
+# Optional speed-up: parallelize tuning across cores, leaving one for the OS.
+# Comment this line out and everything still runs — just sequentially.
+plan(multisession, workers = max(1, parallel::detectCores() - 1))
 set.seed(123)
 
 # Model specs (hyper-parameters left to tune) ----
@@ -86,6 +99,9 @@ rf_spec     <- rand_forest(mtry = tune(), min_n = tune()) |> set_engine("ranger"
 
 # Resamples ----
 folds <- vfold_cv(train, v = 5, strata = outcome)
+
+# Two metrics, watched together ----
+hf_metrics <- metric_set(roc_auc, pr_auc)
 
 # Workflow set ----
 wf_set <- workflow_set(
@@ -99,7 +115,7 @@ wf_res <- wf_set |>
     "tune_grid",
     resamples = folds,
     grid      = 8,
-    metrics   = metric_set(roc_auc),
+    metrics   = hf_metrics,
     verbose   = TRUE,
     seed      = 123,
   )
@@ -113,11 +129,16 @@ rank_results(wf_res, rank_metric = "roc_auc", select_best = TRUE)
 autoplot(wf_res)
 ```
 
+Read the ranking honestly. Our Step-03 glm scored high on a *single* test split,
+but on cross-validation the **random forest** tops the table while the linear
+models trail it — the single test number was optimistic, and the cross-validated
+comparison is the one we trust. Both metrics tell a consistent story here.
+
 # Your turn — finalize the winner & validate {#sec-yourturn}
 
 Rank the models, pull the winner's id and best hyper-parameters, **finalize** that
 workflow, and run **`last_fit()`** on the original split to score it once on the
-held-out test set. The event is `1_yes` (the *second* factor level).
+held-out test set — reporting ROC-AUC, PR-AUC, and accuracy.
 
 ```{r finalize-solved, eval=params$solved}
 #| code-fold: false
@@ -128,7 +149,7 @@ best_res    <- extract_workflow_set_result(wf_res, best_id)
 best_params <- select_best(best_res, metric = "roc_auc")
 final_wf    <- wf_set |> extract_workflow(best_id) |> finalize_workflow(best_params)
 
-final_fit <- last_fit(final_wf, split = data_split, metrics = metric_set(roc_auc, accuracy))
+final_fit <- last_fit(final_wf, split = data_split, metrics = metric_set(roc_auc, pr_auc, accuracy))
 collect_metrics(final_fit)
 ```
 
@@ -137,13 +158,15 @@ collect_metrics(final_fit)
 cat("```r", readLines(here("R", "yourturn-04.R")), "```", sep = "\n")
 ```
 
-## Test-set ROC curve & save the winner
+## Test-set ROC & PR curves, then save the winner
 
-```{r roc-and-save, eval=params$solved}
+```{r curves-and-save, eval=params$solved}
 #| code-fold: false
-collect_predictions(final_fit) |>
-  roc_curve(outcome, .pred_1_yes, event_level = "second") |>
-  autoplot()
+preds <- collect_predictions(final_fit)
+
+# Both curves — ROC (ranking) and PR (positive-class focus) ----
+preds |> roc_curve(outcome, .pred_died) |> autoplot()
+preds |> pr_curve(outcome, .pred_died) |> autoplot()
 
 # Persist the validated workflow + the CV ranking for the report (Step 05) ----
 saveRDS(final_fit, here("output", "final_fit.rds"))
@@ -154,6 +177,6 @@ saveRDS(
 ```
 
 The cross-validated ranking points at one model; `last_fit()` then reports its
-**honest test performance**. That single, validated `final_fit` object is what the
-next step turns into a self-contained, reproducible report — without ever
-re-tuning.
+**honest test performance** on both metrics. That single, validated `final_fit`
+object is what the next step turns into a self-contained, reproducible report —
+without ever re-tuning.

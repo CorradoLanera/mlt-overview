@@ -6,10 +6,11 @@ type every line together, and end with a model we can trust and a report we can 
 
 ## What you will build
 
-Starting from a real randomized-trial dataset, we import and wrangle the data, explore it
-with clinically meaningful summaries, fit a logistic-regression spine, then tune and compare
-a small "zoo" of models with a `workflow_set`, validate the winner on held-out data with
-`last_fit`, and wrap everything in a reproducible Quarto report.
+Starting from a real heart-failure clinical-records dataset, we import and wrangle the data
+(dropping a leaky column along the way), explore it with clinically meaningful summaries, fit
+a logistic-regression spine scored on **two** metrics (ROC-AUC and PR-AUC), then tune and
+compare a small "zoo" of models with a `workflow_set`, validate the winner on held-out data
+with `last_fit`, and wrap everything in a reproducible Quarto report.
 
 ## How to start
 
@@ -41,6 +42,7 @@ and continue from there. You will always have a clean, runnable starting point.
 
 ## Dataset
 
-We use `medicaldata::indo_rct`, a randomized controlled trial of indomethacin for the
-prevention of post-ERCP pancreatitis (602 patients, ~13% event rate). The outcome is
-`outcome` (post-ERCP pancreatitis: yes / no).
+We use the **heart-failure clinical records** (Chicco & Jurman 2020; 299 patients, ~32%
+event rate), seeded once into `data-raw/heart_failure.csv`. The outcome is in-hospital
+death (`died` / `survived`). We deliberately drop the follow-up-time column, which would
+*leak* the outcome — the first data-hygiene lesson of the day.

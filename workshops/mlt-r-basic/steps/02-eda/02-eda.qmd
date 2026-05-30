@@ -1,6 +1,6 @@
 ---
 title: "Step 02 — Clinical EDA"
-subtitle: "Read the imbalance, choose the metric"
+subtitle: "Read the imbalance, choose the metrics"
 params:
   solved: true
 format:
@@ -21,8 +21,12 @@ the class imbalance and motivate our metric choice.
 <!--
 Nota docente (IT): step HANDS-ON (~22 min). load + wrangle sono "given" (beat
 precedenti, già risolti agli step 00-01). Il beat nuovo è la EDA: `tbl_summary`
-stratificata per outcome + un boxplot di `age`. Messaggio chiave: l'evento è raro
-(~13%), quindi l'accuracy inganna -> sceglieremo ROC-AUC come metrica primaria.
+stratificata per outcome + un boxplot di `ejection_fraction` (il predittore
+clinico chiave: chi sopravvive ha una frazione d'eiezione più alta). Messaggio
+chiave: l'evento (morte) è ~32%, quindi l'accuracy inganna (predire sempre
+"survived" dà già ~68%). Da qui scegliamo DUE metriche: ROC-AUC (capacità di
+ranking) e PR-AUC (focus sulla classe positiva = morte; baseline = prevalenza
+~0.32). Nei prossimi step le mostriamo SEMPRE insieme.
 -->
 
 # Given — load & wrangle {#sec-given}
@@ -36,48 +40,68 @@ library(rio)
 library(tidyverse)
 library(janitor)
 
-indo_raw <- import(here("data-raw", "indo_rct.csv"), setclass = "tibble")
+hf_raw <- import(here("data-raw", "heart_failure.csv"), setclass = "tibble")
 
-indo <- indo_raw |>
+hf <- hf_raw |>
   clean_names() |>
-  select(outcome, age, risk, gender, sod, rx, type) |>
-  filter(!is.na(age)) |>
-  mutate(outcome = factor(outcome, levels = c("0_no", "1_yes")))
+  select(-time) |>
+  mutate(
+    outcome = factor(
+      if_else(death_event == 1, "died", "survived"),
+      levels = c("died", "survived"),
+    ),
+  ) |>
+  select(-death_event) |>
+  mutate(across(c(anaemia, diabetes, high_blood_pressure, sex, smoking), factor))
 
-glimpse(indo)
+glimpse(hf)
 ```
 
 # Explore — summarise & visualise {#sec-eda}
 
-A stratified summary across the outcome, then a quick look at `age` by outcome.
+A stratified summary across the outcome, then a look at `ejection_fraction` (the
+heart's pumping efficiency) by outcome.
 
 ```{r eda}
 #| code-fold: false
 library(gtsummary)
 
 # Stratified summary table ----
-indo |>
+hf |>
   tbl_summary(
     by = outcome,
-    include = c(age, risk, gender, sod, rx, type),
+    include = c(
+      age, sex, ejection_fraction, serum_creatinine, serum_sodium,
+      creatinine_phosphokinase, platelets, anaemia, diabetes,
+      high_blood_pressure, smoking,
+    ),
   )
 ```
 
-```{r age-plot}
+```{r ef-plot}
 #| code-fold: false
-# Age distribution by outcome ----
-age_plot <- indo |>
-  ggplot(aes(x = outcome, y = age, fill = outcome)) +
+# Ejection fraction by outcome ----
+ef_plot <- hf |>
+  ggplot(aes(x = outcome, y = ejection_fraction, fill = outcome)) +
   geom_boxplot() +
   theme_minimal()
 
-ggsave(here("output", "age_by_outcome.png"), plot = age_plot, width = 6, height = 4)
-age_plot
+ggsave(here("output", "ejection_fraction_by_outcome.png"), plot = ef_plot, width = 6, height = 4)
+ef_plot
 ```
 
 ## Reading the table
 
-The event (`1_yes`) is the minority class — roughly **13%** of patients. With such
-imbalance, plain accuracy is misleading: a model that always predicts "no event"
-would already score ~87%. That is why, from the next step on, we score models with
-**ROC-AUC** (and keep accuracy only as a secondary reference).
+The event (`died`) is the minority class — roughly **32%** of patients. With this
+imbalance, plain accuracy is misleading: a model that always predicts "survived"
+would already score ~68%. So from the next step on we score every model with
+**two** complementary metrics:
+
+- **ROC-AUC** — how well the model *ranks* patients by risk, regardless of
+  prevalence. A coin flip scores 0.5.
+- **PR-AUC** (precision–recall) — how well it does specifically on the *positive*
+  (death) class. Its no-skill baseline is the **prevalence** itself (~0.32), so it
+  is far more honest than ROC-AUC when the event is rare.
+
+Watching both at once is the point: they do not always agree, and knowing *why* is
+half the skill.

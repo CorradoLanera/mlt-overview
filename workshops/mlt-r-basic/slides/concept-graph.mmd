@@ -1,14 +1,15 @@
 flowchart TD
   PROJ["Reproducible project<br/>(renv + here + rio)"]
   IMPORT["Import & tidy data<br/>(rio + janitor + dplyr/tidyr)"]
+  LEAK["Data leakage<br/>(drop follow-up time)"]
   EDA["Clinical EDA<br/>(tbl_summary + ggplot)"]
-  OUT["Binary clinical outcome<br/>(indo_rct: PEP yes/no)"]
+  OUT["Binary clinical outcome<br/>(heart failure: died/survived)"]
   SPLIT["Train/test split<br/>(rsample)"]
   RECIPE["Recipe / preprocessing<br/>(recipes)"]
   MODEL["Model spec<br/>(parsnip)"]
   ENGINE["Engine-swap idiom<br/>(one line = new algorithm)"]
   WF["Workflow<br/>(recipe + model)"]
-  METRIC["Metrics / ROC-AUC<br/>(yardstick)"]
+  METRIC["Metrics: ROC-AUC + PR-AUC<br/>(yardstick)"]
   GLM["Plain glm baseline"]
   ALGOS["The four algorithms<br/>(pen-logistic, kNN, SVM, RF)"]
   PARAM["Hyperparameters<br/>(penalty, neighbors, cost, mtry...)"]
@@ -23,9 +24,10 @@ flowchart TD
   REPORT["Rendered Quarto report<br/>(cached) + renv::snapshot"]
 
   PROJ -->|enables| IMPORT
+  IMPORT -->|guards-against| LEAK
   IMPORT -->|feeds| EDA
   EDA -->|describes| OUT
-  OUT -->|is-target-of| MODEL
+  LEAK -->|would-corrupt| OUT
   PROJ -->|underpins| REPORT
   IMPORT -->|required-by| SPLIT
   SPLIT -->|produces-train-for| RECIPE

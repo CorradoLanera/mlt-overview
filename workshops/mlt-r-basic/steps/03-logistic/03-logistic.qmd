@@ -23,12 +23,10 @@ plain logistic-regression baseline, and finally score it (`yardstick`).
 Nota docente (IT): step HANDS-ON (~38 min). I beat precedenti (load/wrangle/EDA)
 sono "given" e ripiegati. Il beat nuovo (split -> recipe -> spec -> workflow ->
 fit) è la "mappa degli oggetti" tidymodels, mostrata risolta. Il "Your turn" di
-QUESTO step è SOLO il predict/score finale (`augment` + `roc_auc`), in
-R/yourturn-03.R con i `___`. L'evento è `1_yes` (secondo livello) -> ovunque si
-punteggi serve `event_level = "second"`.
-Nota dati: `sod` e `type` sono quasi collineari (sod==0_no <=> type==0_no SOD);
-glm può emettere un warning di rank-deficiency, soppresso da execute.warning:false.
-Non rompe nulla e non richiede di togliere colonne.
+QUESTO step è SOLO il predict/score finale (`augment` + le due metriche). Grazie
+alla convenzione EVENT-FIRST (livello `died` primo), `roc_auc`/`pr_auc` puntano a
+`.pred_died` SENZA bisogno di `event_level`. Nota recipe: heart_failure è SENZA
+valori mancanti -> niente step di imputazione, la recipe resta a dummy/zv/normalize.
 -->
 
 # Given — load, wrangle, EDA {#sec-given}
@@ -42,20 +40,28 @@ library(rio)
 library(tidyverse)
 library(janitor)
 
-indo_raw <- import(here("data-raw", "indo_rct.csv"), setclass = "tibble")
+hf_raw <- import(here("data-raw", "heart_failure.csv"), setclass = "tibble")
 
-indo <- indo_raw |>
+hf <- hf_raw |>
   clean_names() |>
-  select(outcome, age, risk, gender, sod, rx, type) |>
-  filter(!is.na(age)) |>
-  mutate(outcome = factor(outcome, levels = c("0_no", "1_yes")))
+  select(-time) |>
+  mutate(
+    outcome = factor(
+      if_else(death_event == 1, "died", "survived"),
+      levels = c("died", "survived"),
+    ),
+  ) |>
+  select(-death_event) |>
+  mutate(across(c(anaemia, diabetes, high_blood_pressure, sex, smoking), factor))
 
-glimpse(indo)
+glimpse(hf)
 ```
 
 # The tidymodels object-map {#sec-objectmap}
 
-Split → recipe → spec → workflow → fit. Five objects, one chain.
+Split → recipe → spec → workflow → fit. Five objects, one chain. (Heart-failure
+has no missing values, so the recipe needs no imputation — just dummy-coding,
+zero-variance removal, and normalization.)
 
 ```{r objectmap}
 #| code-fold: false
@@ -63,7 +69,7 @@ library(tidymodels)
 set.seed(123)
 
 # Split ----
-data_split <- initial_split(indo, prop = 0.75, strata = outcome)
+data_split <- initial_split(hf, prop = 0.75, strata = outcome)
 train <- training(data_split)
 test  <- testing(data_split)
 
@@ -88,16 +94,18 @@ log_fit
 
 # Your turn — score the baseline on the test set {#sec-yourturn}
 
-Attach predictions to the held-out `test` set with `augment()`, then compute the
-**ROC-AUC** on the event class. The event is `1_yes` (the *second* factor level),
-so score `.pred_1_yes` with `event_level = "second"`.
+Attach predictions to the held-out `test` set with `augment()`, then score **both**
+metrics on the event class. Because `died` is the *first* factor level, point
+yardstick at the `.pred_died` column — no `event_level` argument needed.
 
 ```{r score-solved, eval=params$solved}
 #| code-fold: false
-# Predict & score ----
+# Predict & score (both metrics) ----
+hf_metrics <- metric_set(roc_auc, pr_auc)
+
 log_fit |>
   augment(new_data = test) |>
-  roc_auc(truth = outcome, .pred_1_yes, event_level = "second")
+  hf_metrics(truth = outcome, .pred_died)
 ```
 
 ```{r score-blank, eval=!params$solved, results="asis", echo=FALSE}
@@ -105,5 +113,7 @@ log_fit |>
 cat("```r", readLines(here("R", "yourturn-03.R")), "```", sep = "\n")
 ```
 
-The held-out ROC-AUC is our **baseline**. In the next step we let a small zoo of
-models compete — tuned by cross-validation — and see whether any beats it.
+These two numbers are our **baseline** — but they come from a *single* split of
+just ~75 test patients, so do not over-read them yet. In the next step a small zoo
+of models competes under **cross-validation**, the honest comparison that tells us
+whether anything truly beats this logistic spine.

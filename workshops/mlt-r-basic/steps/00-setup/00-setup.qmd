@@ -15,29 +15,31 @@ execute:
 ## Goal
 
 A healthy, reproducible R project. We open the `.Rproj`, restore the
-environment with `renv`, and load the trial data with stable, project-relative
+environment with `renv`, and load the clinical data with stable, project-relative
 paths (`here`) and a format-agnostic reader (`rio`).
 
 <!--
 Nota docente (IT): questo step è una DEMO (~10 min). Mostriamo l'ambiente sano:
 `renv::restore()` è già stato fatto, la cartella ha il suo `.here` sentinel
 così `here::here()` ancora alla cartella dello step (non alla root del workshop).
-Il dato grezzo (`indo_rct.csv`, 602 righe × 33 colonne) vive in `data-raw/`.
+Il dato grezzo (`heart_failure.csv`, 299 righe × 13 colonne) vive in `data-raw/`.
 -->
 
-## Load the trial data
+## Load the clinical data
 
-We work with the RCT on indomethacin for post-ERCP pancreatitis
-(`medicaldata::indo_rct`), exported once to `data-raw/indo_rct.csv`.
+We work with the **heart-failure clinical records** (Chicco & Jurman 2020): 299
+patients followed after a heart-failure episode, with the outcome `DEATH_EVENT`.
+The table was exported once to `data-raw/heart_failure.csv`.
 
 ```{r setup}
 #| code-fold: false
 library(here)
 library(rio)
 
-indo_raw <- import(here("data-raw", "indo_rct.csv"), setclass = "tibble")
-dim(indo_raw)
+hf_raw <- import(here("data-raw", "heart_failure.csv"), setclass = "tibble")
+dim(hf_raw)
 ```
 
-The raw table has 602 rows and 33 columns — the full clinical record. In the
-next step we pare it down to the outcome and the handful of predictors we model.
+The raw table has 299 rows and 13 columns — twelve clinical fields plus the
+outcome. In the next step we shape it into the tidy tibble we model, and meet our
+first data-hygiene decision (one of those columns must go).

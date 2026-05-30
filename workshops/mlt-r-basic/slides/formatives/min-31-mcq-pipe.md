@@ -5,18 +5,18 @@
 
 ## Prompt
 
-You run `indo_raw |> clean_names() |> select(outcome, age) |> filter(!is.na(age))`.
+You run `hf_raw |> clean_names() |> select(ejection_fraction, age) |> filter(age > 60)`.
 Which statement best describes what happens?
 
 ## Options
 
 - **A. ✓ (correct)** The tibble flows in as the **first argument** of each verb, and
-  each verb returns a **brand-new copy** — `indo_raw` is unchanged until you assign
+  each verb returns a **brand-new copy** — `hf_raw` is unchanged until you assign
   the result.
-- **B.** The verbs edit `indo_raw` **in place**, like Stata's `keep if` / `drop` —
-  after running, `indo_raw` itself has fewer rows and columns.
-- **C.** `select(outcome, age)` fails because `outcome` and `age` are not defined
-  objects in the global environment.
+- **B.** The verbs edit `hf_raw` **in place**, like Stata's `keep if` / `drop` —
+  after running, `hf_raw` itself has fewer rows and columns.
+- **C.** `select(ejection_fraction, age)` fails because `ejection_fraction` and `age`
+  are not defined objects in the global environment.
 - **D.** The pipe forwards the **last object you created** (not the left-hand side),
   so the chain operates on whatever was assigned most recently.
 

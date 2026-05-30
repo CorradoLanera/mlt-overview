@@ -14,6 +14,16 @@
 > inside* `workshops/mlt-r-basic/` so its `.Rprofile` activates its renv (not the repo-root one); **(d)** distribution
 > for `use_course` is a ZIP of this folder, produced later by a root hook (out of scope for this plan).
 
+> **DATASET MIGRATION (2026-05-31 — supersedes `indo_rct` throughout this plan):** after the build,
+> an empirical benchmark (glm vs tuned zoo across ~8 clinical datasets, dual-metric, repeated CV) showed
+> `indo_rct` had near-noise signal (all models ~0.54). The workshop was migrated to the **heart-failure
+> clinical records** (Chicco & Jurman 2020; 299×13; outcome `death_event`, ~32% events), loaded **without**
+> the leaky `time` column. Changes applied across every step/deck/formative: HF data; **event-first** outcome
+> (`levels = c("died","survived")` → no `event_level` args); **dual metric** `metric_set(roc_auc, pr_auc)`;
+> no-imputation recipe (HF is complete); winner is now **random forest** (CV ROC ≈ 0.79, test ROC 0.87 /
+> PR 0.75 / acc 0.77); the `time`-drop is a leakage micro-lesson; `future` parallel is an optional `cores-1`
+> toggle. Rationale + numbers: spec §12 override and memory `basic-workshop-dataset`. Fall-behind test: 6/6 PASS.
+
 **Tech Stack:** R 4.5.x · `renv` · `here` · `rio` · `tidyverse` · `janitor` · `gtsummary` · `tidymodels` (`rsample`/`recipes`/`parsnip`/`workflows`/`workflowsets`/`tune`/`yardstick`/`dials`) · engines `glmnet`/`kknn`/`kernlab`/`ranger` · `future` (parallel tuning) · Quarto (revealjs + html) · dataset `medicaldata::indo_rct`.
 
 ---

@@ -14,14 +14,14 @@ rimanda al concept graph dello spec (§10.2) — vedi `../concept-graph.mmd`.
 | file | dopo step | min | tipo | nodo concept-graph | cosa verifica |
 |---|---|---|---|---|---|
 | `min-09-live-check.md` | 00 | 9 | live-check | `PROJ` | ambiente sano: `.Rproj` aperto, `renv::status()` in sync, `here::here()` = root (GREEN/RED) |
-| `min-30-yourturn-wrangle.md` | 01 | 30 | your-turn | `IMPORT` | `clean_names → select(7 col) → filter(NA age) → glimpse`; stretch: `high_risk` da mediana su train (leakage) |
+| `min-30-yourturn-wrangle.md` | 01 | 30 | your-turn | `IMPORT` / `LEAK` | `clean_names → select(-time) → outcome event-first → factor dei flag → glimpse` (12 col); stretch: perché `time` è leakage |
 | `min-31-mcq-pipe.md` | 01 | 31 | MCQ | `IMPORT` | semantica pipe/verbi: il tibble passa come 1° arg, ritorna copia nuova |
-| `min-50-mcq-metric.md` | 02 | 50 | MCQ | `METRIC` (motivato da `OUT`) | perché ROC-AUC > accuracy: 13% eventi, "predici no" = 87% ma inutile |
+| `min-50-mcq-metric.md` | 02 | 50 | MCQ | `METRIC` (motivato da `OUT`) | perché DUE metriche (ROC-AUC + PR-AUC) a ~32% eventi: baseline PR = prevalenza, non 0.5 |
 | `min-72-yourturn-glm.md` | 03 | 72 | your-turn | `WF` / `GLM` / `METRIC` | `glm` vs workflow danno la stessa AUC; stretch: cosa compra recipe+workflow |
 | `min-88-mcq-engine-swap.md` | 03 | 88 | MCQ | `ENGINE` / `MODEL` | engine-swap idiom (pre-break): cambia solo il model-spec |
 | `min-118-mcq-knn.md` | 04 | 118 | MCQ | `PARAM` → `BV` | parametri → bias/variance (kNN `k`): k piccolo low-bias/high-var |
 | `min-150-yourturn-culminating.md` | 04 | 150 | your-turn | `WFSET`→`TUNE`→`CV`→`COMPARE`→`BEST`→`LASTFIT`→`OPT` | **il culminating task** (§10.1); stretch: 5° engine + quando rank-by-mean inganna |
-| `min-165-predict-output.md` | 04 | 165 | predict-output | `OPT` / `CV` / `LASTFIT` | ordinare 3 AUC (resubstitution ≥ CV ≳ test) prima del reveal |
+| `min-165-predict-output.md` | 04 | 165 | predict-output | `OPT` / `CV` / `LASTFIT` | resubstitution >> {CV, test}; su HF il test (0.87) supera la CV (0.79) per fortuna = rumore piccolo N |
 | `min-175-mcq-repro.md` | 05 | 175 | MCQ | `REPORT` / `PROJ` | riproducibilità: `renv` + `here` + `set.seed` + report cache-ato |
 
 ## Ruolo nel design (load check, §10.4)

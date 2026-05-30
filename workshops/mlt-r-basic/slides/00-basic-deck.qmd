@@ -9,14 +9,16 @@ format: revealjs
 
 ::: {.notes}
 Voce docente (IT): apertura. L'arco dell'intera giornata è `fit → tune → validate`,
-sul dataset `indo_rct` (post-ERCP pancreatitis). Il deliverable finale è un report
-Quarto riproducibile. Mentre carico/scaldo `renv::restore()` in background, anticipo
-le quattro tappe: setup pulito, dati ordinati, una spina logistica, lo zoo tunato.
+sul dataset heart-failure clinical records (299 pazienti, esito: morte). Il
+deliverable finale è un report Quarto riproducibile. Mentre carico/scaldo
+`renv::restore()` in background, anticipo le quattro tappe: setup pulito, dati
+ordinati, una spina logistica, lo zoo tunato.
 :::
 
-We will spend the afternoon doing one thing well: take a real clinical trial
-(`medicaldata::indo_rct`, post-ERCP pancreatitis), and **build, tune, and validate**
-a predictive model — ending with a **reproducible report** a colleague can re-run.
+We will spend the afternoon doing one thing well: take a real clinical cohort
+(**heart-failure clinical records**, 299 patients), and **build, tune, and validate**
+a model that predicts in-hospital death — ending with a **reproducible report** a
+colleague can re-run.
 
 - The spine is **tidymodels**: `rsample → recipes → parsnip → workflows → yardstick`.
 - One outcome, four algorithms, **one** honest test-set evaluation.
@@ -45,14 +47,16 @@ già in restore in background dall'opening. Mostro `renv::status()` in sync e
 
 - A tidyverse primer: the native pipe `|>`, verbs that **return a new tibble**.
 - Clean and recode with `dplyr`/`tidyr`; `janitor::clean_names()`.
-- Turn the outcome into a **factor with the right positive level** (`1_yes`).
+- **Drop the leaky `time` column** (follow-up days mechanically anticipate death).
+- Make the outcome a factor with the **event first** (`died`) — so every metric
+  scores death as positive by default.
 
 ::: {.notes}
 Voce docente (IT): hands-on, il più lungo (~32 min) — apposta, perché è il picco di
 carico-sintassi per Lucia (zero R). Rete fall-behind con la cartella `01-import/`.
-"Your turn" al min 30: `clean_names → select(7 col) → filter(NA age) → glimpse`;
-stretch Davide: `high_risk` dalla mediana **calcolata su train** (altrimenti leakage).
-MCQ al min 31 sulla semantica pipe/verbi.
+"Your turn" al min 30: `clean_names → select(-time) → outcome event-first → factor
+dei flag → glimpse` (12 colonne). Il drop di `time` è la mini-lezione di LEAKAGE
+(giorni di follow-up anticipano la morte). MCQ al min 31 sulla semantica pipe/verbi.
 :::
 
 # Step 02 · Clinical EDA {#sec-02-eda .center}
@@ -63,17 +67,20 @@ MCQ al min 31 sulla semantica pipe/verbi.
 
 - `gtsummary::tbl_summary(by = outcome)` — a table Marco already recognises.
 - One `ggplot` to see a predictor against the outcome.
-- **Read the class imbalance** (~13% events) → it drives the metric choice later.
+- **Read the class imbalance** (~32% events) → it drives the **dual-metric** choice
+  (ROC-AUC **and** PR-AUC) later.
 
 ::: {.notes}
 Voce docente (IT): hands-on *elastico* (~22 min, comprimibile se siamo in ritardo).
-L'imbalance ~13% qui visto in tabella è il seme del ragionamento ROC-AUC > accuracy
-dello step 04. MCQ al min 50 proprio su questo.
+L'imbalance ~32% qui visto in tabella è il seme del ragionamento "accuracy inganna →
+guardiamo DUE metriche, ROC-AUC e PR-AUC" dello step 04. MCQ al min 50 proprio su
+questo (perché due metriche, e cosa è la baseline della PR-AUC). Boxplot di
+`ejection_fraction`: chi sopravvive ha frazione d'eiezione più alta.
 :::
 
 ## Supervised vs unsupervised — a one-sentence bridge
 
-Today every model **learns from a labelled outcome** (`1_yes` / `0_no`) — that is
+Today every model **learns from a labelled outcome** (`died` / `survived`) — that is
 **supervised** learning.
 
 ::: {.fragment}
@@ -96,7 +103,7 @@ incontrato nell'overview ch01. Non apriamo cluster/PCA qui.
 
 - Frame the task as **supervised** (one sentence on unsupervised, out of scope).
 - Walk the **object-map** `rsample → recipes → parsnip → workflows → yardstick`.
-- Fit a plain `glm` baseline and score it with `yardstick` (ROC-AUC).
+- Fit a plain `glm` baseline and score it with `yardstick` — **ROC-AUC and PR-AUC**.
 
 ::: {.notes}
 Voce docente (IT): hands-on (~38 min). È la zona di rischio per profondità: 7 oggetti
@@ -115,14 +122,14 @@ flowchart LR
   RS["rsample<br/>split train / test"] --> RC["recipes<br/>preprocess"]
   RC --> PS["parsnip<br/>model spec"]
   PS --> WF["workflows<br/>recipe + model"]
-  WF --> YS["yardstick<br/>score (ROC-AUC)"]
+  WF --> YS["yardstick<br/>score (ROC-AUC + PR-AUC)"]
 ```
 
 - **`rsample`** — `initial_split()` / `vfold_cv()`: who trains, who tests.
 - **`recipes`** — dummy-code, drop zero-variance, normalize.
 - **`parsnip`** — declare the model once, engine-agnostic.
 - **`workflows`** — bundle recipe + spec so nothing leaks.
-- **`yardstick`** — `roc_auc()`, `accuracy()`: one consistent scorer.
+- **`yardstick`** — `roc_auc()`, `pr_auc()`: two complementary scorers.
 
 ::: {.notes}
 Voce docente (IT): questa mappa è la spina dorsale riusata tutto il pomeriggio. Lo
@@ -229,37 +236,55 @@ decorrelatore (l'idea che distingue RF dal bagging). `min_n` = dimensione foglia
 Voce docente (IT): hands-on, il CUORE (~68 min). Picco di ampiezza (10 nodi), ma lo
 scaffolding dello step 03 è già automatico → non ri-conta come carico. Un solo
 oggetto `folds` riusato per tutti. "Your turn" culminante al min 150 (il summative).
-Predict-output al min 165: ordinare 3 AUC prima del reveal (optimism gap).
-L'evento è `1_yes` (secondo livello) → `event_level = "second"`.
+Predict-output al min 165: ordinare le AUC dei 4 modelli prima del reveal.
+Convenzione EVENT-FIRST (`died` primo livello) → niente `event_level` nel codice.
+Il toggle parallelo `plan(multisession, workers = detectCores()-1)` è OPZIONALE:
+a N=299 il tuning è di ~secondi, lo dico e lo posso commentare ("così attiviamo il
+parallelismo, ma non è necessario").
 :::
 
-## Why ROC-AUC, and the optimism gap {.smaller}
+## Two metrics — and why a single split lies {.smaller}
 
-**Metric.** With a ~13%-event outcome, "always predict *no*" is ~87% accurate and
-**clinically useless**. **ROC-AUC** measures *ranking* of risk across all thresholds —
-it does not reward the majority-class shortcut.
+**Why two.** With a ~32%-event outcome, "always predict *survived*" is ~68% accurate
+and clinically useless. We watch two complementary numbers:
 
-**Optimism gap.** The same model, scored three ways, lines up in one direction:
+- **ROC-AUC** — ranking of risk across all thresholds; prevalence-free, chance $= 0.5$.
+- **PR-AUC** — performance on the *positive* (death) class; no-skill baseline $=$ the
+  prevalence ($\approx 0.32$), so it stays honest when the event is rare.
 
-$$
-\text{resubstitution AUC} \;\ge\; \text{cross-validated AUC} \;\gtrsim\; \text{test AUC}
-$$
+**The tournament (cross-validated).** Four models, one shared `vfold_cv(v = 5)`:
 
-- Resubstitution (score on training) flatters; CV is honest-ish; the **one** `last_fit()` on the held-out test is the honest number.
-- Here: CV ROC-AUC ≈ **0.628**, held-out test ROC-AUC ≈ **0.538** — the gap *is* the lesson, not a bug.
+| model | CV ROC-AUC |
+|---|---|
+| **Random forest** | **0.79** |
+| penalized logistic | 0.74 |
+| RBF-SVM | 0.73 |
+| k-NN | 0.66 |
+
+The forest wins, and the spread ($0.79 \to 0.66$) shows the *model choice* matters.
+Validated once on the untouched test set: **ROC-AUC 0.87, PR-AUC 0.75, accuracy 0.77**.
+
+::: {.fragment .callout-warning appearance="simple"}
+**A single split lies.** The plain `glm` scored a flattering **0.88** on one
+75-patient test split — *above* the forest's 0.87 — yet its **cross-validated**
+ROC-AUC is only $\approx 0.70$. One number on a small cohort is luck;
+**cross-validation is the honest comparison.**
+:::
 
 ::: {.fragment .callout-note appearance="simple"}
-**Aside.** ROC-AUC is **symmetric** for a binary outcome — which class you call
-"positive" doesn't change it (unlike sensitivity or PR-AUC) — so `event_level` here
-only affects how the curve is *drawn*, not the number.
+**Aside.** ROC-AUC is **symmetric** — the positive class doesn't change it.
+**PR-AUC is not**: it depends on the positive class — which is exactly why we put
+`died` *first*, so both metrics score death by default.
 :::
 
 ::: {.notes}
-Voce docente (IT): la winner è la **penalized logistic regression** (glmnet),
-CV ROC-AUC ~0.628; sul test ROC-AUC 0.538, accuracy 0.868. Il salto CV→test è il
-costo onesto di una coorte piccola e sbilanciata — è IL punto, non un errore.
-L'aside sulla simmetria di ROC-AUC: serve a chiarire che `event_level = "second"`
-nel codice cambia solo il disegno della curva, non il valore dell'AUC.
+Voce docente (IT): la winner è il **random forest** (ranger), CV ROC-AUC ~0.79; sul
+test ROC-AUC 0.87, PR-AUC 0.75, accuracy 0.77. Punto chiave (il "regalo" del seed):
+il glm vanilla segna 0.88 su UN singolo split di ~75 pazienti ma in CV sta ~0.70 →
+un singolo numero su coorte piccola è fortuna, la CV è il confronto onesto, e il
+forest la vince. L'aside lega la convenzione event-first alla PR-AUC (NON simmetrica,
+a differenza della ROC-AUC). Se le due callout fragment sfondano in altezza a 1080p,
+spezzo la slide (tournament | single-split-lies).
 :::
 
 # Step 05 · Reproducible report {#sec-05-report .center}

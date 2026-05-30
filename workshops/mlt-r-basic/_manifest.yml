@@ -3,7 +3,7 @@ workshop:
   slug: mlt-r-basic
   language: en
   total_minutes_gross: 240
-  dataset: "medicaldata::indo_rct"
+  dataset: "heart_failure clinical records (Chicco & Jurman 2020)"
 summative: "build -> tune (workflow_set) -> validate (last_fit) -> reproducible report"
 steps:
   - { slug: 00-setup,    title: "Setup",               mode: demo,     minutes: 10, include: true }

@@ -5,30 +5,38 @@
 
 ## Prompt
 
-Before we reveal the numbers, **order these three ROC-AUC values** from largest to
-smallest:
+Before we reveal the numbers, think about these three ROC-AUC values for the
+**winning random forest**:
 
 - **A** = resubstitution AUC (model scored on the **training** data it was fit on)
 - **B** = cross-validated AUC (mean over the 5 folds)
 - **C** = test AUC (`last_fit()` on the **held-out** test set)
 
+Which is clearly the **largest**? And can you be sure whether **B > C** or **C > B**?
+
 ## Expected answer
 
+**A is, by a wide margin, the largest** — a random forest scored on its own training
+rows nearly memorizes them (AUC close to 1). You **cannot** be sure of the B-vs-C
+order: both are honest-ish estimates, and on a small cohort their gap is mostly
+**noise**.
+
 $$
-\text{A (resubstitution)} \;\ge\; \text{B (cross-validated)} \;\gtrsim\; \text{C (test)}
+\text{A (resubstitution)} \;\gg\; \{\text{B (CV)},\; \text{C (test)}\}
 $$
 
-- **A is the most optimistic:** scoring on the same data used to fit rewards
-  memorization.
-- **B is honest-ish:** each fold is scored on data it did not train on, but tuning
-  still "peeks" across folds.
-- **C is the honest number:** the test set was touched exactly once, at the end.
-
-Here that is roughly **A ≳ 0.63+ ≥ B ≈ 0.628 ≳ C ≈ 0.538**.
+- **A flatters:** scoring on the same data used to fit rewards memorization — never
+  quote it.
+- **B and C are the honest estimates.** Here it actually comes out
+  **C ≈ 0.87 > B ≈ 0.79** — the single test split landed *high* by luck, the opposite
+  of the textbook "test is lowest" story.
+- That flip **is** the lesson: on ~75 test patients one number is unreliable, which is
+  why we select the model on **cross-validation**, not on a single split.
 
 ## Diagnostic note (teacher)
 
-If the room confidently says **A = B = C**, the **optimism gap has not landed** —
-stop and re-explain why scoring on training data (and even on tuning resamples)
-flatters the estimate before showing the reveal. The whole point of `last_fit()` is
-that C is the number you would quote to a clinician.
+If the room confidently predicts a strict **A ≥ B ≥ C** and is surprised that C beat
+B, that surprise is the teachable moment: resubstitution (A) is always optimistic,
+but the CV-vs-test gap is **sampling noise on a small cohort**, not a guaranteed
+ordering. The point of `last_fit()` is one honest, pre-committed read — to be weighed
+**alongside** the CV, never instead of it.

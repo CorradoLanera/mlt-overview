@@ -426,9 +426,25 @@ min 66), non nuovo carico. Sotto-carico di Davide (noia) mitigato dai 4 stretch 
 
 ## 12. Dati
 
+> **DATASET BASIC — OVERRIDE (deciso 2026-05-31, supera la scelta `indo_rct` sotto per il workshop Basic).**
+> Il filo conduttore tabellare del **Basic** diventa **heart failure clinical records** (Chicco & Jurman 2020;
+> 299×13; outcome binario `death_event`, **event rate ~32%**; predittori `age, anaemia, creatinine_phosphokinase,
+> diabetes, ejection_fraction, high_blood_pressure, platelets, serum_creatinine, serum_sodium, sex, smoking`),
+> caricato **senza** `time` (leakage: giorni di follow-up). Fonte on-the-fly: CSV bundle in `data-raw/`
+> (seed da URL Chicco/dimikara). **Perché:** un benchmark empirico (glm vanilla vs zoo tunato su ~8 dataset clinici,
+> repeated CV) ha mostrato che su dati clinici tabulari *puliti e semplici* l'ML **pareggia** la logistica su ROC-AUC;
+> heart-failure è **l'unica vittoria ML clinica robusta** (Random Forest +0.037 ROC / +0.040 PR, ~73% dei fold) grazie
+> agli effetti soglia/non-monotoni di `ejection_fraction`/`serum_creatinine`/`serum_sodium`. **Design metriche:**
+> mostrare **ROC-AUC *e* PR-AUC insieme** (`metric_set(roc_auc, pr_auc)`, evento = 2° livello) per insegnare perché la
+> ROC-AUC da sola non basta (baseline PR = prevalenza). HF è *senza missing* → recipe senza imputazione. Niente
+> imputazione, niente secondo dataset (HF puro, minimal). Vedi memoria `basic-workshop-dataset`. Numeri onesti da
+> cablare nel deck: glm ROC 0.76 → RF 0.80; glm PR 0.61 → RF 0.65; kNN ROC ~0.66 (spread tra modelli). N=299 piccolo
+> ⇒ discutere l'incertezza (repeated CV) come *lezione*, non difetto. Il parallelismo `future` resta un toggle
+> opzionale (`cores-1`) — a N=299 il calcolo è di secondi.
+
 - **Clinico tabellare (filo conduttore) — VERIFICATO:** `medicaldata::indo_rct` (602×33; outcome factor
   `0_no`/`1_yes`; **PEP event rate ~13.1%**; predittori `age, risk, gender, sod, rx`[placebo/indomethacin]`, type,
-  site`). PEP = pancreatite post-ERCP.
+  site`). PEP = pancreatite post-ERCP. *(Superato dall'override qui sopra per il Basic; resta come riferimento storico.)*
 - **Multimodale per CNN/RNN/rete fusa:** dati clinici multimodali allineati puliti sono rari → **piccoli campioni
   curati o sintetici committati, etichettati come illustrativi** (poche tracce ECG 1D, set immagini ridotto, breve
   sequenza di vitali). Servono solo a `forward()`/shape-check (non addestrati live).

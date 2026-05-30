@@ -1,6 +1,6 @@
 ---
 title: "Practical AI for Medical Data — a reproducible model report"
-subtitle: "Predicting post-ERCP pancreatitis in the indomethacin RCT"
+subtitle: "Predicting in-hospital death after a heart-failure episode"
 date: today
 params:
   solved: true
@@ -42,25 +42,36 @@ final_fit <- readRDS(here("output", "final_fit.rds"))
 wf_rank   <- readRDS(here("output", "wf_rank.rds"))
 
 # Reload the analysis cohort for the descriptive table ----
-indo <- import(here("data-raw", "indo_rct.csv"), setclass = "tibble") |>
+hf <- import(here("data-raw", "heart_failure.csv"), setclass = "tibble") |>
   clean_names() |>
-  select(outcome, age, risk, gender, sod, rx, type) |>
-  filter(!is.na(age)) |>
-  mutate(outcome = factor(outcome, levels = c("0_no", "1_yes")))
+  select(-time) |>
+  mutate(
+    outcome = factor(
+      if_else(death_event == 1, "died", "survived"),
+      levels = c("died", "survived"),
+    ),
+  ) |>
+  select(-death_event) |>
+  mutate(across(c(anaemia, diabetes, high_blood_pressure, sex, smoking), factor))
 ```
 
 ## The cohort
 
-The analysis cohort is the indomethacin RCT for post-ERCP pancreatitis
-(`medicaldata::indo_rct`): `r nrow(indo)` patients, outcome `1_yes` (pancreatitis)
-in `r scales::percent(mean(indo$outcome == "1_yes"), accuracy = 0.1)` of them. The
-table below summarises the six candidate predictors, stratified by outcome.
+The analysis cohort is the heart-failure clinical records (Chicco & Jurman 2020):
+`r nrow(hf)` patients, of whom
+`r scales::percent(mean(hf$outcome == "died"), accuracy = 0.1)` died during
+follow-up. The table below summarises the eleven candidate predictors, stratified
+by outcome.
 
 ```{r baseline}
-indo |>
+hf |>
   tbl_summary(
     by = outcome,
-    include = c(age, risk, gender, sod, rx, type),
+    include = c(
+      age, sex, ejection_fraction, serum_creatinine, serum_sodium,
+      creatinine_phosphokinase, platelets, anaemia, diabetes,
+      high_blood_pressure, smoking,
+    ),
   )
 ```
 
@@ -79,36 +90,48 @@ model_label <- c(
 )
 
 wf_rank |>
+  dplyr::filter(.metric == "roc_auc") |>
   transmute(
-    Model      = model_label[wflow_id],
+    Model        = model_label[wflow_id],
     `CV ROC-AUC` = round(mean, 3),
     `Std. error` = round(std_err, 3),
-    Rank       = rank,
+    Rank         = rank,
   )
 ```
 
 ```{r winner-numbers}
-winner_id  <- wf_rank |> dplyr::slice_min(rank, n = 1) |> dplyr::pull(wflow_id)
-cv_auc     <- wf_rank |> dplyr::slice_min(rank, n = 1) |> dplyr::pull(mean)
-test_auc   <- collect_metrics(final_fit) |>
-  dplyr::filter(.metric == "roc_auc") |> dplyr::pull(.estimate)
-test_acc   <- collect_metrics(final_fit) |>
-  dplyr::filter(.metric == "accuracy") |> dplyr::pull(.estimate)
+winner_id <- wf_rank |>
+  dplyr::filter(.metric == "roc_auc") |>
+  dplyr::slice_min(rank, n = 1) |> dplyr::pull(wflow_id)
+cv_auc <- wf_rank |>
+  dplyr::filter(.metric == "roc_auc") |>
+  dplyr::slice_min(rank, n = 1) |> dplyr::pull(mean)
+
+test_metrics <- collect_metrics(final_fit)
+get_metric <- function(m) {
+  test_metrics |> dplyr::filter(.metric == m) |> dplyr::pull(.estimate)
+}
+test_roc <- get_metric("roc_auc")
+test_pr  <- get_metric("pr_auc")
+test_acc <- get_metric("accuracy")
 ```
 
 The winner is **`r model_label[winner_id]`**. Its cross-validated ROC-AUC was
 **`r round(cv_auc, 3)`**; refit on the training split and scored once on the
-held-out test set, it reached a test ROC-AUC of **`r round(test_auc, 3)`** and an
-accuracy of **`r round(test_acc, 3)`**. The drop from CV to test is the honest
-cost of a small, imbalanced cohort — and exactly why we report a single,
-pre-committed test evaluation rather than the optimistic CV number alone.
+held-out test set, it reached a test ROC-AUC of **`r round(test_roc, 3)`**, a
+PR-AUC of **`r round(test_pr, 3)`**, and an accuracy of
+**`r round(test_acc, 3)`**. The gap between the cross-validated and the
+single-split test numbers is the honest noise of a small cohort (~75 test
+patients) — which is exactly why we pre-commit to one held-out evaluation and read
+it *alongside* the cross-validation, never a single number on its own.
 
-## Test-set ROC curve
+## Test-set ROC and PR curves
 
-```{r roc-curve}
-collect_predictions(final_fit) |>
-  roc_curve(outcome, .pred_1_yes, event_level = "second") |>
-  autoplot()
+```{r curves}
+preds <- collect_predictions(final_fit)
+
+preds |> roc_curve(outcome, .pred_died) |> autoplot()
+preds |> pr_curve(outcome, .pred_died) |> autoplot()
 ```
 
 ## Reproducibility
@@ -124,8 +147,9 @@ Every result above is reproducible by construction:
 - **No live re-tuning.** The model was tuned and validated once (Step 04) and
   persisted to `output/final_fit.rds`; this report only reloads and presents it,
   so re-rendering is fast and deterministic.
-- **One outcome convention.** The event is `1_yes` (the second factor level), and
-  every metric is scored with `event_level = "second"` — consistently, end to end.
+- **One outcome convention.** The event is `died` (the *first* factor level), so
+  every metric scores `.pred_died` as the positive class by default — consistently,
+  end to end.
 
 That is the whole point of the workshop: a clinical model you can hand to someone
 else and have them reproduce, number for number.
