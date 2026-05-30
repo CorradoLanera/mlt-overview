@@ -145,8 +145,12 @@ collect_predictions(final_fit) |>
   roc_curve(outcome, .pred_1_yes, event_level = "second") |>
   autoplot()
 
-# Persist the validated workflow for the reproducible report (Step 05) ----
+# Persist the validated workflow + the CV ranking for the report (Step 05) ----
 saveRDS(final_fit, here("output", "final_fit.rds"))
+saveRDS(
+  rank_results(wf_res, rank_metric = "roc_auc", select_best = TRUE),
+  here("output", "wf_rank.rds"),
+)
 ```
 
 The cross-validated ranking points at one model; `last_fit()` then reports its
