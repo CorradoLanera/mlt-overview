@@ -58,7 +58,7 @@ Struttura *somma pesata + attivazione* = la logistica di ch. 02, ma $g$ libera (
 
 ## Activation functions $g$ — common choices
 
-The chapter requires $g$ to be **non-linear** *and* **differentiable**. Three canonical choices:
+The chapter requires $g$ to be **non-linear** *and* **differentiable** (almost everywhere). Three canonical choices:
 
 - **ReLU** (Rectified Linear Unit): $g(z) = \max(0, z)$ — the field's workhorse since the 2010s.
 - **Sigmoid**: $g(z) = \sigma(z) = \dfrac{1}{1 + e^{-z}}$ — the same one from chapter 2 logistic regression.
@@ -75,7 +75,7 @@ A voce (non sulla slide): ReLU = default hidden (cheap); sigmoid = output binari
 
 <!-- BEAT 3 — Sfida / Dati: composition into layers -->
 
-## *This is a deep network. Count them: twelve.*
+## *This is a deep network. Count them: twelve… or is it seventeen?!*
 
 ![](../img/storyboard/sb-05_03.png){fig-align="center" width="80%"}
 
@@ -85,7 +85,7 @@ Il *gem*: rete $3 \to 2 \to 2 \to 1$ intera, si **contano** le connessioni una a
 - Punto unico: "deep" = *stack*, non *magia*. Stesso ragionamento scala a $10^6$ pesi.
 :::
 
-## Composition — a fully-connected (MLP) network
+## Composition — a fully-connected (MLP) network {.smaller}
 
 ::: {.columns}
 ::: {.column width="48%"}
@@ -105,7 +105,7 @@ A toy network $3 \to 2 \to 2 \to 1$ (no biases) has:
 
 $$\underbrace{3 \cdot 2}_{\text{layer 1}} + \underbrace{2 \cdot 2}_{\text{layer 2}} + \underbrace{2 \cdot 1}_{\text{layer 3}} = \mathbf{12}\ \text{weights}.$$
 
-**Twelve.** Drawable on a napkin.
+**Twelve.** Drawable on a napkin. *(The badge says **17** — that's the $12$ weights $+$ $5$ biases; here we count weights.)*
 
 :::
 :::
@@ -132,7 +132,7 @@ Il *come impara*. Tripla metafora da insistere a voce: pesi = **coordinate**, er
 ::: {.columns}
 ::: {.column width="55%"}
 
-For a given training set, each combination of weights $W$ has a loss $L(W)$:
+For a given training set, each combination of weights $W$ has a loss $L(W)$ — the **empirical risk** of ch. 2, now read as a function of $W$:
 
 - $W$ = coordinates in $\mathbb{R}^d$ (where $d$ = number of weights).
 - $L(W)$ = the *height* of the loss surface at $W$.
