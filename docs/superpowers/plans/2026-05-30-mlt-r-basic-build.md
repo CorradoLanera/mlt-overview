@@ -4,7 +4,15 @@
 
 **Goal:** Build the complete, runnable `mlt-r-basic` repository — a ~4h live-coded "Practical AI for Medical Data Analyses with R – Basic" workshop delivered as one RStudio project with cumulative pre-compiled checkpoint folders.
 
-**Architecture:** One Git repo = one `.Rproj` + one `renv`, with `steps/NN-slug/` folders each holding the **complete cumulative analysis state** at the end of that step (the answer key to step N is folder N+1). Each step driver is a Quarto `.qmd` with a `params$solved` flag that renders both the blanked "Your turn" version and the solved version from one source. Slides are a separate Quarto revealjs build under `slides/`. Everything is verified by **execution** (the code runs / the report renders / the metric appears), which is this project's analog of tests.
+**Architecture:** One self-contained project folder — `workshops/mlt-r-basic/` **inside the existing `mlt-overview` repo** — with its own `.Rproj` + `renv` (nested), and `steps/NN-slug/` folders each holding the **complete cumulative analysis state** at the end of that step (the answer key to step N is folder N+1). Each step driver is a Quarto `.qmd` with a `params$solved` flag that renders both the blanked "Your turn" version and the solved version from one source. Slides are a separate Quarto revealjs build under `slides/`. Everything is verified by **execution** (the code runs / the report renders / the metric appears), which is this project's analog of tests.
+
+> **BUILD LOCATION (decided 2026-05-30 — overrides the spec's original "separate repo"):** build everything under
+> `workshops/mlt-r-basic/` **within the `mlt-overview` repo** so the whole course stays integrated and versioned in
+> one place. Therefore: **(a)** every `mlt-r-basic/` path and `cd mlt-r-basic` below means `workshops/mlt-r-basic/`;
+> **(b)** there is **no separate `git init`** — all `git add`/`git commit` target the `mlt-overview` repo on branch
+> `mlt-r-workshops-design`; **(c)** the workshop folder is its **own nested renv project** — always run R *from
+> inside* `workshops/mlt-r-basic/` so its `.Rprofile` activates its renv (not the repo-root one); **(d)** distribution
+> for `use_course` is a ZIP of this folder, produced later by a root hook (out of scope for this plan).
 
 **Tech Stack:** R 4.5.x · `renv` · `here` · `rio` · `tidyverse` · `janitor` · `gtsummary` · `tidymodels` (`rsample`/`recipes`/`parsnip`/`workflows`/`workflowsets`/`tune`/`yardstick`/`dials`) · engines `glmnet`/`kknn`/`kernlab`/`ranger` · `future` (parallel tuning) · Quarto (revealjs + html) · dataset `medicaldata::indo_rct`.
 

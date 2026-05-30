@@ -72,8 +72,12 @@ altri curricula (in aula c'erano cardiologi). Quattro personas guidano ogni deci
 
 1. **Framework DL:** **`torch` + `luz` (+ `brulee`)**, *non* `keras3`. `torch` = libtorch nativo **senza Python**
    → installabile in aula duale. `brulee` porta un MLP *dentro* tidymodels; `luz` per reti più libere.
-2. **Layout repo:** **due repository** (`mlt-r-basic`, `mlt-r-advanced`), ognuno **un progetto** con cartelle
-   incrementali, proprio `renv`, proprio `use_course`.
+2. **Layout (rivisto 2026-05-30):** **due cartelle nello stesso repo `mlt-overview`** —
+   `workshops/mlt-r-basic`, `workshops/mlt-r-advanced` — ognuna **progetto autonomo** (`.Rproj` + `renv` propri,
+   nested) con cartelle incrementali. Tutto integrato e versionato in **un posto** (uniformità/visibilità, anche
+   date). Per `use_course` basta uno **ZIP per cartella** (un hook genererà `mlt-r-*.zip` in root) → stessa UX
+   `usethis::use_course()`, senza repo separati. *Override della precedente "due repository separati"; meccanismo
+   ZIP/hook da rifinire dopo.*
 3. **Stack ML:** **tidymodels-first**, niente `caret`. **Zoo a 4** (logistic, k-NN, SVM, RF).
 4. **Tuning (Basic):** **tutte e quattro le tecniche tunate e spiegate, con slide**, ma via **un solo
    `workflow_set` + `workflow_map('tune_grid')`** su `vfold_cv` condivisa (idiomatico *e* più rapido del tuning
@@ -103,8 +107,9 @@ truly black boxes… Variable importance, SHAP") senza realizzarla → **Advance
 
 ## 7. Meccanismo di delivery condiviso (semplificazione di `ws-reproj`)
 
-**Un repo per workshop, un `.Rproj`, un `renv`, cartelle-checkpoint `steps/NN-slug/`** (vs i 6 repo + submodule di
-`ws-reproj`). Ogni cartella = snapshot **completo e cumulativo**; **la soluzione dello step N è lo step N+1**.
+**Un progetto autonomo per workshop** (`.Rproj` + `renv`), **cartelle-checkpoint `steps/NN-slug/`** (vs i 6 repo +
+submodule di `ws-reproj`). I due progetti vivono come **cartelle in `mlt-overview/workshops/`** (§5.2), distribuite
+come ZIP via `use_course`. Ogni cartella = snapshot **completo e cumulativo**; **la soluzione dello step N è lo step N+1**.
 
 ```
 mlt-r-basic/  (idem advanced)
