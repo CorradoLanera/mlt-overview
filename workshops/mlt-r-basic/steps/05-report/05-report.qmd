@@ -1,0 +1,131 @@
+---
+title: "Practical AI for Medical Data — a reproducible model report"
+subtitle: "Predicting post-ERCP pancreatitis in the indomethacin RCT"
+date: today
+params:
+  solved: true
+format:
+  html:
+    embed-resources: true
+    toc: true
+    code-fold: true
+execute:
+  warning: false
+  message: false
+---
+
+<!--
+Nota docente (IT): step DEMO (~13 min). Questo è il DELIVERABLE riproducibile.
+NON ri-tuna nulla: ricarica `output/final_fit.rds` e `output/wf_rank.rds`
+(prodotti allo step 04) e ne presenta i risultati. Tutto data-driven dai due rds,
+così il report resta onesto ("no pre-baked shown as live") e veloce (<90s).
+-->
+
+## What this report does
+
+This is the reproducible deliverable of the workshop. It does **not** re-train or
+re-tune anything: it reloads the model we validated in Step 04 (`final_fit.rds`)
+and the cross-validation ranking (`wf_rank.rds`), and reports them. Re-rendering
+this file on any machine with the pinned environment reproduces every number and
+figure below.
+
+```{r load}
+library(here)
+library(rio)
+library(tidyverse)
+library(janitor)
+library(tidymodels)
+library(gtsummary)
+
+# Reload the validated artifacts from Step 04 (no tuning happens here) ----
+final_fit <- readRDS(here("output", "final_fit.rds"))
+wf_rank   <- readRDS(here("output", "wf_rank.rds"))
+
+# Reload the analysis cohort for the descriptive table ----
+indo <- import(here("data-raw", "indo_rct.csv"), setclass = "tibble") |>
+  clean_names() |>
+  select(outcome, age, risk, gender, sod, rx, type) |>
+  filter(!is.na(age)) |>
+  mutate(outcome = factor(outcome, levels = c("0_no", "1_yes")))
+```
+
+## The cohort
+
+The analysis cohort is the indomethacin RCT for post-ERCP pancreatitis
+(`medicaldata::indo_rct`): `r nrow(indo)` patients, outcome `1_yes` (pancreatitis)
+in `r scales::percent(mean(indo$outcome == "1_yes"), accuracy = 0.1)` of them. The
+table below summarises the six candidate predictors, stratified by outcome.
+
+```{r baseline}
+indo |>
+  tbl_summary(
+    by = outcome,
+    include = c(age, risk, gender, sod, rx, type),
+  )
+```
+
+## The winning model
+
+Four model families (penalized logistic regression, k-nearest neighbours,
+RBF-SVM, random forest) competed, each tuned over a grid on 5-fold
+cross-validation. The ranking by cross-validated ROC-AUC:
+
+```{r ranking}
+model_label <- c(
+  rec_penlog = "Penalized logistic (glmnet)",
+  rec_knn    = "k-nearest neighbours",
+  rec_svm    = "RBF support vector machine",
+  rec_rf     = "Random forest"
+)
+
+wf_rank |>
+  transmute(
+    Model      = model_label[wflow_id],
+    `CV ROC-AUC` = round(mean, 3),
+    `Std. error` = round(std_err, 3),
+    Rank       = rank,
+  )
+```
+
+```{r winner-numbers}
+winner_id  <- wf_rank |> dplyr::slice_min(rank, n = 1) |> dplyr::pull(wflow_id)
+cv_auc     <- wf_rank |> dplyr::slice_min(rank, n = 1) |> dplyr::pull(mean)
+test_auc   <- collect_metrics(final_fit) |>
+  dplyr::filter(.metric == "roc_auc") |> dplyr::pull(.estimate)
+test_acc   <- collect_metrics(final_fit) |>
+  dplyr::filter(.metric == "accuracy") |> dplyr::pull(.estimate)
+```
+
+The winner is **`r model_label[winner_id]`**. Its cross-validated ROC-AUC was
+**`r round(cv_auc, 3)`**; refit on the training split and scored once on the
+held-out test set, it reached a test ROC-AUC of **`r round(test_auc, 3)`** and an
+accuracy of **`r round(test_acc, 3)`**. The drop from CV to test is the honest
+cost of a small, imbalanced cohort — and exactly why we report a single,
+pre-committed test evaluation rather than the optimistic CV number alone.
+
+## Test-set ROC curve
+
+```{r roc-curve}
+collect_predictions(final_fit) |>
+  roc_curve(outcome, .pred_1_yes, event_level = "second") |>
+  autoplot()
+```
+
+## Reproducibility
+
+Every result above is reproducible by construction:
+
+- **Pinned environment.** Package versions are locked with `renv`; running
+  `renv::snapshot()` records them in `renv.lock`, and `renv::restore()` rebuilds
+  the exact library on another machine.
+- **Stable paths.** All file access goes through `here::here()`, anchored to this
+  step's `.here` sentinel, so the report renders identically regardless of the
+  working directory.
+- **No live re-tuning.** The model was tuned and validated once (Step 04) and
+  persisted to `output/final_fit.rds`; this report only reloads and presents it,
+  so re-rendering is fast and deterministic.
+- **One outcome convention.** The event is `1_yes` (the second factor level), and
+  every metric is scored with `event_level = "second"` — consistently, end to end.
+
+That is the whole point of the workshop: a clinical model you can hand to someone
+else and have them reproduce, number for number.
