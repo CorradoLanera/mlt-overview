@@ -91,15 +91,28 @@ Analogia fisica del kernel trick. Lasciate la slide qualche secondo (riconoscono
 A voce: dati non separabili → SVM non cambia algoritmo, cambia *coordinate* (la $\phi$). La linea torna a funzionare in alto, la riproietti come curva. Kernel trick = re-coordinatizzazione.
 :::
 
-## Linear SVM and the kernel trick
+## Linear SVM and the kernel trick {.smaller}
+
+::: {.columns}
+::: {.column width="56%"}
 
 **Linear SVM**: find the **widest-margin hyperplane** between classes:
-$$f(x) = \text{sgn}(w^\top x + b).$$
+$$f(x) = \text{sgn}(w^\top x + b), \quad x = (y_1, y_2).$$
 
 When classes are **not** linearly separable, apply a feature map $\phi:\mathbb{R}^d \to \mathbb{R}^D$ first:
-$$\phi(y_1, y_2) \;=\; \bigl(y_1^2,\; y_2^2,\; \sqrt{2}\,y_1 y_2\bigr).$$
+$$\phi(y_1, y_2) = \bigl(y_1^2,\; y_2^2,\; \sqrt{2}\,y_1 y_2\bigr).$$
 
-Then cut with a hyperplane *in the $\phi$-space*; project back as a **smooth curve** in the original space.
+Then cut with a hyperplane *in the $\phi$-space*; project back as a **smooth curve** in the original space. *(For radially-symmetric data, $(y_1^2, y_2^2)$ alone suffices.)*
+
+:::
+::: {.column width="44%"}
+
+![](../img/kernel.gif){fig-align="center" width="100%"}
+
+*The 2D data lifted into $\phi$-space, where a flat cut separates it.*
+
+:::
+:::
 
 The classifier did *not* change — *what it sees* did.
 
@@ -131,6 +144,8 @@ For $m$ independent weak classifiers each with per-classifier accuracy $p$:
 - if $p < 0.5$ → vote accuracy goes **down toward $0$** as $m$ grows.
 
 Voting *amplifies whichever direction $p$ points*. Hence the **$p > 0.5$ requirement**.
+
+*(Real forests only **approximate** independence — bootstrapping $+$ random feature subsets de-correlate the trees; the clean "$\to 1$" is the idealisation.)*
 
 ::: {.notes}
 Punto quantitativo: voto di maggioranza ≠ media — è una *binomial tail* che si concentra al crescere di $m$. L'item 03 testa la direzione.
