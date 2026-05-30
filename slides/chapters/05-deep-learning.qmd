@@ -1,0 +1,375 @@
+## Stack logistic units; descent finds weights. {.center .inverse background-color="#1F4257"}
+
+::: {.notes}
+Cover del capitolo 5 — 25 minuti. Sei-parole approvata: due clausole con punto e virgola, in serie con cap. 01-04. *Stack logistic units* eco esplicito a ch. 02 (la logistica come classificatore); *descent finds weights* nomina il meccanismo unico di apprendimento. Lessico-perno **weights** seminato come gancio a ch. 06 (dove diventeranno *kernel/filter*). Il sommativo live ("Open the box: $3 \to 2 \to 2 \to 1$") gira negli ultimi ~9′.
+:::
+
+<!-- BEAT 1 — Hook: the black-box stigma -->
+
+## *A million weights. No verdict explained.*
+
+![](../img/storyboard/sb-05_01.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Apre il capitolo: la deep network arriva con la fama di *black box* — milioni di pesi, nessuna spiegazione. Elena, dopo aver imparato a verificare *qualsiasi* classifier al cap. 04, qui sente il riflesso del cap. 01 (*avrà ancora ragione la macchina?*). Lasciate l'immagine respirare 5 secondi prima di passare alla domanda chiave: *si può guardarci dentro?*
+:::
+
+<!-- BEAT 2 — Contesto: one neuron = one logistic -->
+
+## *One neuron is one logistic — with $g$ free to be anything.*
+
+![](../img/storyboard/sb-05_02.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Callback strutturale esplicito a ch. 02 (la sigmoide come classificatore) ↔ il neurone artificiale. **Stessa macchina**: peso, somma pesata, attivazione. L'unica libertà nuova è la *forma* di $g$. Niente magia.
+:::
+
+## The artificial neuron
+
+::: {.columns}
+::: {.column width="50%"}
+
+![](../img/neuron.png){fig-align="center" width="100%"}
+
+:::
+::: {.column width="50%"}
+
+Given inputs $a = (a_1, \ldots, a_n)$ and weights $w = (w_1, \ldots, w_n)$:
+
+$$\text{out} = g\!\left(\sum_{i=1}^{n} a_i \, w_i\right)$$
+
+The chapter 2 logistic regression is the special case $g = \sigma$ (sigmoid). The artificial neuron *frees* $g$ — any **non-linear** and **differentiable** function will do.
+
+:::
+:::
+
+::: {.notes}
+La definizione operativa del neurone. Insistere sul fatto che la struttura *somma pesata + attivazione* è esattamente la regressione logistica di ch. 02 — solo che ora $g$ non deve essere $\sigma$. **Termini di vocabolario:** *non-lineare* (forma di $g$, non delle feature), *differenziabile* (perché serve per il training, slide più avanti).
+:::
+
+## Activation functions $g$ — common choices
+
+The chapter requires $g$ to be **non-linear** *and* **differentiable**. Three canonical choices:
+
+- **ReLU** (Rectified Linear Unit): $g(z) = \max(0, z)$ — the field's workhorse since the 2010s.
+- **Sigmoid**: $g(z) = \sigma(z) = \dfrac{1}{1 + e^{-z}}$ — the same one from chapter 2 logistic regression.
+- **Hyperbolic tangent**: $g(z) = \tanh(z) = \dfrac{e^z - e^{-z}}{e^z + e^{-z}}$.
+
+All three satisfy the two requirements (ReLU is differentiable *almost* everywhere — the single point $z = 0$ is handled in practice with the sub-gradient $0$).
+
+::: {.notes}
+Voce docente: ReLU è il default moderno per le hidden units (cheap, gradient flows on $z > 0$); sigmoid è la scelta per l'output di una classificazione binaria (interpretabile come probabilità); tanh è una versione *centred* del sigmoid (output in $[-1, +1]$). **Anti-trabocchetto:** ReLU non è differenziabile in $z = 0$, ma è OK — il sub-gradient $0$ funziona benissimo in pratica. Item 02 e item 03 useranno ReLU come canonical.
+:::
+
+<!-- BEAT 3 — Sfida / Dati: composition into layers -->
+
+## *This is a deep network. Count them: twelve.*
+
+![](../img/storyboard/sb-05_03.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Il *gem* del capitolo. La rete $3 \to 2 \to 2 \to 1$ è disegnata intera: lo studente può **contare** le connessioni una per una. **$12$** in lettere grandi. La pedagogia: "deep" significa *stack*, non *magia*. Stesso ragionamento scala a $10^6$ pesi.
+:::
+
+## Composition — a fully-connected (MLP) network
+
+::: {.columns}
+::: {.column width="48%"}
+
+![](../img/mlp.png){fig-align="center" width="100%"}
+
+:::
+::: {.column width="52%"}
+
+Stack neurons into **layers**; feed the outputs of one layer as the inputs of the next:
+
+$$a^{[l]} = g^{[l]}\!\left(W^{[l]} \, a^{[l-1]}\right)$$
+
+where $W^{[l]}$ is the weight matrix of layer $l$.
+
+A toy network $3 \to 2 \to 2 \to 1$ (no biases) has:
+
+$$\underbrace{3 \cdot 2}_{\text{layer 1}} + \underbrace{2 \cdot 2}_{\text{layer 2}} + \underbrace{2 \cdot 1}_{\text{layer 3}} = \mathbf{12}\ \text{weights}.$$
+
+**Twelve.** Drawable on a napkin.
+
+:::
+:::
+
+::: {.notes}
+Punto di svolta del capitolo. Lo studente deve uscire da questa slide **convinto che la rete profonda è una composizione di oggetti familiari**, non un nuovo tipo di oggetto matematico. Un milione di pesi è lo stesso *ragionamento* con più righe — non un *fenomeno* diverso. Il sommativo "Open the box: $3 \to 2 \to 2 \to 1$" usa esattamente questa architettura.
+:::
+
+<!-- BEAT 4 — Nodo: loss landscape + gradient descent -->
+
+## *Weights are coordinates. Loss is the height. Walk downhill.*
+
+![](../img/storyboard/sb-05_04.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Il *come impara* la rete. Cambio di metafora chiave: i pesi non sono "parametri da indovinare", sono **coordinate** in uno spazio. L'errore non è "un numero", è **un'altezza**. L'addestramento non è "ottimizzazione astratta", è **camminare in discesa**.
+:::
+
+## Gradient descent — the training loop {.smaller}
+
+::: {.columns}
+::: {.column width="55%"}
+
+For a given training set, each combination of weights $W$ has a loss $L(W)$:
+
+- $W$ = coordinates in $\mathbb{R}^d$ (where $d$ = number of weights).
+- $L(W)$ = the *height* of the loss surface at $W$.
+
+**Gradient descent**: walk downhill, one small step at a time:
+
+$$W \leftarrow W - \eta \, \nabla_W L(W).$$
+
+- $\nabla_W L(W)$ = direction of *steepest ascent*; we go *against* it.
+- $\eta$ = **learning rate** = how big a step we take.
+
+:::
+::: {.column width="45%"}
+
+![](../img/loss.png){fig-align="center" width="100%"}
+
+![](../img/descent.gif){fig-align="center" width="100%"}
+
+:::
+:::
+
+::: {.notes}
+La meccanica unica del training nelle reti profonde. **Sign** ($-$, non $+$) decide se scendiamo o saliamo; **$\eta$** decide quanto lungo è ogni passo. Item 03 testa esattamente questa coppia di scelte (matrice 2×2 di distrattori: sign × $\eta$). *Backpropagation* è il *come* si calcola $\nabla_W L$ — chain rule strato per strato — ma resta voce docente; lo studente del corso non deve saperla derivare a mano.
+:::
+
+## Why must $g$ be non-linear *and* differentiable?
+
+Both requirements have **operational meaning** for the training procedure:
+
+- **Non-linear** $g$ → the stack of layers is **more** than one big linear map. Otherwise $(g_1 \circ g_2 \circ g_3)(\cdots) = W x$ — one matrix multiplication, no matter how many layers. *No "deep".*
+- **Differentiable** $g$ → the gradient $\nabla_W L(W)$ **exists** at every $W$. Otherwise: no direction to step in, and gradient descent has nothing to do. *No "learning".*
+
+The two together: a *curved* loss landscape with a *slope at every point*. That's what makes descent possible.
+
+::: {.notes}
+Il **payoff conoscitivo** della seconda metà di Obj. 3. Tradotto dall'algebra al paesaggio: non-linearità → il terreno è *curvo* (non un piano); differenziabilità → c'è *una pendenza ovunque*. Questa è la formulazione che lo studente porterà fuori dall'aula. **Voce docente — anticipazione storica:** il *perceptron* originale degli anni '60 usava una funzione step come $g$ (Heaviside) — non differenziabile, derivata zero quasi ovunque, training impossibile. È servito il 1986 (Rumelhart, Hinton, Williams) per uscire dall'impasse con attivazioni *smooth*. Questa è la lezione storica del deep learning.
+:::
+
+<!-- BEAT 5 — Metodo/Soluzione (perno del sommativo) -->
+
+## *Forward pass on the left. Descent step on the right. Both yours to read.*
+
+![](../img/storyboard/sb-05_05.png){fig-align="center" width="84%"}
+
+::: {.notes}
+Perno del capitolo. Qui si **opera** il meccanismo che abbiamo costruito: scrivere il forward pass strato per strato, scegliere la direzione di discesa sul paesaggio. È esattamente il sommativo live *"Open the box: $3 \to 2 \to 2 \to 1$"* — ~9′ di lavoro di gruppo + 2 poll Slido (conta dei pesi + freccia di discesa).
+:::
+
+<!-- BEAT 6 — Payoff + pre-hook ch 06 -->
+
+## *It's not magic — it's just bigger. But what about a chest X-ray?*
+
+![](../img/storyboard/sb-05_06.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Payoff narrativo del capitolo: la scatola era *grande*, non *sigillata*. Atomi familiari (logistica generalizzata), meccanismo familiare (discesa). Ma all'orizzonte spuntano due dati clinici che non sono vettori di lunghezza $12$: la radiografia ($10^6$ pixel) e la traccia ECG/pressione (sequenza di lunghezza variabile). Apre il cap. 06.
+:::
+
+## Pre-hook → chapter 6: unstructured data
+
+Elena's stack of neurons can chew on any **vector** of inputs — age, BMI, a lab value — and learn from it.
+
+But clinical data does **not** arrive as a tidy vector of length $12$:
+
+- A chest X-ray is a **$1024 \times 1024$ image** — feed it raw to a fully-connected layer, and the first weight matrix alone holds over a million parameters *per neuron*.
+- A blood-pressure trace is a **sequence**, varying in length — where do you even start?
+
+The same logistic-stack-plus-descent machinery can survive the jump — but only with a clever rule about **which weights are shared**. That rule is the subject of chapter 6: **convolutional** networks for images, **recurrent** networks for sequences.
+
+::: {.notes}
+Pre-hook esplicito al cap. 06. Il *vincolo strutturale* è il salto qualitativo: i pesi non possono essere tutti diversi. Cliff-hanger lessicale **convolutional / recurrent / weight sharing** senza ancora rivelare kernel / stride / time-step. La motivazione è **clinica** (RX + ECG), non solo matematica: Elena ha già visto la matematica, è il dato reale che forza il vincolo.
+:::
+
+<!-- ============================================================ -->
+<!-- EXERCISES — at end of chapter, summative LAST.               -->
+<!-- ============================================================ -->
+
+## Exercises {.inverse .center background-color="#1F4257"}
+
+::: {.notes}
+Blocco esercizi. I 3 item formativi (no Argumentation in questo capitolo — è stato deliberatamente lasciato fuori per non sovraccaricare i 25′) sono recap/self-study; il sommativo live (*"Open the box: $3 \to 2 \to 2 \to 1$"*) gira negli ultimi ~9′ (min 16-25). **Nota di set-size:** ch.05 chiude a 3 item, contro i 4 dei cap. 01-04.
+:::
+
+<!-- Item 01 — MCQ — Neuron as generalised logistic -->
+
+## Item 01 — Question {.smaller}
+
+A clinical colleague tells you over coffee: *"an artificial neuron is just a fancy version of logistic regression."* Which one identifies the **single mathematical change** that turns a logistic regression into an artificial neuron?
+
+- **A)** The sigmoid activation is replaced by **any non-linear, differentiable function** $g$ (ReLU, tanh, sigmoid as one special case). The weighted-sum structure $\sum_i a_i w_i$ is unchanged.
+- **B)** The **input features** are squared ($a_i^2$ instead of $a_i$), so the neuron can model curved boundaries.
+- **C)** The neuron carries **many weight vectors in parallel** instead of one, so it produces multiple outputs.
+- **D)** The activation is **removed entirely**, so the neuron computes the bare $\sum_i a_i w_i$ — a *purely linear* version of logistic regression.
+
+::: {.notes}
+Item 01 — Comprehension / MCQ / low-medium. Obj. 1 (neuron as generalised non-linear logistic unit). Vedi `course/05-deep-learning/items/item_01_neuron-as-generalised-logistic_mcq.md`. **Distrattori didattici:** B = kernel trick di ch. 03 (back-reference, misconception "non-linearità nelle feature"); C = layer vs neurone (atomo vs molecola); D = peggior risposta (linearità collassante).
+:::
+
+## Item 01 — Solution (write yours)
+
+::: {.notes}
+Lascio 30-45 secondi. Il misconception più frequente è confondere C con A (chi ha sfogliato un diagramma MLP in fretta): un layer **è** un insieme di neuroni in parallelo, ma il *singolo* neurone ha *un* vettore di pesi.
+:::
+
+## Item 01 — Solution
+
+**Correct: A.** An artificial neuron is $\text{out} = g(\sum_i a_i w_i)$ where $g$ is non-linear and differentiable. The logistic regression of ch. 2 is the special case $g = \sigma$. The artificial neuron *frees* $g$ to any function satisfying the two requirements.
+
+Why the distractors are wrong:
+
+- **B** = **kernel trick of ch. 3** (non-linearity in the *features*, not the *activation*). Different mechanism.
+- **C** = a **layer** of neurons, not a single neuron. The student has confused the atom with the molecule.
+- **D** removes $g$ entirely → purely linear → stack collapses to one linear map. The *worst* answer: it is exactly what the chapter's requirement on $g$ forbids.
+
+::: {.notes}
+Take-away: il discriminante è *lo swap dell'attivazione*, niente altro. Riprendere la slide del neurone per visualizzare. Reveal di D come *teachable bridge* a Obj. 3 (la non-linearità è il requisito che rende lo stack *non equivalente* a una mappa lineare).
+:::
+
+<!-- Item 02 — Applicativa — Forward pass + weight count -->
+
+## Item 02 — Question {.smaller}
+
+Network $3 \to 4 \to 2 \to 1$ (no biases): $3$ inputs · hidden 1 of $4$ neurons (ReLU) · hidden 2 of $2$ neurons (ReLU) · $1$ sigmoid output.
+
+1. **Write the forward pass** in matrix form, $a^{[l]} = g^{[l]}(W^{[l]} a^{[l-1]})$, with explicit dimensions of each $W^{[l]}$.
+2. **Count the total weights**, decomposed by layer.
+3. Given $a^{[0]} = (1,\ 2,\ 0)$ and
+$$W^{[1]} = \begin{pmatrix} 1 & 0 & -1 \\ 0 & 1 & 1 \\ -1 & 1 & 0 \\ 2 & -2 & 0 \end{pmatrix},$$
+compute $a^{[1]} = \text{ReLU}(W^{[1]} a^{[0]})$, **showing $z^{[1]} = W^{[1]} a^{[0]}$ first**.
+
+::: {.notes}
+Item 02 — Application / applicativa / medium. Obj. 2 (composizione del forward pass + conta dei pesi + un calcolo numerico). Rubrica: `course/05-deep-learning/rubriche/rubrica_02_forward-pass-and-weight-count.md`. **Architettura diversa dal sommativo** (sommativo: $3 \to 2 \to 2 \to 1$ con $12$ pesi; item 02: $3 \to 4 \to 2 \to 1$ con $22$ pesi) per misurare il *processo*, non la memoria.
+:::
+
+## Item 02 — Solution (write yours)
+
+::: {.notes}
+Slide bianca per il calcolo in 3 parti. Tempo target: ~5′. Il *teachable beat* è la sub-q 3: la quarta componente $z^{[1]}_4 = -2$ killed da ReLU a $0$. Studenti che scrivono $a^{[1]}_4 = -2$ stanno applicando una funzione lineare invece di ReLU — è la *non-linearità che fa lavoro visibile*.
+:::
+
+## Item 02 — Solution {.smaller}
+
+**1.** Forward pass:
+
+- $a^{[1]} = \text{ReLU}(W^{[1]} a^{[0]})$, $W^{[1]} \in \mathbb{R}^{4 \times 3}$, $a^{[1]} \in \mathbb{R}^4$.
+- $a^{[2]} = \text{ReLU}(W^{[2]} a^{[1]})$, $W^{[2]} \in \mathbb{R}^{2 \times 4}$, $a^{[2]} \in \mathbb{R}^2$.
+- $a^{[3]} = \sigma(W^{[3]} a^{[2]})$, $W^{[3]} \in \mathbb{R}^{1 \times 2}$, $a^{[3]} \in \mathbb{R}$ — scalar output $\hat{y}$.
+
+**2.** Weight count: $3 \cdot 4 + 4 \cdot 2 + 2 \cdot 1 = 12 + 8 + 2 = \mathbf{22}$.
+
+**3.** Pre-activation $z^{[1]} = W^{[1]} a^{[0]} = (1,\ 2,\ 1,\ -2)$.
+Apply ReLU element-wise: $a^{[1]} = (1,\ 2,\ 1,\ \mathbf{0})$ ← the **$-2$** is killed by the non-linearity.
+
+::: {.notes}
+Reveal pedagogico: la **quarta componente** è il punto. Un milione di pesi in più non cambierebbe il *processo*: ogni neurone applica $g$ alla sua somma pesata. La non-linearità *fa lavoro visibile* — un peso negativo nasconde una decisione "non attivare" che la rete impara.
+:::
+
+<!-- Item 03 — MCQ — One step of gradient descent -->
+
+## Item 03 — Question {.smaller}
+
+A toy neural network has **2 weights**, $w_1, w_2$. At the current weights
+$$W_{\text{now}} = (3,\ 1)$$
+the gradient is
+$$\nabla_W L(W_{\text{now}}) = (2,\ -4).$$
+Training uses **gradient descent with learning rate** $\eta = 0.5$.
+
+After **one** update step, the new weight vector $W_{\text{next}}$ is:
+
+- **A)** $(2,\ 3)$ &nbsp;·&nbsp; **B)** $(4,\ -1)$ &nbsp;·&nbsp; **C)** $(1,\ 5)$ &nbsp;·&nbsp; **D)** $(5,\ -3)$
+
+::: {.notes}
+Item 03 — Application / MCQ / medium. Obj. 3 (procedural half: applica la formula della discesa). Vedi `course/05-deep-learning/items/item_03_gradient-descent-step_mcq.md`. **Matrice 2×2 di distrattori** (sign × $\eta$): A = tutto giusto; B = sign-flip (ascent); C = $\eta$ dimenticato (direzione giusta, step troppo grande); D = entrambi sbagliati.
+:::
+
+## Item 03 — Solution (write yours)
+
+::: {.notes}
+Lascio 30-45 secondi. La discriminante è la *formula*: $W \leftarrow W - \eta \nabla L$. Se la classe esita tra A e C, è il momento giusto per richiamare la slide di gradient descent (il ruolo di $\eta$ come step size).
+:::
+
+## Item 03 — Solution
+
+**Correct: A.**
+$$\begin{aligned}
+W_{\text{next}} &= W_{\text{now}} - \eta \, \nabla_W L \\
+&= (3,\ 1) - 0.5 \cdot (2,\ -4) \\
+&= (3,\ 1) - (1,\ -2) \;=\; (2,\ 3).
+\end{aligned}$$
+
+Why the distractors are wrong:
+
+- **B** = sign-flip → **gradient ascent**, walks *uphill* (increases the loss).
+- **C** = forgot $\eta$ → *direction* is right (downhill), but the *step size* is wrong. A step too big can overshoot the minimum, oscillate, or diverge. **$\eta$ controls how far you move.**
+- **D** = both errors at once. Sign wrong + step too big.
+
+::: {.notes}
+Take-away: **sign** decide downhill/uphill; **$\eta$** decide step size. **Distractor C è il più ricco didatticamente** — nel reveal apre la conversazione su *"cosa è $\eta$?"* = step size, overshoot, oscillation. Voce docente: la regola "$\eta$ piccolo $\to$ lento ma stabile; $\eta$ grande $\to$ veloce ma rischioso" è la prima intuizione hyperparameter del deep learning.
+:::
+
+<!-- Summative -->
+
+## Summative — *Open the box: $3 \to 2 \to 2 \to 1$* {.inverse .smaller background-color="#1F4257"}
+
+Network: **$3 \to 2 \to 2 \to 1$** (no biases), hidden = ReLU, output = sigmoid. *The diagram you'll work on:*
+
+![](../img/storyboard/sb-05_05_labeled.png){fig-align="center" width="58%"}
+
+::: {.columns}
+::: {.column width="50%"}
+
+**On the network (top half of the board):**
+
+(i) Write the **forward pass** equations layer by layer, $a^{[l]} = g^{[l]}(W^{[l]} a^{[l-1]})$.
+
+(ii) **Count the total weights** — show $\square + \square + \square = ?$.
+
+:::
+::: {.column width="50%"}
+
+**On the loss-landscape contour map (bottom half):**
+
+(iii) Circle the arrow $A / B / C / D$ in the **steepest-descent** direction; justify in one sentence (what makes it the right one — and what's wrong with each of the other three).
+
+(iv) One sentence on $g$: the **two properties** it must have, and *why each matters* for (iii).
+
+:::
+:::
+
+**Two live polls:** *"Total weights?"* ($8 / 12 / 17 / 24$) · *"Steepest descent step?"* ($A / B / C / D$).
+
+::: {.notes}
+Sommativo — gira negli ultimi ~9′ (min 16-25). ~1′ leggi + apri poll + ~3′ scrivi forward pass + conta pesi (poll 1 chiude $\ge 80\%$) + ~2′ scegli freccia + 1-sentence (poll 2 chiude $\ge 80\%$) + ~1′ 1-sentence on $g$ + ~2′ reveal. **Banco unico condiviso** — no group cards differenti (capitolo da 25′ troppo breve). **Reveal:** "$12$ pesi che camminano in discesa — Elena può ora guardare dentro la scatola che prima obbediva". **Teachable bias (al reveal del Poll 1):** l'immagine di BEAT 3 (`sb-05_03.png`) mostra il badge "$17$ total parameters" — è il distrattore del Poll 1 e non è sbagliato in sé: include i $5$ bias (uno per neurone non-input). *Pesi* (archi) $= 12$, *parametri* (pesi + bias) $= 17$. Apre il ponte verso ch. 06 (weight sharing → due reti con stesso numero di archi possono avere numeri di parametri molto diversi). **Misconception delle 4 arrows** (per il reveal del Poll 2): la freccia corretta è **perpendicolare al contour locale e punta verso il minimo** (anti-gradiente, *steepest descent*); le altre tre isolano *sign-flip* (perpendicolare ma uphill), *perpendicolare $\ne$ discesa* (tangente al contour, lungo l'ellisse), *non-steepest* (obliqua a $\sim 45°$, scende ma non è la pendenza massima). Vedi `course/05-deep-learning/objectives.md` per il reveal completo.
+:::
+
+## Summative — Solution (write yours)
+
+::: {.notes}
+Slide bianca per le 4 sub-task. Riempio la shared board mano a mano. **Teachable moment per distrattori del Poll 1:** $8$ = ha dimenticato lo strato intermedio $2 \to 2$; $17$ = ha incluso i bias ($12 + 5$); $24$ = doppio conteggio direzionale (in-bound + out-bound). Usare per il reveal — non penalizzare, *spiegare*.
+:::
+
+## Summative — Solution {.smaller}
+
+**(i)** Forward pass:
+$$a^{[1]} = \text{ReLU}(W^{[1]} a^{[0]}),\quad a^{[2]} = \text{ReLU}(W^{[2]} a^{[1]}),\quad a^{[3]} = \sigma(W^{[3]} a^{[2]}).$$
+
+**(ii)** Weight count: $3 \cdot 2 + 2 \cdot 2 + 2 \cdot 1 = 6 + 4 + 2 = \mathbf{12}$.
+
+**(iii)** **Anti-gradient direction** — perpendicular to the local loss contour **and** pointing toward the minimum. The loss decreases *fastest* along $-\nabla_W L$. Why the other three arrows fail: *perpendicular-uphill* = the gradient itself (sign-flip, ascent); *tangent to the contour* = moves along the same loss level (perpendicular $\ne$ descent); *oblique at $\sim 45°$* = does decrease the loss, but **not at the maximum rate** — gradient descent specifically asks for the *steepest* one.
+
+**(iv)** $g$ must be **non-linear** (so the stack does not collapse to one linear map) **and** **differentiable** (so $\nabla_W L$ exists at every $W$ and descent has a direction to take).
+
+*Take-home:* a deep network is a **composition** of generalised logistic units, trained by **gradient descent** on a loss landscape. The black box is *big*, not *sealed* — Elena can read its parts.
+
+::: {.notes}
+Reveal pedagogico: il cliff-hanger di ch. 04 ("e se il modello può essere reso arbitrariamente complesso?") è chiuso — il *come* è composizione + discesa, niente magia. **Pre-hook ch. 06:** la rete chew vector inputs, ma una RX torace e una traccia ECG non sono vettori di $12$ — serve weight sharing. Chiudere con la frase del payoff: *"It's not magic — it's just bigger. But what about a chest X-ray?"*
+:::

@@ -1,0 +1,421 @@
+## Match the structure; share the weights. {.center .inverse background-color="#1F4257"}
+
+::: {.notes}
+Cover del capitolo 6 — 20 minuti. Sei-parole approvata: due clausole con punto e virgola, in serie con cap. 01-05. *Match the structure* è la riformulazione letterale di Obj. 1 (l'architettura è dettata dalla forma del dato); *share the weights* è il trucco operativo che rende CNN e RNN tractable. Lessico-perno **weights** *ripreso esplicitamente da ch. 05* ("descent finds weights" → "share the weights") — coerenza: i pesi non cambiano natura, cambia il *come vengono riusati*. Il sommativo live ("Right tool for the wrong tensor") gira negli ultimi ~8′ (min 12–20).
+:::
+
+<!-- BEAT 1 — Hook: the tabular machinery overrun by real clinical data -->
+
+## *Twelve weights worked. Then the image arrived.*
+
+![](../img/storyboard/sb-06_01.png){fig-align="center" width="80%"}
+
+::: {.notes}
+La lattice di ch. 05 — la stessa $3 \to 2 \to 2 \to 1$ con 12 archi — riappare *intatta* sulla scrivania di Elena, e sopra ci cadono dall'alto due dati clinici visibilmente troppo grandi: una RX torace $1024 \times 1024$ e una traccia ECG. La macchina di ieri non è sbagliata, *non scala*. Lasciate respirare l'immagine 5 secondi prima di passare al perché.
+:::
+
+<!-- BEAT 2 — Contesto: the two structural axes of unstructured data -->
+
+## *Same lesion, different place. Same beat, far apart.*
+
+![](../img/storyboard/sb-06_02.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Due strutture diverse, due fallimenti diversi dell'MLP. L'immagine ha **invarianza di posizione** (stessa lesione, ovunque appaia). La sequenza ha **ordine** (sample $4\,999$ non è intercambiabile col sample $1$). L'MLP non rispetta nessuna delle due strutture, e per questo collassa.
+:::
+
+## Two data types, two structural priors
+
+::: {.columns}
+::: {.column width="50%"}
+
+**Multi-dimensional spatial single-information**
+
+![](../img/imagetypegrayscale.png){fig-align="center" width="100%"}
+
+A chest X-ray, a CT slice, a histology tile — a $2$D matrix $X \in \mathbb{R}^{H \times W}$ where *the same edge or lesion can appear at different positions of the field of view*.
+
+**Prior**: translation invariance.
+
+:::
+::: {.column width="50%"}
+
+**One-dimension privileged sequential single-information**
+
+![](../img/sequences.png){fig-align="center" width="100%"}
+
+An ECG trace, a clinical note, a heart-rate stream — a sequence $x^{<1>}, x^{<2>}, \ldots, x^{<T_x>}$ where *the position $t$ carries meaning* (before / after).
+
+**Prior**: order.
+
+:::
+:::
+
+::: {.notes}
+Per ciascuna delle due strutture, il *prior* che l'architettura dovrà rispettare. Le due colonne nominano i due esempi clinici canonici del capitolo (RX/ECG) e li legano alla proprietà strutturale che l'MLP *non* preserva. Vocabolario in chiaro: *translation invariance*, *order*. Questi sono i due nomi che lo studente deve poter dire al sommativo.
+:::
+
+<!-- BEAT 3 — Sfida / Dati: the parameter explosion (the numeric gem) -->
+
+## *$5\,017\,600$ versus $9$. Same image, two architectures.*
+
+![](../img/storyboard/sb-06_03.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Il *gem* numerico del capitolo. Un fully-connected primo layer con $100$ neuroni nascosti sull'immagine $224 \times 224$ raw: $5\,017\,600$ pesi. Un singolo kernel convoluzionale $3 \times 3$: $9$. **Tre ordini di grandezza** in meno, sulla stessa immagine. La asimmetria visiva (badge gigante vs minuscolo) è il *secondo* canale di lettura oltre al numero. **⚠️ NOTA — badge numbers sull'immagine:** l'AI generator ha scritto $0.9827$ (badge grande) e $0.27$ (badge piccolo) invece dei numeri richiesti. *Non* tentare di leggerli a voce — punta direttamente al *rapporto dimensionale grande-vs-piccolo* dei due badge come *cifra dell'asimmetria*, e annuncia: *"i numeri precisi li vediamo nella prossima slide"*. La slide successiva (`Fully-connected on a chest X-ray — back of the envelope`) riporta in formule chiare $5\,017\,600$ vs $9$. Vedi `course/06-unstructured-data/storyboard.md` *Nota meta — "$5\,017\,600$ e $9$" nei badge di sb-06_03* per le tre opzioni di fix (mantenere così + reveal verbale / rigenerare l'immagine / overlay slide-editor).
+:::
+
+## Fully-connected on a chest X-ray — back of the envelope
+
+A $224 \times 224$ grayscale image fed *raw* to a fully-connected layer with $100$ hidden units:
+
+$$|W^{(\text{FC})}| \;=\; 224 \times 224 \times 100 \;=\; 50\,176 \times 100 \;=\; 5\,017\,600 \text{ weights.}$$
+
+For a *single* hidden layer. *On a $1024 \times 1024$ full-resolution X-ray*: $\sim 10^{8}$ weights — orders of magnitude **more parameters than any clinical dataset has labelled patients**.
+
+A single $3 \times 3$ convolutional kernel — by contrast — has $3 \times 3 = 9$ weights for the whole layer, **regardless of image size**.
+
+::: {.notes}
+La conta delle ossa. Lo studente deve vedere che il problema dell'MLP sull'immagine **non è teorico**: è un problema di *bilancio dati/parametri* che nessun ospedale può risolvere comprando più pazienti. Voce docente: questo è il calcolo che SU 1 esegue in $30$″ come formative *solved*; qui lo abbiamo davanti agli occhi.
+:::
+
+<!-- BEAT 4 — Nodo: weight sharing as the unifying principle -->
+
+## *One trick. Two axes. Share the weights.*
+
+![](../img/storyboard/sb-06_04.png){fig-align="center" width="80%"}
+
+::: {.notes}
+**Tesi del capitolo.** Weight sharing è il dispositivo unico — nello spazio si chiama CNN, nel tempo si chiama RNN. Fa due lavori in uno: blocca l'esplosione dei pesi *e* codifica nell'architettura la struttura del dato. Niente di concettualmente nuovo dopo questa slide.
+:::
+
+## CNN — share across **space**
+
+::: {.columns}
+::: {.column width="50%"}
+
+![](../img/convExample.png){fig-align="center" width="100%"}
+
+A small kernel $K \in \mathbb{R}^{k \times k}$ (typically $3 \times 3$ → $9$ weights) is slid across the input image. At every position $(i, j)$:
+
+$$F_{ij} = g\!\left(\sum_{u=1}^{k}\sum_{v=1}^{k} K_{uv}\, X_{i+u-1,\, j+v-1}\right).$$
+
+The **same** $K$ at every position.
+
+:::
+::: {.column width="50%"}
+
+**Two operational consequences:**
+
+- **Weight count**: $9$ weights *for the whole layer*, independent of image size — vs $\sim 10^{4}$–$10^{6}$ for a fully-connected layer on the same input.
+
+- **Translation invariance**: the kernel that learned to detect an edge will detect that edge *wherever it appears* — the geometric prior is encoded *in the architecture*, not learned from data.
+
+:::
+:::
+
+::: {.notes}
+La formula della convoluzione. Insistere sul fatto che **il kernel è lo stesso** a ogni posizione $(i, j)$ — non *uno per pixel*. La pedagogia: la CNN non è una *nuova* macchina, è un *MLP con vincoli sui pesi*. Strip the constraints, you get back the MLP. **Voce docente — fuori scope:** stride, padding (same vs valid), max-pooling, multi-channel/RGB — sono dettagli che gli studenti UBEP rivedranno se serviranno.
+:::
+
+## CNN — typical deep stack
+
+![](../img/cnn-struct.png){fig-align="center" width="78%"}
+
+A real CNN stacks **many** kernels (one per feature), in **many** layers — but each kernel is *small* and *shared across space*. The total parameter count stays modest even when the network is "deep".
+
+::: {.notes}
+Slide-vetrina. Mostra che la CNN reale non è un singolo kernel ma uno *stack* di kernel su strati — ma l'idea pedagogica del capitolo è già stata data nella slide precedente. Voce docente: gli ingegneri ML giocano sui numeri di kernel per strato (8 → 16 → 32 → …); è il design space dove si fa l'arte, non l'idea fondamentale. La *cifra* di ch. 06 resta: ogni kernel singolo è *shared across space*.
+:::
+
+## RNN — share across **time**
+
+::: {.columns}
+::: {.column width="55%"}
+
+![](../img/rnn-full_CL.png){fig-align="center" width="100%"}
+
+At every position $t = 1, \ldots, T_x$:
+
+$$a^{<t>} = g\!\left(W_{aa}\, a^{<t-1>} + W_{ax}\, x^{<t>} + b_a\right)$$
+
+$$y^{<t>} = g'\!\left(W_{ya}\, a^{<t>} + b_y\right)$$
+
+The **same** matrices $W_{aa}, W_{ax}, W_{ya}$ at every position $t$.
+
+:::
+::: {.column width="45%"}
+
+**Two operational consequences:**
+
+- **Parameter count is independent of $T_x$** — the same $W$ matrices process a $5\,000$-sample ECG and a $5 \times 10^{5}$-sample one.
+
+- **Memory** — because $a^{<t>}$ depends on $a^{<t-1>}$, the hidden state at $t$ carries the network's record of *everything it has read so far*.
+
+:::
+:::
+
+::: {.notes}
+L'analogo, sull'asse del tempo. *Stesso trucco* (weight sharing) su un *asse diverso* (tempo invece che spazio). Le tre matrici $W_{aa}, W_{ax}, W_{ya}$ sono i tre oggetti che lo studente deve poter nominare al sommativo + item 03. **Voce docente — fuori scope:** LSTM/GRU, vanishing gradient, bidirectional RNN — sono evoluzioni dell'RNN classico ma non entrano nei $20$′. La memoria è "in principle" — in pratica il vanishing gradient la limita, ed è uno dei motivi che ch. 07 introdurrà l'attention.
+:::
+
+## Same engineering move — two axes of the data
+
+| Axis | Architecture | What gets shared | Headline weight count |
+|---|---|---|---|
+| (none) | MLP | nothing | $5\,017\,600$ on $224 \times 224 \times 100$ hidden |
+| Space | CNN | one kernel $K$ | $9$ for a $3 \times 3$ layer (any image size) |
+| Time | RNN | $W_{aa}, W_{ax}, W_{ya}$ | $170$ for $n_a = 10,\ n_x = 5,\ n_y = 2$ (any $T_x$) |
+
+::: {.notes}
+La tabella che chiude il *nodo*. Lo studente esce dal beat $4$ con questa tabella in testa. *Match the structure* = riga "Axis"; *share the weights* = colonna "What gets shared". I tre headline numerici sono i tre numeri-faro del capitolo (SU 1, SU 2, SU 3). Riposare $\sim 5$″ qui prima del beat $5$.
+:::
+
+<!-- BEAT 5 — Metodo/Soluzione (perno del sommativo) -->
+
+## *Right tool for the wrong tensor.*
+
+![](../img/storyboard/sb-06_05.png){fig-align="center" width="84%"}
+
+::: {.notes}
+Perno del capitolo. Tre data cards (X-ray pneumonia / ECG AFib / tabular $18$-feature pre-op), tre architetture, due Slido poll. **Card C è il distrattore concettuale** (la risposta giusta è MLP, non CNN/RNN — costringe lo studente a NON applicare CNN/RNN ovunque). Vedi `course/06-unstructured-data/objectives.md` per il summative completo: ~$8$′ di lavoro, minuti $12$–$20$.
+:::
+
+<!-- BEAT 6 — Payoff + pre-hook ch. 07 -->
+
+## *Atoms unchanged. Only the rule of repetition. One more time?*
+
+![](../img/storyboard/sb-06_06.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Payoff narrativo del capitolo. La scrivania di ch. 06 ora ha due strutture specializzate (CNN per l'immagine, RNN per la sequenza). Ma sull'orizzonte appare un terzo dato clinico — una **lettera di dimissione** con due token connessi da una *long fading dotted arrow*: dipendenza a lungo raggio che la memoria sequenziale dell'RNN si sfilaccia a propagare. Cliff-hanger esplicito a ch. 07. **Nota di serie:** la frase "*only the rule of repetition does — one more time*" riprende anaforicamente la chiusura della prosa narrativa del capitolo — è un *gancio di serie* (l'ultima frase del capitolo $N$ diventa la prima frase del capitolo $N+1$).
+:::
+
+## Pre-hook → chapter 7: LLMs & Transformers
+
+The RNN reads one position at a time — fine on an ECG, where the rhythm is **local**.
+
+But a discharge letter: the meaning of *"no"* at position $42$ depends on *"but"* at position $5$. The signal must propagate through $37$ intermediate hidden states — each one a chance to fade.
+
+Is there a network in which **every position sees every other position directly**, without the sequential bottleneck?
+
+That is the question of chapter 7: **attention**, and the architecture built around it — the **Transformer**.
+
+The *atoms* still don't change. Only the **rule of repetition** does — *one more time*.
+
+::: {.notes}
+Pre-hook esplicito al cap. 07. Cliff-hanger lessicale **attention / Transformer** (vocabolario di ch. 07) — niente self-attention / $QK^\top$ / encoder-decoder rivelati. **Tre eco strutturali del pre-hook in `narrative.md`:** (a) anafora di chiusura *"only the rule of repetition does — one more time"* (la stessa frase chiude il payoff narrativo della prosa); (b) ChatGPT nominato non-tecnicamente nel pre-hook (l'aggancio culturale ch. 07/08); (c) la **discharge letter** è lo *stesso* artefatto clinico del summative di ch. 08 ($200$ lettere ED) — ponte di scenario, non solo di concetto.
+:::
+
+<!-- ============================================================ -->
+<!-- EXERCISES — at end of chapter, summative LAST.               -->
+<!-- ============================================================ -->
+
+## Exercises {.inverse .center background-color="#1F4257"}
+
+::: {.notes}
+Blocco esercizi. I 4 item formativi sono recap/self-study; il sommativo live (*"Right tool for the wrong tensor"*) gira negli ultimi $\sim 8$′ (min $12$–$20$). **Nota di set-size:** ch. 06 chiude a 4 item, *incluso* l'Argumentation che ch. 05 aveva droppato — il capitolo introduce due meccanismi paralleli (CNN/RNN) attorno a un solo principio (weight sharing), e l'Argumentation è il test di sintesi naturale.
+:::
+
+<!-- Item 01 — MCQ — Match data → architecture (ECG → RNN) -->
+
+## Item 01 — Question {.smaller}
+
+You are building a deep model to detect *atrial fibrillation* from a single-lead ECG with $T_x = 5\,000$ samples. Which architecture is the **canonical choice**, and **what is the reason**?
+
+- **A)** **CNN** — because the irregular RR-interval pattern is a *local* shape that can occur anywhere in the trace, and a kernel slid over the input would detect it everywhere.
+- **B)** **RNN** — because the *order* of the samples carries clinical meaning (rhythm = pattern over time), and the recurrent update propagates a hidden state $a^{<t-1>} \to a^{<t>}$ that encodes order.
+- **C)** **MLP on the flat $5\,000$-vector** — because an MLP can approximate any function of a vector input with enough hidden units.
+- **D)** **MLP after PCA to $50$ components** — because reducing dimensionality removes the time-axis problem.
+
+::: {.notes}
+Item 01 — Comprehension / MCQ / medium. Obj. 1 (match data → architecture). Vedi `course/06-unstructured-data/items/item_01_match-data-to-architecture_mcq.md`. **Distrattori:** A = *practical answer* (1D-CNN su ECG corti, premiata come osservazione corretta); C = "MLP universale" (ignora che MLP non sa l'ordine); D = peggio di C (PCA *erase* la struttura temporale).
+:::
+
+## Item 01 — Solution (write yours)
+
+::: {.notes}
+Lascio 30–45 secondi. Il misconception più frequente è A (chi ha letto un paper recente su 1D-CNN per ECG). Nel reveal va trattato in due tempi: prima riconoscere la correttezza pratica dell'osservazione, poi spiegare che la *canonical answer del capitolo* è B perché RNN introduce il *dispositivo memoria* nuovo, mentre 1D-CNN ricicla il dispositivo già visto per le immagini (positional invariance).
+:::
+
+## Item 01 — Solution
+
+**Correct: B.** The chapter's Obj. 1 says: *sequential single-information* → **RNN**, because the recurrent update propagates a hidden state from $t-1$ to $t$ — the *order* of samples is explicitly encoded in the architecture.
+
+Why the distractors are wrong:
+
+- **A** = *practical-answer trap*. $1$D-CNN often works well on short ECG segments, but does **not introduce the new dispositive** of the chapter (memory across time via hidden state).
+- **C** = *"MLP universal approximator"*. True in the limit but ignores that MLP has **no built-in notion of order**.
+- **D** = PCA on a flat $5\,000$-vector is a linear projection that **mixes samples from different times** into the same component. The time axis is not managed — it is *erased*.
+
+::: {.notes}
+Take-away: il discriminante è **quale opzione encoda l'ordine della sequenza nell'architettura stessa**, invece di chiedere alla rete di scoprirlo (o al preprocessing di erasere). **Triade canonical-vs-practical:** distrattore A qui (1D-CNN marked wrong) → summative Poll 1 (1D-CNN praised come practical) → item 04 (1D-CNN accepted come Good). Surface-inconsistente, sostanza-consistente sul principio.
+:::
+
+<!-- Item 02 — Applicativa — FC vs CNN weight count + scaling -->
+
+## Item 02 — Question {.smaller}
+
+Chest X-ray as $X \in \mathbb{R}^{64 \times 64}$ ($4\,096$ pixels). Two architectures:
+
+- **Architecture A**: *one fully-connected output neuron* on the raw image (no bias).
+- **Architecture B**: *one $3 \times 3$ convolutional kernel* slid with stride $1$, no padding, no bias.
+
+(i) How many weights does **A** need? Show the count.
+
+(ii) How many weights does **B** need? **One sentence** on why the count is *not* $9 \times (\text{spatial positions})$.
+
+(iii) Now the image scales to $1024 \times 1024$. Write the new weight counts for both. **One sentence** on the operational consequence.
+
+::: {.notes}
+Item 02 — Application / applicativa / medium. Obj. 2 (CNN + weight sharing across space + scaling). Rubrica: `course/06-unstructured-data/rubriche/rubrica_02_weight-count-fc-vs-conv.md`. **Numeri diversi dal summative** ($224 \times 224 \to 50\,176$ vs $9$) e da SU 1 ($5\,017\,600$): testa il *processo*, non la memoria.
+:::
+
+## Item 02 — Solution (write yours)
+
+::: {.notes}
+Slide bianca per il calcolo in 3 parti. Tempo target: ~3–4′. Il *teachable beat* è la sub-q (iii) sul jump $64 \to 1024$: A cresce **quadraticamente** ($\times 256$), B **constante** ($9$). Studenti che danno "$9$" senza nominare *weight sharing* stanno memorizzando il numero, non operando il principio — sotto-Base sulla rubrica.
+:::
+
+## Item 02 — Solution {.smaller}
+
+**(i)** $|W^{(A)}| = 64 \times 64 = \mathbf{4\,096}$ weights — *one weight per input pixel*.
+
+**(ii)** $|W^{(B)}| = 3 \times 3 = \mathbf{9}$ weights. The count is **not** $9 \times (\text{positions})$ because *the same kernel is reused at every spatial position* — **weight sharing across space**.
+
+**(iii)** At $1024 \times 1024$: **A** $\to 1\,048\,576$ weights (quadratic in resolution); **B** $\to 9$ weights (constant, kernel size is independent of image size). Operational consequence: A is **not trainable** on any clinical dataset (more parameters than patients); B is.
+
+::: {.notes}
+Reveal pedagogico: il punto è la *legge di scala*, non i valori particolari. Studenti che scrivono "$1\,048\,576$" senza nominare *quadratico* o *$256\times$* hanno fatto bene l'aritmetica ma non hanno capito la regola. Voce docente: questo è esattamente il calcolo che SU 1 esegue come formative *solved* — chi ha seguito la lezione lo ha già visto con numeri leggermente diversi ($224 \times 224 \times 100 = 5\,017\,600$).
+:::
+
+<!-- Item 03 — MCQ — RNN weight count + T_x independence -->
+
+## Item 03 — Question {.smaller}
+
+RNN on a multi-channel bedside monitor: $x^{<t>} \in \mathbb{R}^4$ (HR, BP, SpO2, temp), $a^{<t>} \in \mathbb{R}^{20}$, $y^{<t>} \in \mathbb{R}^3$. Recurrence $a^{<t>} = g(W_{aa}\, a^{<t-1>} + W_{ax}\, x^{<t>} + b_a)$, output $y^{<t>} = g'(W_{ya}\, a^{<t>} + b_y)$. **Ignore biases**. Session length: $T_x = 2\,000$ time steps.
+
+**How many weights does the network have to learn, and does this count depend on $T_x$?**
+
+- **A)** $80$ weights, **depends** on $T_x$.
+- **B)** $80$ weights, does **NOT** depend on $T_x$.
+- **C)** $540$ weights, does **NOT** depend on $T_x$.
+- **D)** $540 \times 2\,000 = 1\,080\,000$ weights, **depends** on $T_x$.
+
+::: {.notes}
+Item 03 — Application / MCQ scenarizzato / medium. Obj. 3 (RNN + weight sharing across time). **Matrice 2×2 di distrattori**: $80$ vs $540$ (matrici contate) × $T_x$-dep vs $T_x$-indep (scaling). C unica corretta su entrambe le assi. Pattern speculare a ch. 05 item 03.
+:::
+
+## Item 03 — Solution (write yours)
+
+::: {.notes}
+Lascio 30–45 secondi. Studenti che scelgono B sono *partial-credit* — hanno capito weight sharing ma dimenticato $W_{aa}$ e $W_{ya}$. Studenti che scelgono D hanno il modello mentale *opposto* (unrolled-MLP fallacy: il numero $1\,080\,000$ è esattamente l'esplosione che l'RNN era stato disegnato per evitare). Flag B nel debrief asincrono come vicini-a-mastery; recupera D in classe.
+:::
+
+## Item 03 — Solution {.smaller}
+
+**Correct: C.** Decomposition matrix by matrix:
+
+$$|W_{aa}| = 20 \times 20 = 400, \quad |W_{ax}| = 20 \times 4 = 80, \quad |W_{ya}| = 3 \times 20 = 60.$$
+
+Total: $400 + 80 + 60 = \mathbf{540}$ weights. **Independent of $T_x$** — *weight sharing across time*: the same three matrices at every position $t$.
+
+Why the distractors are wrong:
+
+- **A** = counted only $W_{ax}$ + unrolled fallacy. Two misconceptions.
+- **B** = scaling concept right, count wrong (forgot $W_{aa}$ + $W_{ya}$). *Partial credit* response.
+- **D** = **unrolled-MLP fallacy**: $540 \times 2\,000 = 1\,080\,000$ is exactly the parameter explosion the RNN was designed to **avoid**.
+
+::: {.notes}
+Take-away: **due assi simultaneamente corrette** (enumerare le tre matrici *e* riconoscere weight sharing nel tempo). Voce docente: il numero $1\,080\,000$ del distrattore D è *non* un errore di conto — è il conto giusto della rete *unrolled senza weight sharing*. Quello che la rete *farebbe* se non fosse ricorrente. È la *misura* di quanto weight sharing risparmia.
+:::
+
+<!-- Item 04 — Argomentativa — Critique flatten-and-feed -->
+
+## Item 04 — Question {.smaller}
+
+A colleague proposes this design for predicting in-hospital mortality within $24$h:
+
+> *"Each patient: $24$ hours of $3$ signals (HR, MAP, SpO2) at $1$ Hz $\to$ length-$86\,400$ time series each. I concatenate the three signals into a flat vector of $86\,400 \times 3 = 259\,200$ values and feed it to a fully-connected network with $100$ hidden units in the first layer. The network is deep, so it should find any pattern. Cohort: $5\,000$ patients."*
+
+(i) Identify the **structural problems** of this design using chapter $06$ material. A complete answer names **at least two distinct** problems, each justified with one concrete number or one concrete reference to the chapter's principle.
+
+(ii) Propose an **alternative architecture** that fixes them. Name the *prior* it encodes that the MLP cannot, and give an order-of-magnitude estimate of the first-layer parameter count.
+
+::: {.notes}
+Item 04 — Argumentation / argomentativa / high. **Test di sintesi** Obj. 1+2+3. Il design del collega viola tutti e tre gli obiettivi del capitolo. Vedi `course/06-unstructured-data/items/item_04_critique-flatten-and-feed_argomentativa.md` per la versione completa + rubrica con 3 criteri (parametri, struttura, alternativa) + bias-da-evitare critici.
+:::
+
+## Item 04 — Solution (write yours)
+
+::: {.notes}
+Slide bianca per la critica + proposta. Tempo target: ~4–5′. **Bias-da-evitare critici (vedi rubrica):** (a) non dare ragione al collega su downsampling (fuori scope ch. 06); (b) non penalizzare 1D-CNN come proposta alternativa (è la *practical answer* corretta, stessa coerenza del distrattore A item 01 + Poll 1 Card B summative); (c) bloccare studenti che invocano *attention / Transformer* come alternativa principale ("ottima curiosità, ma fuori dallo scope dell'esame su ch. $06$").
+:::
+
+## Item 04 — Solution {.smaller}
+
+**(i) Three structural problems:**
+
+- **Parameter explosion (Obj. 2):** $259\,200 \times 100 = 25\,920\,000$ weights for the first layer alone — $\sim 5\,000\times$ more parameters than the cohort has patients. The network will memorise, not generalise.
+- **Loss of temporal order (Obj. 3):** the flat vector erases the time axis. A pre-mortality blood-pressure trajectory is *a pattern over time* — invisible to an MLP that treats sample $1$ and sample $86\,400$ as interchangeable spreadsheet columns.
+- **Loss of multi-channel structure (Obj. 1):** concatenating three physiologically-correlated channels collapses them into unrelated columns — the architecture respects neither of the data's two structural axes (time, channel).
+
+**(ii) Proposal:** an **RNN** reading the multi-channel signal as a sequence of $3$-dim inputs — with hidden state $a^{<t>} \in \mathbb{R}^{32}$, parameters $|W_{aa}| + |W_{ax}| \approx 32^2 + 32 \cdot 3 \approx 10^{3}$ weights (vs $25.9 \times 10^{6}$ for the MLP). The recurrent update *encodes order*; weight sharing across time *makes the count independent of $T_x$*. *(A $1$D-CNN with multi-channel input is an equally complete answer.)*
+
+::: {.notes}
+Take-away: il design del collega *non è difendibile dentro ch. $06$*. Critica costruttiva: nomina i tre problemi, propone un'alternativa, **giustifica l'alternativa per il prior che encoda** (non per "vince i benchmark"). Voce docente — *insight*: il collega è clinicamente plausibile (un epidemiologo abituato a tabular *davvero* farebbe questo flatten come primo riflesso). L'item non sta criticando uno strawman: sta criticando il *default mentale* di un'intera categoria di colleghi UBEP.
+:::
+
+<!-- Summative -->
+
+## Summative — *Right tool for the wrong tensor* {.inverse .smaller background-color="#1F4257"}
+
+Three clinical data cards on the shared board:
+
+::: {.columns}
+::: {.column width="33%"}
+
+**Card A** — Chest X-ray $224 \times 224$ grayscale · pneumonia y/n?
+
+Architecture: ____
+
+:::
+::: {.column width="33%"}
+
+**Card B** — ECG trace $T_x = 5\,000$ samples · AFib y/n?
+
+Architecture: ____
+
+:::
+::: {.column width="33%"}
+
+**Card C** — Tabular $18$ pre-op features (age, BMI, eGFR, ...) · 30-day mortality y/n?
+
+Architecture: ____
+
+:::
+:::
+
+Below Card A, fill the weight-count table (*per single output neuron, no bias*): *FC layer on $224 \times 224$* = ___ ; *single $3 \times 3$ conv kernel* = ___ .
+
+Beside Card B, fill the recurrent equation: $a^{<t>} = \,$ ___ .
+
+**Two live polls:** *Card B architecture* (CNN / RNN / MLP / "depends") · *Card A FC weight count* ($9 / 224 / 50\,176 / 150\,528$).
+
+::: {.notes}
+Sommativo — gira negli ultimi $\sim 8$′ (min $12$–$20$). ~$1$′ leggi cards + apri polls + $\sim 3$′ assegna architetture + 1-sentence why (Poll 1 chiude $\geq 80\%$) + $\sim 2$′ compila mini-tabella Card A + 1-sentence weight sharing (Poll 2 chiude $\geq 80\%$) + $\sim 1$′ scrivi equazione ricorrente Card B + 1-sentence indipendenza $T_x$ + $\sim 1$′ reveal. **Banco unico condiviso** — capitolo da $20$′ troppo breve per group cards differenti. **Card C = distrattore concettuale:** la risposta giusta è MLP (la lezione del capitolo è *non* applicare CNN/RNN ovunque). **Voce docente al reveal del Poll 1:** chi vota "depends" o "CNN" su Card B va *premiato* come *practical answer* (1D-CNN è competitiva su ECG corti), ma la canonical answer del capitolo è RNN perché introduce il dispositivo memoria. **Voce docente al reveal del Poll 2:** distrattori diagnostici — $9$ = FC↔kernel confusion; $224$ = dimensionalità $1$D invece di $2$D; $150\,528 = 50\,176 \times 3$ = canali RGB (premia l'osservazione, oggi grayscale). **Reveal finale:** la chiusura del capitolo + spine beat verso ch. 07 — *"l'RNN legge una posizione alla volta; ma su una lettera clinica dove 'no' a pos $42$ dipende da 'ma' a pos $5$, la dipendenza si sfilaccia attraverso $37$ stati. Capitolo $7$: attention, e il Transformer."*
+:::
+
+## Summative — Solution {.smaller}
+
+**Card A** → **CNN** (translation invariance, local pattern preserved); **Card B** → **RNN** (order, memory via hidden state); **Card C** → **MLP** (no structure to preserve).
+
+**Card A weight count:** FC = $224 \times 224 = \mathbf{50\,176}$; conv = $3 \times 3 = \mathbf{9}$. *Why so few?* The same kernel is reused at every position — **weight sharing across space**.
+
+**Card B recurrent equation:** $a^{<t>} = g\!\left(W_{aa}\, a^{<t-1>} + W_{ax}\, x^{<t>} + b_a\right)$. *Why does the parameter count not grow with $T_x$?* The same matrices are reused at every position $t$ — **weight sharing across time**.
+
+**Take-home.** The architecture is chosen by the *data's structure*; CNN and RNN are MLPs *constrained* to respect that structure; the constraint mechanism is the **same** trick (weight sharing) applied to **two different axes**.
+
+::: {.notes}
+Reveal pedagogico finale. Lo studente esce dal capitolo con la frase: *match the structure, share the weights* — coincidente col six-word, coincidente con la closing table del beat $4$, coincidente con la frase finale della narrativa. **Pre-hook ch. 07:** chiudere con la frase del payoff dello storyboard 06: *"Atoms unchanged. Only the rule of repetition. One more time?"* — e annunciare attention/Transformer.
+:::

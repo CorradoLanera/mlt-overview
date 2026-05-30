@@ -1,0 +1,423 @@
+## Check the answer; gate the act. {.center .inverse background-color="#1F4257"}
+
+::: {.notes}
+Cover del capitolo 9 — 15 minuti, lo stesso footprint di cap. 8. La sei-parole approvata chiude l'asse imperativo-rivolto-al-clinico aperto da cap. 8 (*"Structure the ask; check the answer."*): la prima clausola **eredita** *check the answer* di cap. 8 (il check ora è dato per acquisito), la seconda — *gate the act* — è il **verbo nuovo** del capitolo, **spaziale** non temporale. *Gate* non è "rallenta", non è "approva": è *piazza la porta*. *Act* è scelto in opposizione a *answer*: una risposta si legge prima di usarla; un atto ha già abbandonato il sistema quando lo leggi. Codifica Obj. 2 (mappa modes → trust grid) e Obj. 3 (placement della guardia). Obj. 1 (tools + loop + decision points) è definizione, non pratica — non sta nei sei-parole della serie. Sommativo live (*"Where do you put the guard?"*) gira negli ultimi ~7′ (min 8–15).
+:::
+
+<!-- BEAT 1 — Hook: Wednesday afternoon, the PI replied -->
+
+## *The PI replied — Elena had not read the draft.*
+
+![](../img/storyboard/sb-09_01.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Mercoledì pomeriggio, tre giorni dopo il lunedì di cap. 8. Stesso modello, ma ora ha *strumenti*: ricerca, scrittura, mail. Quattro step (*search → summarise → draft → email*), Elena imposta e va a prendersi un tè. Al ritorno la PI ha già risposto. *Il check del cap. 8 non è mai accaduto.* Il movimento visivo che porta il peso pedagogico: la *dashed gate-line* del cap. 8 frame 6 — che era *fluttuante, da posizionare* — qui si è **dissolta**. Nessuno l'ha collocata; la catena è girata fino in fondo. Tre stati della stessa linea attraversano cap. 8 → cap. 9: *dashed-floating* → *dissolved* → *solid-anchored* (frame 6 di questo capitolo). Lascio l'immagine respirare 5 secondi prima di passare a "cosa è cambiato fra lunedì e mercoledì".
+:::
+
+<!-- BEAT 2 — Contesto: from chat to agent — three ingredients -->
+
+## *Same model + tools + a loop + decision points → it acts on its own.*
+
+![](../img/storyboard/sb-09_02.png){fig-align="center" width="78%"}
+
+::: {.notes}
+Tre cose **nominabili** distinguono l'agent dal chat. **Tools** (cosa può fare: cercare, scrivere, mandare mail). **Loop** (dopo ogni risposta il modello sceglie cosa fare dopo). **Decision points** (dove sceglie). Il delta visivo critico fra le due metà della scena: nel chat (sinistra) c'è un *eye-icon* fra ogni output del modello e ogni azione successiva; nell'agent (destra) gli eye-icon sono **visibilmente assenti**. La chat *risponde*; l'agent *fa*. La cosa nuova non è l'intelligenza, è *togliere l'occhio dal passaggio* per default.
+:::
+
+## Three ingredients — agent vs chat-LLM {.smaller}
+
+| Ingredient | What it is | Operational consequence |
+|---|---|---|
+| **Tools** | typed capabilities the model can call: web search, file write, mail client, calculator, API endpoint, DB query | the model can now *do* things, not just *say* things |
+| **Control loop** | the policy that, after every model reply, picks the next tool to invoke — or stops | the model decides what runs next, not a fixed script |
+| **Decision points** | moments at which the agent enters one of *four interaction modes* (next slide) | the relationship between the agent and the human is no longer one-sentence-at-a-time |
+
+**Operational consequence — the whole engineering problem of the chapter:**
+
+- in a chat-LLM, *every output reaches a human before it becomes an action*;
+- in an agent, *some outputs become actions without a human reading them first*.
+
+::: {.notes}
+La tabella del capitolo per Obj. 1. **Lo studente deve poter nominare i tre ingredienti operativamente** (non "tools + loop + decisions" come jargon, ma "il modello chiama una mail, dopo ogni risposta sceglie cosa chiamare dopo, e in certi punti decide se chiedermi qualcosa o agire"). Item $01$ verifica esattamente questo — il distrattore D (*scheduled job con LLM dentro*) è il distinguo più sottile: la *loop* deve essere la loop *del modello*, non dello script. Non è "il pipeline gira senza me" → agent; è "il modello sceglie cosa fare dopo" → agent. La distinzione self-driving car (model-driven loop) vs Roomba on a timer (script-driven loop) è la metafora di chiusura per Obj. 1.
+:::
+
+<!-- BEAT 3 — Sfida / Dati: the four interaction modes -->
+
+## *Four modes — only one writes to the world.*
+
+![](../img/storyboard/sb-09_03.png){fig-align="center" width="78%"}
+
+::: {.notes}
+Quattro **stanze**. *Autonomous search* (cerca da sola), *ask for interaction* (si ferma e chiede), *ask for sharing* (chiede una credenziale, un accesso), *do stuff* (fa qualcosa di esterno). Il quarto pannello è *visivamente unico* (warm-glow rim, freccia che esce dal bordo): preannuncia che **solo uno** dei quattro modi, di default, atterra nel quadrante pericoloso del frame successivo. *La quarta è l'unica che lascia un'impronta fuori dal sistema.*
+:::
+
+## Four modes — concrete instances {.smaller}
+
+::: {.columns}
+::: {.column width="25%"}
+
+**Autonomous search**
+
+![](../img/operator_find_guidelines.png){fig-align="center" width="98%"}
+
+*gathers information on its own*
+
+:::
+::: {.column width="25%"}
+
+**Ask for interaction**
+
+![](../img/operator_request_interaction.png){fig-align="center" width="98%"}
+
+*stops, asks to disambiguate*
+
+:::
+::: {.column width="25%"}
+
+**Ask for sharing**
+
+![](../img/agents_ask_for_sharing.png){fig-align="center" width="98%"}
+
+*asks for a credential / access*
+
+:::
+::: {.column width="25%"}
+
+**Do stuff**
+
+![](../img/agents_do_stuff.png){fig-align="center" width="98%"}
+
+*acts with external effect*
+
+:::
+:::
+
+*Three modes are **information moves**; only **do stuff** leaves an external trace.*
+
+::: {.notes}
+Le quattro Operator screenshots — gli stessi screenshot del deck storico (cap. 9 dell'`index.Rmd` originale, slide *Agents (authonomous search / ask for interaction / ask for sharing / do stuff)*) — ora ricontestualizzati come **istanze concrete delle quattro modes** dopo il pannello iconico anchor. Non è "ecco Operator"; è "ecco *come si vede* ciascun modo in un prodotto reale". *Autonomous search* = il browser dell'agent che apre PubMed e clicca da solo. *Ask for interaction* = il pop-up "*Which of these guidelines applies to your ward?*". *Ask for sharing* = la richiesta di login al portale (l'agente non ha le tue credenziali, deve chiedere). *Do stuff* = l'azione finale che lascia il sistema (in OpenAI Operator, il bottone *"complete the action"* sull'invio della mail). La *operational asymmetry* del capitolo: tre modi sono *information moves*, uno solo è un *external-effect move*.
+:::
+
+<!-- BEAT 4 — Nodo / Impatto: the 2x2 trust boundary -->
+
+## *Safe if reversible OR human-read. Dangerous only when neither.*
+
+![](../img/storyboard/sb-09_04.png){fig-align="center" width="78%"}
+
+::: {.notes}
+Il **nodo formale** del capitolo. Due assi. *Reversibilità*: posso disfare in $\sim 30$ secondi chiudendo una tab, cancellando un file, rollback di una bozza? *Human-in-the-loop*: un umano ha letto il reasoning *prima* dell'azione? Tre quadranti sono *sicuri di default*; uno solo è *pericoloso di default* — quello in basso a destra, *irreversibile $\wedge$ no-HITL*. La disequità visiva del riquadro **è** la disequità logica della regola: 3 cell identiche + 1 cell unica. Quel quadrante è dove va il gate. Le quattro icon-badges dei modes che puntano alle loro default-cells fanno il clip mentale fra frame 3 e frame 4: *do stuff* → bottom-right; gli altri tre cadono nei tre quadranti sicuri.
+:::
+
+## The $2 \times 2$ trust boundary {.smaller}
+
+::: {.columns}
+::: {.column width="55%"}
+
+|                                   | **Reversible** ($Y$)              | **Irreversible** ($N$)                    |
+|-----------------------------------|----------------------------------|------------------------------------------|
+| **Human-in-the-loop** ($Y$)       | $\text{SAFE}$ — read $+$ undoable | $\text{SAFE}$ — read before sending       |
+| **No human-in-the-loop** ($N$)    | $\text{SAFE}$ — undoable          | $\textbf{DANGEROUS}$ — no read, no undo  |
+
+**Reversibility test.** Can the action be undone in $\sim 30$ seconds by closing a tab, deleting a file, or rolling back a draft? *Yes $\Rightarrow$ reversible.*
+
+**HITL test.** Did a human read the agent's reasoning **before** the action happened? *After* is post-mortem; *before* is a gate.
+
+:::
+::: {.column width="45%"}
+
+**The rule, one sentence:**
+
+> A step is **safe by default** if it is **reversible *or* human-in-the-loop**. It is **dangerous by default** only when it is **neither**.
+
+The rule reads **disjunctively** (*OR*), not conjunctively (*AND*). Three of the four cells of the $2 \times 2$ grid are safe; **only one** is dangerous.
+
+:::
+:::
+
+::: {.notes}
+La regola operativa per Obj. 2. **Disgiuntiva, non congiuntiva** — è l'errore che intercetta lo studente medio (vedi item $02$ distrattore D: legge la regola come *"safe $\equiv$ reversible $\wedge$ HITL"* e finisce per gate-are tutto, *paralyzingly conservative*). Il test della reversibilità è **operativo, non normativo**: chiede *can YOU undo THIS ACTION in $\sim 30$ s*, non *"l'azione è sensibile?"* né *"qualcuno potrebbe averla vista?"*. Distinzione critica per item $02$: una scrittura su shared drive è reversibile (puoi cancellare il file in $5$ secondi), una webhook a Teams no (la notifica è già partita sui $10$ telefoni). *Visible $\neq$ consequential.*
+:::
+
+<!-- BEAT 5 — Metodo + summative perno: Workflow W -->
+
+## *Four rows. Label the modes. Mark reversible. Place the gate.*
+
+![](../img/storyboard/sb-09_05.png){fig-align="center" width="78%"}
+
+::: {.notes}
+Perno del capitolo. Tutti gli elementi del sommativo *"Where do you put the guard?"* sono visibili come singola scena: banner scenario, tabella $5 \times 4$ con i $4$ step-icons nella prima colonna (righe $2$–$5$ vuote per gli studenti), riga $4$ con shadow-hint warm-orange (signal, non spoiler), due bar-chart ghostate (Poll $1$ con *Step $4$* taller, Poll $2$ con *before $4$* taller), slot di giustificazione $1$-frase. Banco **unico condiviso** (presenza + remoto). Vedi `course/09-agents/objectives.md` per il summative completo.
+:::
+
+## Workflow W — the trust-boundary table {.smaller}
+
+> **Scenario.** *You are setting up a small audit on post-operative delirium. You ask an AI agent to:* **(1)** *search PubMed for the latest delirium-screening guidelines (last $5$ years);* **(2)** *download the three most-cited papers + summarise the inclusion criteria into a one-page table;* **(3)** *draft a one-page audit protocol;* **(4)** *email the protocol to your PI for review.*
+
+| Step | Interaction mode | Reversible? | HITL? | Verdict |
+|---|---|:---:|:---:|---|
+| **1** — PubMed search | *autonomous search* | $Y$ | $N$ | $\text{autonomous OK}$ |
+| **2** — Download $+$ summarise | *autonomous search* | $Y$ | $N$ | $\text{autonomous OK}$ |
+| **3** — Draft protocol | *autonomous search* | $Y$ | $N$ | $\text{autonomous OK}$ |
+| **4** — Email the PI | ***do stuff*** | $\boldsymbol{N}$ | $N$ | ***ask before acting*** |
+
+**One gate. Before step $4$. Only there.** *Not three (slower than manual). Not zero (PI gets an unread email). Exactly where reversibility fails.*
+
+::: {.notes}
+La tabella canonica del Workflow W già *risolta* (per il reveal). Nello svolgimento live (slide successiva) gli studenti ricevono solo lo scenario + la tabella vuota. Steps $1$–$3$ sono reversibili: PubMed query non lascia effetto esterno, PDF e summary vivono su disco (cestinabili), draft è un file. Step $4$ è irreversibile il momento in cui lo SMTP socket si chiude — nessuna mail di "ignora la precedente" *disfa* la prima; un *"apologies, please ignore"* è un nuovo messaggio, non una cancellazione. **Gate prima di step $4$, e solo lì** — la regola operativa *ask before any irreversible action* applicata una volta. Lo studente che mette il gate prima di step $1$ è *paralyzingly conservative*; prima di step $2$ o $3$ ha confuso *visible* con *consequential* (vedi i distrattori nominati di Poll $2$ in objectives.md).
+:::
+
+<!-- Summative — Where do you put the guard? -->
+
+## Summative — *Where do you put the guard?* {.inverse .smaller background-color="#1F4257"}
+
+**Scenario.** *Workflow W — same four steps: search PubMed $\rightarrow$ download $+$ summarise $\rightarrow$ draft protocol $\rightarrow$ email PI.*
+
+::: {.columns}
+::: {.column width="50%"}
+
+Fill the trust-boundary table for **each of the four steps**:
+
+1. **interaction mode** (one of *autonomous search* / *ask for interaction* / *ask for sharing* / *do stuff*);
+2. **reversible?** ($Y$ / $N$) — apply the $\sim 30$-second test;
+3. **HITL?** ($Y$ / $N$) — pre-boundary;
+4. **verdict** (*autonomous OK* / *ask before acting* / *hand back to human*).
+
+Then write **one sentence** justifying the gate placement.
+
+:::
+::: {.column width="50%"}
+
+**Two live polls:**
+
+- **Poll 1** — *Which step in Workflow W is irreversible?* — *Step 1* / *Step 2* / *Step 3* / **Step 4**;
+- **Poll 2** — *Where do you put the FIRST mandatory ask-before-acting gate?* — *before 1* / *before 2* / *before 3* / **before 4**.
+
+*Time: $\sim 7$′ (min $8$–$15$). Banco unico condiviso, presenza + remoto.*
+
+:::
+:::
+
+::: {.notes}
+Sommativo — gira negli ultimi $\sim 7$′ (min $8$–$15$). $\sim 1$′ leggi scenario + apri polls + $\sim 2$′ label le quattro modes + $\sim 1$′ marca *Reversible?* / *HITL?* (Poll $1$ chiude min $11$ o $\geq 80\%$, hard cap $90$″) + $\sim 1$′$30$″ verdicts + 1-sentence justification (Poll $2$ chiude min $13$ o $\geq 80\%$) + $\sim 1$′$30$″ instructor-led reveal. **Banco unico condiviso**. **Distrattori Poll 1** nominati nel reveal: *Step 1* = "ha confuso traccia digitale con effetto esterno"; *Step 2* = "ha confuso file persistente su disco con azione irreversibile esterna"; *Step 3* = "stessa logica, draft = file locale". **Distrattori Poll 2** nominati: *before 1* = troppo conservativo, paralizzante; *before 2* o *3* = gate-a un'azione *visible* ma reversibile, errore *visible $\neq$ consequential*. La risposta corretta *before 4* è l'unica che applica la regola *reversible-or-HITL*.
+:::
+
+## Summative — Solution {.smaller}
+
+::: {.columns}
+::: {.column width="55%"}
+
+**The four rows** — *autonomous search, autonomous search, autonomous search, do stuff*. Reversibility column: $Y, Y, Y, \boldsymbol{N}$. HITL column (pre-boundary): $N, N, N, N$. Verdicts: *autonomous OK, autonomous OK, autonomous OK, **ask before acting***.
+
+**Justification (one sentence).** *I gate Step $4$ because email is irreversible the moment it leaves the SMTP socket; Steps $1$–$3$ are reversible (the agent's artefacts live on disk and can be discarded), so the agent may run them without a confirm-step.*
+
+:::
+::: {.column width="45%"}
+
+**Take-home.** A step is dangerous-by-default *iff* it is *irreversible $\wedge$ no-HITL*. Place the gate **once, where reversibility fails**. The rule survives any new tool added to the kit tomorrow (a DB write, a calendar create, a payment, an EHR update) — it does not depend on *what* the agent does, only on *what each step would do to the world*.
+
+*An agent is not "smarter than a chat-LLM" — it is a chat-LLM with the ability to act. The clinician's job is to **place the guard** where reversibility fails.*
+
+:::
+:::
+
+::: {.notes}
+Reveal finale e chiusura del riquadro $5$. Voce docente sulla regola di ordine superiore: "*sai che l'agent è diverso dal chat non perché è 'più intelligente' — è perché alcuni dei suoi output diventano azioni senza che tu li legga. Il tuo lavoro è decidere dove vale la pena leggere prima e dove no.*" La regola *reversible-or-HITL* è la formulazione operativa di Obj. 2; il *placement-once-where-reversibility-fails* è la formulazione operativa di Obj. 3.
+:::
+
+<!-- BEAT 6 — Payoff + pre-hook ch. 10 -->
+
+## *Wednesday: gate placed. Monday: project starts. Five traps wait.*
+
+![](../img/storyboard/sb-09_06.png){fig-align="center" width="80%"}
+
+::: {.notes}
+Frame $6$ del payoff: workflow risolto, gate **solid-anchored** fra step $3$ e step $4$ — chiude la trilogia *dashed-floating* (cap.$8$ frame $6$) → *dissolved* (cap.$9$ frame $1$) → *solid-anchored* (qui). Eye-icon + Elena in posa di lettura sopra il gate; time-bar in basso con calendar-badges *Monday → Wednesday → outgoing arrow* + sketched calendar-grid nel negative space (i *months* del progetto di cap.$10$) + i **cinque dot-markers** lungo la freccia (i *five places* di cap.$10$, deliberatamente non nominati). Lo studente li *vede* ma non sa *cosa siano* — è il cliff-hanger numerologico che cap. $10$ chiuderà.
+:::
+
+## Pre-hook → chapter 10: Best practices for ML projects {.smaller}
+
+By Friday the trauma audit was on the senior's desk; the delirium-screening protocol was on the PI's. Elena had installed **exactly one gate** in two different workflows — both before *send*, none anywhere else. The toolkit was finally complete: $T/P/E$, a classifier, three boundary shapes, validation, a deep net, a CNN, a Transformer, a $7$-slot prompt, an agent with a gate where reversibility fails.
+
+The **unit of the question** has moved three times in one course:
+
+- on **Monday** of ch. $8$ it was a *prompt* (the seven slots);
+- on **Wednesday** of ch. $9$ it was a *gate* (the one placement);
+- on **Monday** of ch. $10$ — three days from now — it becomes a *project*.
+
+Elena's first real one — *a hospital-wide audit on sepsis recognition in the ED* — starts Monday. Months, not minutes; four stakeholders, not one PI; a publication, not an audit row. *"Most ML projects, the same five places,"* the senior said. He did not name them. *That's the next chapter.*
+
+::: {.notes}
+Pre-hook a ch. $10$ — cliff-hanger lessicali piantati: **project** (la nuova unità, distinta da *prompt* di cap. $8$ e da *gate* di cap. $9$); **five places** (la numerologia preannunciata, à la *"five common pitfalls"*, deliberatamente non rivelata — è la materia di cap. $10$); **Monday morning / months / stakeholders / publication** (il registro temporale lungo che cap. $10$ abita). La sequenza temporale **Monday (cap. $8$) → Wednesday (cap. $9$) → Monday (cap. $10$)** è la **prima settimana di lavoro reale di Elena**: cap. $10$ è il primo *progetto*, non il primo *task*. **Eco strutturale di chiusura**: cap. $5$ → *"only the rule of repetition does"*; cap. $7$ → *"the rule of repetition had changed; this time it had dropped entirely"*; cap. $8$ → *"The box has not changed, again. But now it can act."*; cap. $9$ → *"The box has not changed, again. But now she had decided what it was allowed to do."* — per la prima volta il pivot non è sul *modello* ma sulla *clinica*. Completa l'asse *understand → trust* della spine globale.
+:::
+
+## Exercises {.inverse .center background-color="#1F4257"}
+
+::: {.notes}
+Blocco esercizi. Quattro item: due MCQ (Comprensione + Application), una applicativa, una argumentation. Item bank a $4$ item — *spettro Bloom completo* sul capitolo. Niente sub-units in cap. $9$ ($15$′ troppo brevi per un'ulteriore divisione interna). Item $01$ verifica Obj. $1$ (tre ingredienti vs distrattori "automation con LLM dentro"); item $02$ verifica Obj. $2$ (dangerous-by-default $\equiv$ irreversibile $\wedge$ no-HITL); item $03$ è il *parallel item* del sommativo (Workflow W → sepsis-EWS), verifica Obj. $3$; item $04$ chiude con un'argumentation a tutto tondo (critique di un design *plausibile-ma-sbagliato* — sostituzione di *destructiveness* per *reversibility* come asse di gating).
+:::
+
+<!-- Item 01 — MCQ — Three-ingredient test -->
+
+## Item 01 — Question {.smaller}
+
+A clinician on your research team has been browsing AI-assisted tools that other colleagues have set up. **Which of the four setups below counts as an *agent***, by the chapter's three-ingredient definition (*tools + control loop + decision points*, such that *some outputs become actions without a human reading them first*)?
+
+- **A)** A chat-LLM in a browser tab. The user types each query, the model responds, the user copies the response. The model has a built-in web-search tool but only invokes it when the user types `search:` at the start of the query.
+- **B)** A clinical-note autocomplete integrated in the EHR. As the clinician writes, the model suggests the next sentence; the clinician accepts, rejects, or edits each suggestion. No other capability.
+- **C)** A research helper: user types a goal in natural language (*"summarise the latest delirium-screening guidelines and email me a one-page summary"*); the system calls a search tool, reads results, calls a summariser, drafts an email, and sends it — each step picked by the model itself after reading the previous step's output, with no human input between steps until completion.
+- **D)** A scheduled job that, every Monday at $9$ AM, queries the EHR data warehouse for the previous week's incident reports, calls an LLM **once** to write a short summary paragraph, assembles the paragraph into a PDF template, and uploads the PDF to the team's shared drive. The sequence of steps is fixed by the script; the LLM is invoked exactly once.
+
+::: {.notes}
+Item 01 — Comprehension / MCQ / medium. Obj. 1. **D è il distrattore più sottile**: pipeline che gira sola, usa tools, produce effetto esterno senza che nessuno legga — *sembra* un agent. Ma la *loop* deve essere la loop *del modello*, non dello script. È **automation con LLM dentro**, non *agent*. Lascio $1$–$2$ minuti.
+:::
+
+## Item 01 — Solution {.smaller}
+
+**Correct: C.** Setup C carries **all three** of the chapter's defining ingredients: **tools** (search, summariser, mail), a **control loop** where the *model* picks the next call after reading the previous output, and **decision points** (autonomous search throughout $+$ *do stuff* at the end). The operational test confirms — *the email body is drafted and sent before any human has read it*.
+
+- **A** — only **tools** present; the loop and the decision points are human-driven (the user types `search:`, copies the answer). Every output reaches the user before it becomes anything.
+- **B** — neither *tools* (text-only) nor *loop* (each suggestion is independent); the clinician's hand sits between every model output and any consequence.
+- **D** — *automation with an LLM inside*, not an agent. The **cron script** picks every step in a fixed order; the LLM is invoked **exactly once**. The loop is the *script's* loop, not the *model's* loop. (Self-driving car: model-driven loop $\Rightarrow$ agent. Roomba on a timer: script-driven loop $\Rightarrow$ automation.)
+
+The single discriminator: the chapter's definition is **conjunctive** (*all three* ingredients required, *and* the loop must be the **model's** loop). Only C passes the full test.
+
+::: {.notes}
+**Take-home**: la distinzione fra *agent* e *automation con LLM dentro* è la mossa che separa lo studente che ha letto il capitolo letteralmente da chi ha colto il principio operativo. La consequenza (*some outputs become actions without a human reading them first*) è il **test diagnostico** dell'agenzia, non la sua *definizione* — D soddisfa la consequenza per accidente (script che produce PDF su shared drive), ma fallisce la *loop* ingredient. Voce docente: la metafora self-driving-car vs Roomba on a timer è la più efficace per UBEP — entrambi "girano senza umano", uno solo è *agent*.
+:::
+
+<!-- Item 02 — MCQ scenario — Dangerous-by-default step -->
+
+## Item 02 — Question {.smaller}
+
+A clinical-quality team has built an agent to automate a quarterly **surgical-site infection (SSI) report**. Once configured, the agent runs four steps on its own — **no human reads any output between steps**:
+
+1. **Query the EHR data warehouse** for the previous quarter's SSI cases (read-only; the warehouse auto-generates an audit-log entry, as for every read);
+2. **Compute infection rates $+ 95\%$ CIs** by department, in memory;
+3. **Export the summary table as a CSV** to the team's analytics folder on the shared drive (visible to ten team members);
+4. **Post a notification on the team's Microsoft Teams channel via incoming webhook** — *"New SSI report is ready in the analytics folder."* (Webhook-posted messages cannot be deleted via the Teams API; manual deletion is restricted to channel owners and notifications $+$ mobile pushes have already fired.)
+
+**Which step is the *dangerous-by-default* step?**
+
+- **A)** Step $1$ — sensitive PHI $+$ permanent audit-log entry.
+- **B)** Step $3$ — *"you cannot un-see what others have already seen"*.
+- **C)** Step $4$ — Teams notifications $+$ mobile pushes have already fired; the API cannot recall the message.
+- **D)** All four — the agent runs unattended throughout; the rule requires *both* reversibility *and* HITL.
+
+::: {.notes}
+Item 02 — Application / MCQ scenario / medium. Obj. 2. **B è il distrattore più sottile** (*visible $\neq$ consequential*); **D legge la regola congiuntivamente** invece che disgiuntivamente (il pattern *paralyzingly conservative*). Lascio $2$–$3$ minuti.
+:::
+
+## Item 02 — Solution {.smaller}
+
+**Correct: C.** Only Step $4$ sits in the *bottom-right* quadrant — *irreversible $\wedge$ no-HITL*. Webhook delivery is irreversible the moment the message is dispatched: notifications fire on ten phones, the desktop client toasts, mobile pushes go out — none of which an API delete (which is not even available) could recall.
+
+- **A** — confuses **sensitivity** (PHI, auditable access) with **reversibility** (can the action be undone?). A `SELECT` does not change the world; the warehouse looks the same before and after. The audit log is the *warehouse's* record-keeping, not the agent's effect.
+- **B** — confuses **the action** (file write, reversible — you can delete the file in $5$ seconds) with **its consequences** (people may have downloaded it — but the chapter does not test for downstream consequences). *Visible $\neq$ consequential.*
+- **D** — reads the safe-by-default rule **conjunctively** (*requires reversible AND HITL*) instead of **disjunctively** (*requires reversible OR HITL*). Three of the four cells are safe; only one is dangerous. D gates every step $\Rightarrow$ *paralyzingly conservative*.
+
+The single discriminator: reading the reversibility test **as the chapter states it** — *can YOU undo THIS ACTION in $\sim 30$ seconds* — versus three near-but-wrong readings.
+
+::: {.notes}
+**Take-home**: il test della reversibilità è **operativo**, non normativo. Domanda l'azione, non le sue conseguenze sociali. Voce docente sulla mossa B: *"hai correttamente identificato che qualcosa di esterno è successo — ma il capitolo distingue **l'azione** (scrittura file) dalla **sua propagazione** (chi la legge). La prima è ciò che il test misura."* Voce docente sulla mossa D: *"se gate tutti, l'agent diventa più lento di un chat — quello sconfigge l'intero motivo per cui esistono gli agent."*
+:::
+
+<!-- Item 03 — Applicativa — Place the gates -->
+
+## Item 03 — Question {.smaller}
+
+A clinical-safety team's agent monitors post-operative patients for early signs of sepsis. **Every $5$ minutes**, the agent runs on its own (no human reads any output between steps):
+
+1. **Read** the latest vital signs and lab values from the EHR (read-only; auto-generated query-log entry).
+2. **Compute** the qSOFA score for each patient, in memory.
+3. **Submit an HL7 alert** to the bedside monitoring system $\rightarrow$ buzz on the nurse-call panel $+$ colour-coded alert on the central dashboard (fires the moment the message is sent; retracting the message does not undo the buzz that has sounded).
+4. **Page the on-call physician via SMS** if qSOFA $\geq 2$.
+
+**(a)** Fill the *Reversible? / HITL? / Verdict* table for each of the four steps (one-sentence justification per row).
+**(b)** Propose the **gate placement** — number of gates and exact position of each.
+**(c)** Write **one sentence per gate** explaining why each gate is needed (citing the chapter's rule), and **one sentence** explaining why no gate is needed before the reversible steps.
+
+::: {.notes}
+Item 03 — Application / applicativa / medium–high. Obj. 3. **Parallel item del sommativo**: stesso schema del Workflow W del sommativo (audit delirium), ora applicato a un agent EWS sepsi con **due** step irreversibili (non uno solo) — verifica se lo studente ha generalizzato la regola o se ha imparato a memoria *"un solo gate prima dello step 4"*. Lascio $5$–$6$ minuti.
+:::
+
+## Item 03 — Solution (a) {.smaller}
+
+| Step | Reversible? | HITL? | Verdict | Justification |
+|---|:---:|:---:|---|---|
+| $1$ — Read EHR | $Y$ | $N$ | safe | Read leaves no external effect; EHR unchanged. |
+| $2$ — Compute qSOFA | $Y$ | $N$ | safe | In-memory; no external state changes. |
+| $3$ — HL7 alert | $\boldsymbol{N}$ | $N$ | **dangerous** | Buzz fired; dashboard updated. Neither can be recalled. |
+| $4$ — SMS page | $\boldsymbol{N}$ | $N$ | **dangerous** | Page already on the on-call's phone. Cannot be recalled. |
+
+::: {.notes}
+Tabella (a) sola — i due step *irreversibili* (HL7 alert + SMS page) sono quelli dove la regola del capitolo si applica. Lo step $3$ è la *trap* più sottile: meno audibilmente noisy dell'SMS ma altrettanto clinicamente consequential (il buzz è già suonato, il dashboard ha aggiornato). *Visible vs consequential* in reverse.
+:::
+
+## Item 03 — Solution (b) + (c) {.smaller}
+
+**(b) Two gates: one before step $3$, one before step $4$.** No gate before steps $1$ or $2$.
+
+**(c) Justification.**
+
+- *Gate before step $3$ — the HL7 alert is irreversible the moment it is sent (the buzz has fired, the dashboard has updated, neither can be recalled in $\sim 30$ seconds), and no human has read the qSOFA or the underlying vitals — irreversible $\wedge$ no-HITL $=$ dangerous; the rule **ask before any irreversible action** places the gate here.*
+- *Gate before step $4$ — the SMS page is irreversible (already buzzed the on-call's phone); same dangerous quadrant, same rule.*
+- *No gate before steps $1$ or $2$ — both are reversible (read-only $+$ in-memory); adding gates would paralyse the agent without reducing risk — the rule asks for a gate where reversibility **fails**, not at every step.*
+
+::: {.notes}
+Tipico errore $1$ — *over-gates*: gate prima di tutti e $4$ $\Rightarrow$ regola letta congiuntivamente. Tipico errore $2$ — *under-gates*: gate *solo* prima di step $4$ $\Rightarrow$ identificato il "rumore esterno" (SMS) ma mancato che lo step $3$ è altrettanto irreversibile. Verifica completa di Obj. 3 — *number of gates determined by number of irreversibilities*, non da un quote fisso. Vedi `rubrica_03_sepsis-agent-placement.md`.
+:::
+
+<!-- Item 04 — Argumentative — Critique a mis-gated agent -->
+
+## Item 04 — Question {.smaller}
+
+A colleague has built a **clinical-trial coordination agent** (runs every Monday $09{:}00$, fully automated):
+
+1. **Read** the enrolled-patients list from the trial DB.
+2. **Generate** a weekly status report in memory.
+3. **Save** the PDF to the agent's local working directory, **overwriting** last week's file (the OS keeps the previous version in the local Trash / Recycle Bin; restoring is a two-click action).
+4. **Send** the PDF as an email attachment to the $12$ centre coordinators.
+5. **Update** the patient-enrolment counter on the trial's **public registry website** (visible to sponsors, regulators, journalists, the public).
+
+**Colleague's safety reasoning, verbatim:** *"I've put a confirmation gate before step $3$, because **overwriting** the previous week's PDF is destructive — if the new report is wrong, last week's data is gone. The other four steps run unattended; that's the whole point of using an agent."*
+
+Write a structured critique ($\sim 300$–$500$ words) in **three parts**: **(1)** identify the **conceptual error** in the colleague's safety reasoning (which axis is being substituted for the chapter's *reversibility* axis); **(2)** diagnose the **operational consequences** step by step (over-gated vs under-gated steps); **(3)** propose a **corrected gate placement** with one sentence per gate citing the chapter's rule.
+
+::: {.notes}
+Item 04 — Argumentation/evaluation / argomentativa / high. Sintesi dei tre obiettivi su un design *plausibile-ma-sbagliato*. La mossa concettuale: la sostituzione di *destructiveness* per *reversibility*. **Il colleague over-protegge step $3$ (locale-cestinabile $\Rightarrow$ reversibile) e lascia esposti step $4$ e $5$ (entrambi irreversibili)**. Lascio $7$–$8$ minuti.
+:::
+
+## Item 04 — Solution (1) + (2) {.smaller}
+
+**(1) Conceptual error.** The colleague has substituted **destructiveness** (does this step delete or overwrite data?) for **reversibility** (can this action be undone in $\sim 30$ s?). The grid has *only* two axes — *reversibility* and *HITL* — and *destructiveness* appears on neither. A step can be *destructive but reversible* (OS-Trash rollback) and *non-destructive but irreversible* (email — nothing "destroyed", yet the message cannot be recalled once notifications fire).
+
+**(2) Step-by-step diagnosis.**
+
+| Step | Reversible? | HITL? | Verdict | Colleague's design |
+|---|:---:|:---:|---|---|
+| $1$ DB read | $Y$ | $N$ | safe | correctly unattended |
+| $2$ in-memory gen | $Y$ | $N$ | safe | correctly unattended |
+| $3$ PDF overwrite (local Trash) | $Y$ | $N$ | safe | **over-gated** — cosmetic |
+| $4$ email to $12$ coords | $\boldsymbol{N}$ | $N$ | **dangerous** | **under-gated** |
+| $5$ public-registry update | $\boldsymbol{N}$ | $N$ | **dangerous** | **under-gated**, highest stakes |
+
+The colleague protects *exactly the wrong step* and leaves *exactly the wrong two* unattended.
+
+::: {.notes}
+La mossa concettuale: *destructiveness* (asse del colleague) $\neq$ *reversibility* (asse del capitolo). La tabella fa vedere che la sostituzione produce *esattamente* il pattern over-gated-step-3 + under-gated-step-4-5. Slide successiva: corretto placement.
+:::
+
+## Item 04 — Solution (3) {.smaller}
+
+**(3) Corrected placement.**
+
+- **Remove** the gate before step $3$ — *reversible by the $30$-second test (OS-Trash rollback); the rule asks for a gate where reversibility fails, not where data is overwritten.*
+- **Add** a gate before step $4$ — *email is irreversible the moment the SMTP socket closes; the rule **ask before any irreversible action** places the gate here.*
+- **Add** a gate before step $5$ — *a public-dashboard update cannot be un-published — this is the strongest irreversibility in the workflow (it crosses into the public world).*
+
+**Net: $1$ gate removed, $2$ added; final design has $2$ gates**, both at *do stuff* points that cross the trust boundary into the external world.
+
+**Excellent level** also names the underlying frame shift: the boundary marks where the agent's action **escapes the system the clinician controls** — and *escape*, not *destruction*, is the operational test. Email and public-registry updates *escape*; local file overwrites do not.
+
+::: {.notes}
+**Take-home**: l'item chiude il capitolo facendo sintetizzare tutti e tre gli obiettivi. *A typical wrong critique under-corrects* — aggiunge gate a $4$ e $5$ ma non rimuove quello a $3$: ha fixato l'under-gating ma ha mancato l'over-gating. L'altro tipico errore è gate-are tutto *"to be doubly safe"* — il *paralyzingly conservative* del cap. $8$ pre-hook. *Excellent-level* capisce che il boundary non è "dove si distrugge", è "dove si **esce**". Vedi `rubrica_04_critique-mis-gated-agent.md`.
+:::
