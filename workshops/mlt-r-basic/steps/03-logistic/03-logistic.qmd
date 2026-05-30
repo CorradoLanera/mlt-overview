@@ -1,0 +1,109 @@
+---
+title: "Step 03 — Logistic spine"
+subtitle: "The tidymodels object-map, with a glm baseline"
+params:
+  solved: true
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  warning: false
+  message: false
+---
+
+## Where we are
+
+Cumulative snapshot: data load + wrangle + EDA are given. The new beat lays down
+the **tidymodels object-map** — split the data (`rsample`), build a preprocessing
+recipe (`recipes`), specify a model (`parsnip`), glue them in a `workflow`, fit a
+plain logistic-regression baseline, and finally score it (`yardstick`).
+
+<!--
+Nota docente (IT): step HANDS-ON (~38 min). I beat precedenti (load/wrangle/EDA)
+sono "given" e ripiegati. Il beat nuovo (split -> recipe -> spec -> workflow ->
+fit) è la "mappa degli oggetti" tidymodels, mostrata risolta. Il "Your turn" di
+QUESTO step è SOLO il predict/score finale (`augment` + `roc_auc`), in
+R/yourturn-03.R con i `___`. L'evento è `1_yes` (secondo livello) -> ovunque si
+punteggi serve `event_level = "second"`.
+Nota dati: `sod` e `type` sono quasi collineari (sod==0_no <=> type==0_no SOD);
+glm può emettere un warning di rank-deficiency, soppresso da execute.warning:false.
+Non rompe nulla e non richiede di togliere colonne.
+-->
+
+# Given — load, wrangle, EDA {#sec-given}
+
+From Steps 00–02 (table/figure suppressed here to keep the recap short).
+
+```{r given}
+#| code-fold: true
+library(here)
+library(rio)
+library(tidyverse)
+library(janitor)
+
+indo_raw <- import(here("data-raw", "indo_rct.csv"), setclass = "tibble")
+
+indo <- indo_raw |>
+  clean_names() |>
+  select(outcome, age, risk, gender, sod, rx, type) |>
+  filter(!is.na(age)) |>
+  mutate(outcome = factor(outcome, levels = c("0_no", "1_yes")))
+
+glimpse(indo)
+```
+
+# The tidymodels object-map {#sec-objectmap}
+
+Split → recipe → spec → workflow → fit. Five objects, one chain.
+
+```{r objectmap}
+#| code-fold: false
+library(tidymodels)
+set.seed(123)
+
+# Split ----
+data_split <- initial_split(indo, prop = 0.75, strata = outcome)
+train <- training(data_split)
+test  <- testing(data_split)
+
+# Recipe ----
+base_rec <- recipe(outcome ~ ., data = train) |>
+  step_dummy(all_nominal_predictors()) |>
+  step_zv(all_predictors()) |>
+  step_normalize(all_numeric_predictors())
+
+# Spec ----
+log_spec <- logistic_reg() |> set_engine("glm")
+
+# Workflow ----
+log_wf <- workflow() |>
+  add_recipe(base_rec) |>
+  add_model(log_spec)
+
+# Fit ----
+log_fit <- fit(log_wf, data = train)
+log_fit
+```
+
+# Your turn — score the baseline on the test set {#sec-yourturn}
+
+Attach predictions to the held-out `test` set with `augment()`, then compute the
+**ROC-AUC** on the event class. The event is `1_yes` (the *second* factor level),
+so score `.pred_1_yes` with `event_level = "second"`.
+
+```{r score-solved, eval=params$solved}
+#| code-fold: false
+# Predict & score ----
+log_fit |>
+  augment(new_data = test) |>
+  roc_auc(truth = outcome, .pred_1_yes, event_level = "second")
+```
+
+```{r score-blank, eval=!params$solved, results="asis", echo=FALSE}
+# BLANK mode: echo the `___` skeleton (non-executed) from R/yourturn-03.R.
+cat("```r", readLines(here("R", "yourturn-03.R")), "```", sep = "\n")
+```
+
+The held-out ROC-AUC is our **baseline**. In the next step we let a small zoo of
+models compete — tuned by cross-validation — and see whether any beats it.
