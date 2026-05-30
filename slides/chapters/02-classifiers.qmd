@@ -1,7 +1,10 @@
 ## Draw the line; count the cost. {.center .inverse background-color="#1F4257"}
 
 ::: {.notes}
-Cover del capitolo 2 — 20 minuti. Sei-parole approvata: due imperativi col punto e virgola — *tracci, poi paghi*. Riprende letteralmente il pre-hook del cap. 01 ("draws a line") e *estende*: a tracciare un confine si abbina sempre un costo. I 4 item formativi sono in coda per recap/self-study; il sommativo live ("Draw the boundary, count the cost") gira negli ultimi ~8′.
+Cap. 02 — 20 min.
+
+- Six-word *tracci, poi paghi*: riprende pre-hook cap. 01 ("draws a line") + costo.
+- 4 item formativi = recap/self-study; sommativo live ultimi ~8′.
 :::
 
 <!-- BEAT 1 — Hook visivo -->
@@ -21,7 +24,7 @@ Elena chiede come *decide* il modello: la risposta è una linea su uno scatter d
 ![](../img/storyboard/sb-02_02.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Output discreto = **classificazione** (un'etichetta); output continuo = **regressione** (un numero). Questo capitolo è sul primo. Stesso disegno, frecce diverse — è la stessa scelta di framing del cap. 01 (input/output swap).
+Questo cap. = solo classificazione. Gancio: stesso framing-swap del cap. 01 (input/output).
 :::
 
 ## Classification vs regression — the single discriminator
@@ -32,7 +35,7 @@ Output discreto = **classificazione** (un'etichetta); output continuo = **regres
 | **Regression** | a *value* (continuous) | $\mathbb{R}$ | "predict HbA1c (%) at 6 months" |
 
 ::: {.notes}
-La differenza è **cosa il modello produce in output** — un'etichetta o un valore — non il tipo di input. Anche se il modello può internamente calcolare un *punteggio* probabilistico, ciò che lo studente deve guardare è l'output finale come framing del problema clinico. Tutto questo capitolo è sulla classificazione.
+Punto unico da far atterrare: discrimina l'**output**, non l'input. Anche se il modello calcola un punteggio interno, conta l'output finale. (Il punteggio lo apriamo al beat espansione.)
 :::
 
 <!-- BEAT 3 — Sfida: overlapping classes -->
@@ -42,7 +45,7 @@ La differenza è **cosa il modello produce in output** — un'etichetta o un val
 ![](../img/storyboard/sb-02_03.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Su pazienti reali le classi si sovrappongono: nessun confine le separa perfettamente. Qualcuno cade sempre dal lato sbagliato. Il *rischio minimo* è strutturalmente > 0 — non è un difetto dell'algoritmo, è una proprietà dei dati.
+Da dire a voce: il *rischio minimo* è strutturalmente $> 0$ — non difetto dell'algoritmo, proprietà dei dati. Le classi reali si sovrappongono.
 :::
 
 <!-- BEAT 4 — Nodo: classifier as a function partitioning the space -->
@@ -68,6 +71,36 @@ $$f : \mathbb{R}^d \to \{1, \ldots, K\}.$$
 Punto chiave: "$f$ è un classificatore" e "le regioni partizionano $\mathbb{R}^d$" sono **lo stesso** enunciato — non due cose diverse. Questo è il fulcro dell'item 02 (Partition the plane).
 :::
 
+<!-- BEAT 4 (expansion) — classifier = soft score + threshold; defer evaluation to ch.4 -->
+
+## …but the label is usually a thresholded probability {.smaller}
+
+So far we have read a classifier's output as a hard *label*. But that label is rarely produced directly: most "classifiers" first estimate a **probability**, then cut it at a threshold:
+
+$$g : \mathbb{R}^d \to [0, 1], \qquad g(x) = \widehat{P}(Y = 1 \mid X = x).$$
+
+$$f_\tau(x) = \begin{cases} 1 & \text{if } g(x) \ge \tau \\ 0 & \text{otherwise,} \end{cases} \qquad \tau = 0.5 \text{ by default.}$$
+
+- The model that is actually *fit* is the continuous $g$ — a regression onto $[0, 1]$. The hard label appears **only** once we pick a threshold $\tau$.
+- One $g$ therefore spawns a *whole family* of classifiers $\{f_\tau : \tau \in [0, 1]\}$ — one per cut, each making different mistakes.
+- The habitual $\tau = 0.5$ is a **convention** — natural only when the two kinds of error cost the same — *not* a clinical law: when a missed case costs more than a false alarm, the best cut moves.
+
+So two different things deserve evaluation — the probabilistic model $g$ itself (threshold-free) *and* each derived classifier $f_\tau$. **We'll resolve how at ch. 4** (evaluation metrics).
+
+::: {.notes}
+Qui apriamo il "punteggio interno" messo da parte al beat 2 (nota [:35]) e all'item 01. Esempi a voce: logistic regression, RF/NN col `predict_proba`. Da NON sbagliare: il *task* resta classificazione — apriamo il cofano, non contraddiciamo il beat 2.
+
+Tre messaggi (i bullet a slide):
+
+1. Il modello *fittato* è $g$; il classificatore nasce solo fissando $\tau$.
+2. Un $g$ → infinite $f_\tau$: "valuto il classificatore" senza dire $\tau$ è ambiguo.
+3. $0.5$ = soglia di Bayes SOLO sotto $0/1$ loss simmetrica → gancio al beat 5. Eco cap. 01 (95% accurate, clinically useless).
+
+Se chiedono: $K$ classi $\to g:\mathbb{R}^d \to \Delta^{K-1}$ + argmax/soglie (solo a voce).
+
+Gancio cap. 04: valutare $g$ threshold-free (ranking/calibrazione, curva su TUTTE le $\tau$) vs un $f_\tau$ (confusion matrix a quella soglia). Mantieni la promessa: NON nominare ROC/AUC.
+:::
+
 <!-- BEAT 5 — Metodo: 0/1 loss + risk -->
 
 ## *Count the cost: risk = total loss.*
@@ -75,7 +108,7 @@ Punto chiave: "$f$ è un classificatore" e "le regioni partizionano $\mathbb{R}^
 ![](../img/storyboard/sb-02_05.png){fig-align="center" width="76%"}
 
 ::: {.notes}
-Si contano gli errori con la **0/1 loss** e si sommano: è il **rischio**. Una metrica costruita non come "premio per i giusti" ma come "costo per gli sbagliati" — coerente con la lente del cap. 01 (95% accurate, clinically useless).
+Framing da insistere: il rischio è **costo per gli sbagliati**, non premio per i giusti. Lente cap. 01 (95% accurate, clinically useless).
 :::
 
 ## 0/1 loss and risk on a sample
@@ -91,7 +124,7 @@ $$\widehat{\text{risk}}(f) \;=\; \frac{1}{n} \sum_{i=1}^n \mathfrak{L}\bigl(y_i,
 The **lower-risk classifier is the better one** *on the data we have*.
 
 ::: {.notes}
-La risk-on-sample è solo una *stima* della risk vera ($\mathbb{E}[\mathfrak{L}(f(X), Y)]$), ma è tutto quello che possiamo calcolare. Il distinguo "su questo banco vs. su pazienti nuovi" è il gancio finale del capitolo + l'item 04 + tutto il cap. 04.
+Da dire a voce: la risk-on-sample è solo *stima* della risk vera $\mathbb{E}[\mathfrak{L}(f(X), Y)]$, ma è tutto ciò che possiamo calcolare. Distinguo "questo banco vs pazienti nuovi" → gancio finale + item 04 + cap. 04.
 :::
 
 <!-- BEAT 6 — Payoff -->
@@ -101,7 +134,7 @@ La risk-on-sample è solo una *stima* della risk vera ($\mathbb{E}[\mathfrak{L}(
 ![](../img/storyboard/sb-02_06.png){fig-align="center" width="78%"}
 
 ::: {.notes}
-Si sceglie il confine col rischio più basso (mai $0$ se le classi si sovrappongono); ma chi *trova* quella linea? Lo vediamo coi veri algoritmi al cap. 03.
+Lascia aperta la domanda: chi *trova* la linea col rischio più basso (mai $0$ se le classi si sovrappongono)? → cap. 03.
 :::
 
 ## Pre-hook → chapter 3: algorithm examples
@@ -123,7 +156,7 @@ Pre-hook scriptato a chiusura del cap. 02. Non rivelare ancora il vocabolario di
 ## Exercises {.inverse .center background-color="#1F4257"}
 
 ::: {.notes}
-Blocco esercizi. I 4 item formativi sono recap/self-study; il sommativo live ("Draw the boundary, count the cost") gira negli ultimi ~8′ (min 12-20). Dopo ogni question una slide bianca per scrivere a mano la risposta in classe, poi la slide soluzione.
+4 item formativi = recap/self-study; sommativo live ~8′ (min 12-20). Flusso: question → slide bianca (risposta a mano) → soluzione.
 :::
 
 <!-- Item 01 — MCQ — classification vs regression -->
@@ -159,7 +192,7 @@ Why the distractors are wrong:
 The single discriminator is **what the model produces** — a label (classification) or a value (regression) — not the data type of the inputs, nor whether an internal probability could be reported.
 
 ::: {.notes}
-Take-away: la distinzione è sull'*output*. Riprendete la tabella del beat 2.
+Chiusura: distinzione sull'*output* → riprendi tabella beat 2.
 :::
 
 <!-- Item 02 — Applicativa — Partition the plane -->
@@ -199,7 +232,7 @@ Slide bianca per fare i calcoli a mano: $100+60=160<200 \Rightarrow 0$; $140+70=
 **3. No gaps, no overlaps.** $f$ is a *function*: every $(x, y) \in \mathbb{R}^2$ goes to exactly one of $\{0, 1\}$. The regions are the preimages $f^{-1}(0), f^{-1}(1)$ — their union is the whole plane, their intersection is empty. Saying *"$f$ is a classifier"* IS saying *"the regions partition $\mathbb{R}^2$"*.
 
 ::: {.notes}
-Punto pedagogico chiave: il fatto che le regioni partizionino il piano *non è* una scelta stilistica del disegno — *è* la definizione di "$f$ è una funzione". Geometria e definizione coincidono.
+Punto da far atterrare: partizione = definizione di "$f$ è una funzione", non scelta di disegno. Geometria = definizione.
 :::
 
 <!-- Item 03 — MCQ — Count the cost -->
@@ -243,7 +276,7 @@ Why the distractors are wrong:
 - **D** ($7/10$) is the **accuracy / risk inversion**: $7$ is the count of *correctly* classified; that's the accuracy, not the risk. We count *costs*, not wins.
 
 ::: {.notes}
-Take-away: la 0/1 loss conta i *costi*. Il distrattore D è il più frequente — vale la pena fermarsi e ricordare il framing del beat 5.
+Chiusura: 0/1 loss conta i *costi*. Distrattore D il più frequente → fermati, richiama framing beat 5.
 :::
 
 <!-- Item 04 — Argomentativa — Compare two boundaries -->
@@ -263,13 +296,16 @@ Two clinicians work on the **same 10-patient sample**. Each built a classifier $
 3. What **kind of information** would we need to settle Clinician A's pushback?
 
 ::: {.notes}
-Item 04 — Argumentation / argomentativa / medium-high. Obj. 2 + Obj. 3 + epistemic awareness. Il punto è la *consapevolezza dei limiti del cap. 02*: si può dire chi vince sui dati in mano, NON su pazienti che non abbiamo misurato. Il sub-3 è il gancio operativo al cap. 04. Rubrica: `course/02-classifiers/rubriche/rubrica_04_compare-two-boundaries.md`.
+Item 04 — Argumentation / argomentativa / medium-high. Obj. 2+3 + epistemic awareness.
+
+- Punto: limiti del cap. 02 — vince chi ha rischio minore sui dati in mano, NON su pazienti non misurati.
+- Sub-3 = gancio operativo al cap. 04. Rubrica: `course/02-classifiers/rubriche/rubrica_04_compare-two-boundaries.md`.
 :::
 
 ## Item 04 — Solution (write yours)
 
 ::: {.notes}
-Slide bianca per costruire l'argomentazione in 3 parti. Suggerisco di fare il sub-3 collettivamente alla lavagna: il vocabolario "un secondo set di pazienti con le etichette note" è esattamente l'apparato che il cap. 04 chiama train/validation/test.
+Sub-3 collettivo alla lavagna: "un secondo set di pazienti con etichette note" = ciò che il cap. 04 chiamerà train/validation/test (non nominarlo ora).
 :::
 
 ## Item 04 — Solution
@@ -281,7 +317,7 @@ Slide bianca per costruire l'argomentazione in 3 parti. Suggerisco di fare il su
 3. We would need **0/1 risk estimates on patients NOT in the 10-patient sample** — a *second* set of patients with known labels, on which both classifiers can be evaluated independently. Within ch. 02 alone we have no such set: that is exactly *the question this chapter cannot yet answer*. **(That is what ch. 04 will pick up.)**
 
 ::: {.notes}
-Il sub-3 è il gancio narrativo del cap. 04. *"Un secondo set di pazienti con etichette note che il classificatore non ha mai visto durante la scelta"*: questa è la *definizione operativa* del test set, anticipata senza chiamarla per nome.
+Sub-3 = gancio narrativo cap. 04: "secondo set mai visto durante la scelta" è la def. operativa del test set, senza nominarlo.
 :::
 
 <!-- Summative -->
@@ -297,13 +333,17 @@ Each pair (or breakout room) gets a 2D scatter of ~10 patients on $(x, y) =$ (*f
 *Take-home challenge:* the lowest-risk boundary on this sample is *not necessarily* the best on new patients — why? (We'll resolve at ch. 4.)
 
 ::: {.notes}
-Sommativo — gira negli ultimi ~8′ (min 12-20). ~2′ assegnare + ~4′ draw+count+answer + ~2′ confronto + reveal. **Duale:** la *stessa* scatter è l'artefatto condiviso, sia in presenza (carta) sia da remoto (slide condivisa con drawing tool, o descrizione in parole "linea verticale a glucose=110"). Un poll Slido raccoglie il rischio $k/10$ di ogni gruppo per il confronto immediato. Se la classe è < 4 gruppi: metà classe boundary rettilineo, metà boundary libero — emerge che il libero abbassa il rischio *su questo banco* — ma tieni aperta la domanda "vale anche su pazienti nuovi?" (gancio al cap. 04).
+Sommativo — ultimi ~8′ (min 12-20). Timing: ~2′ assegna + ~4′ draw+count+answer + ~2′ confronto+reveal.
+
+- Duale: stessa scatter condivisa — presenza (carta) / remoto (drawing tool o "linea verticale a glucose=110").
+- Poll Slido raccoglie il rischio $k/10$ di ogni gruppo.
+- Se < 4 gruppi: metà rettilineo, metà libero → il libero abbassa il rischio su questo banco. Tieni aperta "vale su pazienti nuovi?" → cap. 04.
 :::
 
 ## Summative — Solution (write yours)
 
 ::: {.notes}
-Slide bianca: raccolgo a voce/poll i $k/10$ di ciascun gruppo e li scrivo sulla shared board. Anche disegno alla lavagna 1-2 boundary di esempio (uno rettilineo, uno libero) per il confronto.
+Raccogli i $k/10$ (voce/poll) sulla shared board. Disegna 1-2 boundary esempio (rettilineo + libero) per il confronto.
 :::
 
 ## Summative — Solution {.smaller}
@@ -317,5 +357,8 @@ Slide bianca: raccolgo a voce/poll i $k/10$ di ciascun gruppo e li scrivo sulla 
 **Take-home:** *whether* the lowest-risk boundary on these 10 patients will also be the lowest-risk on patients we haven't measured is a question this chapter cannot answer — chapter 4 will.
 
 ::: {.notes}
-**Reveal pedagogico:** se un gruppo è arrivato a rischio $0$ sul banco, probabilmente ha disegnato un boundary molto contorto che *passa* su o avvolge ogni paziente — è esattamente il *gancio operativo* del cap. 03 (kNN $k=1$) e del cap. 04 (overfitting). Non penalizzare; usare per il bridge. Reveal del task-distinguer: la scatter mostra etichette discrete → classificazione; HbA1c è un numero → regressione (eco diretto al beat 2 del capitolo).
+Reveal pedagogico:
+
+- Gruppo a rischio $0$ → boundary contorto che avvolge ogni paziente. NON penalizzare: usa per il bridge a cap. 03 (kNN $k=1$) e cap. 04 (overfitting).
+- Task-distinguer: scatter = etichette discrete → classificazione; HbA1c = numero → regressione (eco beat 2).
 :::
