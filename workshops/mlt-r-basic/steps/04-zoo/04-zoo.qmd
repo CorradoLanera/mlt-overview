@@ -1,0 +1,155 @@
+---
+title: "Step 04 — The zoo, tuned"
+subtitle: "Four models compete; cross-validation picks the winner"
+params:
+  solved: true
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  warning: false
+  message: false
+---
+
+## Where we are
+
+Cumulative snapshot: data + split + recipe are given. The new beat is the heart of
+the workshop — a **`workflow_set`** of four candidate models (penalized logistic,
+kNN, RBF-SVM, random forest), each **tuned by 5-fold cross-validation**. We rank
+them by ROC-AUC, finalize the winner, and validate it once on the held-out test set
+with `last_fit()`.
+
+<!--
+Nota docente (IT): step HANDS-ON (~68 min), il CUORE del workshop. I beat
+precedenti (load/wrangle/split/recipe) sono "given". Il beat nuovo: definiamo 4
+spec con iperparametri `tune()`, li impacchettiamo in un `workflow_set`, e
+`workflow_map("tune_grid", ...)` li tuna tutti su 5-fold CV (grid = 8).
+Il "Your turn" CULMINANTE è il post-tuning: rank_results -> extract -> select_best
+-> finalize_workflow -> last_fit (R/yourturn-04.R con i `___`).
+Wall-clock del tuning misurato: ~18s (dataset piccolo, `plan(multisession)`),
+quindi NESSUNA riduzione della griglia svm necessaria.
+L'evento è `1_yes` (secondo livello) -> `event_level = "second"` nel roc_curve.
+-->
+
+# Given — data, split, recipe {#sec-given}
+
+From Steps 00–03.
+
+```{r given}
+#| code-fold: true
+library(here)
+library(rio)
+library(tidyverse)
+library(janitor)
+library(tidymodels)
+set.seed(123)
+
+indo_raw <- import(here("data-raw", "indo_rct.csv"), setclass = "tibble")
+
+indo <- indo_raw |>
+  clean_names() |>
+  select(outcome, age, risk, gender, sod, rx, type) |>
+  filter(!is.na(age)) |>
+  mutate(outcome = factor(outcome, levels = c("0_no", "1_yes")))
+
+# Split ----
+data_split <- initial_split(indo, prop = 0.75, strata = outcome)
+train <- training(data_split)
+test  <- testing(data_split)
+
+# Recipe ----
+base_rec <- recipe(outcome ~ ., data = train) |>
+  step_dummy(all_nominal_predictors()) |>
+  step_zv(all_predictors()) |>
+  step_normalize(all_numeric_predictors())
+```
+
+# The zoo — four tunable models {#sec-zoo}
+
+Each spec leaves its key hyper-parameters as `tune()`. We bundle them with the one
+recipe into a `workflow_set`, then `workflow_map()` tunes every workflow over a
+size-8 grid on 5-fold cross-validation.
+
+```{r tune}
+#| code-fold: false
+library(workflowsets)
+library(future)
+plan(multisession)
+set.seed(123)
+
+# Model specs (hyper-parameters left to tune) ----
+penlog_spec <- logistic_reg(penalty = tune(), mixture = tune()) |> set_engine("glmnet")
+knn_spec    <- nearest_neighbor(neighbors = tune()) |> set_engine("kknn")   |> set_mode("classification")
+svm_spec    <- svm_rbf(cost = tune(), rbf_sigma = tune()) |> set_engine("kernlab") |> set_mode("classification")
+rf_spec     <- rand_forest(mtry = tune(), min_n = tune()) |> set_engine("ranger")  |> set_mode("classification")
+
+# Resamples ----
+folds <- vfold_cv(train, v = 5, strata = outcome)
+
+# Workflow set ----
+wf_set <- workflow_set(
+  preproc = list(rec = base_rec),
+  models  = list(penlog = penlog_spec, knn = knn_spec, svm = svm_spec, rf = rf_spec),
+)
+
+# Tune every workflow ----
+wf_res <- wf_set |>
+  workflow_map(
+    "tune_grid",
+    resamples = folds,
+    grid      = 8,
+    metrics   = metric_set(roc_auc),
+    verbose   = TRUE,
+    seed      = 123,
+  )
+```
+
+## Compare the candidates
+
+```{r compare}
+#| code-fold: false
+rank_results(wf_res, rank_metric = "roc_auc", select_best = TRUE)
+autoplot(wf_res)
+```
+
+# Your turn — finalize the winner & validate {#sec-yourturn}
+
+Rank the models, pull the winner's id and best hyper-parameters, **finalize** that
+workflow, and run **`last_fit()`** on the original split to score it once on the
+held-out test set. The event is `1_yes` (the *second* factor level).
+
+```{r finalize-solved, eval=params$solved}
+#| code-fold: false
+# Finalize & validate ----
+best_id     <- rank_results(wf_res, rank_metric = "roc_auc", select_best = TRUE) |>
+  dplyr::slice(1) |> dplyr::pull(wflow_id)
+best_res    <- extract_workflow_set_result(wf_res, best_id)
+best_params <- select_best(best_res, metric = "roc_auc")
+final_wf    <- wf_set |> extract_workflow(best_id) |> finalize_workflow(best_params)
+
+final_fit <- last_fit(final_wf, split = data_split, metrics = metric_set(roc_auc, accuracy))
+collect_metrics(final_fit)
+```
+
+```{r finalize-blank, eval=!params$solved, results="asis", echo=FALSE}
+# BLANK mode: echo the `___` skeleton (non-executed) from R/yourturn-04.R.
+cat("```r", readLines(here("R", "yourturn-04.R")), "```", sep = "\n")
+```
+
+## Test-set ROC curve & save the winner
+
+```{r roc-and-save, eval=params$solved}
+#| code-fold: false
+collect_predictions(final_fit) |>
+  roc_curve(outcome, .pred_1_yes, event_level = "second") |>
+  autoplot()
+
+# Persist the validated workflow for the reproducible report (Step 05) ----
+saveRDS(final_fit, here("output", "final_fit.rds"))
+```
+
+The cross-validated ranking points at one model; `last_fit()` then reports its
+**honest test performance**. That single, validated `final_fit` object is what the
+next step turns into a self-contained, reproducible report — without ever
+re-tuning.
