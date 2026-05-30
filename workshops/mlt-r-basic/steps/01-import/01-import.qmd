@@ -1,0 +1,80 @@
+---
+title: "Step 01 — Import & wrangle"
+subtitle: "From 33 raw columns to a tidy modelling tibble"
+params:
+  solved: true
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  warning: false
+  message: false
+---
+
+## Where we are
+
+Cumulative snapshot: we reload the raw trial data (Step 00), then wrangle it into
+the modelling tibble we will use for the rest of the workshop.
+
+<!--
+Nota docente (IT): step HANDS-ON (~32 min). Il primo chunk (load) è già visto allo
+step 00, qui è "given". Il wrangle è il "Your turn" di QUESTO step: in modalità
+blank (`params$solved == FALSE`) si mostra solo lo scheletro `R/yourturn-01.R`
+con i `___` da completare dal vivo; in modalità solved gira la soluzione.
+Predittori (decisione del controller): age, risk, gender, sod, rx, type.
+`site` è stato escluso. L'evento è `1_yes` (~13%).
+-->
+
+# Setup — load the raw data {#sec-load}
+
+Given from Step 00.
+
+```{r setup}
+#| code-fold: false
+library(here)
+library(rio)
+library(tidyverse)
+library(janitor)
+
+indo_raw <- import(here("data-raw", "indo_rct.csv"), setclass = "tibble")
+dim(indo_raw)
+```
+
+# Your turn — wrangle into a modelling tibble {#sec-wrangle}
+
+Build `indo` from `indo_raw`: clean the names, keep the **outcome** plus the six
+predictors (`age`, `risk`, `gender`, `sod`, `rx`, `type`), drop rows with a
+missing `age`, and make `outcome` an explicit two-level factor with the **no
+event first** (`"0_no"`, `"1_yes"`). The result should have 7 columns.
+
+```{r wrangle-solved, eval=params$solved}
+#| code-fold: false
+# Wrangle ----
+indo <- indo_raw |>
+  clean_names() |>
+  select(outcome, age, risk, gender, sod, rx, type) |>
+  filter(!is.na(age)) |>
+  mutate(outcome = factor(outcome, levels = c("0_no", "1_yes")))
+
+glimpse(indo)
+```
+
+```{r wrangle-blank, eval=!params$solved, results="asis", echo=FALSE}
+# BLANK mode: echo the `___` skeleton from R/yourturn-01.R as a (non-executed)
+# code block. We emit it verbatim instead of running it as an R chunk, because
+# `___` is not parseable R and knitr parses every R chunk even when eval=FALSE.
+cat("```r", readLines(here("R", "yourturn-01.R")), "```", sep = "\n")
+```
+
+```{r check, eval=params$solved}
+#| code-fold: false
+# Quick checks: 7 columns, a 2-level factor, ~13% events.
+ncol(indo)
+levels(indo$outcome)
+count(indo, outcome)
+```
+
+We now have a clean, 7-column tibble: `outcome` plus the six predictors. The
+event (`1_yes`) is the minority class — roughly 13% — which will steer our metric
+choice in the EDA step.
