@@ -27,8 +27,15 @@ Render di entrambe le versioni con l'helper di repo:
 
 Convenzione: ogni blocco "da fare a lezione" è una COPPIA di chunk gemelli.
 - Il chunk SOLVED ha `eval=params$solved`  -> esegue (e mostra) la soluzione.
-- Il chunk BLANK  ha `eval=!params$solved` -> NON esegue; fa solo l'echo del file
-  `yourturn-blank.R`, che contiene lo scheletro/prompt che lo studente completa dal vivo.
+- Il chunk BLANK  ha `eval=!params$solved` -> NON esegue; mostra (echo) lo scheletro
+  `R/yourturn-NN.R` con i `___` da completare dal vivo.
+
+ATTENZIONE (lezione appresa): knitr PARSA ogni chunk con engine R anche quando
+`eval=FALSE`. I blank usano `___`, che NON è R valido (un identificatore non può
+iniziare con `_`), quindi un chunk `file="...yourturn.R"` farebbe fallire il
+render in modalità blank. Per questo il chunk BLANK NON è un chunk R eseguibile:
+legge il file e lo riemette come blocco ```` ```r ```` con `results="asis"`,
+così lo scheletro `___` appare evidenziato ma non viene mai parsato come codice.
 -->
 
 ## Your turn
@@ -42,9 +49,8 @@ Prompt for the live exercise goes here (ENGLISH, student-facing).
 1 + 1
 ```
 
-```{r blank, eval=!params$solved, file="yourturn-blank.R", echo=TRUE}
-#| code-fold: false
-# --- BLANK: quando params$solved == FALSE mostriamo (echo) il contenuto di
-#     `yourturn-blank.R` SENZA eseguirlo. Quel file contiene lo scheletro
-#     "your turn" che si completa dal vivo. `eval=!params$solved` lo tiene inerte.
+```{r blank, eval=!params$solved, results="asis", echo=FALSE}
+# --- BLANK: quando params$solved == FALSE riemettiamo lo scheletro `___` da
+#     R/yourturn-NN.R come blocco di codice (non eseguito, non parsato).
+cat("```r", readLines(here::here("R", "yourturn-NN.R")), "```", sep = "\n")
 ```
