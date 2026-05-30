@@ -95,7 +95,7 @@ Aside metriche — ~60-90″, non valutata.
 
 Most classifiers output a **score** (often a probability); the threshold turns it into a label. Sweeping the threshold traces two curves:
 
-- **ROC curve** — sensitivity vs $1 - \text{specificity}$ across thresholds. Its area, **AUC-ROC** $\in [0.5, 1]$, is the probability that a random positive scores higher than a random negative.
+- **ROC curve** — sensitivity vs $1 - \text{specificity}$ across thresholds. Its area, **AUC-ROC** $\in [0, 1]$ ($0.5 =$ random, $1 =$ perfect), is the probability that a random positive scores higher than a random negative.
 - **PR curve** — precision vs recall. Its area, **AUC-PR**, is more informative when the **positive class is rare**.
 
 Rule of thumb: **AUC-ROC** when classes are roughly balanced; **AUC-PR** under heavy imbalance (rare disease, fraud, anomaly detection).

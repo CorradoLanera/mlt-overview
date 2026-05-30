@@ -164,7 +164,7 @@ Sign ($-$) = scendi/sali; $\eta$ = lunghezza passo. Item 03 testa la coppia (dis
 
 Both requirements have **operational meaning** for the training procedure:
 
-- **Non-linear** $g$ → the stack of layers is **more** than one big linear map. Otherwise $(g_1 \circ g_2 \circ g_3)(\cdots) = W x$ — one matrix multiplication, no matter how many layers. *No "deep".*
+- **Non-linear** $g$ → the stack of layers is **more** than one big linear map. Were each $g$ *linear*, the whole stack would collapse to $(W^{[3]} W^{[2]} W^{[1]})\,x = W x$ — one matrix multiplication, no matter how many layers. *No "deep".*
 - **Differentiable** $g$ → the gradient $\nabla_W L(W)$ **exists** at every $W$. Otherwise: no direction to step in, and gradient descent has nothing to do. *No "learning".*
 
 The two together: a *curved* loss landscape with a *slope at every point*. That's what makes descent possible.

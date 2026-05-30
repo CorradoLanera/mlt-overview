@@ -136,9 +136,9 @@ Voting *amplifies whichever direction $p$ points*. Hence the **$p > 0.5$ require
 Punto quantitativo: voto di maggioranza ≠ media — è una *binomial tail* che si concentra al crescere di $m$. L'item 03 testa la direzione.
 :::
 
-## Three families, three boundary shapes
+## Three families, four boundary shapes
 
-| Family | Shape of the boundary it produces |
+| Algorithm | Shape of the boundary it produces |
 |---|---|
 | **$k$-NN** | piecewise wiggly curve hugging the training points |
 | **Linear SVM** | one straight cut |
