@@ -1,0 +1,178 @@
+---
+title: "Step 01 — Open the black box"
+subtitle: "Permutation VIMP + agnostic SHAP, anchored on a logistic regression"
+params:
+  solved: true
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  warning: false
+  message: false
+---
+
+## Where we are
+
+We have a validated random forest from the Basic workshop, but a probability is not an
+explanation. This step opens the box with two **model-agnostic** tools. First,
+**permutation variable importance (VIMP)**: shuffle one predictor, watch how far ROC-AUC
+falls, and read that drop as how much the model *relies* on that feature. Second,
+**SHAP**, which attributes a single prediction across its features. To trust SHAP before
+we point it at the forest, we anchor it on a **logistic regression** — an interpretable
+model whose coefficient signs SHAP must recover. The payoff is agnosticism: the same call
+explains the linear anchor and the forest alike; only the model object changes.
+
+<!--
+Nota docente (IT): step HANDS-ON (~48 min). Cinque messaggi chiave:
+1. VIMP = permuta-una-feature -> il calo di performance = quanto il modello DIPENDE da
+   quella feature. NON e' causalita', NON e' il coefficiente, NON e' un p-value
+   (formativa min-24). E' "reliance" e basta.
+2. L'ANCORA logistica e' un dispositivo di sanity: SHAP, applicato a un modello lineare,
+   DEVE far riemergere i segni/le grandezze dei coefficienti (formativa min-38). Se non
+   lo facesse, non ci fideremmo di SHAP sul random forest.
+3. Le MANOPOLE di SHAP: la dimensione del background (`bg_X`), QUALI righe spieghi (`X`),
+   ed esatto-vs-campionato (formativa min-46). Con 11 feature, permshap() passa in
+   automatico alla versione campionata: lo segnaliamo, resta il check piu' pulito su un
+   modello lineare.
+4. Il payoff dell'agnosticismo: STESSA chiamata, cambi solo il modello. Il "Your turn"
+   prende esattamente la chiamata dell'ancora e la punta sul random forest.
+5. CAVEAT tecnico (vip + workflow): vip "spacchetta" il workflow e passa al pred_wrapper
+   l'oggetto-motore nudo (ranger), su cui predict() non parla tidymodels. Quindi il
+   wrapper instrada SEMPRE attraverso il workflow catturato (`rf_wf`), ignorando `object`.
+   E' un trucco idiomatico, non un bug: lo commentiamo nel chunk.
+Sanity attesa: ejection_fraction / serum_creatinine in alto nella VIMP (soglie/effetti
+non-monotoni noti del dataset). Confermato in build: ejection_fraction > age >
+serum_creatinine.
+-->
+
+## Given — cohort, split, anchor inputs {#sec-given}
+
+Rebuilt exactly as in Basic: `clean_names()` first, drop `time`, event-first `outcome`,
+binary predictors as factors. We also reload the Basic random forest as-is.
+
+```{r given}
+#| code-fold: true
+library(here)
+library(rio)
+library(tidyverse)
+library(janitor)
+library(tidymodels)
+library(vip)
+library(kernelshap)
+library(shapviz)
+set.seed(123)
+
+# Rebuild the cohort exactly as in Basic (clean_names first) ----
+hf_tbl <- import(here("data-raw", "heart_failure.csv"), setclass = "tibble") |>
+  clean_names() |>
+  select(-time) |>
+  mutate(
+    outcome = factor(
+      if_else(death_event == 1, "died", "survived"),
+      levels = c("died", "survived"),
+    ),
+  ) |>
+  select(-death_event) |>
+  mutate(across(c(anaemia, diabetes, high_blood_pressure, sex, smoking), factor))
+
+# A train split for the anchor + a SHAP background ----
+data_split <- initial_split(hf_tbl, prop = 0.75, strata = outcome)
+train <- training(data_split)
+
+# Reload the validated Basic random forest (no retraining) ----
+rf_wf <- extract_workflow(readRDS(here("model", "final_fit.rds")))
+```
+
+## Permutation VIMP — what the forest relies on {#sec-vimp}
+
+We fit the **logistic anchor** (it earns its keep in the next section) and then measure
+permutation importance on the forest. VIMP shuffles one predictor at a time and records
+how much ROC-AUC drops: a big drop means the model leans hard on that feature. Read it as
+*reliance*, not as causation, not as a coefficient, and not as a p-value.
+
+```{r anchor-vimp}
+#| code-fold: false
+# Logistic ANCHOR: an interpretable model whose coefficient signs SHAP must recover ----
+anchor_rec <- recipe(outcome ~ ., data = train) |>
+  step_dummy(all_nominal_predictors()) |>
+  step_zv(all_predictors()) |>
+  step_normalize(all_numeric_predictors())
+log_wf  <- workflow() |> add_recipe(anchor_rec) |> add_model(logistic_reg() |> set_engine("glm"))
+log_fit <- fit(log_wf, train)
+
+# Permutation VIMP (agnostic): shuffle a predictor -> how much does ROC-AUC drop? ----
+# NOTE: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we
+# ignore `object` and route the prediction through the captured workflow `rf_wf` instead.
+vimp_pred <- function(object, newdata) predict(rf_wf, newdata, type = "prob")$.pred_died
+set.seed(1)
+vip(
+  rf_wf,
+  method       = "permute",
+  train        = train,
+  target       = "outcome",
+  metric       = "roc_auc",
+  pred_wrapper = vimp_pred,
+  nsim         = 10,
+  event_level  = "first",
+)
+```
+
+The top of the plot is dominated by **ejection_fraction** and **serum_creatinine** (with
+**age**): exactly the features clinicians watch, and the ones with known threshold /
+non-monotone effects on survival. That is reliance the forest learned from data — it says
+nothing, on its own, about *why* or in *which direction*.
+
+## SHAP on the anchor — the sanity check {#sec-shap}
+
+SHAP attributes a single prediction across its features. Three knobs govern it: the
+**background** `bg_X` (the reference distribution SHAP integrates over), **which rows** you
+explain via `X`, and **exact vs. sampling** (with 11 features `permshap()` switches to its
+sampling variant automatically). We run it first on the *linear anchor*, where the answer
+is known: the SHAP attributions must echo the fitted logistic coefficients.
+
+```{r shap-anchor}
+#| code-fold: false
+# Agnostic SHAP on the ANCHOR. kernelshap's pred_fun signature is function(object, X, ...).
+pred_fun <- function(object, X) predict(object, X, type = "prob")$.pred_died
+bg <- train |> select(-outcome)
+
+# permshap() = (near-)EXACT Shapley values -> the cleanest sanity check on a linear model ----
+set.seed(2)
+ks_log <- permshap(log_fit, X = bg[1, ], bg_X = bg, pred_fun = pred_fun)
+shapviz(ks_log) |> sv_waterfall()
+
+# Why it reassures: the SHAP signs must echo the logistic coefficients ----
+tidy(log_fit) |> dplyr::arrange(dplyr::desc(abs(estimate)))
+```
+
+Compare the two outputs. The features SHAP pushes hardest in the waterfall are the same
+ones with the largest coefficient magnitudes — **ejection_fraction**, **age**,
+**serum_creatinine** lead both — and each attribution's direction is consistent with that
+patient's (standardized) feature value times its fitted coefficient. SHAP recovers the
+linear model it was given, so we can trust the same machinery on a model we *cannot* read
+off coefficients.
+
+## Your turn — same call, swap the model {#sec-yourturn}
+
+Here is the agnosticism payoff. The forest has no coefficients, but the explainer does not
+care: it only needs a `pred_fun` and a background. Take the anchor's exact call and point
+it at the random forest — **only the model object changes**. (We use `kernelshap()` for the
+forest: at 11 features its hybrid strategy is the practical choice; `permshap()`'s exact
+enumeration is what we reserved for the linear anchor.)
+
+```{r yourturn-01-solved, eval=params$solved}
+#| code-fold: false
+# Your turn (solved): point the SAME explainer at the RANDOM FOREST. Only the model changed.
+set.seed(3)
+ks_rf <- kernelshap(rf_wf, X = bg[1, ], bg_X = bg, pred_fun = pred_fun)
+shapviz(ks_rf) |> sv_waterfall()
+```
+
+```{r yourturn-01-blank, eval=!params$solved, results="asis", echo=FALSE}
+cat("```r", readLines(here("R", "yourturn-01.R")), "```", sep = "\n")
+```
+
+The waterfall for the forest reads the same way as the anchor's — a per-feature decomposition
+of one prediction — but now it explains a model whose internal logic is opaque. That is the
+whole point: one agnostic interface, any model behind it.
