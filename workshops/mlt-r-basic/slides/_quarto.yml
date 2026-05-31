@@ -4,8 +4,8 @@ format:
   revealjs:
     width: 1648
     height: 1080
-    theme: [default, theme.scss]
+    theme: [default, ../../../styles/_brand.scss, theme.scss]
     slide-number: true
     code-link: true
-    chalkboard: true
+    embed-resources: true
     footer: "Practical AI for Medical Data Analyses with R — Basic"
