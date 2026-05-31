@@ -128,7 +128,7 @@ That `roc_auc` is a genuinely trained number, computed live on held-out patients
 rarely win on small tabular cohorts, and that honesty is the point: we report what the model
 actually does. Note this is a **single held-out estimate**, not a cross-validated one — so
 reading it as "the net beats the validated forest" would be apples-to-oranges; the forest's
-~0.80 came from proper cross-validation, while this number reflects a single random split.
+~0.79 came from proper cross-validation, while this number reflects a single random split.
 
 ## The same explainer, a new model {#sec-shap}
 

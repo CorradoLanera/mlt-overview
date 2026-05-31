@@ -16,7 +16,7 @@ execute:
 
 We have a validated random forest from the Basic workshop, but a probability is not an
 explanation. This step opens the box with two **model-agnostic** tools. First,
-**permutation variable importance (VIMP)**: shuffle one predictor, watch how far ROC-AUC
+**permutation variable importance (VIMP)**: shuffle one predictor, watch how far AUC-ROC
 falls, and read that drop as how much the model *relies* on that feature. Second,
 **SHAP**, which attributes a single prediction across its features. To trust SHAP before
 we point it at the forest, we anchor it on a **logistic regression** — an interpretable
@@ -88,7 +88,7 @@ rf_wf <- extract_workflow(readRDS(here("model", "final_fit.rds")))
 
 We fit the **logistic anchor** (it earns its keep in the next section) and then measure
 permutation importance on the forest. VIMP shuffles one predictor at a time and records
-how much ROC-AUC drops: a big drop means the model leans hard on that feature. Read it as
+how much AUC-ROC drops: a big drop means the model leans hard on that feature. Read it as
 *reliance*, not as causation, not as a coefficient, and not as a p-value.
 
 ```{r anchor-vimp}
@@ -101,7 +101,7 @@ anchor_rec <- recipe(outcome ~ ., data = train) |>
 log_wf  <- workflow() |> add_recipe(anchor_rec) |> add_model(logistic_reg() |> set_engine("glm"))
 log_fit <- fit(log_wf, train)
 
-# Permutation VIMP (agnostic): shuffle a predictor -> how much does ROC-AUC drop? ----
+# Permutation VIMP (agnostic): shuffle a predictor -> how much does AUC-ROC drop? ----
 # NOTE: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we
 # ignore `object` and route the prediction through the captured workflow `rf_wf` instead.
 vimp_pred <- function(object, newdata) predict(rf_wf, newdata, type = "prob")$.pred_died

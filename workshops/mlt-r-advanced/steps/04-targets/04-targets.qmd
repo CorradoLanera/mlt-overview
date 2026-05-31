@@ -99,7 +99,7 @@ explanation |>
   geom_col() +
   labs(
     title = "Permutation VIMP of the reloaded Basic random forest",
-    x     = "Drop in ROC-AUC when permuted",
+    x     = "Drop in AUC-ROC when permuted",
     y     = NULL,
   )
 ```
