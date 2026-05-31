@@ -1,0 +1,27 @@
+/*-- scss:defaults --*/
+// === MLT shared brand — single source of truth (overview + workshops) ===
+$brand-orange:      #E8741E;
+$brand-orange-dark: #C75A12;
+$brand-orange-tint: #F9C99B;
+$brand-teal:        #1F4257;
+$brand-ink:         #1a1a1a;
+$brand-paper:       #ffffff;
+$brand-light:       #f4f1ec;
+
+$body-bg:    $brand-paper;
+$body-color: $brand-ink;
+$link-color: $brand-orange;
+$selection-bg: $brand-orange-tint;
+
+$font-family-sans-serif: "Noto Sans", system-ui, Arial, sans-serif;
+$font-family-monospace:  "Source Code Pro", Consolas, monospace;
+$presentation-heading-font: "Cabin", "Noto Sans", sans-serif;
+$presentation-heading-color: $brand-orange-dark;
+$presentation-font-size-root: 30px;
+
+/*-- scss:rules --*/
+// Shared brand accents reused by every deck.
+.reveal h1, .reveal h2, .reveal h3 { color: $brand-orange-dark; }
+.reveal blockquote { border-left: 4px solid $brand-orange; }
+.reveal table thead th { background: $brand-orange; color: #fff; }
+.reveal .slide-number { color: $brand-orange; }
