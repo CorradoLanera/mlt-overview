@@ -6,7 +6,7 @@
 ## Prompt
 
 We now have `mlp_fit` — the trained MLP workflow. Using the **same explainer call**
-we used on the logistic anchor (just swap `mlp_fit` for `glm_fit`), produce a
+we used on the logistic anchor (just swap `mlp_fit` for `log_fit`), produce a
 waterfall plot for observation 1:
 
 ```r

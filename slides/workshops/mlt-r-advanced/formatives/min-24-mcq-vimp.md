@@ -11,7 +11,7 @@ and **`serum_creatinine`** at the top. What does that score actually measure?
 ## Options
 
 - **A. ✓ (correct)** Permuting a predictor's values breaks its relationship with
-  the outcome; the **drop in ROC-AUC** measures how much the model **relies on**
+  the outcome; the **drop in AUC-ROC** measures how much the model **relies on**
   that predictor to discriminate. A high score means the model cannot do without it —
   not that the predictor causes the outcome.
 - **B.** A high importance score means `ejection_fraction` **causes** heart failure

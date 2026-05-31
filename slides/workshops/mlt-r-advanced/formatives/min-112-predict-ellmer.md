@@ -5,17 +5,17 @@
 
 ## Prompt
 
-We defined this `type_object()` schema for extracting structured data from ERCP
-clinical notes:
+We defined this `type_object()` schema for extracting structured data from heart-failure
+clinical notes (the same schema as Step 03):
 
 ```r
 schema <- type_object(
   age                = type_integer("patient age in years"),
-  ejection_fraction  = type_number("ejection fraction percentage"),
-  on_betablocker     = type_logical("TRUE if the patient is on a beta-blocker"),
+  ejection_fraction  = type_number("ejection fraction as a percentage; NA if not stated"),
+  on_betablocker     = type_boolean("TRUE if a beta-blocker is given or continued"),
   primary_dx         = type_enum(
-    "primary ERCP indication",
-    values = c("choledocholithiasis", "cholangitis", "stricture", "other")
+    c("ischemic", "hypertensive", "valvular", "other"),
+    "primary cardiac diagnosis"
   )
 )
 ```

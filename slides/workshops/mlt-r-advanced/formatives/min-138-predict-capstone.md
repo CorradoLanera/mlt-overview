@@ -31,17 +31,19 @@ regardless; `targets` re-derives or skips based on content hashes.
 
 ## Stretch (Davide)
 
-**Which downstream targets go stale if you change `bg_X` or the sampling settings
-of the SHAP target?**
+**Which targets go stale if you replace `model/final_fit.rds` (the bundled Basic RF)
+or edit the VIMP settings inside `explain_model()`?**
 
-The SHAP computation target depends on `bg_X` (the background dataset) and the
-sampling parameters passed to `kernelshap()`. Both are inputs to that target's
-function. Changing either invalidates the SHAP target's hash. `{targets}` then
-propagates stale-ness downstream: any target that consumes the SHAP result
-(e.g. the waterfall plot target, the summary table target, the report target)
-also becomes stale and will rebuild on the next `tar_make()`. Targets that do
-**not** depend on SHAP (e.g. the data ingestion target, the model-fit target)
-are unaffected — they remain `skip`.
+`model_file` is a `format = "file"` target, so swapping `final_fit.rds` re-hashes
+`model_file`; `{targets}` propagates stale-ness to `model` (which calls
+`reload_model()`) and then to the `explanation` bridge (which consumes `model` +
+`cohort`) — `explanation` rebuilds, while `cohort_file` / `cohort` stay `skip`. The
+VIMP knobs (`method = "permute"`, `metric = "roc_auc"`, `nsim = 10`) live inside
+`explain_model()` in `R/pipeline-fns.R`: editing them changes that function's source
+hash, so only `explanation` rebuilds (nothing is downstream of it). Note there is
+**no** SHAP/`kernelshap` target in this pipeline — the bridge is permutation VIMP via
+`vip::vi()`; the `bg_X` / `kernelshap()` interpretability code lives in **step 01**,
+not in this DAG.
 
 **Why does the GPU device not appear in the DAG unless promoted to a target?**
 
