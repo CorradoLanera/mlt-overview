@@ -1,0 +1,13 @@
+workshop:
+  title: "Practical AI for Medical Data Analyses with R - Advanced"
+  slug: mlt-r-advanced
+  language: en
+  total_minutes_gross: 240
+  dataset: "heart_failure clinical records (reloaded Basic model) + synthetic notes"
+summative: "reproducible explain -> deep -> LLM pipeline, demonstrated via a targets DAG"
+steps:
+  - { slug: 00-recap,         title: "Recap & setup",            mode: demo,          minutes: 12, include: true }
+  - { slug: 01-interpret,     title: "Interpretability",         mode: hands-on,      minutes: 48, include: true }
+  - { slug: 02-deep-learning, title: "Deep learning",            mode: hands-on+demo, minutes: 67, include: true }
+  - { slug: 03-ellmer,        title: "LLM as typed ETL",         mode: hands-on,      minutes: 36, include: true }
+  - { slug: 04-targets,       title: "Reproducibility capstone", mode: demo,          minutes: 20, include: true }
