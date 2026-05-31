@@ -5,6 +5,7 @@
 - **Repo:** `c:\Users\corra\github\cl\mlt-overview`
 - **Autore:** Corrado Lanera (con Claude Code)
 - **Stato:** bozza in revisione
+- **Revisione r2 (2026-05-31):** §3/§5/§7/§9 aggiornate dopo decisione in fase di build — i **sorgenti** slide dei workshop vivono in `slides/workshops/<slug>/` (come l'overview separa `course/` da `slides/`); la cartella `workshops/<slug>/` distribuisce il progetto R + il deck **renderizzato** (iniettato in fase di build), **non** i sorgenti slide. Conseguenza: niente vendoring SCSS nello ZIP (il deck è `embed-resources`, autosufficiente) — §9.1 ritirata; inclusione ZIP guidata da `git ls-files` (deterministica) + il deck renderizzato − `CLAUDE.md`.
 
 > Questo documento è il *piano architetturale* del corso unico: come `mlt-overview` diventa **un repo, un corso, tre moduli**
 > (teoria/overview + pratica base + pratica advanced) senza spostare ciò che già funziona.
@@ -50,10 +51,13 @@ mlt-overview/
 ├── course/                         # M1 · Theory Overview (INVARIATO — il tooling continua a funzionare)
 │   ├── _manifest.yml               # fonte di verità dei capitoli overview
 │   ├── _global/  ·  01-…/ … 10-…/
-├── slides/                         # deck overview renderizzato; theme.scss importa ../styles/_brand.scss
+├── slides/                         # SORGENTI slide + deck overview renderizzato
+│   ├── slides.qmd · chapters/      #   overview (theme list: ../styles/_brand.scss)
+│   └── workshops/<slug>/           # NUOVO — sorgenti slide dei workshop (qmd/scss/_quarto.yml/formatives)
 ├── img/                            # asset overview condivisi (img/storyboard/sb-NN_FF.png)
 ├── workshops/
-│   ├── mlt-r-basic/                # M2 · Practice Basic   (.Rproj + renv proprio + self-contained)
+│   ├── mlt-r-basic/                # M2 · Practice Basic — DISTRIBUIBILE: progetto R + deck RENDERIZZATO
+│   │                               #   (sorgenti slide NON qui → slides/workshops/mlt-r-basic/)
 │   └── mlt-r-advanced/             # M3 · Practice Advanced (da scaffoldare più avanti)
 ├── dist/                           # NUOVO — ZIP workshop costruiti; GITIGNORATO
 ├── _archive/
@@ -84,28 +88,30 @@ Vincolo che forma tutto: il **README di un workshop viaggia dentro lo ZIP distri
 ## 5. Distribuzione: Release assets (Q3 · path separato Q5)
 
 ```
-edita workshop ──▶ [reminder hook] ──▶ /mlt-dist ──▶ build_workshop_zip.py
-                                                         │ 1. pota a source-only
-                                                         │ 2. inlinea styles/_brand.scss nel theme.scss
-                                                         │ 3. embed-resources sull'HTML spedito
-                                                         ▼
-                                            dist/<slug>.zip  (gitignorato, pochi MB)
-                                                         │ allega a tag release per-coorte
-                                                         ▼
-                            GitHub Release ◀── short link ──▶ use_course() nel README workshop
+edita  workshops/<slug>/  o  slides/workshops/<slug>/  ──▶ [reminder hook] ──▶ /mlt-dist
+   1. quarto render slides/workshops/<slug>/   →  deck HTML embed-resources (autosufficiente)
+   2. build_workshop_zip.py
+        • git ls-files su workshops/<slug>/   →  sorgente R tracciato   (meno CLAUDE.md)
+        • inietta il deck renderizzato in   <slug>/slides/
+        • zip con cartella radice   <slug>/
+                          ▼
+            dist/<slug>.zip   (gitignorato, pochi MB)   ──▶  tag release per-coorte
+                          ▼
+   GitHub Release ◀── short link ──▶ use_course() nel README workshop
 ```
 
-**Recipe ZIP source-only** (per workshop):
+**Recipe ZIP** (per workshop) — guidata da `git`, deterministica:
 
-- **Include:** `*.Rproj`, `.Rprofile`, `renv.lock`, `renv/activate.R`, `renv/settings.json`, `R/`, `data-raw/`, `steps/NN-slug/` (`.qmd` + HTML blank/solved come da design), `slides/` (`.qmd` + `theme.scss` *con brand inlineato* + `_quarto.yml` + deck HTML embedded + `formatives/` + `concept-graph.mmd`), `README.md`, `_manifest.yml`, `requirements.R`.
-- **Escludi:** `renv/library/`, `renv/staging/`, `**/.quarto/`, `**/*_files/` (grazie a `embed-resources`), `.Rhistory`, `.Rproj.user/`, `.git/`, `CLAUDE.md`, junk OS.
-- **Effetto:** da ~379 MB (quasi tutto `renv/library/`) a pochi MB. La libreria la ricostruisce lo studente con `renv::restore()`.
+- **Include:** tutto ciò che `git ls-files` traccia dentro `workshops/<slug>/` (cioè il **sorgente** R: `*.Rproj`, `.Rprofile`, `renv.lock`, `renv/activate.R`, `renv/settings.json`, `R/`, `data-raw/`, `steps/NN-slug/*.qmd` + scaffolding, `_manifest.yml`, `requirements.R`, `README.md`), **più** il deck **renderizzato** iniettato in `<slug>/slides/`, **meno** `CLAUDE.md` (authoring-only).
+- **Escludi (automatico, perché gitignorato o non tracciato):** `renv/library/`, `**/.quarto/`, `steps/**/*.html` (render dei passi), `steps/**/output/*.{rds,png}` (output rigenerabili), `**/*_files/`. Lo studente li rigenera (`renv::restore()` + esecuzione dei passi).
+- **Sorgenti slide NON nello ZIP:** vivono in `slides/workshops/<slug>/`; nello ZIP entra **solo** il deck renderizzato (`embed-resources`, autosufficiente). Perciò **niente vendoring SCSS** (vedi §9.1, ritirata).
+- **Effetto:** da ~379 MB (quasi tutto `renv/library/`) a pochi MB.
 
-**Comando:** `scripts/build_workshop_zip.py` (coerente con `build_portal.py`), wrappato da uno slash-command **`/mlt-dist`** (standalone — `/mlt` resta overview-only, vedi §7). Workshop-scoped: l'overview si distribuisce diversamente (slide → GitHub Pages/PDF, non `use_course()`).
+**Comando:** `scripts/build_workshop_zip.py` (coerente con `build_portal.py`), wrappato da **`/mlt-dist`** (standalone — `/mlt` resta overview-only, vedi §7), che prima **renderizza** il deck da `slides/workshops/<slug>/` poi assembla lo ZIP. Workshop-scoped: l'overview si distribuisce diversamente (slide → GitHub Pages/PDF, non `use_course()`).
 
-**Reminder = hook PostToolUse non bloccante** su scritture di sorgente in `workshops/**` **oppure** `styles/_brand.scss` (vedi §9.2), ignorando cache `.quarto/`, lo zip stesso e i rendered: stampa "sorgente workshop cambiata → rigenera dist via /mlt-dist prima di pubblicare". Solo reminder — **non** auto-zippa a ogni keystroke.
+**Reminder = hook PostToolUse non bloccante** su scritture di sorgente in `workshops/**` **o** `slides/workshops/**` **o** `styles/_brand.scss` (vedi §9.2), ignorando cache `.quarto/`, lo zip stesso e i rendered: stampa "sorgente workshop cambiata → rigenera dist via /mlt-dist prima di pubblicare". Solo reminder — **non** auto-zippa a ogni keystroke.
 
-**Tweak A:** il `_quarto.yml` del deck workshop perde `chalkboard: true` e tiene `embed-resources: true` (`code-link` resta, è compatibile). Elimina l'incognita "chalkboard sopravvive a embed-resources" alla radice.
+**Tweak A:** il `_quarto.yml` del deck workshop (ora in `slides/workshops/<slug>/`) perde `chalkboard: true` e tiene `embed-resources: true` (`code-link` resta, è compatibile). Elimina l'incognita "chalkboard sopravvive a embed-resources" alla radice.
 
 ## 6. Archivio riproducibile (Q4 + Tweak B)
 
@@ -127,16 +133,16 @@ edita workshop ──▶ [reminder hook] ──▶ /mlt-dist ──▶ build_wor
 
 ## 7. Contratto di stile e coerenza (Q5)
 
-**SCSS — brand partial + inline-on-zip.** `styles/_brand.scss` è l'unica fonte di verità (palette arancio `#E8741E` / teal `#1F4257`, font Cabin / Noto Sans / Source Code Pro, token di sizing). Ogni deck lo importa e ci stratifica sopra le regole di modulo (overview: slide-titolo `.inverse` + storyboard; workshop: `code-link` + canvas largo 1648×1080). La fedeltà standalone dello ZIP è garantita inlineando il partial in fase di build (§5).
+**SCSS — brand partial condiviso.** `styles/_brand.scss` è l'unica fonte di verità (palette arancio `#E8741E` / `#C75A12` / teal `#1F4257`, font Cabin / Noto Sans / Source Code Pro, token di sizing). Ogni deck-sorgente lo importa via theme list e ci stratifica sopra le regole di modulo (overview in `slides/`, workshop in `slides/workshops/<slug>/`: `code-link` + canvas largo 1648×1080 + override `font-size-root: 32px`). **Niente vendoring/inlining in fase di ZIP:** il deck workshop spedito è già renderizzato `embed-resources` (CSS compilato dentro l'HTML), quindi è autosufficiente e i sorgenti slide non viaggiano nello ZIP (vedi §9.1, ritirata).
 
 **Narrativa — contratto a due livelli.**
 
 - *Spina del corso* (attraversa i tre moduli): six-word/100-word globali + macro-arco **Overview → Basic → Advanced** con pre-hook formali (Payoff del cap. 10 overview → Hook del Basic; Payoff del Basic → Hook dell'Advanced) e prerequisiti dichiarati in testa a ogni modulo.
 - *Dentro il modulo*: pedagogia nativa all'artefatto — overview = arco storyboard hook-sfida-risoluzione-payoff; workshop = T3 backward design (summative-first + formative). **Niente storyboard imposti** ai workshop live-coded.
 
-**Immagini.** La convenzione ancora-storyboard `img/storyboard/sb-NN_FF.png` resta **overview-specific** (legata alla pedagogia storyboard + a `img/` condivisa). Un workshop spedito standalone **non può** referenziare `img/` del monorepo → le sue figure sono locali e self-contained (generate da chunk R o asset locali, + `concept-graph.mmd`). Si condivide *igiene di naming* + *styling* (via SCSS), **non** una cartella immagini.
+**Immagini.** La convenzione ancora-storyboard `img/storyboard/sb-NN_FF.png` resta **overview-specific** (legata alla pedagogia storyboard + a `img/` condivisa). Le figure del workshop vivono col sorgente slide in `slides/workshops/<slug>/` (es. `concept-graph.mmd`) e finiscono **baked** nel deck `embed-resources`: il deck spedito è autosufficiente, non referenzia `img/` del monorepo. Si condivide *igiene di naming* + *styling* (via SCSS), **non** una cartella immagini.
 
-**Autorità di build.** `/mlt` + `mlt-quarto-build` restano overview-scoped (storyboard-driven, che i workshop non hanno). I deck workshop si autorano a mano per T3 + `quarto render`; lo ZIP/publish lo fa `/mlt-dist`. Tutti passano il **gate di verifica visiva universale** (root `CLAUDE.md`, via `chrome-devtools` a 1080p + viewport stretto).
+**Autorità di build.** `/mlt` + `mlt-quarto-build` restano overview-scoped (storyboard-driven, che i workshop non hanno). I deck workshop si autorano a mano per T3 in `slides/workshops/<slug>/` + `quarto render`; lo ZIP/publish lo fa `/mlt-dist`. Tutti passano il **gate di verifica visiva universale** (root `CLAUDE.md`, via `chrome-devtools` a 1080p + viewport stretto).
 
 ## 8. Strategia renv (Q6)
 
@@ -148,13 +154,13 @@ Tre ambienti indipendenti.
 
 ## 9. Conseguenze trasversali (emergono combinando le risposte)
 
-### 9.1 Il comando di dist assorbe il contratto SCSS
+### 9.1 ~~Il comando di dist assorbe il contratto SCSS~~ — RITIRATA (rev. r2)
 
-Poiché il brand partial è inlineato in fase di ZIP (Q5) e il workshop dev'essere self-contained (Q3), `build_workshop_zip.py` fa **tre** lavori: (1) pota a source-only, (2) **inlinea `styles/_brand.scss` nel `theme.scss` del workshop**, (3) embed-resources sull'HTML spedito.
+Originariamente il brand partial doveva essere inlineato/vendorizzato nello ZIP così che lo studente potesse ricompilare il deck. Con la rev. r2 i **sorgenti slide non viaggiano nello ZIP** (stanno in `slides/workshops/<slug>/`); nello ZIP entra solo il deck **renderizzato** `embed-resources`, che ha il CSS già compilato dentro. Quindi **nessun vendoring**: `build_workshop_zip.py` fa due lavori — (1) raccoglie il sorgente R tracciato (`git ls-files`, meno `CLAUDE.md`), (2) **inietta** il deck renderizzato in `<slug>/slides/`. Il render del deck avviene prima, in `/mlt-dist` (`quarto render slides/workshops/<slug>/`).
 
-### 9.2 Il reminder hook deve sorvegliare anche `styles/_brand.scss`
+### 9.2 Il reminder hook sorveglia sorgente R, sorgente slide e brand
 
-Un cambio di token brand invalida la copia inlineata dentro **ogni** ZIP workshop → il reminder "rigenera dist" scatta su `workshops/**` **oppure** `styles/_brand.scss`, non solo su `workshops/`.
+Il reminder "rigenera dist" scatta su scritture in `workshops/**` (progetto R) **o** `slides/workshops/**` (sorgente slide) **o** `styles/_brand.scss` (un cambio di token brand cambia il deck renderizzato di **ogni** workshop). Ignora cache `.quarto/`, lo zip e i rendered.
 
 ### 9.3 Meta-index in prosa (YAGNI)
 
@@ -166,7 +172,7 @@ La mappa dei 3 moduli sta nel `README.md` root come sezione percorso, **non** in
 2. **Brand.** Crea `styles/_brand.scss` dai token dell'attuale `slides/theme.scss`; rifattorizza `slides/theme.scss` per importarlo + tenere le regole overview.
 3. **renv overview.** Ri-snapshot del renv root al footprint post-Quarto (tolte le deps xaringan, già congelate nell'archivio al passo 1 — §6); decidi ritiro vs lean in base all'esecuzione R dell'overview.
 4. **Docs.** Scrivi il `README.md` hub (percorso, mappa 3 moduli, prerequisiti); assorbi la regola lingua nel root `CLAUDE.md`; taglia il `CLAUDE.md` workshop a delta-R + pointer; aggiungi il pointer "part of the MLT course" nel README workshop.
-5. **Distribuzione.** Rimuovi `chalkboard` dal `_quarto.yml` del workshop (edit di sorgente permanente, una tantum — non un trasform a ogni build); poi `scripts/build_workshop_zip.py` (pota + inlinea SCSS + embed-resources); slash-command `/mlt-dist`; reminder hook (`workshops/**` ∨ `styles/_brand.scss`); gitignora `dist/`; cabla `use_course()` + short link nei README.
+5. **Distribuzione.** Sposta i sorgenti slide in `slides/workshops/<slug>/` (rimuovendo `chalkboard`, tenendo `embed-resources`, adottando il brand partial); `scripts/build_workshop_zip.py` (`git ls-files` − `CLAUDE.md` + deck renderizzato iniettato, **senza** vendoring); slash-command `/mlt-dist` (render del deck + zip); reminder hook (`workshops/**` ∨ `slides/workshops/**` ∨ `styles/_brand.scss`); gitignora `dist/`; cabla `use_course()` + short link nei README.
 6. **Narrativa.** Formalizza i pre-hook inter-modulo (Overview cap.10 → Basic; Basic → Advanced) in narrative + prerequisiti.
 7. **Futuro.** Scaffolda `workshops/mlt-r-advanced/` quando i contenuti esistono; recidi la dipendenza da `index.Rmd` a Fase A completa.
 
