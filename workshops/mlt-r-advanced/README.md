@@ -1,4 +1,4 @@
-# Practical AI for Medical Data Analyses with R — Advanced
+# Practical Artificial Intelligence for Medical Data Analyses with R — Advanced
 
 > Part of the **MLT course** (one repo, three modules) → see the repo-root README.
 
@@ -28,14 +28,15 @@ in this project), we:
 
 You must have completed the **Basic workshop** (Module 2). You should understand the validated
 heart-failure model this workshop reopens: a tuned random forest, outcome `died` / `survived`,
-validated with `last_fit` on held-out data, scored on ROC-AUC and PR-AUC. You do **not** need
+validated with `last_fit` on held-out data, scored on AUC-ROC and AUC-PR. You do **not** need
 to have it on disk: this project **bundles** it (`model/final_fit.rds`).
 
 From the **Theory Overview** (Module 1), the relevant background is:
 
-- what **model interpretability** is and why black-box predictions are not enough (ch. 7);
-- the basic idea of a **neural network** and how it differs from a linear model (ch. 8);
-- what an **LLM** is and why it can serve as a structured-extraction tool (ch. 9).
+- what **model interpretability** is and why black-box predictions are not enough (ch. 4, revisited ch. 10);
+- the basic idea of a **neural network** and how it differs from a linear model (ch. 5);
+- the architectures for **unstructured data** — CNNs and RNNs (ch. 6);
+- what an **LLM** is and why it can serve as a structured-extraction tool (ch. 7).
 
 ## How to start
 

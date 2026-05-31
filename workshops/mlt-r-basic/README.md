@@ -1,4 +1,4 @@
-# Practical AI for Medical Data Analyses with R — Basic
+# Practical Artificial Intelligence for Medical Data Analyses with R — Basic
 
 > Part of the **MLT course** (one repo, three modules) → see the repo-root README.
 
@@ -10,7 +10,7 @@ type every line together, and end with a model we can trust and a report we can 
 
 Starting from a real heart-failure clinical-records dataset, we import and wrangle the data
 (dropping a leaky column along the way), explore it with clinically meaningful summaries, fit
-a logistic-regression spine scored on **two** metrics (ROC-AUC and PR-AUC), then tune and
+a logistic-regression spine scored on **two** metrics (AUC-ROC and AUC-PR), then tune and
 compare a small "zoo" of models with a `workflow_set`, validate the winner on held-out data
 with `last_fit`, and wrap everything in a reproducible Quarto report.
 
