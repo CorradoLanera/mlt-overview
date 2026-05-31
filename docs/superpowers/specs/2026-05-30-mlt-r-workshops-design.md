@@ -82,7 +82,7 @@ altri curricula (in aula c'erano cardiologi). Quattro personas guidano ogni deci
 4. **Tuning (Basic):** **tutte e quattro le tecniche tunate e spiegate, con slide**, ma via **un solo
    `workflow_set` + `workflow_map('tune_grid')`** su `vfold_cv` condivisa (idiomatico *e* più rapido del tuning
    uno-a-uno → elimina la deviazione "fit-ai-default poi tuning"). Solo `tune_grid` (no Bayes).
-5. **Interpretability (Advanced):** VIMP (permutation, `{vip}`) + SHAP agnostico (`{fastshap}`+`{shapviz}`),
+5. **Interpretability (Advanced):** VIMP (permutation, `{vip}`) + SHAP agnostico (`{kernelshap}`+`{shapviz}`; override §11),
    **live su ~2 dei 4** (logistic *anchor* + 1 riga RF, background minuscolo), gli altri 2 **descritti**; logistic
    come *sanity anchor* (SHAP deve recuperarne i coefficienti).
 6. **DL spectrum (Advanced) — opzione B:** MLP **addestrato live** + SHAP-callback live; CNN/RNN/**rete fusa**
@@ -284,6 +284,18 @@ overload.*
 *Interpretare il modello e andare oltre.* Apre **ricaricando il modello validato in Basic**. `torch`/`luz`/`brulee`
 senza Python; doctrine di delivery §8 (unica eccezione = loss-curve opzione B).
 
+> **SHAP BACKEND — OVERRIDE (deciso 2026-05-31, supera `{fastshap}` indicato in §5.5/§11.2/§13).**
+> Il backend SHAP agnostico passa da **`{fastshap}` a `{kernelshap}`** (CRAN, v0.9.1, *pure R*, integrazione nativa
+> con `{shapviz}`, stesso autore). **Perché:** `fastshap` è stato **archiviato da CRAN il 2026-05-27**, installabile
+> solo da GitHub → richiede compilazione C++ (Rtools su Windows) a ogni `renv::restore()`, barriera reale per le
+> persona Lucia/Marco. `kernelshap` è `NeedsCompilation: no` → il `renv.lock` resta **100% CRAN** (ripristina la
+> promessa "tutti CRAN" di §13). **Cosa cambia, cosa no:** l'agnosticismo (stessa riga su logistic/RF/MLP, formativa
+> min-66) è invariato — si passa da `pred_wrapper` a `pred_fun(object, X, ...)` + `bg_X`; il sanity-check (SHAP
+> recupera i coefficienti del glm) diventa **esatto** via `permshap()`/`additive_shap()`; il knob "nsim" della
+> param-slide/formativa min-46 diventa **dimensione di `bg_X` + esatto-vs-campionamento** (stessa lezione
+> varianza-vs-costo, distrattori adattati in Task 2.2). API: `kernelshap(model, X = righe, bg_X = background,
+> pred_fun = f)` → `shapviz(ks) |> sv_waterfall()` (verificato live nell'env Advanced 2026-05-31).
+
 ### 11.1 Summative assessment (scritto per primo)
 
 **Capstone** (ultimi ~20 min, assemblato da artefatti già prodotti/letti): *"rendi riproducibile la pipeline
@@ -316,10 +328,10 @@ flowchart TD
 
   INTERP[Interpretability: open the black box]
   VIMP[Permutation VIMP via vip]
-  SHAP[Agnostic SHAP via fastshap + shapviz]
+  SHAP[Agnostic SHAP via kernelshap + shapviz]
   ANCHOR[Logistic regression ANCHOR]
   COEF[Logistic coefficients = sanity check]
-  PARAMS_I[SHAP params: nsim / background size / which rows]
+  PARAMS_I[SHAP params: background size / which rows / exact-vs-sampling]
 
   DL[Deep Learning: differentiable composable modules]
   MLP[Tiny MLP via brulee/luz]
@@ -454,7 +466,7 @@ min 66), non nuovo carico. Sotto-carico di Davide (noia) mitigato dai 4 stretch 
 ## 13. Ambiente e riproducibilità
 
 `renv` pinnato (R 4.5.x), `pak`, `{here}`, **un lockfile per repo**. Pacchetti (tutti CRAN, **niente Python**):
-`{tidymodels}` (`tune`/`dials`/`workflowsets`), `{ranger}`, `{kknn}`, `{kernlab}`, `{vip}`, `{fastshap}`,
+`{tidymodels}` (`tune`/`dials`/`workflowsets`), `{ranger}`, `{kknn}`, `{kernlab}`, `{vip}`, `{kernelshap}`,
 `{shapviz}`, `{torch}`, `{luz}`, `{brulee}`, `{targets}`, `{ellmer}`, `{medicaldata}`, `{gtsummary}`, `{rio}`,
 `{janitor}`. **Esclusi:** `xgboost`, `tune_bayes`, `skimr`, `keras3`/Python.
 
