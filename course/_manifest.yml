@@ -6,7 +6,7 @@ course:
   language: en
   total_minutes_gross: 240
   audience: "biomedical/clinical graduate students (UBEP, University of Padova)"
-  base_source: index.Rmd        # index-full.Rmd mined for optional modules
+  base_source: _archive/legacy-xaringan/index.Rmd        # index-full.Rmd (in _archive/legacy-xaringan) mined for optional modules
   global:
     six_words: null
     hundred_words: null

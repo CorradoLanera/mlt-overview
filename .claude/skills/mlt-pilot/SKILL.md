@@ -50,7 +50,7 @@ assume. If the teacher gave an explicit phase/chapter (e.g. via /mlt arguments),
   consolidate `items_valutativi.md`; run `assessment-reviewer`.
 - **slides** → invoke the `mlt-quarto-build` skill for the chapter: storyboard-driven beat expansion (each of
   the 6 beats becomes 1-N slides), anchor image per beat from `img/storyboard/sb-<NN>_<FF>.png`, supporting
-  figures pulled from `img/`, formulas/text reused from `index.Rmd`/`index-full.Rmd`; refreshes
+  figures pulled from `img/`, formulas/text reused from `_archive/legacy-xaringan/index.Rmd`/`_archive/legacy-xaringan/index-full.Rmd`; refreshes
   `slides/slides.qmd` (manifest-driven master) and renders revealjs. Mandatory visual QA (chrome-devtools).
 - **syllabus** → invoke `syllabus-2p` (writes `course/_global/syllabus.md`), then the `studente-confuso`
   sub-agent for the POV review (`course/_global/syllabus-revisione-studenti.md`).

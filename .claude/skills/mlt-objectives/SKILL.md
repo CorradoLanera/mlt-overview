@@ -12,7 +12,7 @@ notes in **Italian**.
 ## Collect
 
 - Chapter slug + title + minutes from `course/_manifest.yml` (via `.claude/skills/lib/manifest.py`).
-- Chapter content cues from `index.Rmd` (the matching section) — read, don't invent.
+- Chapter content cues from `_archive/legacy-xaringan/index.Rmd` (the matching section) — read, don't invent.
 
 ## Produce (write `course/<slug>/objectives.md`)
 

@@ -1,6 +1,6 @@
 ---
 name: mlt-quarto-build
-description: Assemble a chapter's Quarto revealjs slides FROM its storyboard. Each of the 6 storyboard beats expands into 1-N slides — the anchor slide carries img/storyboard/sb-NN_FF.png (the canonical beat image), expansion slides reuse supporting figures from img/ and formulas/explanations from index.Rmd. Then (re)generate the modular master from the manifest. Use for "build slides for chapter X", "genera le slide Quarto", "render the deck", or /mlt --phase slides.
+description: Assemble a chapter's Quarto revealjs slides FROM its storyboard. Each of the 6 storyboard beats expands into 1-N slides — the anchor slide carries img/storyboard/sb-NN_FF.png (the canonical beat image), expansion slides reuse supporting figures from img/ and formulas/explanations from _archive/legacy-xaringan/index.Rmd. Then (re)generate the modular master from the manifest. Use for "build slides for chapter X", "genera le slide Quarto", "render the deck", or /mlt --phase slides.
 ---
 
 # mlt-quarto-build
@@ -20,7 +20,7 @@ Student-facing text in **English**; speaker notes (Voce docente) in **Italian**.
   2. **`img/<...>`** — the historical supporting library (~139 figures from the original deck): algorithm
      diagrams, plots, attention animations, clinical examples, GIFs. Reused FREELY across the expansion slides
      of each beat by topical match.
-  3. **`index.Rmd` / `index-full.Rmd`** — content source for reusable formulas (already in `$...$`), historical
+  3. **`_archive/legacy-xaringan/index.Rmd` / `_archive/legacy-xaringan/index-full.Rmd`** — content source for reusable formulas (already in `$...$`), historical
      wording, and the teacher's previous figure↔concept pairings (helps choose from (2)).
 
 ## Produce `slides/chapters/<slug>.qmd`
@@ -39,7 +39,7 @@ For each beat:
   comment with the storyboard's *Visual* prompt (English) for later image generation.
 - **Expansion slides (0+)** — unfold the beat for didactic delivery: concept → example → formalisation → plot
   → clinical instance → take-away, as needed for the beat's role. Pull supporting figures from `img/` via
-  topical match; consult `index.Rmd`/`index-full.Rmd` for which figure the teacher used historically for that
+  topical match; consult `_archive/legacy-xaringan/index.Rmd`/`_archive/legacy-xaringan/index-full.Rmd` for which figure the teacher used historically for that
   concept. Keep visible text concise; details and narrative go into speaker notes.
 - **Speaker notes (Italian)** on every slide as `::: {.notes}` … `:::` — these are the *Voce docente* from the
   storyboard plus any expansion the slide needs.
