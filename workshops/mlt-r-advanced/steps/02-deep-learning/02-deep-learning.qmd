@@ -226,7 +226,7 @@ A Parsons exercise: the fused `forward()` is the same logic you just shape-check
 the scrambled lines so the three branches run, their outputs concatenate along `dim = 2`,
 and the head maps the `16 + sig_ch + hidden` concatenation to two logits.
 
-```{r yourturn-02-solved, eval=params$solved}
+```{r yourturn-02-solved, eval=params$solved, echo=params$solved}
 #| code-fold: false
 # Your turn (solved): the fused forward() in correct order — 3 branches -> concat(dim=2) -> head.
 fused_forward <- function(self, x_tab, x_sig, x_seq) {

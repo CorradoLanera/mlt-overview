@@ -161,7 +161,7 @@ it at the random forest — **only the model object changes**. (We use `kernelsh
 forest: at 11 features its hybrid strategy is the practical choice; `permshap()`'s exact
 enumeration is what we reserved for the linear anchor.)
 
-```{r yourturn-01-solved, eval=params$solved}
+```{r yourturn-01-solved, eval=params$solved, echo=params$solved}
 #| code-fold: false
 # Your turn (solved): point the SAME explainer at the RANDOM FOREST. Only the model changed.
 set.seed(3)
