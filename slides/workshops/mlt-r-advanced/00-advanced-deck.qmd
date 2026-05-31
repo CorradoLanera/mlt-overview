@@ -49,10 +49,10 @@ NVIDIA, è TRUE. Il punto: una probabilità non è una spiegazione → apre lo s
 
 **Objectives.** Open the black box with two model-agnostic tools.
 
-- **Permutation VIMP** (`{vip}`): shuffle a predictor → how far ROC-AUC drops = how much
+- **Permutation VIMP** (`{vip}`): shuffle a predictor $\to$ how far ROC-AUC drops = how much
   the model **relies** on it. Reliance, **not** causation.
 - **Agnostic SHAP** via **`kernelshap` + `shapviz`**: attribute one prediction across features.
-- The **same explainer line** runs on logistic → RF → MLP — only the model object changes.
+- The **same explainer line** runs on logistic $\to$ RF $\to$ MLP — only the model object changes.
 
 ::: {.notes}
 Voce docente (IT): hands-on (~48 min), zona di rischio per profondità. Min-24 (MCQ):
@@ -92,12 +92,12 @@ Three knobs govern an agnostic SHAP run. None of them is a quality dial.
 
 | knob | what it is | the tradeoff |
 |---|---|---|
-| **background** (`bg_X`) | reference rows SHAP integrates over | larger → lower-variance attributions, **higher cost**; tiny → cheap but noisier |
+| **background** (`bg_X`) | reference rows SHAP integrates over | larger $\to$ lower-variance attributions, **higher cost**; tiny $\to$ cheap but noisier |
 | **which rows** (`X`) | the patients you explain | a waterfall explains **one** row; pick the case(s) you actually care about |
 | **exact vs. sampling** | how Shapley values are computed | `permshap()` **exact** for small $p$ / the linear anchor; `kernelshap()` hybrid/sampling as $p$ (the number of features) grows |
 
 - Smaller background is **not** "more accurate" — it is **cheaper and noisier**.
-- With 11 features the exact enumeration gets expensive → the forest uses the hybrid `kernelshap()`.
+- With 11 features the exact enumeration gets expensive $\to$ the forest uses the hybrid `kernelshap()`.
 
 ::: {.notes}
 Voce docente (IT): min-46 (MCQ). Sostituisce il vecchio framing "nsim" — ora si usa
@@ -135,10 +135,10 @@ net **overfits** this 299-patient cohort — and the cure is always the same.
 
 | knob | what it controls | bias / variance |
 |---|---|---|
-| `epochs` | how long it trains | too many → fits noise (**overfit**) |
-| `learn_rate` | step size of each update | too high → diverges; too low → underfits in budget |
-| `hidden_units` | capacity (width) | more → lower bias, **higher variance** |
-| `penalty` | weight decay (regularization) | $\uparrow$ penalty → more bias, **less variance** |
+| `epochs` | how long it trains | too many $\to$ fits noise (**overfit**) |
+| `learn_rate` | step size of each update | too high $\to$ diverges; too low $\to$ underfits in budget |
+| `hidden_units` | capacity (width) | more $\to$ lower bias, **higher variance** |
+| `penalty` | weight decay (regularization) | $\uparrow$ penalty $\to$ more bias, **less variance** |
 
 - Minor knobs: `batch` (gradient noise) and `activation` (nonlinearity) — **not** regularizers.
 - **Overfit cure:** turn `penalty` **up** and `hidden_units` **down** (or cut `epochs`).
@@ -160,7 +160,7 @@ Three richer `nn_module`s, **written not trained** — validated only by a `forw
 |---|---|---|
 | **1D-CNN** | `kernel` / `stride` / `channels` | slides a filter over a signal |
 | **RNN** | `hidden` / `sequence` / LSTM-GRU | reads a vitals sequence over time |
-| **fused** | 3 branches → `torch_cat(dim = 2)` → head | branch widths must **sum** to the head input |
+| **fused** | 3 branches $\to$ `torch_cat(dim = 2)` $\to$ head | branch widths must **sum** to the head input |
 
 - The fused net runs all three branches and concatenates them along `dim = 2` into a two-logit head.
 - A correct **`[5, 2]`** out (five patients, two logits) proves the wiring — it claims **nothing** about accuracy.
@@ -207,7 +207,7 @@ The accelerator is **not** a magic speed button. Match it to the workload.
 
 - The tiny tabular **MLP does not need a GPU** — it trains in seconds on a CPU (overhead would lose).
 - The payoff is on the **CNN / fused** workload, where the per-epoch cost actually bites.
-- The live classroom move: **start on CPU → watch one epoch crawl → kill it → rerun on GPU.**
+- The live classroom move: **start on CPU $\to$ watch one epoch crawl $\to$ kill it $\to$ rerun on GPU.**
 - Authored **write-only** (`#| eval: false`): it runs on the classroom NVIDIA/CUDA machine,
   where `cuda_is_available()` is `TRUE` — not on this CPU build box (`FALSE`).
 
@@ -224,10 +224,10 @@ l'acceleratore. Su questa macchina di build gira solo in lettura (eval false).
 
 **Objectives.** Turn an LLM into a reproducible ETL, not a chat.
 
-- A **typed schema** (`type_object()`) is the **contract**: declare fields + R types →
+- A **typed schema** (`type_object()`) is the **contract**: declare fields + R types $\to$
   every note comes back as the same validated record.
 - **One** live structured extraction (first note); the batch `purrr::map` is **written, not run**.
-- `temperature = 0` = **deterministic** ETL (same input → same record).
+- `temperature = 0` = **deterministic** ETL (same input $\to$ same record).
 
 ::: {.notes}
 Voce docente (IT): hands-on (~36 min). L'LLM NON è una chat: è un ETL tipizzato e
@@ -264,8 +264,8 @@ dottrina dell'opzione-B: un vero record salvato prima, mostrato con etichetta, m
 
 **Objectives.** Make the whole story reproducible by construction.
 
-- Read the `targets` **DAG** (`tar_visnetwork()`): `cohort_file → cohort`, `model_file → model`,
-  and `model + cohort → explanation`.
+- Read the `targets` **DAG** (`tar_visnetwork()`): `cohort_file` $\to$ `cohort`, `model_file` $\to$ `model`,
+  and `model + cohort` $\to$ `explanation`.
 - The `explanation` target is the **bridge**: it reloads the Basic RF and re-derives its VIMP.
 - A **second** `tar_make()` is **all-skip** — input hashes unchanged ⇒ reproducibility, not fakery.
 
@@ -308,7 +308,7 @@ all'inizio come programma. È anche il rilevatore di sovraccarico.
 
 ## You can hand this pipeline to a peer {.center}
 
-The capstone payoff: this **reproducible explain → deep → LLM** pipeline is sealed.
+The capstone payoff: this **reproducible explain $\to$ deep $\to$ LLM** pipeline is sealed.
 
 - A peer can clone the folder, run `tar_make()`, and re-derive the **same** explanation of
   the Basic model — deterministically, hash-checked.

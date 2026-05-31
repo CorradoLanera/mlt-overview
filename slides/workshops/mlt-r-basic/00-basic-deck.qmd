@@ -20,7 +20,7 @@ We will spend the afternoon doing one thing well: take a real clinical cohort
 a model that predicts in-hospital death — ending with a **reproducible report** a
 colleague can re-run.
 
-- The spine is **tidymodels**: `rsample → recipes → parsnip → workflows → yardstick`.
+- The spine is **tidymodels**: `rsample` $\to$ `recipes` $\to$ `parsnip` $\to$ `workflows` $\to$ `yardstick`.
 - One outcome, four algorithms, **one** honest test-set evaluation.
 - Everything live-coded, everything reproducible (`renv` + `here` + `set.seed`).
 
@@ -67,7 +67,7 @@ dei flag → glimpse` (12 colonne). Il drop di `time` è la mini-lezione di LEAK
 
 - `gtsummary::tbl_summary(by = outcome)` — a table Marco already recognises.
 - One `ggplot` to see a predictor against the outcome.
-- **Read the class imbalance** (~32% events) → it drives the **dual-metric** choice
+- **Read the class imbalance** (~32% events) $\to$ it drives the **dual-metric** choice
   (ROC-AUC **and** PR-AUC) later.
 
 ::: {.notes}
@@ -102,7 +102,7 @@ incontrato nell'overview ch01. Non apriamo cluster/PCA qui.
 **Objectives.** Lay the tidymodels spine with a `glm` baseline.
 
 - Frame the task as **supervised** (one sentence on unsupervised, out of scope).
-- Walk the **object-map** `rsample → recipes → parsnip → workflows → yardstick`.
+- Walk the **object-map** `rsample` $\to$ `recipes` $\to$ `parsnip` $\to$ `workflows` $\to$ `yardstick`.
 - Fit a plain `glm` baseline and score it with `yardstick` — **ROC-AUC and PR-AUC**.
 
 ::: {.notes}
@@ -139,8 +139,8 @@ il resto resta identico → "1 cosa, 4 manopole", non 4 pipeline.
 
 # Hyperparameters, one algorithm at a time {.center}
 
-Same map, **one knob at a time.** For each algorithm: *what the knob is* → *what it
-controls* → *its effect on bias / variance / overfitting.*
+Same map, **one knob at a time.** For each algorithm: *what the knob is* $\to$ *what it
+controls* $\to$ *its effect on bias / variance / overfitting.*
 
 ::: {.notes}
 Voce docente (IT): le 4 slide-parametro precedono il tuning. Introducono `PARAM/BV`
@@ -155,8 +155,8 @@ much less variance.
 
 | knob | what it means | effect |
 |---|---|---|
-| `penalty` ($\lambda$) | strength of shrinkage toward 0 | $\uparrow$ penalty → more bias, less variance (guards overfit); too high → underfit |
-| `mixture` ($\alpha$) | ridge ↔ lasso dial | `0` = **ridge** (shrink all); `1` = **lasso** (some coefs → exactly 0, selects); in between = **elastic-net** |
+| `penalty` ($\lambda$) | strength of shrinkage toward 0 | $\uparrow$ penalty $\to$ more bias, less variance (guards overfit); too high $\to$ underfit |
+| `mixture` ($\alpha$) | ridge ↔ lasso dial | `0` = **ridge** (shrink all); `1` = **lasso** (some coefs $\to$ exactly 0, selects); in between = **elastic-net** |
 
 - Regularization is the **bias–variance knob** made explicit: more penalty = simpler model.
 - Engine `glmnet`; both left as `tune()` in the `workflow_set`.
@@ -192,8 +192,8 @@ Separate the classes with a **margin**; the RBF kernel lets the boundary curve.
 
 | knob | what it means | effect |
 |---|---|---|
-| `cost` (C) | penalty for margin violations | $\uparrow$ cost → harder margin, fits training tighter → **lower bias, higher variance** (overfit risk) |
-| `rbf_sigma` ($\sigma$) | kernel **reach** (how far one point's influence extends) | large $\sigma$ → wider reach, smoother boundary (more bias); small $\sigma$ → local, wiggly (more variance) |
+| `cost` (C) | penalty for margin violations | $\uparrow$ cost $\to$ harder margin, fits training tighter $\to$ **lower bias, higher variance** (overfit risk) |
+| `rbf_sigma` ($\sigma$) | kernel **reach** (how far one point's influence extends) | large $\sigma$ $\to$ wider reach, smoother boundary (more bias); small $\sigma$ $\to$ local, wiggly (more variance) |
 
 - The two knobs interact: a soft margin (`cost`↓) with a local kernel (`rbf_sigma`↑) are both regularizers.
 - Engine `kernlab`; both `tune()`d together.
@@ -210,8 +210,8 @@ deep* — and one knob is **not** an overfit dial.
 
 | knob | what it means | effect |
 |---|---|---|
-| `mtry` | predictors offered at each split | small `mtry` → trees more **decorrelated** → lower variance; large → trees agree more |
-| `min_n` | minimum samples in a leaf | large `min_n` → shallower leaves, simpler trees (more bias, less variance) |
+| `mtry` | predictors offered at each split | small `mtry` $\to$ trees more **decorrelated** $\to$ lower variance; large $\to$ trees agree more |
+| `min_n` | minimum samples in a leaf | large `min_n` $\to$ shallower leaves, simpler trees (more bias, less variance) |
 | `trees` | number of trees | **stability** knob: more trees = less Monte-Carlo noise — **not** an overfitting knob (more trees won't overfit) |
 
 - Engine `ranger`; `mtry` and `min_n` are `tune()`d, `trees` is just set large enough.
