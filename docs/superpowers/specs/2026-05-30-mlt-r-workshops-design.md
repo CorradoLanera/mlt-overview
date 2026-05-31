@@ -305,7 +305,7 @@ apre rispetto al numero di accuracy; (2) `tar_visnetwork()` + **leggere il DAG**
 consumatore downstream); (3) `tar_make()` di un leaf cheap, poi **predire** che il secondo `tar_make()` riporti
 "skip" ovunque + la ragione (hash degli input); (4) scrivere **una** riga valida di campo `type_object()` (es.
 `age = type_integer("patient age in years")`) e dire perché lo schema tipizzato rende l'LLM un ETL e non una chat.
-**Stretch Davide:** cambiare `nsim`/background del target SHAP e predire quali downstream diventano *stale*; e
+**Stretch Davide:** cambiare `bg_X`/campionamento del target SHAP e predire quali downstream diventano *stale*; e
 perché il device GPU è un input *cieco* al DAG se non promosso a target.
 
 **Success criteria:** nomina il target ponte e una cosa che l'interpretability aggiunge · legge il DAG (1 upstream +
@@ -414,14 +414,14 @@ flowchart TD
 | 00 | 10 | live-check | reload + `predict` (no retrain) + `torch_tensor(1)` senza download (torch caldo). GREEN/RED |
 | 01 | 24 | **mcq** | VIMP: ✓ permutare → calo performance = *reliance* · distrattori → *importance=causazione*; *=coefficiente con segno*; *=p-value* |
 | 01 | 38 | predict-output | SHAP vs coefficienti logistici: che forma? perché rassicura prima di puntare l'RF (l'agnostico deve *recuperare* il noto) |
-| 01 | 46 | **mcq** | knob SHAP: ✓ background/`nsim` = varianza-vs-costo · distrattori → *meno background=più accurato*; *nsim=n. feature*; *background conta solo per alberi* |
+| 01 | 46 | **mcq** | knob SHAP (kernelshap): ✓ background `bg_X`/campionamento = varianza-vs-costo · distrattori → *meno background=più accurato*; *iterazioni di campionamento=n. feature*; *background conta solo per alberi* |
 | 02 | 60 | **mcq** | MLP overfit → quale knob: ✓ penalty↑/hidden↓ · distrattori → *più epoche*; *learning-rate↑*; *cambia activation come regolarizzatore* |
 | 02 | 66 | your-turn | SHAP-callback sull'MLP, **stessa riga** del blocco 01 (agnosticismo); stretch Davide: perché lo stesso explainer vale su logistic/RF/NN |
 | 02 | 80 | **parsons** | riordina il `forward()` della rete fusa (3 branch → `torch_cat(dim=2)` → head); quali larghezze devono combaciare, qual è l'output dim |
 | 02 | 92 | **mcq** | honesty rule sull'opzione B: ✓ unica eccezione *etichettata*, la CPU killata ERA live · distrattori → *nessuna cache mai*; *tutto DL pre-trainabile senza label*; *identico al cache di targets* |
 | 03 | 112 | predict-output | struttura del record `type_object()` (n. campi, tipi R) + cosa fa l'enum se il campo manca |
 | 03 | 124 | **mcq** | temperature bassa + `map`: ✓ determinismo (ETL) + iterazione elemento-per-elemento · distrattori → *temp=qualità*; *temp alta + map su GPU*; *temp irrilevante per extraction* |
-| 04 | 138 | predict-output | **capstone check:** 2° `tar_make` = "skip" + ragione; stretch: cambiare `nsim` → quali stale, perché il device GPU non vi compare |
+| 04 | 138 | predict-output | **capstone check:** 2° `tar_make` = "skip" + ragione; stretch: cambiare `bg_X`/campionamento del target SHAP → quali stale, perché il device GPU non vi compare |
 
 ### 11.4 Load check (28 nodi → 5 blocchi)
 
