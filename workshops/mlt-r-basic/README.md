@@ -1,5 +1,7 @@
 # Practical AI for Medical Data Analyses with R — Basic
 
+> Part of the **MLT course** (one repo, three modules) → see the repo-root README.
+
 A ~4-hour, live-coded workshop in which we build and validate a clinical machine-learning
 model in R, reproducibly, from raw data to a rendered report. We work hands-on in RStudio,
 type every line together, and end with a model we can trust and a report we can re-run.
@@ -19,7 +21,9 @@ You need R (>= 4.5) and RStudio.
 1. In R, fetch the workshop materials:
 
    ```r
-   usethis::use_course("CorradoLanera/mlt-r-basic")
+   usethis::use_course(
+     "https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic.zip"
+   )
    ```
 
 2. Open the project (`mlt-r-basic.Rproj`) so its own `renv` activates, then restore the
