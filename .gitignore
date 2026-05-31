@@ -29,3 +29,5 @@ __pycache__/
 .pytest_cache/
 # Transient QA screenshots — not a deliverable
 dev/
+# Built workshop ZIPs — published as GitHub Release assets, not committed
+dist/
