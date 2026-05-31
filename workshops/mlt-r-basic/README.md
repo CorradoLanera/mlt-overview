@@ -14,6 +14,17 @@ a logistic-regression spine scored on **two** metrics (ROC-AUC and PR-AUC), then
 compare a small "zoo" of models with a `workflow_set`, validate the winner on held-out data
 with `last_fit`, and wrap everything in a reproducible Quarto report.
 
+## Prerequisites
+
+From the **Theory Overview** (Module 1), you should arrive with:
+
+- what supervised **classification** is, and how it differs from regression (ch. 2);
+- the **train / validation / test** split and why holding out data prevents overfitting (ch. 4);
+- why **accuracy misleads on imbalanced outcomes** and why the test set stays sealed until the
+  end (ch. 10) — this workshop puts exactly those disciplines into code.
+
+No prior experience with R modelling is needed: we type every line together, live.
+
 ## How to start
 
 You need R (>= 4.5) and RStudio.
