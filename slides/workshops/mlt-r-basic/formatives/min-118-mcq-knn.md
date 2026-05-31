@@ -1,7 +1,7 @@
 # Formative · min 118 · MCQ (after Step 04, parameter slides)
 
 - **Type:** MCQ (diagnostic distractors)
-- **Concept-graph node checked:** `PARAM` → `BV` — Hyperparameters control bias–variance (k-NN `neighbors`)
+- **Concept-graph node checked:** `PARAM` $\to$ `BV` — Hyperparameters control bias–variance (k-NN `neighbors`)
 
 ## Prompt
 

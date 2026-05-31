@@ -17,7 +17,7 @@ hf_metrics <- metric_set(roc_auc, pr_auc)
 
 (No `event_level` needed — `died` is the *first* factor level.)
 
-**Confirm:** do the two routes give the **same** ROC-AUC and PR-AUC? Say in one
+**Confirm:** do the two routes give the **same** AUC-ROC and AUC-PR? Say in one
 sentence why.
 
 ## Expected answer

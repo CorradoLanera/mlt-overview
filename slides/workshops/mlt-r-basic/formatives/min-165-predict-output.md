@@ -5,7 +5,7 @@
 
 ## Prompt
 
-Before we reveal the numbers, think about these three ROC-AUC values for the
+Before we reveal the numbers, think about these three AUC-ROC values for the
 **winning random forest**:
 
 - **A** = resubstitution AUC (model scored on the **training** data it was fit on)

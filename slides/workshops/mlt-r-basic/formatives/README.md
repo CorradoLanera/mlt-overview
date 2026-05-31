@@ -16,7 +16,7 @@ rimanda al concept graph dello spec (§10.2) — vedi `../concept-graph.mmd`.
 | `min-09-live-check.md` | 00 | 9 | live-check | `PROJ` | ambiente sano: `.Rproj` aperto, `renv::status()` in sync, `here::here()` = root (GREEN/RED) |
 | `min-30-yourturn-wrangle.md` | 01 | 30 | your-turn | `IMPORT` / `LEAK` | `clean_names → select(-time) → outcome event-first → factor dei flag → glimpse` (12 col); stretch: perché `time` è leakage |
 | `min-31-mcq-pipe.md` | 01 | 31 | MCQ | `IMPORT` | semantica pipe/verbi: il tibble passa come 1° arg, ritorna copia nuova |
-| `min-50-mcq-metric.md` | 02 | 50 | MCQ | `METRIC` (motivato da `OUT`) | perché DUE metriche (ROC-AUC + PR-AUC) a ~32% eventi: baseline PR = prevalenza, non 0.5 |
+| `min-50-mcq-metric.md` | 02 | 50 | MCQ | `METRIC` (motivato da `OUT`) | perché DUE metriche (AUC-ROC + AUC-PR) a ~32% eventi: baseline PR = prevalenza, non 0.5 |
 | `min-72-yourturn-glm.md` | 03 | 72 | your-turn | `WF` / `GLM` / `METRIC` | `glm` vs workflow danno la stessa AUC; stretch: cosa compra recipe+workflow |
 | `min-88-mcq-engine-swap.md` | 03 | 88 | MCQ | `ENGINE` / `MODEL` | engine-swap idiom (pre-break): cambia solo il model-spec |
 | `min-118-mcq-knn.md` | 04 | 118 | MCQ | `PARAM` → `BV` | parametri → bias/variance (kNN `k`): k piccolo low-bias/high-var |
