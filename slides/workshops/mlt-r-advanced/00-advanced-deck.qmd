@@ -83,7 +83,7 @@ Voce docente (IT): apertura. L'arco RIAPRE il modello validato in Basic — non 
 ricostruisce nulla. Quattro tappe: interpretare (VIMP/SHAP) → deep learning (torch/
 luz/brulee) → `ellmer` come ETL tipizzato → capstone `targets`. torch è pre-riscaldato
 nello step 00 (`torch_tensor(1)`), così il primo tensore non paga l'init. Numeri
-reali da ricordare: l'RF di Basic sta a CV ROC-AUC ~0.80; VIMP mette in cima
+reali da ricordare: l'RF di Basic sta a CV AUC-ROC ~0.79; VIMP mette in cima
 ejection_fraction / serum_creatinine. NON vendere l'MLP come vincitore della foresta.
 :::
 
@@ -120,7 +120,7 @@ NVIDIA, è TRUE. Il punto: una probabilità non è una spiegazione → apre lo s
 
 **Objectives.** Open the black box with two model-agnostic tools.
 
-- **Permutation VIMP** (`{vip}`): shuffle a predictor $\to$ how far ROC-AUC drops = how much
+- **Permutation VIMP** (`{vip}`): shuffle a predictor $\to$ how far AUC-ROC drops = how much
   the model **relies** on it. Reliance, **not** causation.
 - **Agnostic SHAP** via **`kernelshap` + `shapviz`**: attribute one prediction across features.
 - The **same explainer line** runs on logistic $\to$ RF $\to$ MLP — only the model object changes.
@@ -192,7 +192,7 @@ permshap esatto sull'ancora lineare, kernelshap ibrido come p cresce.
 ::: {.notes}
 Voce docente (IT): hands-on + demo (~67 min), l'hotspot (9 chunk). Le slide-parametro
 PRECEDONO il train. L'MLP è addestrato DAVVERO dal vivo: il suo `roc_auc` è single-split,
-NON confrontabile con la CV ~0.80 della foresta (apples-to-oranges — non dire che la rete
+NON confrontabile con la CV ~0.79 della foresta (apples-to-oranges — non dire che la rete
 batte la foresta). CNN/RNN/fused = SCRITTE non addestrate, validate solo dallo shape-check
 `[5,2]`. SHAP riusato al min-66 = riuso intenzionale, non nuovo carico.
 :::

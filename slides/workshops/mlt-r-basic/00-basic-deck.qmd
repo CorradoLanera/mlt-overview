@@ -142,13 +142,13 @@ dei flag → glimpse` (12 colonne). Il drop di `time` è la mini-lezione di LEAK
 - `gtsummary::tbl_summary(by = outcome)` — a table Marco already recognises.
 - One `ggplot` to see a predictor against the outcome.
 - **Read the class imbalance** (~32% events) $\to$ it drives the **dual-metric** choice
-  (ROC-AUC **and** PR-AUC) later.
+  (AUC-ROC **and** AUC-PR) later.
 
 ::: {.notes}
 Voce docente (IT): hands-on *elastico* (~22 min, comprimibile se siamo in ritardo).
 L'imbalance ~32% qui visto in tabella è il seme del ragionamento "accuracy inganna →
-guardiamo DUE metriche, ROC-AUC e PR-AUC" dello step 04. MCQ al min 50 proprio su
-questo (perché due metriche, e cosa è la baseline della PR-AUC). Boxplot di
+guardiamo DUE metriche, AUC-ROC e AUC-PR" dello step 04. MCQ al min 50 proprio su
+questo (perché due metriche, e cosa è la baseline della AUC-PR). Boxplot di
 `ejection_fraction`: chi sopravvive ha frazione d'eiezione più alta.
 :::
 
@@ -177,7 +177,7 @@ incontrato nell'overview ch01. Non apriamo cluster/PCA qui.
 
 - Frame the task as **supervised** (one sentence on unsupervised, out of scope).
 - Walk the **object-map** `rsample` $\to$ `recipes` $\to$ `parsnip` $\to$ `workflows` $\to$ `yardstick`.
-- Fit a plain `glm` baseline and score it with `yardstick` — **ROC-AUC and PR-AUC**.
+- Fit a plain `glm` baseline and score it with `yardstick` — **AUC-ROC and AUC-PR**.
 
 ::: {.notes}
 Voce docente (IT): hands-on (~38 min). È la zona di rischio per profondità: 7 oggetti
@@ -196,7 +196,7 @@ flowchart LR
   RS["rsample<br/>split train / test"] --> RC["recipes<br/>preprocess"]
   RC --> PS["parsnip<br/>model spec"]
   PS --> WF["workflows<br/>recipe + model"]
-  WF --> YS["yardstick<br/>score (ROC-AUC + PR-AUC)"]
+  WF --> YS["yardstick<br/>score (AUC-ROC + AUC-PR)"]
 ```
 
 - **`rsample`** — `initial_split()` / `vfold_cv()`: who trains, who tests.
@@ -230,7 +230,7 @@ much less variance.
 | knob | what it means | effect |
 |---|---|---|
 | `penalty` ($\lambda$) | strength of shrinkage toward 0 | $\uparrow$ penalty $\to$ more bias, less variance (guards overfit); too high $\to$ underfit |
-| `mixture` ($\alpha$) | ridge ↔ lasso dial | `0` = **ridge** (shrink all); `1` = **lasso** (some coefs $\to$ exactly 0, selects); in between = **elastic-net** |
+| `mixture` ($\alpha$) | ridge $\leftrightarrow$ lasso dial | `0` = **ridge** (shrink all); `1` = **lasso** (some coefs $\to$ exactly 0, selects); in between = **elastic-net** |
 
 - Regularization is the **bias–variance knob** made explicit: more penalty = simpler model.
 - Engine `glmnet`; both left as `tune()` in the `workflow_set`.
@@ -241,18 +241,18 @@ Voce docente (IT): collega al glm dello step 03 — "stesso modello, con un fren
 lasso vs elastic-net). Lasso fa anche selezione di variabili (coef esattamente 0).
 :::
 
-## k-NN — `neighbors` {.smaller}
+## $k$-NN — `neighbors` {.smaller}
 
-Predict from the **`k` closest** patients. The single knob `neighbors` *is* the
+Predict from the **$k$ closest** patients. The single knob `neighbors` *is* the
 bias–variance dial.
 
-| `neighbors` (k) | behaviour | bias / variance |
+| `neighbors` ($k$) | behaviour | bias / variance |
 |---|---|---|
-| **small** k (e.g. 1–3) | follows local noise, jagged boundary | **low bias, high variance** (overfits) |
-| **large** k | averages over many neighbours, smooth boundary | **high bias, low variance** (can underfit) |
+| **small** $k$ (e.g. 1–3) | follows local noise, jagged boundary | **low bias, high variance** (overfits) |
+| **large** $k$ | averages over many neighbours, smooth boundary | **high bias, low variance** (can underfit) |
 
-- No "more is always better": k is a tradeoff, not a quality score.
-- k controls flexibility only — it is **not** just a speed setting.
+- No "more is always better": $k$ is a tradeoff, not a quality score.
+- $k$ controls flexibility only — it is **not** just a speed setting.
 
 ::: {.notes}
 Voce docente (IT): qui atterra la MCQ del min 118 (direzione bias-variance del k).
@@ -269,7 +269,7 @@ Separate the classes with a **margin**; the RBF kernel lets the boundary curve.
 | `cost` (C) | penalty for margin violations | $\uparrow$ cost $\to$ harder margin, fits training tighter $\to$ **lower bias, higher variance** (overfit risk) |
 | `rbf_sigma` ($\sigma$) | kernel **reach** (how far one point's influence extends) | large $\sigma$ $\to$ wider reach, smoother boundary (more bias); small $\sigma$ $\to$ local, wiggly (more variance) |
 
-- The two knobs interact: a soft margin (`cost`↓) with a local kernel (`rbf_sigma`↑) are both regularizers.
+- The two knobs interact: a soft margin (`cost` $\downarrow$) with a local kernel (`rbf_sigma` $\uparrow$) are both regularizers.
 - Engine `kernlab`; both `tune()`d together.
 
 ::: {.notes}
@@ -322,42 +322,49 @@ parallelismo, ma non è necessario").
 **Why two.** With a ~32%-event outcome, "always predict *survived*" is ~68% accurate
 and clinically useless. We watch two complementary numbers:
 
-- **ROC-AUC** — ranking of risk across all thresholds; prevalence-free, chance $= 0.5$.
-- **PR-AUC** — performance on the *positive* (death) class; no-skill baseline $=$ the
+- **AUC-ROC** — ranking of risk across all thresholds; prevalence-free, chance $= 0.5$.
+- **AUC-PR** — performance on the *positive* (death) class; no-skill baseline $=$ the
   prevalence ($\approx 0.32$), so it stays honest when the event is rare.
 
 **The tournament (cross-validated).** Four models, one shared `vfold_cv(v = 5)`:
 
-| model | CV ROC-AUC |
+| model | CV AUC-ROC |
 |---|---|
 | **Random forest** | **0.79** |
 | penalized logistic | 0.74 |
 | RBF-SVM | 0.73 |
-| k-NN | 0.66 |
+| $k$-NN | 0.66 |
 
 The forest wins, and the spread ($0.79 \to 0.66$) shows the *model choice* matters.
-Validated once on the untouched test set: **ROC-AUC 0.87, PR-AUC 0.75, accuracy 0.77**.
+Validated once on the untouched test set: **AUC-ROC 0.87, AUC-PR 0.75, accuracy 0.77**.
 
 ::: {.fragment .callout-warning appearance="simple"}
 **A single split lies.** The plain `glm` scored a flattering **0.88** on one
-75-patient test split — *above* the forest's 0.87 — yet its **cross-validated**
-ROC-AUC is only $\approx 0.70$. One number on a small cohort is luck;
-**cross-validation is the honest comparison.**
+75-patient test split — *above* the forest's 0.87 — yet on 5-fold cross-validation
+**no linear model reaches the random forest's 0.79** (the penalized logistic sits at
+0.74). One number on a small cohort is luck; **cross-validation is the honest comparison.**
 :::
 
 ::: {.fragment .callout-note appearance="simple"}
-**Aside.** ROC-AUC is **symmetric** — the positive class doesn't change it.
-**PR-AUC is not**: it depends on the positive class — which is exactly why we put
+**Aside.** AUC-ROC is **symmetric** — the positive class doesn't change it.
+**AUC-PR is not**: it depends on the positive class — which is exactly why we put
 `died` *first*, so both metrics score death by default.
 :::
 
+::: {.fragment .callout-note appearance="simple"}
+**Threshold.** The reported accuracy uses the default cut $\tau = 0.5$. *Moving* the
+cut by a clinical false-negative / false-positive cost ratio is a deliberate
+**Advanced**-workshop topic — here we stop at threshold-free ranking (AUC-ROC, AUC-PR).
+:::
+
 ::: {.notes}
-Voce docente (IT): la winner è il **random forest** (ranger), CV ROC-AUC ~0.79; sul
-test ROC-AUC 0.87, PR-AUC 0.75, accuracy 0.77. Punto chiave (il "regalo" del seed):
-il glm vanilla segna 0.88 su UN singolo split di ~75 pazienti ma in CV sta ~0.70 →
-un singolo numero su coorte piccola è fortuna, la CV è il confronto onesto, e il
-forest la vince. L'aside lega la convenzione event-first alla PR-AUC (NON simmetrica,
-a differenza della ROC-AUC). Se le due callout fragment sfondano in altezza a 1080p,
+Voce docente (IT): la winner è il **random forest** (ranger), CV AUC-ROC ~0.79; sul
+test AUC-ROC 0.87, AUC-PR 0.75, accuracy 0.77. Punto chiave (il "regalo" del seed):
+il glm vanilla segna 0.88 su UN singolo split di ~75 pazienti ma in CV nessun modello
+lineare raggiunge lo ~0.79 del forest (penlog 0.74) → un singolo numero su coorte
+piccola è fortuna, la CV è il confronto onesto, e il
+forest la vince. L'aside lega la convenzione event-first alla AUC-PR (NON simmetrica,
+a differenza della AUC-ROC). Se le due callout fragment sfondano in altezza a 1080p,
 spezzo la slide (tournament | single-split-lies).
 :::
 
