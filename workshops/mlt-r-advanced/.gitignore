@@ -1,0 +1,19 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+renv/library/
+renv/local/
+renv/cellar/
+renv/staging/
+/steps/**/output/*.rds
+/steps/**/output/*.png
+!/steps/**/output/.keep
+/**/*_files
+/**/*_cache
+.quarto/
+*-solved.html
+*-blank.html
+# Rendered step driver HTML (demo steps 00/02/05) — regenerable from the .qmd
+/steps/**/*.html
+.Renviron
