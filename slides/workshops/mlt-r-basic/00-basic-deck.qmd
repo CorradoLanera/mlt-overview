@@ -1,9 +1,83 @@
 ---
-title: "Practical AI for Medical Data Analyses with R — Basic"
-subtitle: "Build and validate a clinical ML model in R, reproducibly"
-author: "Corrado Lanera (UBEP)"
-format: revealjs
+pagetitle: "Practical Artificial Intelligence for Medical Data Analyses with R — Basic"
 ---
+
+## Practical <span style="color:#E8741E;">Artificial Intelligence</span> for Medical Data Analyses with R {.center background-image="../../../img/bg1.png" background-opacity="0.3"}
+
+<p style="text-align:center; margin:0 0 0.8em 0;">
+<img src="../../../img/DSCTV.png" style="height:60px; margin:0 18px;"/>
+<img src="../../../img/UBEP.png"  style="height:60px; margin:0 18px;"/>
+<img src="../../../img/LAIMS.png" style="height:60px; margin:0 18px;"/>
+</p>
+
+<p style="text-align:center; font-size:1.55em; font-weight:700; line-height:1.15; margin:0.2em 0;">
+<span style="color:#E8741E;">Basic</span> — Build and validate a clinical ML model in R, reproducibly
+</p>
+
+<p style="text-align:center; font-size:0.92em; color:#444; margin:1.4em 0 0.2em 0;">
+The hands-on companion to <em>Machine Learning — An Applied Overview</em>
+</p>
+
+<p style="text-align:center; font-size:0.92em; color:#444; margin:0 0 1em 0;">
+PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> · University of Padova
+</p>
+
+<p style="text-align:center; margin:1.2em 0 0 0;">
+<strong>Corrado Lanera</strong> &nbsp;|&nbsp; Unit of Biostatistics, Epidemiology &amp; Public Health
+</p>
+
+::: {.notes}
+Voce docente (IT): title slide del workshop Basic — scaffold gemello dell'overview
+(stessi tre loghi DSCTV/UBEP/LAIMS, sfondo `bg1.png` a opacità 30%, accento arancio).
+Solo titolo e sottotitolo riadattati al modulo pratico. Niente data/sede (i workshop
+non portano riferimenti temporali). Firma + affiliazione come nell'overview.
+:::
+
+## Find me at… {.inverse background-color="#1F4257"}
+
+:::: {.columns}
+::: {.column width="36%"}
+<img src="../../../img/profilo_CL.jpg" style="width:100%; border-radius:8px;"/>
+:::
+::: {.column width="64%"}
+<br/>
+
+**Corrado Lanera**
+
+[`Corrado.Lanera`<span style="color:#E8741E;">`@ubep.unipd.it`](mailto:Corrado.Lanera@ubep.unipd.it)</span>
+
+[`unipd-ubep.it`](https://www.unipd-ubep.it/) — UBEP, University of Padova
+
+<br/>
+
+[`@CorradoLanera`](https://github.com/corradolanera) — GitHub · Telegram
+
+[`@UBESP-DCTV`](https://github.com/UBESP-DCTV) — group on GitHub
+
+[`calendly.com/corradolanera`](https://calendly.com/corradolanera) — book a slot
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): stessa scheda di presentazione dell'overview. Email istituzionale,
+sito UBEP, GitHub/Telegram con lo stesso handle, Calendly per un colloquio.
+:::
+
+## Credits & acknowledgements {.inverse background-color="#1F4257"}
+
+This hands-on workshop is the practical companion to the **Machine Learning — An Applied Overview** lecture.
+
+- **Built on the UBEP teaching tradition** — colleagues whose examples and feedback shaped earlier editions of the practical courses.
+- **Dataset:** *Heart-failure clinical records* (Chicco & Jurman, 2020) — a real, open clinical cohort.
+- **Tooling:** the **tidymodels** stack (Kuhn, Silge et al.) on **R**, with **Quarto** · revealjs.
+- **Course design & materials (this edition):** *Corrado Lanera*, built with **Claude** (Anthropic) via Claude Code.
+
+::: {.notes}
+Voce docente (IT): credits adattati al workshop — niente sfondi-storyboard (sono
+overview-specific). Cito la citazione del dataset (Chicco & Jurman 2020) perché qui
+si lavora su dati reali, e lo stack tidymodels come base tecnica. Coerente con cap.
+07-08 dell'overview: si dice quando e come si usa l'IA.
+:::
 
 # Build and validate a clinical ML model in R {.center}
 
@@ -347,4 +421,69 @@ Voce docente (IT): pre-hook ad Advanced (cfr. spec §11). L'Advanced apre RICARI
 il workflow finalizzato di Basic e fa `predict` su una riga — niente retrain. Poi:
 interpretability (VIMP/SHAP, logistic come ancora), DL spectrum, `ellmer`, capstone
 `targets`. Il payoff dei pre-hook promessi nell'overview.
+:::
+
+## Further reading — go deeper in <span style="color:#E8741E;">R</span> {.inverse .smaller background-color="#1F4257"}
+
+:::: {.columns}
+::: {.column width="50%"}
+
+**tidymodels & the tidyverse (free, online)**
+
+- **Kuhn & Silge.** *Tidy Modeling with R* — `tmwr.org`. The canonical book for the spine we used (`rsample` $\to$ `recipes` $\to$ `parsnip` $\to$ `workflows` $\to$ `yardstick`).
+- **Wickham, Çetinkaya-Rundel, Grolemund.** *R for Data Science* (2e) — `r4ds.hadley.nz`. tidyverse foundations and the native pipe.
+
+**Concepts behind the build (free PDF)**
+
+- **James, Witten, Hastie, Tibshirani.** *An Introduction to Statistical Learning* (R) — the overview's theory, in R.
+
+:::
+::: {.column width="50%"}
+
+**Reproducibility & the next step**
+
+- **`renv`** · **`here`** · **`set.seed`** — the three pillars we leaned on all afternoon.
+- **`targets`** — Will Landau's pipeline toolkit; the backbone of the **Advanced** workshop.
+- **Kuhn & Johnson.** *Feature Engineering and Selection* — `bookdown.org/max/FES`. Deeper on `recipes`.
+
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): "Further reading" adattato dall'overview — referenze sostituite con
+suggerimenti R/tidymodels (non i video concettuali). Consiglio numero uno: *Tidy
+Modeling with R* per chi vuole il libro della spina che abbiamo usato. ISLR è il ponte
+ai concetti dell'overview. Rilancio su `targets` → Advanced.
+:::
+
+## Thank <span style="color:#E8741E;">you</span> for the attention! {.inverse .center background-color="#1F4257"}
+
+<p style="text-align:center;">
+<img src="../../../img/procione.jpeg" style="width:32%; border-radius:8px;"/>
+</p>
+
+<br/>
+
+<p style="text-align:center;">
+[`unipd-ubep.it`](https://www.unipd-ubep.it/)
+&nbsp;·&nbsp;
+[`Corrado.Lanera@ubep.unipd.it`](mailto:Corrado.Lanera@ubep.unipd.it)
+</p>
+
+<p style="text-align:center;">
+[GitHub `@CorradoLanera`](https://github.com/corradolanera)
+&nbsp;·&nbsp;
+[Telegram `@CorradoLanera`](https://telegram.me/CorradoLanera)
+&nbsp;·&nbsp;
+[GitHub `@UBESP-DCTV`](https://github.com/UBESP-DCTV)
+</p>
+
+<p style="text-align:center;">
+[`calendly.com/corradolanera`](https://calendly.com/corradolanera)
+</p>
+
+::: {.notes}
+Voce docente (IT): chiusura gemella dell'overview — stesso procione, stessi contatti
+(email istituzionale, GitHub, Telegram, Calendly). Saluto finale leggero. Niente
+riferimenti temporali.
 :::

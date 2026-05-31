@@ -1,9 +1,80 @@
 ---
-title: "Practical AI for Medical Data Analyses with R — Advanced"
-subtitle: "Open the validated model: interpret it, go deep, reach an LLM, seal it"
-author: "Corrado Lanera (UBEP)"
-format: revealjs
+pagetitle: "Practical Artificial Intelligence for Medical Data Analyses with R — Advanced"
 ---
+
+## Practical <span style="color:#E8741E;">Artificial Intelligence</span> for Medical Data Analyses with R {.center background-image="../../../img/bg1.png" background-opacity="0.3"}
+
+<p style="text-align:center; margin:0 0 0.8em 0;">
+<img src="../../../img/DSCTV.png" style="height:60px; margin:0 18px;"/>
+<img src="../../../img/UBEP.png"  style="height:60px; margin:0 18px;"/>
+<img src="../../../img/LAIMS.png" style="height:60px; margin:0 18px;"/>
+</p>
+
+<p style="text-align:center; font-size:1.55em; font-weight:700; line-height:1.15; margin:0.2em 0;">
+<span style="color:#E8741E;">Advanced</span> — Open the validated model: interpret it, go deep, reach an LLM, seal it
+</p>
+
+<p style="text-align:center; font-size:0.92em; color:#444; margin:1.4em 0 0.2em 0;">
+The hands-on companion to <em>Machine Learning — An Applied Overview</em>
+</p>
+
+<p style="text-align:center; font-size:0.92em; color:#444; margin:0 0 1em 0;">
+PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> · University of Padova
+</p>
+
+<p style="text-align:center; margin:1.2em 0 0 0;">
+<strong>Corrado Lanera</strong> &nbsp;|&nbsp; Unit of Biostatistics, Epidemiology &amp; Public Health
+</p>
+
+::: {.notes}
+Voce docente (IT): title slide del workshop Advanced — scaffold gemello dell'overview
+e del Basic. Solo titolo/sottotitolo riadattati. Niente data/sede (nessun riferimento
+temporale). Prerequisito implicito: aver fatto il Basic.
+:::
+
+## Find me at… {.inverse background-color="#1F4257"}
+
+:::: {.columns}
+::: {.column width="36%"}
+<img src="../../../img/profilo_CL.jpg" style="width:100%; border-radius:8px;"/>
+:::
+::: {.column width="64%"}
+<br/>
+
+**Corrado Lanera**
+
+[`Corrado.Lanera`<span style="color:#E8741E;">`@ubep.unipd.it`](mailto:Corrado.Lanera@ubep.unipd.it)</span>
+
+[`unipd-ubep.it`](https://www.unipd-ubep.it/) — UBEP, University of Padova
+
+<br/>
+
+[`@CorradoLanera`](https://github.com/corradolanera) — GitHub · Telegram
+
+[`@UBESP-DCTV`](https://github.com/UBESP-DCTV) — group on GitHub
+
+[`calendly.com/corradolanera`](https://calendly.com/corradolanera) — book a slot
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): stessa scheda di presentazione dell'overview e del Basic.
+:::
+
+## Credits & acknowledgements {.inverse background-color="#1F4257"}
+
+This hands-on workshop is the practical companion to the **Machine Learning — An Applied Overview** lecture, and the sequel to the **Basic** R workshop.
+
+- **Built on the UBEP teaching tradition** — colleagues whose examples and feedback shaped earlier editions.
+- **Dataset:** *Heart-failure clinical records* (Chicco & Jurman, 2020) — the same cohort the Basic model was validated on.
+- **Tooling:** `tidymodels` · `torch`/`luz`/`brulee` · `kernelshap`/`shapviz` · `ellmer` · `targets`, on **R**, with **Quarto** · revealjs.
+- **Course design & materials (this edition):** *Corrado Lanera*, built with **Claude** (Anthropic) via Claude Code.
+
+::: {.notes}
+Voce docente (IT): credits adattati all'Advanced — stack tecnico esteso (interpret,
+deep, LLM, pipeline). Stesso dataset del Basic (continuità). IA dichiarata come nei
+cap. 07-08 dell'overview.
+:::
 
 # Open the model you validated in Basic {.center}
 
@@ -323,4 +394,65 @@ RICARICA il modello (pre-hook), e l'abbiamo mantenuto — step 00 ha riaperto `f
 senza retrain. Il payoff finale è la consegnabilità: la pipeline spiegata-deep-LLM è
 riproducibile da un terzo via `targets`. Niente riferimenti temporali, niente nomi oltre
 Corrado Lanera (UBEP).
+:::
+
+## Further reading — go deeper in <span style="color:#E8741E;">R</span> {.inverse .smaller background-color="#1F4257"}
+
+:::: {.columns}
+::: {.column width="50%"}
+
+**Interpretability & deep learning (free, online)**
+
+- **Molnar.** *Interpretable Machine Learning* — `christophm.github.io/interpretable-ml-book`. SHAP and permutation importance — the foundations of step 01.
+- **`torch` for R** · **`luz`** · **`brulee`** — `torch.mlverse.org`. The deep-learning stack we used live.
+- **Chollet & Allaire.** *Deep Learning with R* (2e) — for the curious, beyond `brulee`.
+
+:::
+::: {.column width="50%"}
+
+**LLMs & reproducible pipelines**
+
+- **`ellmer`** — `ellmer.tidyverse.org`. Typed, structured LLM calls (our LLM-as-ETL).
+- **Landau.** *The `targets` R package user manual* — `books.ropensci.org/targets`. The capstone pipeline.
+- **`kernelshap` + `shapviz`** (M. Mayer) — the agnostic SHAP tooling of step 01.
+- **Kuhn & Silge.** *Tidy Modeling with R* — `tmwr.org` (shared with Basic).
+
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): "Further reading" adattato dall'overview — referenze sostituite con
+suggerimenti R per interpret/deep/LLM/pipeline. Molnar è il numero uno per SHAP/VIMP;
+il manuale `targets` di Landau chiude il capstone. Tutte fonti reali e free dove indicato.
+:::
+
+## Thank <span style="color:#E8741E;">you</span> for the attention! {.inverse .center background-color="#1F4257"}
+
+<p style="text-align:center;">
+<img src="../../../img/procione.jpeg" style="width:32%; border-radius:8px;"/>
+</p>
+
+<br/>
+
+<p style="text-align:center;">
+[`unipd-ubep.it`](https://www.unipd-ubep.it/)
+&nbsp;·&nbsp;
+[`Corrado.Lanera@ubep.unipd.it`](mailto:Corrado.Lanera@ubep.unipd.it)
+</p>
+
+<p style="text-align:center;">
+[GitHub `@CorradoLanera`](https://github.com/corradolanera)
+&nbsp;·&nbsp;
+[Telegram `@CorradoLanera`](https://telegram.me/CorradoLanera)
+&nbsp;·&nbsp;
+[GitHub `@UBESP-DCTV`](https://github.com/UBESP-DCTV)
+</p>
+
+<p style="text-align:center;">
+[`calendly.com/corradolanera`](https://calendly.com/corradolanera)
+</p>
+
+::: {.notes}
+Voce docente (IT): chiusura gemella dell'overview e del Basic — stesso procione, stessi
+contatti. Saluto finale. Niente riferimenti temporali.
 :::
