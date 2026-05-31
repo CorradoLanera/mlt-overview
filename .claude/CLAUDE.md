@@ -26,3 +26,11 @@ Repo del corso "Machine Learning — An Applied Overview" (UBEP). Rinnovazione: 
 ## Stato build
 
 - Fase 0 (fondazione): in corso. Fase A (contenuti), Fase B (Quarto/PDF): da fare.
+
+## Architettura (3 moduli)
+
+Un repo, un corso, tre moduli: **teoria/overview** (`course/` + `slides/`),
+**pratica base** (`workshops/mlt-r-basic/`), **pratica advanced** (`workshops/mlt-r-advanced/`, da creare).
+Layout e contratto: `docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md`.
+I `CLAUDE.md` dei workshop contengono **solo** il delta R-authoring; lingua/matematica/liste/verifica
+visiva valgono da qui per tutti i moduli.
