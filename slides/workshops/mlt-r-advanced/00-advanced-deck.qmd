@@ -10,7 +10,7 @@ format: revealjs
 ::: {.notes}
 Voce docente (IT): apertura. L'arco RIAPRE il modello validato in Basic — non si
 ricostruisce nulla. Quattro tappe: interpretare (VIMP/SHAP) → deep learning (torch/
-brulee) → `ellmer` come ETL tipizzato → capstone `targets`. torch è pre-riscaldato
+luz/brulee) → `ellmer` come ETL tipizzato → capstone `targets`. torch è pre-riscaldato
 nello step 00 (`torch_tensor(1)`), così il primo tensore non paga l'init. Numeri
 reali da ricordare: l'RF di Basic sta a CV ROC-AUC ~0.80; VIMP mette in cima
 ejection_fraction / serum_creatinine. NON vendere l'MLP come vincitore della foresta.
@@ -20,7 +20,7 @@ The model you built in Basic is not the end — it is the **subject**. We **open
 random forest you built and validated in Basic, then push past it.
 
 - **Interpret it** — permutation VIMP and agnostic SHAP, anchored on a logistic regression.
-- **Go deep** — a live `brulee` MLP, then CNN/RNN/fused nets written (not trained).
+- **Go deep** — a live `brulee` MLP (`torch` / `luz` / `brulee`), then CNN/RNN/fused nets written (not trained).
 - **Reach an LLM** — `ellmer` as a typed, reproducible LLM-as-ETL.
 - **Seal it** — a `targets` pipeline that re-derives the explanation, all-skip on re-run.
 
