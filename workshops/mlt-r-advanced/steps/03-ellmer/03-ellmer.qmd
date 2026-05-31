@@ -1,0 +1,171 @@
+---
+title: "Step 03 — An LLM as a typed, reproducible ETL"
+subtitle: "One live structured extraction + a labeled cached fallback + a written-not-run batch"
+params:
+  solved: true
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  warning: false
+  message: false
+---
+
+## Where we are
+
+We have trained and explained models on a tidy cohort. Real clinical data, though, arrives
+as **free text** — discharge notes, echo reports. This step turns an LLM into a
+**reproducible ETL**: given a **typed schema**, it reads a free-text note and returns a
+**typed record** — not a chat reply you must re-parse by hand. The schema *is* the contract.
+Declare the fields and their types, and every note comes back as the same validated structure.
+
+We run **one** extraction **live** against the API, on the first note. The full
+note-by-note **batch** is **written, not run** in class — it would call the API once per
+note. Honesty rule, carried forward from step 02: when there is no API key, we fall back to
+a **labeled cache** of an earlier live run, shown with that label attached — never a faked
+result. The key lives only in the workshop-root `.Renviron` (gitignored); it is never
+committed.
+
+<!--
+Nota docente (IT): step HANDS-ON (~36 min). L'LLM qui NON e' una chat: e' un ETL tipato e
+riproducibile. Messaggi chiave, nell'ordine:
+
+1. SCHEMA = CONTRATTO (formativa min-112): `type_object()` con 4 campi tipati e' la struttura
+   del record che torna SEMPRE uguale. Domanda formativa: "cosa fa l'enum se un campo manca?"
+   -> l'enum vincola il valore a una lista chiusa; per i campi opzionali (EF non riportata in
+   N08, beta-blocker non menzionato in N11) si dichiara NA -> il record resta valido, niente
+   prosa libera da ri-parsare. Mostra la struttura del record, non il testo della nota.
+
+2. UNA chiamata LIVE, il resto SCRITTO: facciamo UNA estrazione dal vivo (prima nota). Il map
+   sull'intero batch e' WRITE-ONLY (`eval: false`) — chiamerebbe l'API una volta per nota.
+   Non lo eseguiamo in aula: lo leggiamo.
+
+3. TEMPERATURA BASSA => ETL DETERMINISTICO (formativa min-124): temperature = 0 nel batch.
+   Un ETL deve dare lo STESSO record sullo stesso input. La temperatura alta serve alla
+   creativita' di una chat, non a un'estrazione. Chiedi: "perche' 0 e non 0.7?".
+
+4. ONESTA' = CACHE ETICHETTATA: senza chiave mostriamo un risultato CACHED di una run live
+   precedente, ETICHETTATO con `cat(...)` (visibile: `message: false` sopprime `message()`).
+   Non e' un finto record: e' un vero record salvato prima. Stessa dottrina dell'opzione-B.
+
+5. CHIAVE SOLO DA ENV: la chiave sta nel `.Renviron` di root (gitignored), letta con
+   readRenviron. Mai stampata, mai committata. La cache va in assets/ (tracciata), NON in
+   output/ (gitignored): cosi' il fallback offline ha qualcosa da leggere anche nel build.
+-->
+
+## Given — the free-text notes {#sec-given}
+
+Twelve synthetic heart-failure notes, each a free-text paragraph with a `note_id`. No
+columns to `select()`, no factors to set: the structure is exactly what we are about to
+**extract**.
+
+```{r given}
+#| code-fold: true
+library(here)
+library(rio)
+library(tidyverse)
+library(ellmer)
+notes <- import(here("data-raw", "hf_notes.csv"), setclass = "tibble")
+```
+
+## A typed schema is the contract {#sec-schema}
+
+A chat returns prose; an **ETL returns a record**. The difference is the **schema**. Below,
+`type_object()` declares four fields with their types: `age` an integer, `ejection_fraction`
+a number (the percentage, `NA` when the note never states it), `on_betablocker` a boolean,
+and `primary_dx` an **enum** constrained to a closed list of four diagnoses. The enum is the
+guard rail: the model cannot return `"cardiomyopathy, probably"` — only one of the four
+allowed strings. Optional fields (EF in N08, the beta-blocker in N11) come back as `NA`, and
+the record stays valid.
+
+We read the key from the workshop-root `.Renviron` — `here()` is anchored to *this step*
+folder by the `.here` sentinel, so the root file is two levels up. We never hard-code it.
+
+Then **one** live extraction on the first note. If a key is present we call the API once and
+**cache** the typed result to `assets/` (tracked, so the offline fallback has something to
+read). If no key is set, we show that cached record, **labeled** as such.
+
+```{r schema-and-live}
+#| code-fold: false
+# A TYPED SCHEMA is the contract that turns an LLM into an ETL (not a chat) ----
+# (ellmer 0.4.1: type_enum(values, description) — values first, description second.)
+note_type <- type_object(
+  age               = type_integer("patient age in years"),
+  ejection_fraction = type_number("ejection fraction as a percentage; NA if not stated"),
+  on_betablocker    = type_boolean("TRUE if a beta-blocker is given or continued"),
+  primary_dx        = type_enum(
+    c("ischemic", "hypertensive", "valvular", "other"),
+    "primary cardiac diagnosis",
+  ),
+)
+
+# Key from the workshop-root .Renviron (gitignored), env only ----
+# .here anchors here() to THIS step folder, so the root .Renviron is two levels up.
+renviron_path <- here("..", "..", ".Renviron")
+if (file.exists(renviron_path)) readRenviron(renviron_path)
+cache_path <- here("assets", "ellmer-cache.rds")
+
+# ONE live extraction; labeled cached fallback when no key (honesty doctrine) ----
+if (nzchar(Sys.getenv("OPENAI_API_KEY"))) {
+  chat <- chat_openai(model = "gpt-5.4-nano", echo = "none")
+  live <- chat$chat_structured(notes$text[[1]], type = note_type)
+  saveRDS(live, cache_path)
+  live
+} else {
+  cat("[No API key set — showing a cached, LABELED result from an earlier live run.]\n")
+  readRDS(cache_path)
+}
+```
+
+One free-text note in, one typed record out: `age`, `ejection_fraction`, `on_betablocker`,
+`primary_dx`. That is the whole ETL claim — a **structured, validated** result, not a
+paragraph to re-read.
+
+A subtlety worth noting: a whole-number JSON value (here EF = 30) arrives in R as `integer`,
+not `double`, even for a `type_number` field — check with `class()` and coerce with
+`as.double()` if downstream code expects a double.
+
+## The batch — written, not run {#sec-batch}
+
+The full pipeline is just this extraction **mapped over every note** into a typed tibble. We
+**write it, do not run it** in class: it would call the API once per note. Two things to
+read off it. First, `temperature = 0`: an ETL must return the **same** record for the same
+input — determinism, not the creativity a chat wants. Second, `unnest_wider()` turns the
+list-column of typed records into proper columns — the free text becomes a tidy table.
+
+```{r batch-written-not-run}
+#| code-fold: false
+#| eval: false
+# WRITTEN, NOT RUN in class (it would call the API once per note). ----
+# Low temperature => deterministic ETL; map iterates note-by-note into a typed tibble.
+extract_one <- function(txt) {
+  chat_openai(model = "gpt-5.4-nano", params = params(temperature = 0))$chat_structured(txt, type = note_type)
+}
+notes |>
+  dplyr::mutate(parsed = purrr::map(text, extract_one)) |>
+  tidyr::unnest_wider(parsed)
+```
+
+## Your turn — extend the schema {#sec-yourturn}
+
+Add **one** more typed field to the schema, then say in a line why a typed ETL beats a chat.
+The blank is a `serum_creatinine` field: a number in mg/dL, `NA` if the note does not state
+it — the same shape as `ejection_fraction`.
+
+```{r yourturn-03-solved, eval=params$solved, echo=params$solved}
+#| code-fold: false
+# Your turn (solved): one valid type_object() field + why typed-ETL beats a chat.
+serum_creatinine <- type_number("serum creatinine in mg/dL; NA if not stated")
+# Why typed, not chat: a schema guarantees a STRUCTURED, validated record every time —
+# parseable, testable, reproducible — instead of free prose you must re-parse by hand.
+serum_creatinine
+```
+
+```{r yourturn-03-blank, eval=!params$solved, results="asis", echo=FALSE}
+cat("```r", readLines(here("R", "yourturn-03.R")), "```", sep = "\n")
+```
+
+Here is the field you would add alongside the others inside `type_object()` — same contract,
+one more column in the batch. A schema is what makes the LLM an **ETL**: a structured record
+you can parse, test, and reproduce, where a chat would hand you prose to re-parse by hand.
