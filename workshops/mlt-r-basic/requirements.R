@@ -3,6 +3,6 @@ if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak", repos = "h
 pak::pak(c(
   "here", "rio", "tidyverse", "janitor", "gtsummary",
   "tidymodels", "workflowsets", "glmnet", "kknn", "kernlab", "ranger",
-  "future", "quarto", "medicaldata", "renv"
+  "future", "quarto", "renv"
 ))
 renv::snapshot()
