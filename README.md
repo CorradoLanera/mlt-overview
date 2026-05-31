@@ -1,28 +1,36 @@
-# Machine Learning — An Applied Overview
+# Machine Learning — An Applied Overview (MLT)
 
-> **Resume the build (teacher):** reload Claude Code in this repo, then type *"andiamo avanti col corso MLT"* (or `/mlt`) and follow the guided steps — no commands to remember.
+One course, three modules, for biomedical/clinical graduate students (UBEP, University of Padova).
 
-Introductory ML overview for biomedical/clinical graduate students (UBEP, University of Padova).
-~4h gross. From the T-P-E framework to classifiers, model selection, deep learning, LLMs and agents,
-with an applied clinical slant.
+## The three modules
 
-## Structure (modular)
+| # | Module | What it is | Where | How to get it |
+|---|--------|-----------|-------|---------------|
+| 1 | **Theory Overview** | Storyboard-narrated reveal.js lectures (10 chapters) | `course/` + `slides/` | Published slides (GitHub Pages / PDF) |
+| 2 | **Practice — Basic** | Live-coded R: build & validate a clinical ML model | `workshops/mlt-r-basic/` | `use_course()` — see its README |
+| 3 | **Practice — Advanced** | Live-coded R: interpretability + deep learning | `workshops/mlt-r-advanced/` *(coming)* | `use_course()` — see its README |
 
-The course is chapter-based. The single source of truth is [`course/_manifest.yml`](course/_manifest.yml):
-each chapter has an `include:` toggle and an estimated duration. Add or drop a module by editing one line.
+## Learning path
 
-Per-chapter artifacts live in `course/<NN-slug>/`: learning objectives, narrative arc, optional
-sub-units, storyboard, and an evaluative item bank with rubrics. Global narrative spine and syllabus
-live in `course/_global/`.
+**Overview → Basic → Advanced.** The Overview ends (ch. 10) by pre-hooking into the Basic
+workshop; Basic pre-hooks into Advanced. Prerequisites are stated at the top of each module.
 
-## Build (planned, Fase B)
+## Repository map
 
-Slides are being migrated from xaringan (`index.Rmd`) to Quarto revealjs. Once migrated:
-
-- render slides: `quarto render` (only chapters with `include: true`);
-- export student PDF: requires `quarto install chrome-headless-shell`.
+- `course/` — overview chapter content (`_manifest.yml` is the source of truth).
+- `slides/` — the rendered overview deck.
+- `styles/_brand.scss` — shared palette + fonts used by every deck.
+- `workshops/` — the two self-contained R workshops (each with its own `renv`).
+- `dist/` — built workshop ZIPs (git-ignored; published as GitHub Release assets).
+- `_archive/legacy-xaringan/` — the frozen, reproducible pre-Quarto deck.
+- `docs/superpowers/` — design specs and implementation plans.
 
 ## Authoring
 
-Student-facing content is in **English**; teacher notes are in Italian. Math is written in `$...$`.
-Writing any `course/**/*.md` auto-generates a self-contained `.html` (with rendered math) next to it.
+See `.claude/CLAUDE.md` for the universal conventions (language, math, lists, visual
+verification) and each workshop's `CLAUDE.md` for its R-authoring rules.
+
+---
+
+> **Resume the build (teacher):** reload Claude Code in this repo, then type *"andiamo avanti col corso MLT"*
+> (or `/mlt`) and follow the guided steps — no commands to remember.
