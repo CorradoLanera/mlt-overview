@@ -1,0 +1,326 @@
+---
+title: "Practical AI for Medical Data Analyses with R — Advanced"
+subtitle: "Open the validated model: interpret it, go deep, reach an LLM, seal it"
+author: "Corrado Lanera (UBEP)"
+format: revealjs
+---
+
+# Open the model you validated in Basic {.center}
+
+::: {.notes}
+Voce docente (IT): apertura. L'arco RIAPRE il modello validato in Basic — non si
+ricostruisce nulla. Quattro tappe: interpretare (VIMP/SHAP) → deep learning (torch/
+brulee) → `ellmer` come ETL tipizzato → capstone `targets`. torch è pre-riscaldato
+nello step 00 (`torch_tensor(1)`), così il primo tensore non paga l'init. Numeri
+reali da ricordare: l'RF di Basic sta a CV ROC-AUC ~0.80; VIMP mette in cima
+ejection_fraction / serum_creatinine. NON vendere l'MLP come vincitore della foresta.
+:::
+
+The model you built in Basic is not the end — it is the **subject**. We **open** the
+random forest you built and validated in Basic, then push past it.
+
+- **Interpret it** — permutation VIMP and agnostic SHAP, anchored on a logistic regression.
+- **Go deep** — a live `brulee` MLP, then CNN/RNN/fused nets written (not trained).
+- **Reach an LLM** — `ellmer` as a typed, reproducible LLM-as-ETL.
+- **Seal it** — a `targets` pipeline that re-derives the explanation, all-skip on re-run.
+
+Everything live-coded; nothing pre-baked is shown as live (one labeled exception).
+
+# Step 00 · Recap & setup {#sec-00-recap .center}
+
+<!-- Step 00 (demo, 12 min): reload Basic's finalized workflow; predict 1 row; pre-warm torch. -->
+
+**Objective.** Reopen the validated model — without retraining.
+
+- Reload Basic's finalized random forest: `extract_workflow(readRDS("final_fit.rds"))`.
+- `predict()` on **one** patient row — a probability, not yet an explanation.
+- **Pre-warm torch** so the first tensor later does not pay the init cost.
+
+::: {.notes}
+Voce docente (IT): demo (~12 min). Si RICARICA, non si riaddestra. Live-check al
+min 10: reload + `predict` su 1 riga + `torch_tensor(1)` SENZA download (torch caldo).
+GREEN/RED. Su questa macchina di build `cuda_is_available()` è FALSE; in aula, sulla
+NVIDIA, è TRUE. Il punto: una probabilità non è una spiegazione → apre lo step 01.
+:::
+
+# Step 01 · Interpretability {#sec-01-interpret .center}
+
+<!-- Step 01 (hands-on, 48 min): permutation VIMP (logistic+RF); agnostic SHAP (anchor + 1 RF row); logistic as sanity. -->
+
+**Objectives.** Open the black box with two model-agnostic tools.
+
+- **Permutation VIMP** (`{vip}`): shuffle a predictor → how far ROC-AUC drops = how much
+  the model **relies** on it. Reliance, **not** causation.
+- **Agnostic SHAP** via **`kernelshap` + `shapviz`**: attribute one prediction across features.
+- The **same explainer line** runs on logistic → RF → MLP — only the model object changes.
+
+::: {.notes}
+Voce docente (IT): hands-on (~48 min), zona di rischio per profondità. Min-24 (MCQ):
+VIMP = reliance, NON causazione / coefficiente con segno / p-value. Numero reale di
+build: la VIMP a permutazione mette in cima ejection_fraction e serum_creatinine (con
+age) — i predittori clinicamente sensati, con effetti soglia/non-monotoni. Sono le
+feature che la foresta ha imparato a USARE, non un'affermazione causale né di direzione.
+:::
+
+## The logistic anchor — SHAP must recover what we already know {.smaller}
+
+Before pointing SHAP at the opaque forest, we **anchor** it on a logistic regression —
+a model we *can* read off its coefficients.
+
+- Run SHAP on the **linear anchor** with `permshap()` (near-**exact** Shapley values).
+- The SHAP attributions must **echo the fitted coefficients** — same leading features,
+  consistent signs. If they did not, we would not trust SHAP on the forest.
+- Build reality: **ejection_fraction**, **age**, **serum_creatinine** lead *both* the
+  waterfall and the largest-magnitude coefficients.
+
+Then the agnosticism payoff: the **same** call points at the random forest (no coefficients
+at all) — `kernelshap()` for the forest, `permshap()` reserved for the linear anchor.
+
+::: {.notes}
+Voce docente (IT): predict-output al min-38 — che forma ha lo SHAP rispetto ai
+coefficienti logistici? Perché rassicura PRIMA di puntare l'RF: l'agnostico deve
+*recuperare* il noto. permshap() = esatto sul lineare (il sanity-check più pulito);
+kernelshap() = ibrido sull'RF (11 feature, scelta pratica). "Your turn" min-66: la
+stessa riga del blocco 01 puntata sull'RF — cambia solo l'oggetto-modello.
+:::
+
+## SHAP knobs — variance vs. cost {.smaller}
+
+<!-- PARAMS_I node — replaces the old "nsim" framing; we use kernelshap now. -->
+
+Three knobs govern an agnostic SHAP run. None of them is a quality dial.
+
+| knob | what it is | the tradeoff |
+|---|---|---|
+| **background** (`bg_X`) | reference rows SHAP integrates over | larger → lower-variance attributions, **higher cost**; tiny → cheap but noisier |
+| **which rows** (`X`) | the patients you explain | a waterfall explains **one** row; pick the case(s) you actually care about |
+| **exact vs. sampling** | how Shapley values are computed | `permshap()` **exact** for small $p$ / the linear anchor; `kernelshap()` hybrid/sampling as $p$ (the number of features) grows |
+
+- Smaller background is **not** "more accurate" — it is **cheaper and noisier**.
+- With 11 features the exact enumeration gets expensive → the forest uses the hybrid `kernelshap()`.
+
+::: {.notes}
+Voce docente (IT): min-46 (MCQ). Sostituisce il vecchio framing "nsim" — ora si usa
+kernelshap (override 2026-05-31, §11). Lezione invariata: varianza-vs-costo. Distrattori
+adattati: "meno background = più accurato" (NO, più rumoroso), "background conta solo per
+alberi" (NO, è agnostico), "X = numero di feature" (NO, sono le righe da spiegare).
+permshap esatto sull'ancora lineare, kernelshap ibrido come p cresce.
+:::
+
+# Step 02 · Deep learning {#sec-02-deep-learning .center}
+
+<!-- Step 02 (hands-on + demo, 67 min): MLP knobs -> train MLP live + SHAP callback -> write CNN/RNN/fused (shape-check) -> GPU-vs-CPU -> option B. -->
+
+**Objectives.** Train one net honestly; write the rest.
+
+- **Knobs first**, then train a small `brulee` **MLP live** (≤30 epochs, seconds).
+- Explain it with the **same agnostic SHAP line** — only the model object changed.
+- Write **CNN / RNN / fused** `nn_module`s — validated by a `forward()` **shape-check** (`[5, 2]`), **not trained**.
+- **GPU-vs-CPU** on the heavy workload; the **one** labeled option-B loss curve.
+
+::: {.notes}
+Voce docente (IT): hands-on + demo (~67 min), l'hotspot (9 chunk). Le slide-parametro
+PRECEDONO il train. L'MLP è addestrato DAVVERO dal vivo: il suo `roc_auc` è single-split,
+NON confrontabile con la CV ~0.80 della foresta (apples-to-oranges — non dire che la rete
+batte la foresta). CNN/RNN/fused = SCRITTE non addestrate, validate solo dallo shape-check
+`[5,2]`. SHAP riusato al min-66 = riuso intenzionale, non nuovo carico.
+:::
+
+## MLP knobs — and the overfit cure {.smaller}
+
+<!-- PARAMS_DL node. The param slide precedes the train. -->
+
+A small `brulee` MLP has four primary knobs (plus two minor). With generous defaults a small
+net **overfits** this 299-patient cohort — and the cure is always the same.
+
+| knob | what it controls | bias / variance |
+|---|---|---|
+| `epochs` | how long it trains | too many → fits noise (**overfit**) |
+| `learn_rate` | step size of each update | too high → diverges; too low → underfits in budget |
+| `hidden_units` | capacity (width) | more → lower bias, **higher variance** |
+| `penalty` | weight decay (regularization) | $\uparrow$ penalty → more bias, **less variance** |
+
+- Minor knobs: `batch` (gradient noise) and `activation` (nonlinearity) — **not** regularizers.
+- **Overfit cure:** turn `penalty` **up** and `hidden_units` **down** (or cut `epochs`).
+
+::: {.notes}
+Voce docente (IT): min-60 (MCQ). MLP overfit → quale knob? ✓ penalty↑ / hidden↓.
+Distrattori: "più epoche" (peggiora), "learning-rate↑" (diverge), "cambia activation
+come regolarizzatore" (NO, l'activation non regolarizza). Fallo dal vivo cambiando UN
+solo numero. La slide-parametro viene PRIMA del train (knob pre-caricati).
+:::
+
+## CNN / RNN / fused — written, not trained {.smaller}
+
+<!-- NNMOD/CNN/RNN/FUSED nodes — Parsons reorder, min-80. -->
+
+Three richer `nn_module`s, **written not trained** — validated only by a `forward()` shape-check.
+
+| net | the knobs | shape role |
+|---|---|---|
+| **1D-CNN** | `kernel` / `stride` / `channels` | slides a filter over a signal |
+| **RNN** | `hidden` / `sequence` / LSTM-GRU | reads a vitals sequence over time |
+| **fused** | 3 branches → `torch_cat(dim = 2)` → head | branch widths must **sum** to the head input |
+
+- The fused net runs all three branches and concatenates them along `dim = 2` into a two-logit head.
+- A correct **`[5, 2]`** out (five patients, two logits) proves the wiring — it claims **nothing** about accuracy.
+
+::: {.notes}
+Voce docente (IT): min-80 (Parsons). Riordina il `forward()` della rete fusa: 3 rami →
+`torch_cat(list(t, c, r), dim = 2)` → head. Vincolo fisso: prima calcoli i rami, POI
+concat-e-head; la larghezza d'ingresso della head = somma delle larghezze dei 3 rami.
+Lo split scrivi-non-addestra collassa CNN+RNN+fused in UN solo schema ("modulo cablato
+dal forward") → da 9 a ~5 chunk effettivi. Nessun training: solo `[5,2]`.
+:::
+
+## The honesty rule — one labeled exception {.smaller}
+
+<!-- HONESTY node, min-92. -->
+
+Everything on screen is either **live** or **declared write-only**. The doctrine is explicit.
+
+- The MLP above is **trained live**; its `roc_auc` is a genuine held-out number.
+- The CNN/RNN/fused nets are **shape-checked write-only** — never presented as trained.
+- The GPU demo's killed CPU epoch **was live** — a real interrupted epoch, not a simulation.
+
+::: {.fragment .callout-warning appearance="simple"}
+**The one labeled exception.** The fused-net **loss curve** is pre-computed — *"I trained
+this earlier on GPU."* It is labeled in the plot title and is the **only** pre-baked result.
+:::
+
+::: {.fragment .callout-note appearance="simple"}
+**`targets` is not an exception.** A cached target re-shown as *"skip"* is **reproducibility**
+(re-derivable, hash-checked: same input $\Rightarrow$ same output), not fakery — conceptually
+the opposite of a pre-baked number shown as live.
+:::
+
+::: {.notes}
+Voce docente (IT): min-92 (MCQ). ✓ unica eccezione ETICHETTATA = la loss-curve opzione B;
+la CPU killata ERA live. Distrattori: "nessuna cache mai" (NO), "tutto DL pre-trainabile
+senza label" (NO), "identico al cache di targets" (NO — la riproducibilità hash-checked è
+un'altra cosa). Distinzione chiave da far atterrare prima del capstone.
+:::
+
+## GPU payoff — where the accelerator actually pays {.smaller}
+
+The accelerator is **not** a magic speed button. Match it to the workload.
+
+- The tiny tabular **MLP does not need a GPU** — it trains in seconds on a CPU (overhead would lose).
+- The payoff is on the **CNN / fused** workload, where the per-epoch cost actually bites.
+- The live classroom move: **start on CPU → watch one epoch crawl → kill it → rerun on GPU.**
+- Authored **write-only** (`#| eval: false`): it runs on the classroom NVIDIA/CUDA machine,
+  where `cuda_is_available()` is `TRUE` — not on this CPU build box (`FALSE`).
+
+::: {.notes}
+Voce docente (IT): non vendere la GPU sul giocattolo (MLP minuscolo), vendila sul carico
+vero (CNN/fuso). L'epoca CPU "uccisa" è un'epoca reale interrotta, non simulata: parte sul
+serio, arranca, la fermi → rerun con `cpu = FALSE`, stesso codice, cambia solo
+l'acceleratore. Su questa macchina di build gira solo in lettura (eval false).
+:::
+
+# Step 03 · LLM as typed ETL {#sec-03-ellmer .center}
+
+<!-- Step 03 (hands-on, 36 min): type_object schema; ONE live extraction; batch map written-not-run; temperature 0. -->
+
+**Objectives.** Turn an LLM into a reproducible ETL, not a chat.
+
+- A **typed schema** (`type_object()`) is the **contract**: declare fields + R types →
+  every note comes back as the same validated record.
+- **One** live structured extraction (first note); the batch `purrr::map` is **written, not run**.
+- `temperature = 0` = **deterministic** ETL (same input → same record).
+
+::: {.notes}
+Voce docente (IT): hands-on (~36 min). L'LLM NON è una chat: è un ETL tipizzato e
+riproducibile. Min-112 (predict-output): struttura del record `type_object()` — 4 campi
+(age integer, ejection_fraction number, on_betablocker boolean, primary_dx enum a 4 valori)
++ cosa fa l'enum se il campo manca (vincola a lista chiusa; opzionali → NA, record resta
+valido). Modello reale: gpt-5.4-nano. Una sola estrazione live, il batch map è write-only.
+:::
+
+## The schema is the contract {.smaller}
+
+A chat returns prose you must re-parse; an **ETL returns a record**. The schema is the difference.
+
+- `type_object()` declares each field + its R type — e.g. `age = type_integer("patient age in years")`.
+- An **enum** (`type_enum`) is a guard rail: `primary_dx` can only be one of a closed list, never `"probably cardiomyopathy"`.
+- Optional fields (EF not stated, beta-blocker not mentioned) come back as **`NA`** — the record stays valid.
+- The batch is **written, not run**: `map()` iterates note-by-note into a tidy tibble; `temperature = 0` keeps it deterministic.
+
+::: {.fragment .callout-note appearance="simple"}
+**Honesty (carried forward).** With no API key, we show a **labeled cached** result from an
+earlier live run — never a faked record. The key lives only in a gitignored `.Renviron`.
+:::
+
+::: {.notes}
+Voce docente (IT): min-124 (MCQ). temperature bassa + `map`: ✓ determinismo (ETL) +
+iterazione elemento-per-elemento. Distrattori: "temp = qualità" (NO), "temp alta + map su
+GPU" (NO), "temp irrilevante per extraction" (NO). La cache etichettata è la stessa
+dottrina dell'opzione-B: un vero record salvato prima, mostrato con etichetta, mai finto.
+:::
+
+# Step 04 · Reproducibility capstone {#sec-04-targets .center}
+
+<!-- Step 04 (demo, 20 min): read the targets DAG (tar_visnetwork); first build runs; re-run all-skip. -->
+
+**Objectives.** Make the whole story reproducible by construction.
+
+- Read the `targets` **DAG** (`tar_visnetwork()`): `cohort_file → cohort`, `model_file → model`,
+  and `model + cohort → explanation`.
+- The `explanation` target is the **bridge**: it reloads the Basic RF and re-derives its VIMP.
+- A **second** `tar_make()` is **all-skip** — input hashes unchanged ⇒ reproducibility, not fakery.
+
+::: {.notes}
+Voce docente (IT): capstone (~20 min, demo). Min-138 (predict-output): predire che il 2°
+`tar_make()` riporti "skip" ovunque + ragione (hash degli input invariati). PROVA col
+valore di ritorno, non col messaggio: `tar_outdated()` == character(0) e `tar_progress()`
+= tutti "skipped" (5 target). Il bridge `explanation` ricalcola DAVVERO la VIMP della RF
+ricaricata → stesso ordine: ejection_fraction / serum_creatinine / age. Stretch Davide:
+il device GPU è un input CIECO se non è un target (targets non lo hash-a).
+:::
+
+## Concept map — the whole workshop {#sec-concept-map-h .smaller}
+
+```{=html}
+<style>
+#sec-concept-map svg {
+  max-height: 880px !important;
+  height: 880px !important;
+  width: auto !important;
+  max-width: 100% !important;
+  display: block;
+  margin: 0 auto;
+}
+</style>
+```
+
+::: {#sec-concept-map}
+```{mermaid}
+%%| file: concept-graph.mmd
+```
+:::
+
+::: {.notes}
+Voce docente (IT): 28 nodi / 5 blocchi (spec §11.2). Nessuno tiene 28 chunk insieme:
+sono spezzati nei 5 blocchi (recap → interpret → deep → ellmer → targets), ciascuno
+≤ 7±2, con reset duro tra blocchi. La mostro a FINE giornata come sintesi, NON
+all'inizio come programma. È anche il rilevatore di sovraccarico.
+:::
+
+## You can hand this pipeline to a peer {.center}
+
+The capstone payoff: this **reproducible explain → deep → LLM** pipeline is sealed.
+
+- A peer can clone the folder, run `tar_make()`, and re-derive the **same** explanation of
+  the Basic model — deterministically, hash-checked.
+- Basic **promised** that Advanced would reload its validated model. **We delivered:** day one
+  reopened that exact `final_fit`, and we never retrained it.
+
+The loop is closed — from a validated model to a reproducible pipeline a colleague can re-run.
+
+::: {.notes}
+Voce docente (IT): chiusura. Chiude il loop Basic↔Advanced: Basic prometteva che Advanced
+RICARICA il modello (pre-hook), e l'abbiamo mantenuto — step 00 ha riaperto `final_fit`
+senza retrain. Il payoff finale è la consegnabilità: la pipeline spiegata-deep-LLM è
+riproducibile da un terzo via `targets`. Niente riferimenti temporali, niente nomi oltre
+Corrado Lanera (UBEP).
+:::

@@ -1,0 +1,71 @@
+flowchart TD
+  BASIC[Basic's validated tidymodels workflow]
+  PRED[1-row predict on finalized model]
+  WARM[Pre-warm torch session]
+
+  INTERP[Interpretability: open the black box]
+  VIMP[Permutation VIMP via vip]
+  SHAP[Agnostic SHAP via kernelshap + shapviz]
+  ANCHOR[Logistic regression ANCHOR]
+  COEF[Logistic coefficients = sanity check]
+  PARAMS_I[SHAP params: background size / which rows / exact-vs-sampling]
+
+  DL[Deep Learning: differentiable composable modules]
+  MLP[Tiny MLP via brulee/luz]
+  PARAMS_DL[MLP knobs: epochs / learn_rate / hidden_units / batch / activation / penalty]
+  BV[Bias-variance tradeoff]
+  NNMOD[nn_module architectures written not trained]
+  CNN[1D-CNN: kernel / stride / channels]
+  RNN[RNN: hidden / sequence / LSTM-GRU]
+  FUSED[Fused 3-branch net: single forward / shape-check]
+  GPU[Hardware matters: GPU payoff]
+  OPTB[OPTION B: pre-trained loss curve labeled]
+
+  TRANS[Transformer to ellmer bridge]
+  ELLMER[LLM as typed reproducible ETL]
+  SCHEMA[type_object typed schema]
+  LLMPAR[LLM params: model / temperature / typing]
+  BATCH[purrr::map batch written not run]
+
+  TARGETS[targets = reproducibility signature]
+  DAG[tar_visnetwork DAG]
+  SKIP[tar_make then re-run all-skip]
+
+  HONESTY[Honesty rule: nothing pre-baked shown as live]
+
+  BASIC -->|enables| PRED
+  PRED -->|sets up| INTERP
+  BASIC -->|precedes| WARM
+  WARM -->|enables| DL
+  INTERP -->|is-realized-by| VIMP
+  INTERP -->|is-realized-by| SHAP
+  SHAP -->|is-explained-on| ANCHOR
+  ANCHOR -->|provides| COEF
+  COEF -->|validates| SHAP
+  SHAP -->|tuned-by| PARAMS_I
+  VIMP -->|compares-with| SHAP
+  INTERP -->|enables| DL
+  DL -->|is-realized-by| MLP
+  MLP -->|has-knob| PARAMS_DL
+  PARAMS_DL -->|governs| BV
+  MLP -->|carries| SHAP
+  DL -->|generalizes-to| NNMOD
+  NNMOD -->|is-a| CNN
+  NNMOD -->|is-a| RNN
+  NNMOD -->|is-a| FUSED
+  CNN -->|composes-into| FUSED
+  RNN -->|composes-into| FUSED
+  FUSED -->|motivates| GPU
+  GPU -->|justifies| OPTB
+  OPTB -->|excepted-by| HONESTY
+  DL -->|bridges-to| TRANS
+  TRANS -->|leads-to| ELLMER
+  ELLMER -->|requires| SCHEMA
+  ELLMER -->|tuned-by| LLMPAR
+  ELLMER -->|scales-via| BATCH
+  ELLMER -->|is-traced-by| TARGETS
+  TARGETS -->|visualized-by| DAG
+  TARGETS -->|demonstrated-by| SKIP
+  HONESTY -->|constrains| MLP
+  HONESTY -->|constrains| ELLMER
+  HONESTY -->|constrains| SKIP
