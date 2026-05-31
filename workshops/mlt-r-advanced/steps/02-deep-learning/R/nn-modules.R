@@ -7,7 +7,7 @@ cnn_branch <- nn_module(
     self$conv <- nn_conv1d(1, ch, kernel_size = 3)
     self$pool <- nn_adaptive_avg_pool1d(1)
   },
-  forward = function(x) self$pool(nnf_relu(self$conv(x)))$squeeze(3),   # [B, ch]
+  forward = function(x) self$pool(nnf_relu(self$conv(x)))$squeeze(3),   # [B, sig_ch]
 )
 
 # RNN over a vitals sequence ----
@@ -18,7 +18,7 @@ rnn_branch <- nn_module(
   },
   forward = function(x) {
     out <- self$lstm(x)
-    out[[1]][ , dim(out[[1]])[2], ]   # last time step -> [B, hidden]
+    out[[1]][ , dim(out[[1]])[2], ]   # explicitly index the LAST time step -> [B, hidden]
   },
 )
 
@@ -32,6 +32,10 @@ fused_net <- nn_module(
     self$head <- nn_linear(16 + sig_ch + hidden, 2)
   },
   forward = function(x_tab, x_sig, x_seq) {
-    self$head(torch_cat(list(self$tab(x_tab), self$cnn(x_sig), self$rnn(x_seq)), dim = 2))
+    t <- self$tab(x_tab)   # [B, 16]
+    c <- self$cnn(x_sig)   # [B, sig_ch]
+    r <- self$rnn(x_seq)   # [B, hidden]
+    # concat along the feature dim -> [B, 16 + sig_ch + hidden], then head -> [B, 2]
+    self$head(torch_cat(list(t, c, r), dim = 2))
   },
 )

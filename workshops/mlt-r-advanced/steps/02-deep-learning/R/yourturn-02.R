@@ -1,6 +1,8 @@
 # Your turn (Parsons) — reorder these lines into a correct fused forward().
 # Goal: run the three branches, concatenate along dim = 2, then the head.
-# Which widths must match? What is the output dim? (hint: head expects 16 + sig_ch + hidden)
+# Which widths must match? What is the output dim?
+# (hint: the tab branch outputs 16 -> see nn_linear(n_tab, 16); CNN outputs sig_ch; RNN outputs hidden)
+# head expects their sum: 16 + sig_ch + hidden
 #
 #   self$head(torch_cat(list(t, c, r), dim = 2))
 #   r <- self$rnn(x_seq)
