@@ -26,7 +26,7 @@ Render di entrambe le versioni con l'helper di repo:
     Rscript _solved.R steps/NN-slug/NN-slug.qmd
 
 Convenzione: ogni blocco "da fare a lezione" è una COPPIA di chunk gemelli.
-- Il chunk SOLVED ha `eval=params$solved`  -> esegue (e mostra) la soluzione.
+- Il chunk SOLVED ha `eval=params$solved, echo=params$solved`  -> esegue (e mostra) la soluzione SOLO in solved mode.
 - Il chunk BLANK  ha `eval=!params$solved` -> NON esegue; mostra (echo) lo scheletro
   `R/yourturn-NN.R` con i `___` da completare dal vivo.
 
@@ -42,7 +42,7 @@ così lo scheletro `___` appare evidenziato ma non viene mai parsato come codice
 
 Prompt for the live exercise goes here (ENGLISH, student-facing).
 
-```{r solved, eval=params$solved}
+```{r solved, eval=params$solved, echo=params$solved}
 #| code-fold: false
 # --- SOLVED: la soluzione gira e si vede solo quando params$solved == TRUE.
 # Esempio (da rimpiazzare nello step reale):

@@ -53,7 +53,7 @@ turn `death_event` into a two-level factor `outcome` with the **event first**
 flags explicit factors. The result should have 12 columns (11 predictors +
 `outcome`).
 
-```{r wrangle-solved, eval=params$solved}
+```{r wrangle-solved, eval=params$solved, echo=params$solved}
 #| code-fold: false
 # Wrangle ----
 hf <- hf_raw |>
@@ -78,7 +78,7 @@ glimpse(hf)
 cat("```r", readLines(here("R", "yourturn-01.R")), "```", sep = "\n")
 ```
 
-```{r check, eval=params$solved}
+```{r check, eval=params$solved, echo=params$solved}
 #| code-fold: false
 # Quick checks: 12 columns, a 2-level factor (event first), ~32% events.
 ncol(hf)

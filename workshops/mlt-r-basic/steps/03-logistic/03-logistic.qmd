@@ -98,7 +98,7 @@ Attach predictions to the held-out `test` set with `augment()`, then score **bot
 metrics on the event class. Because `died` is the *first* factor level, point
 yardstick at the `.pred_died` column — no `event_level` argument needed.
 
-```{r score-solved, eval=params$solved}
+```{r score-solved, eval=params$solved, echo=params$solved}
 #| code-fold: false
 # Predict & score (both metrics) ----
 hf_metrics <- metric_set(roc_auc, pr_auc)

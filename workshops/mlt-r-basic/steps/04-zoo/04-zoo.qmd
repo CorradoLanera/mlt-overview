@@ -140,7 +140,7 @@ Rank the models, pull the winner's id and best hyper-parameters, **finalize** th
 workflow, and run **`last_fit()`** on the original split to score it once on the
 held-out test set — reporting ROC-AUC, PR-AUC, and accuracy.
 
-```{r finalize-solved, eval=params$solved}
+```{r finalize-solved, eval=params$solved, echo=params$solved}
 #| code-fold: false
 # Finalize & validate ----
 best_id     <- rank_results(wf_res, rank_metric = "roc_auc", select_best = TRUE) |>
@@ -160,7 +160,7 @@ cat("```r", readLines(here("R", "yourturn-04.R")), "```", sep = "\n")
 
 ## Test-set ROC & PR curves, then save the winner
 
-```{r curves-and-save, eval=params$solved}
+```{r curves-and-save, eval=params$solved, echo=params$solved}
 #| code-fold: false
 preds <- collect_predictions(final_fit)
 
