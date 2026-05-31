@@ -17,3 +17,5 @@ renv/staging/
 # Rendered step driver HTML (demo steps 00/02/05) — regenerable from the .qmd
 /steps/**/*.html
 .Renviron
+# targets store (build output of the step-04 capstone) — regenerable from _targets.R
+/steps/**/_targets/
