@@ -17,7 +17,7 @@ execute:
 Cumulative snapshot: data + split + recipe are given. The new beat is the heart of
 the workshop — a **`workflow_set`** of four candidate models (penalized logistic,
 kNN, RBF-SVM, random forest), each **tuned by 5-fold cross-validation**. We rank
-them by ROC-AUC (watching PR-AUC too), finalize the winner, and validate it once on
+them by AUC-ROC (watching AUC-PR too), finalize the winner, and validate it once on
 the held-out test set with `last_fit()`.
 
 <!--
@@ -79,7 +79,7 @@ base_rec <- recipe(outcome ~ ., data = train) |>
 
 Each spec leaves its key hyper-parameters as `tune()`. We bundle them with the one
 recipe into a `workflow_set`, then `workflow_map()` tunes every workflow over a
-size-8 grid on 5-fold cross-validation, scoring **both** ROC-AUC and PR-AUC.
+size-8 grid on 5-fold cross-validation, scoring **both** AUC-ROC and AUC-PR.
 
 ```{r tune}
 #| code-fold: false
@@ -138,7 +138,7 @@ comparison is the one we trust. Both metrics tell a consistent story here.
 
 Rank the models, pull the winner's id and best hyper-parameters, **finalize** that
 workflow, and run **`last_fit()`** on the original split to score it once on the
-held-out test set — reporting ROC-AUC, PR-AUC, and accuracy.
+held-out test set — reporting AUC-ROC, AUC-PR, and accuracy.
 
 ```{r finalize-solved, eval=params$solved, echo=params$solved}
 #| code-fold: false

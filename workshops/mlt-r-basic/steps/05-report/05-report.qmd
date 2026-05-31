@@ -79,7 +79,7 @@ hf |>
 
 Four model families (penalized logistic regression, k-nearest neighbours,
 RBF-SVM, random forest) competed, each tuned over a grid on 5-fold
-cross-validation. The ranking by cross-validated ROC-AUC:
+cross-validation. The ranking by cross-validated AUC-ROC:
 
 ```{r ranking}
 model_label <- c(
@@ -93,7 +93,7 @@ wf_rank |>
   dplyr::filter(.metric == "roc_auc") |>
   transmute(
     Model        = model_label[wflow_id],
-    `CV ROC-AUC` = round(mean, 3),
+    `CV AUC-ROC` = round(mean, 3),
     `Std. error` = round(std_err, 3),
     Rank         = rank,
   )
@@ -116,10 +116,10 @@ test_pr  <- get_metric("pr_auc")
 test_acc <- get_metric("accuracy")
 ```
 
-The winner is **`r model_label[winner_id]`**. Its cross-validated ROC-AUC was
+The winner is **`r model_label[winner_id]`**. Its cross-validated AUC-ROC was
 **`r round(cv_auc, 3)`**; refit on the training split and scored once on the
-held-out test set, it reached a test ROC-AUC of **`r round(test_roc, 3)`**, a
-PR-AUC of **`r round(test_pr, 3)`**, and an accuracy of
+held-out test set, it reached a test AUC-ROC of **`r round(test_roc, 3)`**, a
+AUC-PR of **`r round(test_pr, 3)`**, and an accuracy of
 **`r round(test_acc, 3)`**. The gap between the cross-validated and the
 single-split test numbers is the honest noise of a small cohort (~75 test
 patients) — which is exactly why we pre-commit to one held-out evaluation and read

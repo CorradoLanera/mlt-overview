@@ -89,5 +89,5 @@ count(hf, outcome)
 We now have a clean, 12-column tibble: `outcome` plus the eleven predictors. The
 event (`died`) is the minority class — roughly 32% — and putting it *first* makes
 every downstream metric score it as the positive class automatically. That
-minority share is exactly what will steer our metric choice (ROC-AUC **and**
-PR-AUC) in the next steps.
+minority share is exactly what will steer our metric choice (AUC-ROC **and**
+AUC-PR) in the next steps.

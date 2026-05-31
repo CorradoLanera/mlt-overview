@@ -1,11 +1,11 @@
 # Your turn — Step 04: pick the winner, finalize it, validate on the test set.
 #
 # `wf_res` holds the cross-validated results for all four models. Now:
-#   1. rank the models by ROC-AUC and take the top one's id,
+#   1. rank the models by AUC-ROC and take the top one's id,
 #   2. pull its tuning result and its best hyper-parameters,
 #   3. finalize that workflow with those parameters,
 #   4. run last_fit() on the ORIGINAL split to score it on the held-out test set,
-#      reporting ROC-AUC, PR-AUC, and accuracy.
+#      reporting AUC-ROC, AUC-PR, and accuracy.
 #
 # Event-first convention (`died` is the first level), so no `event_level` is needed.
 # Fill the ___ blanks.

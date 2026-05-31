@@ -59,7 +59,7 @@ glimpse(hf)
 
 # The tidymodels object-map {#sec-objectmap}
 
-Split → recipe → spec → workflow → fit. Five objects, one chain. (Heart-failure
+Split $\to$ recipe $\to$ spec $\to$ workflow $\to$ fit. Five objects, one chain. (Heart-failure
 has no missing values, so the recipe needs no imputation — just dummy-coding,
 zero-variance removal, and normalization.)
 
