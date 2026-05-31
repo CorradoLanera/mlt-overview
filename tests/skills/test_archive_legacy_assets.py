@@ -33,3 +33,13 @@ def test_classify_splits_shared_and_xaringan_only():
     assert "img/MLvsTrad.png" in to_copy
     # old_only.png + the xaringan css are not in the live blob -> move
     assert to_move == {"img/old_only.png", "xaringan-themer.css"}
+
+
+def test_extract_refs_handles_here_here_nested_call():
+    text = (
+        'knitr::include_graphics(here::here("img/class-reg.png"))\n'
+        '```{r, out.width="60%"}\nknitr::include_graphics(\n  here::here("img/full_transformer.png")\n)\n```\n'
+    )
+    refs = ala.extract_refs(text)
+    assert "img/class-reg.png" in refs
+    assert "img/full_transformer.png" in refs

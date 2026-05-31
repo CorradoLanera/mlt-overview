@@ -28,7 +28,7 @@ _REF_RE = re.compile(
     r'|src\s*=\s*["\']([^"\']+)["\']'      # html src
     r'|href\s*=\s*["\']([^"\']+)["\']'     # html href (css link)
     r'|url\(\s*["\']?([^)"\']+)["\']?\s*\)'  # css url()
-    r'|include_graphics\(\s*["\']([^"\']+)["\']',  # knitr
+    r'|include_graphics\([^)]*?["\']([^"\']+\.(?:png|jpe?g|gif|svg|webp|pdf))["\']',  # knitr (handles here::here())
     re.IGNORECASE,
 )
 _ASSET_EXT_RE = re.compile(r"\.(png|jpe?g|gif|svg|webp|css|mp4|webm|pdf)$", re.IGNORECASE)
@@ -58,6 +58,8 @@ def classify(referenced: set[str], live_blob: str) -> tuple[set[str], set[str]]:
     to_copy: set[str] = set()
     for rel in referenced:
         base = rel.rsplit("/", 1)[-1]
+        # Substring match on basename: biased toward COPY (safe — asset duplicated
+        # into the archive) over MOVE (which could strand a live reference).
         if base and base in live_blob:
             to_copy.add(rel)
         else:
