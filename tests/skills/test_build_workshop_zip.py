@@ -32,6 +32,8 @@ def _make_workshop(tmp_path):
     (ws / "renv" / "library" / "pkg.txt").write_text("x", encoding="utf-8")
     (ws / "steps" / "01-import" / "01-import.html").write_text("<html>", encoding="utf-8")
     (ws / "steps" / "01-import" / "out.rds").write_text("bin", encoding="utf-8")
+    (ws / "steps" / "01-import" / "output").mkdir()
+    (ws / "steps" / "01-import" / "output" / ".keep").write_text("", encoding="utf-8")
     _git(ws, "add", "-A")
     _git(ws, "commit", "-qm", "init")
     return ws
@@ -79,3 +81,29 @@ def test_build_zip_ships_source_and_injects_deck(tmp_path):
     assert "mlt-r-basic/CLAUDE.md" not in names                  # authoring excluded
     assert not any("renv/library" in n for n in names)           # gitignored junk excluded
     assert "mlt-r-basic/steps/01-import/01-import.html" not in names  # gitignored
+
+
+def test_build_zip_without_deck_ships_source_only(tmp_path):
+    ws = _make_workshop(tmp_path)
+    out = tmp_path / "dist" / "mlt-r-basic.zip"
+    bwz.build_zip(ws, tmp_path / "no_such_deck_dir", out)
+    names = set(zipfile.ZipFile(out).namelist())
+    assert "mlt-r-basic/renv.lock" in names
+    assert not any(n.startswith("mlt-r-basic/slides/") for n in names)
+
+
+def test_keep_files_preserve_empty_step_dirs(tmp_path):
+    ws = _make_workshop(tmp_path)
+    deck = tmp_path / "slides_src"
+    deck.mkdir()
+    (deck / "00-basic-deck.html").write_text("<html>", encoding="utf-8")
+    out = tmp_path / "dist" / "mlt-r-basic.zip"
+    bwz.build_zip(ws, deck, out)
+    names = set(zipfile.ZipFile(out).namelist())
+    assert "mlt-r-basic/steps/01-import/output/.keep" in names
+
+
+def test_main_errors_when_no_deck(tmp_path):
+    ws = _make_workshop(tmp_path)
+    # ws is its own git repo with no slides/workshops/<slug> -> no deck -> exit 2
+    assert bwz.main([str(ws)]) == 2

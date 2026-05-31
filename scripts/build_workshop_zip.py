@@ -29,11 +29,30 @@ _EXCLUDE_NAMES = {"CLAUDE.md"}
 
 def tracked_files(workshop_dir: Path) -> list[str]:
     """Git-tracked files under workshop_dir, POSIX paths relative to it."""
-    res = subprocess.run(
-        ["git", "ls-files", "-z"],
-        cwd=str(workshop_dir), capture_output=True, text=True, check=True,
-    )
+    workshop_dir = Path(workshop_dir)
+    try:
+        res = subprocess.run(
+            ["git", "ls-files", "-z"],
+            cwd=str(workshop_dir), capture_output=True, text=True, check=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        raise SystemExit(
+            f"ERROR: cannot list tracked files in {workshop_dir} "
+            f"(is it inside a git repository, with git installed?): {e}"
+        )
     return [p for p in res.stdout.split("\0") if p]
+
+
+def _repo_root(start: Path) -> Path:
+    """Absolute path to the git repo root containing `start`."""
+    try:
+        res = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            cwd=str(start), capture_output=True, text=True, check=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        raise SystemExit(f"ERROR: {start} is not inside a git repository: {e}")
+    return Path(res.stdout.strip())
 
 
 def included_source(workshop_dir: Path) -> list[str]:
@@ -85,16 +104,20 @@ def main(argv=None) -> int:
     ap.add_argument("workshop_dir")
     ap.add_argument("--deck-dir", default=None,
                     help="slides source dir holding the rendered deck "
-                         "(default: slides/workshops/<slug>)")
+                         "(default: <repo-root>/slides/workshops/<slug>)")
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
-    ws = Path(args.workshop_dir)
-    deck_dir = Path(args.deck_dir) if args.deck_dir else Path("slides/workshops") / ws.name
-    out = Path(args.out) if args.out else Path("dist") / f"{ws.name}.zip"
+    ws = Path(args.workshop_dir).resolve()
+    root = _repo_root(ws)
+    deck_dir = (Path(args.deck_dir).resolve() if args.deck_dir
+                else root / "slides" / "workshops" / ws.name)
+    out = (Path(args.out).resolve() if args.out
+           else root / "dist" / f"{ws.name}.zip")
     decks = rendered_decks(deck_dir)
     if not decks:
-        print(f"WARNING: no rendered deck in {deck_dir} — run "
-              f"`quarto render {deck_dir}` first", file=sys.stderr)
+        print(f"ERROR: no rendered deck in {deck_dir}. "
+              f"Render it first (e.g. `quarto render {deck_dir}`).", file=sys.stderr)
+        return 2
     build_zip(ws, deck_dir, out)
     size_mb = out.stat().st_size / 1_000_000
     print(f"built {out} ({size_mb:.1f} MB; {len(decks)} deck(s) injected)", file=sys.stderr)
