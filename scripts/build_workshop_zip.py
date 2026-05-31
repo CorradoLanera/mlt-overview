@@ -1,81 +1,78 @@
 #!/usr/bin/env python3
 """Build a source-only distributable ZIP for an MLT workshop.
 
-Prunes to source-only, vendors the shared brand SCSS partial into the workshop's
-slides/ (rewriting the theme path), and zips with a top-level <slug>/ folder so
-usethis::use_course() unpacks cleanly. The shipped deck HTML must already be
-rendered with embed-resources:true so its *_files/ dir can be excluded.
+The workshop folder (workshops/<slug>/) holds only the R-project SOURCE. Slide
+sources live separately in slides/workshops/<slug>/ and are NOT shipped; instead
+the already-rendered, embed-resources deck HTML is injected into the ZIP under
+<slug>/slides/. R-project inclusion is driven by `git ls-files` (only tracked
+source ships; gitignored renv/library, .quarto, step renders, outputs are
+excluded automatically), minus CLAUDE.md (authoring-only). The ZIP has a single
+top-level <slug>/ folder so usethis::use_course() unpacks cleanly.
 
 Usage:
   python scripts/build_workshop_zip.py workshops/mlt-r-basic
-  python scripts/build_workshop_zip.py workshops/mlt-r-basic --out dist/mlt-r-basic.zip
+  python scripts/build_workshop_zip.py workshops/mlt-r-basic \\
+      --deck-dir slides/workshops/mlt-r-basic --out dist/mlt-r-basic.zip
 """
 from __future__ import annotations
 
 import argparse
 import shutil
+import subprocess
 import sys
 import tempfile
 import zipfile
 from pathlib import Path
 
-DEFAULT_BRAND = Path("styles/_brand.scss")
-_EXCLUDE_NAMES = {".Rhistory", ".DS_Store", "Thumbs.db", "CLAUDE.md"}
-_EXCLUDE_PART_DIRS = {".quarto", ".Rproj.user", ".git"}
+_EXCLUDE_NAMES = {"CLAUDE.md"}
 
 
-def is_excluded(rel_posix: str) -> bool:
-    """True if the relative POSIX path should be left out of the ZIP."""
-    parts = rel_posix.split("/")
-    name = parts[-1]
-    if rel_posix == "renv/library" or rel_posix.startswith("renv/library/"):
-        return True
-    if rel_posix == "renv/staging" or rel_posix.startswith("renv/staging/"):
-        return True
-    if rel_posix == "dist" or rel_posix.startswith("dist/"):
-        return True
-    if any(p in _EXCLUDE_PART_DIRS for p in parts):
-        return True
-    if any(p.endswith("_files") for p in parts):
-        return True
-    if name in _EXCLUDE_NAMES:
-        return True
-    return False
+def tracked_files(workshop_dir: Path) -> list[str]:
+    """Git-tracked files under workshop_dir, POSIX paths relative to it."""
+    res = subprocess.run(
+        ["git", "ls-files", "-z"],
+        cwd=str(workshop_dir), capture_output=True, text=True, check=True,
+    )
+    return [p for p in res.stdout.split("\0") if p]
 
 
-def vendor_brand(staging: Path, brand_src: Path) -> None:
-    """Copy the shared brand partial into staging/slides and rewrite the theme path."""
-    slides = staging / "slides"
-    if not slides.is_dir():
-        return
-    shutil.copy2(brand_src, slides / "_brand.scss")
-    qfile = slides / "_quarto.yml"
-    if qfile.exists():
-        text = qfile.read_text(encoding="utf-8")
-        text = text.replace("../../../styles/_brand.scss", "_brand.scss")
-        qfile.write_text(text, encoding="utf-8")
+def included_source(workshop_dir: Path) -> list[str]:
+    """Tracked source to ship: git-tracked minus authoring-only files."""
+    return [p for p in tracked_files(Path(workshop_dir))
+            if Path(p).name not in _EXCLUDE_NAMES]
 
 
-def _kept_files(workshop_dir: Path) -> list[Path]:
-    out = []
-    for p in sorted(workshop_dir.rglob("*")):
-        if p.is_file() and not is_excluded(p.relative_to(workshop_dir).as_posix()):
-            out.append(p)
-    return out
+def rendered_decks(deck_dir: Path) -> list[Path]:
+    """The rendered, self-contained deck HTML files to inject under slides/."""
+    deck_dir = Path(deck_dir)
+    if not deck_dir.is_dir():
+        return []
+    return sorted(p for p in deck_dir.glob("*.html") if p.is_file())
 
 
-def build_zip(workshop_dir: Path, brand_src: Path, out_zip: Path, slug: str | None = None) -> Path:
+def build_zip(workshop_dir, deck_dir, out_zip, slug=None) -> Path:
     workshop_dir = Path(workshop_dir)
+    deck_dir = Path(deck_dir)
     slug = slug or workshop_dir.name
     out_zip = Path(out_zip)
     out_zip.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as td:
         staging = Path(td) / slug
-        for f in _kept_files(workshop_dir):
-            dest = staging / f.relative_to(workshop_dir)
+        # 1. tracked R-project source (minus CLAUDE.md)
+        for rel in included_source(workshop_dir):
+            src = workshop_dir / rel
+            if not src.is_file():
+                continue
+            dest = staging / rel
             dest.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(f, dest)
-        vendor_brand(staging, brand_src)
+            shutil.copy2(src, dest)
+        # 2. inject the rendered deck(s) under <slug>/slides/
+        decks = rendered_decks(deck_dir)
+        if decks:
+            (staging / "slides").mkdir(parents=True, exist_ok=True)
+            for d in decks:
+                shutil.copy2(d, staging / "slides" / d.name)
+        # 3. zip with a single top-level <slug>/ folder
         with zipfile.ZipFile(out_zip, "w", zipfile.ZIP_DEFLATED) as z:
             for p in sorted(staging.rglob("*")):
                 if p.is_file():
@@ -86,14 +83,21 @@ def build_zip(workshop_dir: Path, brand_src: Path, out_zip: Path, slug: str | No
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("workshop_dir")
-    ap.add_argument("--brand", default=str(DEFAULT_BRAND))
+    ap.add_argument("--deck-dir", default=None,
+                    help="slides source dir holding the rendered deck "
+                         "(default: slides/workshops/<slug>)")
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
     ws = Path(args.workshop_dir)
+    deck_dir = Path(args.deck_dir) if args.deck_dir else Path("slides/workshops") / ws.name
     out = Path(args.out) if args.out else Path("dist") / f"{ws.name}.zip"
-    build_zip(ws, Path(args.brand), out)
+    decks = rendered_decks(deck_dir)
+    if not decks:
+        print(f"WARNING: no rendered deck in {deck_dir} — run "
+              f"`quarto render {deck_dir}` first", file=sys.stderr)
+    build_zip(ws, deck_dir, out)
     size_mb = out.stat().st_size / 1_000_000
-    print(f"built {out} ({size_mb:.1f} MB)", file=sys.stderr)
+    print(f"built {out} ({size_mb:.1f} MB; {len(decks)} deck(s) injected)", file=sys.stderr)
     return 0
 
 
