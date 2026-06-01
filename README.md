@@ -15,15 +15,31 @@ One course, three modules, for biomedical/clinical graduate students (UBEP, Univ
 **Overview → Basic → Advanced.** The Overview ends (ch. 10) by pre-hooking into the Basic
 workshop; Basic pre-hooks into Advanced. Prerequisites are stated at the top of each module.
 
+## Public site
+
+Browse the course at **<https://corradolanera.github.io/mlt-overview/>** — slides, schedule, and
+downloads, navigable by students and by external instructors reviewing the programme. The site is a
+Quarto website in `site/` built into `/docs` by `python scripts/build_site.py` (no CI; commit `/docs`).
+
+Per-cohort materials — the three self-contained decks and the two workshop ZIPs — ship as **GitHub
+Release assets** (one release per cohort, tag `coorte-AAAA`), built with `python scripts/build_release.py`.
+
+> **One-time:** GitHub → Settings → Pages → *Deploy from a branch* → `main` / `/docs`.
+> **After content changes:** `python scripts/build_site.py --clean`, then commit `/docs`.
+> **Per cohort:** `python scripts/build_release.py` → `git tag coorte-AAAA` → create the Release → upload the 5 assets.
+
 ## Repository map
 
 - `course/` — overview chapter content (`_manifest.yml` is the source of truth).
 - `slides/` — the rendered overview deck.
+- `site/` — the public Quarto website sources (built into `docs/`).
+- `docs/` — the published site served by GitHub Pages (`main` `/docs`).
 - `styles/_brand.scss` — shared palette + fonts used by every deck.
 - `workshops/` — the two self-contained R workshops (each with its own `renv`).
 - `dist/` — built workshop ZIPs (git-ignored; published as GitHub Release assets).
+- `scripts/build_site.py` — builds the live site into `docs/`; `scripts/build_release.py` — builds per-cohort Release assets.
 - `_archive/legacy-xaringan/` — the frozen, reproducible pre-Quarto deck.
-- `dev-docs/superpowers/` — design specs and implementation plans.
+- `dev-docs/` — internal design specs & plans (not published).
 
 ## Authoring
 
