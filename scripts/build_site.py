@@ -3,8 +3,7 @@
 
 Two parts:
   - write_partials(root, out): generate site/_generated/*.md from course sources (unit-tested).
-  - main(): orchestrate the full build (partials -> quarto render site -> 3 decks non-embed
-    into docs/slides -> copy img -> write .nojekyll). Implemented in a later task.
+  - main(): orchestrate the full build (partials -> quarto render site -> 3 decks non-embed into docs/slides -> copy img -> write .nojekyll).
 
 Stdlib only; Quarto invoked via subprocess. Deterministic: same inputs -> same /docs.
 """
@@ -15,6 +14,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -117,6 +117,25 @@ def write_partials(root: Path, out_dir: Path) -> list[Path]:
 
 DOCS = Path("docs")
 
+_NONEMBED_YAML = "format:\n  revealjs:\n    embed-resources: false\n"
+
+
+@contextmanager
+def _nonembed_metadata():
+    """Yield the path of a temp metadata file forcing embed-resources:false.
+
+    `-M embed-resources:false` does NOT override a value set in a document's YAML
+    front-matter; a --metadata-file does. Cleaned up even if the render fails.
+    """
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".yml",
+                                     delete=False, encoding="utf-8") as tmp:
+        tmp.write(_NONEMBED_YAML)
+        tmp_path = Path(tmp.name)
+    try:
+        yield tmp_path
+    finally:
+        tmp_path.unlink(missing_ok=True)
+
 
 def _run(cmd: list[str], cwd: Path | None = None) -> None:
     subprocess.run(cmd, cwd=str(cwd) if cwd else None, check=True)
@@ -124,21 +143,14 @@ def _run(cmd: list[str], cwd: Path | None = None) -> None:
 
 def render_theory_deck(root: Path) -> None:
     """Render slides/slides.qmd non-embed; copy html + _files into docs/slides/."""
-    # slides.qmd has embed-resources:true in front-matter; a metadata-file with
-    # a format-namespaced key is the only reliable override.
-    override = "format:\n  revealjs:\n    embed-resources: false\n"
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".yml",
-                                     delete=False, encoding="utf-8") as tmp:
-        tmp.write(override)
-        tmp_path = tmp.name
-    try:
-        _run(["quarto", "render", "slides/slides.qmd",
-              "--metadata-file", tmp_path], cwd=root)
-    finally:
-        Path(tmp_path).unlink(missing_ok=True)
+    with _nonembed_metadata() as meta:
+        _run(["quarto", "render", "slides/slides.qmd", "--metadata-file", str(meta)], cwd=root)
     docs_slides = root / DOCS / "slides"
     docs_slides.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(root / "slides" / "slides.html", docs_slides / "slides.html")
+    src = root / "slides" / "slides.html"
+    if not src.exists():
+        raise FileNotFoundError(f"Expected rendered deck not found: {src}")
+    shutil.copy2(src, docs_slides / "slides.html")
     files = root / "slides" / "slides_files"
     if files.is_dir():
         shutil.copytree(files, docs_slides / "slides_files", dirs_exist_ok=True)
@@ -147,17 +159,8 @@ def render_theory_deck(root: Path) -> None:
 def render_workshop_deck(root: Path, slug: str) -> None:
     """Render a workshop deck non-embed; copy into docs/slides/workshops/<slug>/."""
     wdir = root / "slides" / "workshops" / slug
-    # _quarto.yml has embed-resources:true; metadata-file is the reliable override.
-    override = "format:\n  revealjs:\n    embed-resources: false\n"
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".yml",
-                                     delete=False, encoding="utf-8") as tmp:
-        tmp.write(override)
-        tmp_path = tmp.name
-    try:
-        _run(["quarto", "render", str(wdir),
-              "--metadata-file", tmp_path], cwd=root)
-    finally:
-        Path(tmp_path).unlink(missing_ok=True)
+    with _nonembed_metadata() as meta:
+        _run(["quarto", "render", str(wdir), "--metadata-file", str(meta)], cwd=root)
     dst = root / DOCS / "slides" / "workshops" / slug
     dst.mkdir(parents=True, exist_ok=True)
     for p in wdir.glob("*.html"):
@@ -170,8 +173,13 @@ def render_workshop_deck(root: Path, slug: str) -> None:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Build the live public site into /docs")
     ap.add_argument("--root", default=".")
+    ap.add_argument("--clean", action="store_true",
+                    help="remove docs/ before building (removes stale assets)")
     args = ap.parse_args(argv)
     root = Path(args.root).resolve()
+
+    if args.clean:
+        shutil.rmtree(root / DOCS, ignore_errors=True)
 
     write_partials(root, root / "site" / "_generated")
     _run(["quarto", "render", "site"], cwd=root)
