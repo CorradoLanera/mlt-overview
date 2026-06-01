@@ -10,7 +10,11 @@ Stdlib only; Quarto invoked via subprocess. Deterministic: same inputs -> same /
 """
 from __future__ import annotations
 
+import argparse
+import shutil
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -109,11 +113,81 @@ def write_partials(root: Path, out_dir: Path) -> list[Path]:
     return written
 
 
-# --- orchestration (implemented in a later task) ---------------------------
+# --- orchestration ----------------------------------------------------------
 
-def main(argv=None) -> int:  # pragma: no cover
-    raise SystemExit("build_site.main is implemented in a later task")
+DOCS = Path("docs")
 
 
-if __name__ == "__main__":  # pragma: no cover
+def _run(cmd: list[str], cwd: Path | None = None) -> None:
+    subprocess.run(cmd, cwd=str(cwd) if cwd else None, check=True)
+
+
+def render_theory_deck(root: Path) -> None:
+    """Render slides/slides.qmd non-embed; copy html + _files into docs/slides/."""
+    # slides.qmd has embed-resources:true in front-matter; a metadata-file with
+    # a format-namespaced key is the only reliable override.
+    override = "format:\n  revealjs:\n    embed-resources: false\n"
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".yml",
+                                     delete=False, encoding="utf-8") as tmp:
+        tmp.write(override)
+        tmp_path = tmp.name
+    try:
+        _run(["quarto", "render", "slides/slides.qmd",
+              "--metadata-file", tmp_path], cwd=root)
+    finally:
+        Path(tmp_path).unlink(missing_ok=True)
+    docs_slides = root / DOCS / "slides"
+    docs_slides.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(root / "slides" / "slides.html", docs_slides / "slides.html")
+    files = root / "slides" / "slides_files"
+    if files.is_dir():
+        shutil.copytree(files, docs_slides / "slides_files", dirs_exist_ok=True)
+
+
+def render_workshop_deck(root: Path, slug: str) -> None:
+    """Render a workshop deck non-embed; copy into docs/slides/workshops/<slug>/."""
+    wdir = root / "slides" / "workshops" / slug
+    # _quarto.yml has embed-resources:true; metadata-file is the reliable override.
+    override = "format:\n  revealjs:\n    embed-resources: false\n"
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".yml",
+                                     delete=False, encoding="utf-8") as tmp:
+        tmp.write(override)
+        tmp_path = tmp.name
+    try:
+        _run(["quarto", "render", str(wdir),
+              "--metadata-file", tmp_path], cwd=root)
+    finally:
+        Path(tmp_path).unlink(missing_ok=True)
+    dst = root / DOCS / "slides" / "workshops" / slug
+    dst.mkdir(parents=True, exist_ok=True)
+    for p in wdir.glob("*.html"):
+        shutil.copy2(p, dst / p.name)
+    for d in wdir.glob("*_files"):
+        if d.is_dir():
+            shutil.copytree(d, dst / d.name, dirs_exist_ok=True)
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="Build the live public site into /docs")
+    ap.add_argument("--root", default=".")
+    args = ap.parse_args(argv)
+    root = Path(args.root).resolve()
+
+    write_partials(root, root / "site" / "_generated")
+    _run(["quarto", "render", "site"], cwd=root)
+    render_theory_deck(root)
+    for slug, _key in WORKSHOPS:
+        render_workshop_deck(root, slug)
+    shutil.copytree(root / "img", root / DOCS / "img", dirs_exist_ok=True)
+    (root / DOCS / ".nojekyll").write_text("", encoding="utf-8")
+
+    big = [str(p) for p in (root / DOCS).rglob("*")
+           if p.is_file() and p.stat().st_size > 100_000_000]
+    if big:
+        print("WARNING: files >100MB in docs/: " + ", ".join(big), file=sys.stderr)
+    print(f"site built into {root / DOCS}", file=sys.stderr)
+    return 0
+
+
+if __name__ == "__main__":
     sys.exit(main())
