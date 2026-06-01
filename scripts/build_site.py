@@ -68,7 +68,10 @@ def _timeline_md(root: Path, slug: str) -> str:
 
 
 def _overview_md(root: Path, slug: str) -> str:
-    readme = (root / "workshops" / slug / "README.md").read_text(encoding="utf-8", errors="replace")
+    p = root / "workshops" / slug / "README.md"
+    if not p.exists():
+        return "_Overview to be published._\n"
+    readme = p.read_text(encoding="utf-8", errors="replace")
     chunks = []
     for h in ("What you will build", "Dataset", "Prerequisites"):
         body = sc.readme_section(readme, h)
@@ -92,9 +95,9 @@ def write_partials(root: Path, out_dir: Path) -> list[Path]:
     _emit("theory-syllabus.md", _syllabus_partial(root, "theory"))
 
     sched = ["## Module 1 · Theory Overview", "", _theory_chapters_md(root)]
-    for slug, key in WORKSHOPS:
+    for i, (slug, key) in enumerate(WORKSHOPS, start=2):
         label = "Basic" if key == "basic" else "Advanced"
-        sched += [f"## Module {2 if key=='basic' else 3} · Practice — {label} (≈4h)", "",
+        sched += [f"## Module {i} · Practice — {label} (≈4h)", "",
                   _timeline_md(root, slug), ""]
     _emit("schedule.md", "\n".join(sched))
 

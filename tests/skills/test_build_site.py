@@ -77,3 +77,12 @@ def test_syllabus_placeholder_when_absent(tmp_path):
     bs.write_partials(root, out)
     syl = (out / "theory-syllabus.md").read_text(encoding="utf-8")
     assert "preparation" in syl.lower() or "preparazione" in syl.lower()
+
+
+def test_overview_placeholder_when_readme_absent(tmp_path):
+    root = _mini_repo(tmp_path)
+    (root / "workshops" / "mlt-r-advanced" / "README.md").unlink()
+    out = tmp_path / "site" / "_generated"
+    bs.write_partials(root, out)  # must not raise
+    ov = (out / "advanced-overview.md").read_text(encoding="utf-8")
+    assert "to be published" in ov.lower()
