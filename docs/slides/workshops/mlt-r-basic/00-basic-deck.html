@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="00-basic-deck_files/libs/clipboard/clipboard.min.js"></script>
+<script src="00-basic-deck_files/libs/quarto-html/tabby.min.js"></script>
+<script src="00-basic-deck_files/libs/quarto-html/popper.min.js"></script>
+<script src="00-basic-deck_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="00-basic-deck_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="00-basic-deck_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="00-basic-deck_files/libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <title>Practical Artificial Intelligence for Medical Data Analyses with R — Basic</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="00-basic-deck_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="00-basic-deck_files/libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="00-basic-deck_files/libs/revealjs/dist/theme/quarto-d74d9e59c140c08814bbc49056e1c7ea.css">
+  <link href="00-basic-deck_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="00-basic-deck_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="00-basic-deck_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="00-basic-deck_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script src="00-basic-deck_files/libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="00-basic-deck_files/libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="00-basic-deck_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+
+<section id="practical-artificial-intelligence-for-medical-data-analyses-with-r" class="slide level2 center" data-background-image="../../../img/bg1.png" data-background-opacity="0.3">
+<h2>Practical <span style="color:#E8741E;">Artificial Intelligence</span> for Medical Data Analyses with R</h2>
+<p style="text-align:center; margin:0 0 0.8em 0;">
+<img src="../../../img/DSCTV.png" style="height:60px; margin:0 18px;"> <img src="../../../img/UBEP.png" style="height:60px; margin:0 18px;"> <img src="../../../img/LAIMS.png" style="height:60px; margin:0 18px;">
+</p>
+<p style="text-align:center; font-size:1.55em; font-weight:700; line-height:1.15; margin:0.2em 0;">
+<span style="color:#E8741E;">Basic</span> — Build and validate a clinical ML model in R, reproducibly
+</p>
+<p style="text-align:center; font-size:0.92em; color:#444; margin:1.4em 0 0.2em 0;">
+The hands-on companion to <em>Machine Learning — An Applied Overview</em>
+</p>
+<p style="text-align:center; font-size:0.92em; color:#444; margin:0 0 1em 0;">
+PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> · University of Padova
+</p>
+<p style="text-align:center; margin:1.2em 0 0 0;">
+<strong>Corrado Lanera</strong> &nbsp;|&nbsp; Unit of Biostatistics, Epidemiology &amp; Public Health
+</p>
+<aside class="notes">
+<p>Voce docente (IT): title slide del workshop Basic — scaffold gemello dell’overview (stessi tre loghi DSCTV/UBEP/LAIMS, sfondo <code>bg1.png</code> a opacità 30%, accento arancio). Solo titolo e sottotitolo riadattati al modulo pratico. Niente data/sede (i workshop non portano riferimenti temporali). Firma + affiliazione come nell’overview.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="find-me-at" class="slide level2 inverse" data-background-color="#1F4257">
+<h2>Find me at…</h2>
+<div class="columns">
+<div class="column" style="width:36%;">
+<p><img src="../../../img/profilo_CL.jpg" style="width:100%; border-radius:8px;"></p>
+</div><div class="column" style="width:64%;">
+<p><br></p>
+<p><strong>Corrado Lanera</strong></p>
+<p><a href="mailto:Corrado.Lanera@ubep.unipd.it"><code>Corrado.Lanera</code><span style="color:#E8741E;"><code>@ubep.unipd.it</code></span></a></p>
+<p><a href="https://www.unipd-ubep.it/"><code>unipd-ubep.it</code></a> — UBEP, University of Padova</p>
+<p><br></p>
+<p><a href="https://github.com/corradolanera"><code>@CorradoLanera</code></a> — GitHub · Telegram</p>
+<p><a href="https://github.com/UBESP-DCTV"><code>@UBESP-DCTV</code></a> — group on GitHub</p>
+<p><a href="https://calendly.com/corradolanera"><code>calendly.com/corradolanera</code></a> — book a slot</p>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): stessa scheda di presentazione dell’overview. Email istituzionale, sito UBEP, GitHub/Telegram con lo stesso handle, Calendly per un colloquio.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="credits-acknowledgements" class="slide level2 inverse" data-background-color="#1F4257">
+<h2>Credits &amp; acknowledgements</h2>
+<p>This hands-on workshop is the practical companion to the <strong>Machine Learning — An Applied Overview</strong> lecture.</p>
+<ul>
+<li><strong>Built on the UBEP teaching tradition</strong> — colleagues whose examples and feedback shaped earlier editions of the practical courses.</li>
+<li><strong>Dataset:</strong> <em>Heart-failure clinical records</em> (Chicco &amp; Jurman, 2020) — a real, open clinical cohort.</li>
+<li><strong>Tooling:</strong> the <strong>tidymodels</strong> stack (Kuhn, Silge et al.) on <strong>R</strong>, authored in <strong>Quarto</strong>.</li>
+<li><strong>Illustrations:</strong> Allison Horst (CC BY 4.0) and the UBEP ECDC R course (2023); additional figures generated with <strong>Images2.0</strong> in a friendly hand-painted style (style anchor + prompts in <code>slides/workshops/_assets/horststyle-prompts.md</code>).</li>
+<li><strong>Course design &amp; materials (this edition):</strong> <em>Corrado Lanera</em>, built with <strong>Claude</strong> (Anthropic) via Claude Code.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): credits adattati al workshop. Cito la citazione del dataset (Chicco &amp; Jurman 2020) perché qui si lavora su dati reali, e lo stack tidymodels come base tecnica. Aggiunta la riga illustrazioni: Horst (CC BY 4.0) + immagini ECDC mie + figure Images2.0 (anchor e prompt nel file _assets). Coerente con cap. 07-08 dell’overview: si dice quando e come si usa l’IA. Tolto “revealjs” (dettaglio tecnico inutile).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section>
+<section id="build-and-validate-a-clinical-ml-model-in-r" class="title-slide slide level1 center">
+<h1>Build and validate a clinical ML model in R</h1>
+<p>Over the next <strong>~4 hours</strong> we do one thing well: take a real clinical cohort (<strong>heart-failure clinical records</strong>, 299 patients), and <strong>build, tune, and validate</strong> a model that predicts in-hospital death — ending with a <strong>reproducible report</strong> a colleague can re-run.</p>
+<ul>
+<li>The spine is <strong>tidymodels</strong>: <code>rsample</code> <span class="math inline">\(\to\)</span> <code>recipes</code> <span class="math inline">\(\to\)</span> <code>parsnip</code> <span class="math inline">\(\to\)</span> <code>workflows</code> <span class="math inline">\(\to\)</span> <code>yardstick</code>.</li>
+<li>One outcome, four model families, <strong>one</strong> fair test-set evaluation.</li>
+<li><strong>Modular &amp; incremental.</strong> Six short steps; each <code>steps/NN/</code> folder is a complete snapshot, and the <em>solution</em> of one step is the <em>start</em> of the next — fall behind, copy the next folder, and you are back in sync.</li>
+<li>Everything live-coded, everything reproducible (<code>renv</code> + <code>here</code> + <code>set.seed</code>).</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): apertura. Durata ~4 ore (non “un pomeriggio”: dipende dall’edizione). Arco della giornata = <code>fit → tune → validate</code> sul dataset heart-failure (299 pazienti, esito morte). Deliverable finale = report Quarto riproducibile. Sottolineo la dinamica MODULARE/INCREMENTALE: ogni cartella step è uno snapshot autonomo, la soluzione dello step N è il punto di partenza dello step N+1 → chi resta indietro copia la cartella successiva e rientra. Mentre parlo, <code>renv::restore()</code> scalda in background.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-clinical-question-and-the-cohort" class="slide level2">
+<h2>The clinical question, and the cohort</h2>
+<div class="columns">
+<div class="column" style="width:58%;">
+<p><strong>The question.</strong> After a heart-failure episode, can routine baseline variables predict <strong>in-hospital death</strong> during follow-up?</p>
+<p><strong>The cohort.</strong> <em>Heart-failure clinical records</em> — <strong>299 patients</strong>, 105 deaths (~<strong>32%</strong>), collected in 2015 (Faisalabad, Pakistan).</p>
+<ul>
+<li>One row per patient; <strong>13 columns</strong> = 12 clinical fields + the outcome <code>DEATH_EVENT</code>.</li>
+<li>A <strong>real, open</strong> dataset — small enough to live-code, real enough to mislead you if you are careless (we will meet exactly one such trap: <em>leakage</em>).</li>
+</ul>
+<p><strong>Where to get it (free).</strong></p>
+<ul>
+<li><strong>UCI ML Repository</strong> — <em>Heart failure clinical records</em> (2020).</li>
+<li><strong>Kaggle</strong> — <em>Heart Failure Prediction</em> (same data).</li>
+<li><strong>Citation:</strong> Chicco &amp; Jurman (2020), <em>BMC Med. Inform. Decis. Mak.</em></li>
+</ul>
+</div><div class="column" style="width:42%;">
+<p><img src="../../../img/heartj.jpg" style="max-width:100%; max-height:520px; border-radius:8px;"></p>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): nuova slide-dataset (richiesta esplicita). Cosa prevediamo, su chi, dove si scarica, come si cita. ~32% eventi (classe positiva = morte) — è il seme della scelta a due metriche più avanti. Anticipo la trappola del leakage (<code>time</code>), che risolviamo allo step 01.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-variables-11-predictors-one-outcome" class="slide level2">
+<h2>The variables — 11 predictors, one outcome</h2>
+<p><strong>Outcome</strong> — <code>outcome</code>: <code>died</code> / <code>survived</code> (we make <code>died</code> the <em>first</em> level, so every metric scores death as the positive class).</p>
+<p><strong>Predictors (11), grouped:</strong></p>
+<ul>
+<li><em>Demographics</em> — <code>age</code>, <code>sex</code>.</li>
+<li><em>Comorbidities</em> — <code>anaemia</code>, <code>diabetes</code>, <code>high_blood_pressure</code>, <code>smoking</code>.</li>
+<li><em>Labs &amp; cardiac function</em> — <code>ejection_fraction</code> (pump efficiency), <code>serum_creatinine</code>, <code>serum_sodium</code>, <code>creatinine_phosphokinase</code>, <code>platelets</code>.</li>
+</ul>
+<p><strong>Dropped on purpose</strong> — <code>time</code> (follow-up days): it <em>leaks</em> the outcome (longer follow-up is mechanically tied to who survives). Keeping it would inflate every score and fail in the clinic.</p>
+<aside class="notes">
+<p>Voce docente (IT): le covariate, raggruppate per leggibilità clinica. <code>ejection_fraction</code> e <code>serum_creatinine</code> sono i predittori clinicamente forti (li ritroviamo nella VIMP dell’Advanced). Ribadisco il drop di <code>time</code> = leakage. 11 predittori + outcome = 12 colonne dopo il wrangle.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-00-setup" class="title-slide slide level1 center">
+<h1>Step 00 · Setup</h1>
+<!-- Step 00 (demo, 10 min): open `.Rproj`, `renv::restore`, load with `here` + `rio`. -->
+<p><strong>Objective.</strong> Start from a healthy, reproducible project.</p>
+<ul>
+<li>Open the <code>.Rproj</code>; let <code>renv::restore()</code> rebuild the pinned library.</li>
+<li>Load data through <code>here::here()</code> (stable paths) and <code>rio::import()</code>.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): demo (~10 min). Ambiente sano = precondizione di tutto. <code>renv</code> è già in restore in background dall’opening. Mostro <code>renv::status()</code> in sync e <code>here::here()</code> che punta alla root del progetto. Live-check al minuto 9: GREEN/RED. (De-braced: <code>rio</code>, non <code>{rio}</code>.)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="a-reproducible-project-renv-here-rio" class="slide level2">
+<h2>A reproducible project — <code>renv</code>, <code>here</code>, <code>rio</code></h2>
+<div class="columns">
+<div class="column" style="width:34%;">
+<img src="../../../img/ecdc/renv-workflow.png" style="max-width:100%; max-height:300px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+UBEP ECDC R course (2023)
+</p>
+</div><div class="column" style="width:33%;">
+<img src="../../../img/horst/here.jpg" style="max-width:100%; max-height:300px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+Artwork by Allison Horst (CC BY 4.0)
+</p>
+</div><div class="column" style="width:33%;">
+<img src="../../../img/ecdc/rio-formats.png" style="max-width:100%; max-height:300px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+UBEP ECDC R course (2023)
+</p>
+</div></div>
+<ul>
+<li><strong><code>renv</code></strong> pins every package version: <code>renv::restore()</code> rebuilds the <em>exact</em> library on any machine, <code>renv::snapshot()</code> records what you used. No more “works on my laptop”.</li>
+<li><strong><code>here</code></strong> builds paths from the <strong>project root</strong>, not your working directory — so <code>here::here("data-raw", "x.csv")</code> works for everyone. Never <code>setwd()</code>.</li>
+<li><strong><code>rio</code></strong> is one verb for many formats: <code>rio::import()</code> reads <code>.csv</code>, <code>.xlsx</code>, <code>.rds</code>… — it picks the right reader from the file extension.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): teoria dei tre pilastri base (richiesti dall’utente: spiegare ogni comando non banale). renv = riproducibilità dell’ambiente; here = path stabili (no setwd); rio = un import() per tutti i formati. Immagini: renv/rio dal mio corso ECDC, here di Horst.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-01-import" class="title-slide slide level1 center">
+<h1>Step 01 · Import &amp; wrangle</h1>
+<!-- Step 01 (hands-on, 32 min): tidyverse primer; clean/recode with dplyr/tidyr and `|>`; outcome to factor. -->
+<p><strong>Objectives.</strong> Meet the tidyverse and shape the data.</p>
+<ul>
+<li>A tidyverse primer: the native pipe <code>|&gt;</code>, verbs that <strong>return a new tibble</strong>.</li>
+<li>Clean and recode with <code>dplyr</code>/<code>tidyr</code>; <code>janitor::clean_names()</code>.</li>
+<li><strong>Drop the leaky <code>time</code> column</strong> (follow-up days mechanically anticipate the outcome).</li>
+<li>Make the outcome a factor with the <strong>event first</strong> (<code>died</code>) — so every metric scores death as positive by default.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): hands-on, il più lungo (~32 min) — apposta, è il picco di carico-sintassi per chi parte da zero R. Rete fall-behind con la cartella <code>01-import/</code>. “Your turn” al min 30: <code>clean_names → select(-time) → outcome event-first → factor dei flag → glimpse</code> (12 colonne). Le 4 slide di teoria che seguono coprono i concetti che poi chiediamo: senza teoria niente “your turn”.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-tidyverse-one-grammar-for-data" class="slide level2">
+<h2>The tidyverse — one grammar for data</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p>A family of packages that share <strong>one design</strong>: a tidy <strong>tibble</strong> goes in, a tidy tibble comes out.</p>
+<ul>
+<li>A <strong>tibble</strong> is a data frame that prints cleanly and never surprises you (no silent type coercions, no row names).</li>
+<li>Every verb <strong>returns a new tibble</strong> — it does <em>not</em> edit in place. You build a result by <strong>chaining</strong> verbs, then assign once with <code>&lt;-</code>.</li>
+<li>One consistent style across <code>dplyr</code>, <code>tidyr</code>, <code>ggplot2</code>, … — learn the grammar once, reuse it everywhere.</li>
+</ul>
+</div><div class="column" style="width:40%;">
+<img src="../../../img/horst/tidyverse_celestial.jpg" style="max-width:100%; max-height:520px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+Artwork by Allison Horst (CC BY 4.0)
+</p>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): cos’è il tidyverse e il modello mentale chiave = funzioni pure che ritornano una NUOVA tibble (niente modifica in-place). Questo prepara il “your turn”: si concatena e si assegna una volta sola.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-native-pipe" class="slide level2">
+<h2>The native pipe <code>|&gt;</code></h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p>The pipe sends the value on its <strong>left</strong> into the <strong>first argument</strong> of the function on its <strong>right</strong>. It turns inside-out nesting into a left-to-right recipe.</p>
+<p><code>x |&gt; f() |&gt; g()</code> <strong>is</strong> <code>g(f(x))</code> — but you read it in the order it happens.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>hf_raw <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href=""></a>  <span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href=""></a>  <span class="fu">select</span>(<span class="sc">-</span>time) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href=""></a>  <span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read it aloud: <em>take the raw data, <strong>then</strong> clean the names, <strong>then</strong> drop <code>time</code>, <strong>then</strong> look.</em> No temporary variables, no nested parentheses.</p>
+</div><div class="column" style="width:45%;">
+<img src="../../../img/ecdc/rstudio-native-pipe.png" style="max-width:100%; max-height:300px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+UBEP ECDC R course (2023)
+</p>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): il pipe nativo <code>|&gt;</code> (mai <code>%&gt;%</code> nel codice del workshop). “then” è la parola-chiave per leggerlo. Screenshot mio ECDC: come abilitarlo in RStudio (Ctrl+Shift+M → native pipe).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="reshaping-with-verbs-dplyr-janitor-forcats" class="slide level2">
+<h2>Reshaping with verbs — <code>dplyr</code>, <code>janitor</code>, <code>forcats</code></h2>
+<div class="columns">
+<div class="column" style="width:58%;">
+<p>A handful of verbs do almost all of wrangling:</p>
+<ul>
+<li><code>select()</code> — keep / drop <strong>columns</strong> (e.g.&nbsp;<code>select(-time)</code>).</li>
+<li><code>mutate()</code> — <strong>add or change</strong> columns (e.g.&nbsp;build <code>outcome</code>).</li>
+<li><code>filter()</code> — keep <strong>rows</strong> by a condition.</li>
+<li><code>across()</code> — apply one transform to <strong>many columns</strong> at once.</li>
+<li><code>janitor::clean_names()</code> — tidy, snake_case, machine-safe column names.</li>
+<li><code>factor()</code> / <code>forcats</code> — turn text into a <strong>factor</strong> with explicit <strong>levels</strong>; we set <code>died</code> <em>first</em> so it is the positive class everywhere.</li>
+</ul>
+</div><div class="column" style="width:42%;">
+<img src="../../../img/horst/dplyr_wrangling.jpg" style="max-width:100%; max-height:520px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+Artwork by Allison Horst (CC BY 4.0)
+</p>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): i verbi che useremo davvero nel “your turn” — select/mutate/filter/ across, clean_names, factor con livelli. La convenzione EVENT-FIRST (<code>died</code> primo) è ciò che rende le metriche automatiche più avanti.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="tidy-data-and-the-leakage-trap" class="slide level2">
+<h2>Tidy data — and the leakage trap</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<img src="../../../img/horst/tidydata_3.jpg" style="max-width:100%; max-height:480px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+Tidy data art: Lowndes &amp; Horst, Openscapes (CC BY 4.0)
+</p>
+</div><div class="column" style="width:55%;">
+<p><strong>Tidy data:</strong> each <strong>variable</strong> is a column, each <strong>observation</strong> a row, each <strong>cell</strong> one value. Tidy in <span class="math inline">\(\to\)</span> everything downstream just works.</p>
+<p><strong>Leakage:</strong> a predictor that secretly encodes the outcome. Here <code>time</code> (follow-up days) is mechanically longer for survivors — a model that uses it “predicts” death by <em>cheating</em>, scores beautifully in the slides, and <strong>fails in the clinic</strong>.</p>
+<ul>
+<li>The fix is one line — <code>select(-time)</code> — but spotting leakage is a <strong>clinical-judgement</strong> skill, not a coding one. Always ask: <em>could this column only be known after the outcome?</em></li>
+</ul>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): tidy data (1 var/colonna, 1 oss/riga, 1 valore/cella) + la mini-lezione di LEAKAGE che giustifica il drop di <code>time</code>. Il messaggio forte: il leakage si riconosce col ragionamento clinico, non col codice.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-02-eda" class="title-slide slide level1 center">
+<h1>Step 02 · Clinical EDA</h1>
+<!-- Step 02 (hands-on, 22 min): tbl_summary(by = outcome); one ggplot; read imbalance -> metric choice. -->
+<p><strong>Objectives.</strong> Describe the cohort and read its shape.</p>
+<ul>
+<li><code>gtsummary::tbl_summary(by = outcome)</code> — a clinical Table 1.</li>
+<li>One <code>ggplot</code> of a predictor against the outcome.</li>
+<li><strong>Read the class imbalance</strong> (~32% events) <span class="math inline">\(\to\)</span> it drives the <strong>dual-metric</strong> choice (AUC-ROC <strong>and</strong> AUC-PR) later.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): hands-on <em>elastico</em> (~22 min, comprimibile se in ritardo). L’imbalance ~32% visto in tabella è il seme del ragionamento “accuracy inganna → guardiamo DUE metriche”. Boxplot di <code>ejection_fraction</code>: chi sopravvive ha frazione d’eiezione più alta.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="gtsummary-a-clinical-table-1" class="slide level2">
+<h2><code>gtsummary</code> — a clinical Table 1</h2>
+<div class="columns">
+<div class="column" style="width:58%;">
+<p><code>tbl_summary(by = outcome)</code> builds the <strong>publication-style “Table 1”</strong> clinicians already read: one row per variable, one column per outcome group, with sensible summaries chosen automatically (median [IQR] for numbers, n (%) for categories).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>hf <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href=""></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> outcome)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>It is <strong>descriptive, not a test</strong> — it shows <em>where</em> the groups differ, which is how you build intuition <em>before</em> any model.</li>
+<li>Reading it here, you already see the <strong>imbalance</strong> (~32% deaths) that will steer the metric choice.</li>
+</ul>
+</div><div class="column" style="width:42%;">
+<img src="../../../img/horststyle/gtsummary.jpg" style="max-width:100%; max-height:480px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+Illustration generated with Images2.0 (illustrative figures, not our cohort)
+</p>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): gtsummary = la “Table 1” che il clinico riconosce. Descrittiva, non inferenza. Immagine Images2.0 (img/horststyle/gtsummary.jpg): i NUMERI nell’illustrazione sono di esempio, NON la nostra coorte — lo dico per onestà (la Table 1 vera è quella che generiamo dal vivo allo step 02).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="ggplot2-the-grammar-of-graphics" class="slide level2">
+<h2><code>ggplot2</code> — the grammar of graphics</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p>A plot is built in <strong>layers</strong>, added with <code>+</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>hf <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> outcome, <span class="at">y =</span> ejection_fraction)) <span class="sc">+</span></span>
+<span id="cb3-3"><a href=""></a>  <span class="fu">geom_boxplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>data</strong> piped in, then <code>aes()</code> <strong>maps</strong> variables to position / colour / fill…</li>
+<li><strong>geoms</strong> (<code>geom_boxplot</code>, <code>geom_point</code>, …) draw the data.</li>
+<li>add <code>+ theme_*()</code>, <code>+ labs()</code> to refine. The <em>same</em> grammar builds every chart.</li>
+</ul>
+</div><div class="column" style="width:45%;">
+<img src="../../../img/ecdc/ggplot-layers.png" style="max-width:100%; max-height:480px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+UBEP ECDC R course (2023)
+</p>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): ggplot = grammatica a layer. Dati nel <code>|&gt;</code>, layer con <code>+</code>, poi <code>ggsave()</code>. Una sola grammatica per ogni grafico. Diagramma dei layer dal mio corso ECDC.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="where-todays-model-fits-learning-paradigms" class="slide level2">
+<h2>Where today’s model fits — learning paradigms</h2>
+<p>Today we do <strong>supervised</strong> learning: every patient carries a known label (<code>died</code> / <code>survived</code>) and the model learns the mapping from features to label.</p>
+<ul>
+<li><strong>Supervised</strong> — labelled outcome; <em>classification</em> (our case) or <em>regression</em>. ← today</li>
+<li><strong>Unsupervised</strong> — <em>no</em> labels; find structure (clustering, PCA). You met it in the Overview; out of scope here so we can do <strong>one</strong> supervised pipeline thoroughly.</li>
+<li><strong>Reinforcement</strong> — an agent learns from <strong>rewards</strong> by acting, not from a table of labels (think treatment policies that improve with feedback).</li>
+<li><strong>Active / online</strong> — the model <strong>asks</strong> for the most useful next label, or keeps learning as data <strong>streams</strong> in.</li>
+</ul>
+<p>One labelled table, one clear target: that is <em>why</em> supervised methods fit this problem.</p>
+<aside class="notes">
+<p>Voce docente (IT): ex-“supervised vs unsupervised” (slide 8), tolto il fragment e ESPANSO ai quattro paradigmi (supervised oggi, + unsupervised, reinforcement, active/ online) come chiesto. Inquadra perché il nostro problema è supervised. Nessuna rivelazione incrementale.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-03-logistic" class="title-slide slide level1 center">
+<h1>Step 03 · Logistic spine</h1>
+<!-- Step 03 (hands-on, 38 min): object-map rsample -> recipes -> parsnip -> workflows -> yardstick; glm baseline. -->
+<p><strong>Objectives.</strong> Lay the tidymodels spine with a <code>glm</code> baseline.</p>
+<ul>
+<li>Walk the <strong>object-map</strong> <code>rsample</code> <span class="math inline">\(\to\)</span> <code>recipes</code> <span class="math inline">\(\to\)</span> <code>parsnip</code> <span class="math inline">\(\to\)</span> <code>workflows</code> <span class="math inline">\(\to\)</span> <code>yardstick</code>.</li>
+<li>Fit a plain <code>glm</code> baseline and score it with <code>yardstick</code> — <strong>AUC-ROC and AUC-PR</strong>.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): hands-on (~38 min). Zona di rischio per profondità: la mappa di oggetti nuovi. Mitigazione: ancorare la mappa a <code>glm</code> (riconoscimento, non nuova astrazione) e insegnarla come UNA mappa. “Your turn” min 72: <code>glm</code> vs workflow danno la stessa AUC. Tolto il bullet ridondante “frame as supervised” (già nella slide paradigmi). Break subito dopo.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="tidymodels-one-spine-five-packages" class="slide level2">
+<h2>tidymodels — one spine, five packages</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>tidymodels</strong> is the tidyverse for modelling: the <em>same</em> five-package spine fits <strong>any</strong> algorithm. Learn it once on a logistic regression; reuse it for the whole zoo.</p>
+<ul>
+<li>You declare <em>what</em> you want (a model <strong>spec</strong>), not <em>how</em> each engine wants its inputs.</li>
+<li>Swapping algorithm = changing <strong>one line</strong> (the <code>parsnip</code> spec). Everything else holds.</li>
+<li>Because the recipe and model travel together in a <strong>workflow</strong>, preprocessing can never leak from test into train.</li>
+</ul>
+</div><div class="column" style="width:45%;">
+<img src="../../../img/horst/parsnip.jpg" style="max-width:100%; max-height:420px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+parsnip <code>set_engine()</code> — Artwork by Allison Horst (CC BY 4.0)
+</p>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): cosa è tidymodels e perché conviene = una spina riusabile, engine-swap in una riga, niente leakage grazie al workflow. Prepara la object-map e lo step 04.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-tidymodels-object-map" class="slide level2">
+<h2>The tidymodels object-map</h2>
+<p>One spine, reused all afternoon. <strong>Five objects, one chain:</strong></p>
+<style>
+#sec-object-map svg { max-width: 100% !important; height: auto !important; display: block; margin: 0.3em auto; }
+</style>
+<div id="sec-object-map">
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'flowchart': {'nodeSpacing': 26, 'rankSpacing': 40, 'padding': 16}, 'themeVariables': {'fontSize': '24px'}}}%%
+flowchart LR
+  RS["rsample&lt;br/&gt;split&lt;br/&gt;train / test"] --&gt; RC["recipes&lt;br/&gt;preprocess"]
+  RC --&gt; PS["parsnip&lt;br/&gt;model spec"]
+  PS --&gt; WF["workflows&lt;br/&gt;recipe&lt;br/&gt;+ model"]
+  WF --&gt; YS["yardstick&lt;br/&gt;score:&lt;br/&gt;ROC + PR AUC"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li><strong><code>rsample</code></strong> — <code>initial_split()</code> / <code>vfold_cv()</code>: who trains, who tests.</li>
+<li><strong><code>recipes</code></strong> — dummy-code, drop zero-variance, normalize.</li>
+<li><strong><code>parsnip</code></strong> — declare the model once, engine-agnostic.</li>
+<li><strong><code>workflows</code></strong> — bundle recipe + spec so nothing leaks.</li>
+<li><strong><code>yardstick</code></strong> — <code>roc_auc()</code>, <code>pr_auc()</code>: two complementary scorers.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): la mappa è la spina dorsale del pomeriggio. Lo step 04 cambia solo il nodo <code>parsnip</code> (engine-swap) e moltiplica per quattro: “1 cosa, 4 manopole”, non 4 pipeline. Font del mermaid ingrandito (22px) e tolto <code>.smaller</code>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-five-packages-and-the-functions-we-use" class="slide level2">
+<h2>The five packages — and the functions we use</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>package</th>
+<th>role</th>
+<th>the calls you will type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rsample</code></td>
+<td>split &amp; resample</td>
+<td><code>initial_split()</code>, <code>training()</code>, <code>testing()</code>, <code>vfold_cv()</code></td>
+</tr>
+<tr class="even">
+<td><code>recipes</code></td>
+<td>preprocess</td>
+<td><code>recipe()</code>, <code>step_dummy()</code>, <code>step_zv()</code>, <code>step_normalize()</code></td>
+</tr>
+<tr class="odd">
+<td><code>parsnip</code></td>
+<td>model spec</td>
+<td><code>logistic_reg()</code>, <code>set_engine()</code>, <code>set_mode()</code></td>
+</tr>
+<tr class="even">
+<td><code>workflows</code></td>
+<td>bundle</td>
+<td><code>workflow()</code>, <code>add_recipe()</code>, <code>add_model()</code>, <code>fit()</code></td>
+</tr>
+<tr class="odd">
+<td><code>yardstick</code></td>
+<td>score</td>
+<td><code>metric_set()</code>, <code>roc_auc()</code>, <code>pr_auc()</code>, <code>augment()</code></td>
+</tr>
+</tbody>
+</table>
+<p>The same five every time. Step 04 changes only the <code>parsnip</code> line — four times — and wraps the tuning around it.</p>
+<p style="text-align:center; margin:0.6em 0 0 0;">
+<img src="../../../img/horststyle/rsample.jpg" style="height:190px; margin:0 10px; border-radius:6px; vertical-align:middle;"> <img src="../../../img/horststyle/recipes.jpg" style="height:190px; margin:0 10px; border-radius:6px; vertical-align:middle;"> <img src="../../../img/horststyle/workflows.jpg" style="height:190px; margin:0 10px; border-radius:6px; vertical-align:middle;"> <img src="../../../img/horststyle/yardstick.jpg" style="height:190px; margin:0 10px; border-radius:6px; vertical-align:middle;">
+</p>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0;">
+rsample · recipes · workflows · yardstick — illustrations generated with Images2.0
+</p>
+<aside class="notes">
+<p>Voce docente (IT): risponde alla richiesta esplicita — i 5 pacchetti E le funzioni che useremo davvero, in una tabella di riferimento, più la striscia di 4 card Images2.0 (rsample/recipes/workflows/yardstick). Tabella a font pieno per leggibilità da fondo aula.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="hyperparameters-one-algorithm-at-a-time" class="title-slide slide level1 center">
+<h1>Hyperparameters, one algorithm at a time</h1>
+<p>A <strong>hyperparameter</strong> is a setting you fix <em>before</em> fitting — unlike the ordinary parameters (coefficients, split points) that the fit <em>learns</em> from the data. Same spine, <strong>one hyperparameter at a time</strong>: <em>what it is</em> <span class="math inline">\(\to\)</span> <em>what it controls</em> <span class="math inline">\(\to\)</span> <em>its effect on bias / variance / overfitting.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): le 4 slide-iperparametro precedono il tuning. Definisco subito “iperparametro” (scelto prima del fit) vs “parametro” (appreso) — così rispondo al “perché non chiamarli iperparametri”: ora li chiamiamo così. Una slide ~4 min ciascuna, non si tuna ancora nulla.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="penalized-logistic-penalty-mixture" class="slide level2">
+<h2>Penalized logistic — <code>penalty</code> / <code>mixture</code></h2>
+<p>The <code>glm</code> baseline, <strong>regularized</strong>: shrink coefficients to trade a little bias for much less variance.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>hyperparameter</th>
+<th>what it means</th>
+<th>effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>penalty</code> (<span class="math inline">\(\lambda\)</span>)</td>
+<td>strength of shrinkage toward 0</td>
+<td><span class="math inline">\(\uparrow\)</span> penalty <span class="math inline">\(\to\)</span> more bias, less variance (guards overfit); too high <span class="math inline">\(\to\)</span> underfit</td>
+</tr>
+<tr class="even">
+<td><code>mixture</code> (<span class="math inline">\(\alpha\)</span>)</td>
+<td>ridge <span class="math inline">\(\leftrightarrow\)</span> lasso dial</td>
+<td><code>0</code> = <strong>ridge</strong> (shrink all); <code>1</code> = <strong>lasso</strong> (some coefs <span class="math inline">\(\to\)</span> exactly 0, <em>selects</em>); in between = <strong>elastic-net</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Engine <code>glmnet</code>; both left as <code>tune()</code> in the <code>workflow_set</code>.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): collega al glm dello step 03 — “stesso modello, con un freno”. <code>mixture</code> sceglie <em>come</em> si penalizza (ridge/lasso/elastic-net); lasso fa anche selezione (coef esattamente 0). Tolto il bullet-slogan; mantenuto engine + tune.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="k-nn-neighbors" class="slide level2">
+<h2><span class="math inline">\(k\)</span>-NN — <code>neighbors</code></h2>
+<p>Predict from the <strong><span class="math inline">\(k\)</span> closest</strong> patients. The single hyperparameter <code>neighbors</code> <em>is</em> the bias–variance dial.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><code>neighbors</code> (<span class="math inline">\(k\)</span>)</th>
+<th>behaviour</th>
+<th>bias / variance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>small</strong> <span class="math inline">\(k\)</span> (e.g.&nbsp;1–3)</td>
+<td>follows local noise, jagged boundary</td>
+<td>low bias, <strong>high variance</strong> (overfits)</td>
+</tr>
+<tr class="even">
+<td><strong>large</strong> <span class="math inline">\(k\)</span></td>
+<td>averages over many neighbours, smooth boundary</td>
+<td><strong>high bias</strong>, low variance (can underfit)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Range.</strong> <span class="math inline">\(k\)</span> runs from <span class="math inline">\(1\)</span> to <span class="math inline">\(n_{\text{train}}\)</span>: at <span class="math inline">\(k = 1\)</span> it memorizes, at <span class="math inline">\(k \to n\)</span> it just predicts the majority class. The good value is <strong>interior</strong>, so we <strong>tune</strong> it.</li>
+<li>Engine <code>kknn</code>; <code>neighbors</code> left as <code>tune()</code>.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): qui atterra la MCQ del min 118 (direzione bias-variance di k). Tolto il bullet-slogan (“più k sempre meglio”/“solo velocità”); aggiunto il RANGE 1..n_train e l’idea che l’ottimo è interno → si tuna. Engine + tune come gli altri.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="svm-rbf-cost-rbf_sigma" class="slide level2">
+<h2>SVM (RBF) — <code>cost</code> / <code>rbf_sigma</code></h2>
+<p>Separate the classes with a <strong>margin</strong>; the RBF kernel lets the boundary curve.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>hyperparameter</th>
+<th>what it means</th>
+<th>effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>cost</code> (<span class="math inline">\(C\)</span>)</td>
+<td>penalty for margin violations</td>
+<td><span class="math inline">\(\uparrow\)</span> cost <span class="math inline">\(\to\)</span> harder margin, fits training tighter <span class="math inline">\(\to\)</span> lower bias, <strong>higher variance</strong></td>
+</tr>
+<tr class="even">
+<td><code>rbf_sigma</code> (<span class="math inline">\(\sigma\)</span>)</td>
+<td>how fast a patient’s influence <strong>fades</strong> with distance</td>
+<td>see below</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>rbf_sigma</code>, in words.</strong> The RBF kernel rates two patients by a similarity that <em>fades with distance</em>; <span class="math inline">\(\sigma\)</span> sets <strong>how fast</strong> it fades. <strong>Small <span class="math inline">\(\sigma\)</span></strong> <span class="math inline">\(\to\)</span> influence reaches far <span class="math inline">\(\to\)</span> a smooth, almost-linear boundary (<strong>more bias</strong>). <strong>Large <span class="math inline">\(\sigma\)</span></strong> <span class="math inline">\(\to\)</span> influence is very local <span class="math inline">\(\to\)</span> the boundary wiggles around individual points (<strong>more variance</strong>, overfit risk).</p>
+<ul>
+<li>Engine <code>kernlab</code>; <code>cost</code> and <code>rbf_sigma</code> are <code>tune()</code>d together (they interact).</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): CORREZIONE rispetto alla versione precedente — la direzione di <code>rbf_sigma</code> era invertita. In kernlab il kernel è <span class="math inline">\(\exp(-\sigma\,\lVert x-x'\rVert^2)\)</span>: <span class="math inline">\(\sigma\)</span> ALTO = decadimento rapido = influenza LOCALE = confine ondulato = più varianza; <span class="math inline">\(\sigma\)</span> BASSO = portata ampia = confine liscio = più bias. Spiegato a parole come chiesto.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="random-forest-mtry-min_n-trees" class="slide level2">
+<h2>Random forest — <code>mtry</code> / <code>min_n</code> / <code>trees</code></h2>
+<p>Many decorrelated trees, <strong>averaged</strong>. Two hyperparameters we tune — and one quantity we just set large enough.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>setting</th>
+<th>what it means</th>
+<th>effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>mtry</code></td>
+<td>predictors offered at each split</td>
+<td>small <code>mtry</code> <span class="math inline">\(\to\)</span> trees more <strong>decorrelated</strong> <span class="math inline">\(\to\)</span> lower variance; large <span class="math inline">\(\to\)</span> trees agree more</td>
+</tr>
+<tr class="even">
+<td><code>min_n</code></td>
+<td>minimum samples in a leaf</td>
+<td>large <code>min_n</code> <span class="math inline">\(\to\)</span> shallower, simpler trees (more bias, less variance)</td>
+</tr>
+<tr class="odd">
+<td><code>trees</code></td>
+<td>number of trees</td>
+<td>a <strong>convergence</strong> quantity, <em>not</em> a tuning dial — see below</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>trees</code> is not a hyperparameter to tune.</strong> More trees never overfit; they only shrink Monte-Carlo noise until the averaged prediction <strong>converges</strong>. Cost grows <strong>linearly</strong> with <code>trees</code>, so the only task is to set it <strong>large enough to have converged</strong> — bigger than that is wasted compute, not better accuracy. A converged-but-oversized forest needs <strong>no</strong> refit at a smaller value (the answer won’t change); you’d revisit <code>trees</code> only if the <em>problem itself</em> changes. So we <strong>tune</strong> <code>mtry</code> / <code>min_n</code> and merely <strong>fix</strong> <code>trees</code> large.</p>
+<ul>
+<li>Engine <code>ranger</code>; <code>mtry</code> and <code>min_n</code> are <code>tune()</code>d, <code>trees</code> is set (not tuned).</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): punto chiave (e accordo con l’utente) — <code>trees</code> NON è una manopola di overfit né da tunare: è una quantità di CONVERGENZA. Costo lineare nei trees → metterne “ancora di più” è inutile; basta garantire la convergenza. Non si riaddestra più piccolo se era sovradimensionato (stesso risultato); si rivede solo se cambia il problema.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-04-zoo" class="title-slide slide level1 center">
+<h1>Step 04 · The model zoo, tuned &amp; validated</h1>
+<!-- Step 04 (hands-on, 68 min): workflow_set + workflow_map; tune over vfold_cv; rank_results; finalize; last_fit. -->
+<p>The <strong>zoo</strong> = the four model families (penalized logistic, <span class="math inline">\(k\)</span>-NN, RBF-SVM, random forest) brought together to compete — fairly, once.</p>
+<ul>
+<li>Bundle the four specs into <strong>one</strong> <code>workflow_set</code>; tune all with <code>workflow_map("tune_grid")</code>.</li>
+<li>Tune over <strong>one shared</strong> <code>vfold_cv(v = 5)</code>; <code>rank_results()</code> / <code>autoplot()</code> to compare.</li>
+<li><code>finalize</code> the winner; <code>last_fit()</code> <strong>once</strong> on the untouched test set.</li>
+</ul>
+<p style="text-align:center; margin:0.8em 0 0 0;">
+<img src="../../../img/horststyle/workflowset.jpg" style="max-height:360px; border-radius:8px;"> <span style="display:block; font-size:0.5em; color:#888;">The four families racing on one shared 5-fold CV — illustration generated with Images2.0</span>
+</p>
+<aside class="notes">
+<p>Voce docente (IT): hands-on, il CUORE (~68 min). “Zoo” = metafora delle quattro famiglie di modelli messe in gara insieme (glossato in slide, niente termine tecnico nascosto). Un solo oggetto <code>folds</code> riusato per tutti. “Your turn” culminante al min 150. Convenzione EVENT-FIRST (<code>died</code> primo) → niente <code>event_level</code> nel codice. Parallelo <code>future</code> OPZIONALE (a N=299 il tuning è di ~secondi).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="tuning-machinery-workflow_set-tune_grid-cv" class="slide level2">
+<h2>Tuning machinery — <code>workflow_set</code>, <code>tune_grid</code>, CV</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<ul>
+<li><strong><code>vfold_cv(v = 5)</code></strong> splits <em>train</em> into 5 folds; each model is scored on each held-out fold and averaged — an honest estimate that <strong>never touches the test set</strong>.</li>
+<li><strong><code>workflow_set()</code></strong> bundles {one recipe} × {four specs} into four workflows at once.</li>
+<li><strong><code>workflow_map("tune_grid", grid = 8)</code></strong> tries 8 hyperparameter combos per model over the folds, scoring <strong>both</strong> metrics.</li>
+<li><strong><code>rank_results()</code> / <code>autoplot()</code></strong> compare; <strong><code>select_best()</code> + <code>finalize_workflow()</code></strong> lock the winner’s settings; <strong><code>last_fit()</code></strong> trains on all of <em>train</em> and scores <strong>once</strong> on <em>test</em>.</li>
+</ul>
+</div><div class="column" style="width:45%;">
+<img src="../../../img/horststyle/crossval.jpg" style="max-width:100%; max-height:520px; border-radius:8px;">
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">
+5-fold CV — illustration generated with Images2.0
+</p>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): spiega i comandi “non base” dello step 04 (richiesta esplicita): vfold_cv, workflow_set, workflow_map/tune_grid, rank_results, select_best, finalize, last_fit. Immagine CV friendly (Images2.0); la metafora “gara” (workflowset.png) è sulla slide-titolo dello Step 04.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="two-metrics-and-why-a-single-split-lies" class="slide level2">
+<h2>Two metrics — and why a single split lies</h2>
+<p><strong>Why two.</strong> With a ~32%-event outcome, “always predict <em>survived</em>” is ~68% accurate and clinically useless. We watch two complementary numbers:</p>
+<ul>
+<li><strong>AUC-ROC</strong> — ranking of risk across all thresholds; prevalence-free, chance <span class="math inline">\(= 0.5\)</span>.</li>
+<li><strong>AUC-PR</strong> — performance on the <em>positive</em> (death) class; its no-skill baseline is the prevalence (<span class="math inline">\(\approx 0.32\)</span>), so it stays meaningful when the event is rare.</li>
+</ul>
+<p><strong>Why cross-validate.</strong> A single ~75-patient test split is <strong>high-variance</strong>: by luck it can <em>flatter a weak model</em> — even make a plain <code>glm</code> look unbeatable — while 5-fold CV, which averages over five held-out slices, gives the <strong>honest</strong> comparison. Across the zoo the <strong>random forest typically leads on CV</strong> while the linear models trail; the test set then confirms the <em>finalized</em> winner once.</p>
+<blockquote>
+<p><strong>Numbers are read live.</strong> Exact AUCs depend on the seed and the run, so we read them from the <strong>live execution</strong>, not from the slide. What is stable is the <strong>pattern</strong>: cross-validation is the honest ranking, and one number on a small cohort is luck.</p>
+</blockquote>
+<p><strong>Aside (no numbers needed).</strong> AUC-ROC is <strong>symmetric</strong> — the positive class doesn’t change it. AUC-PR is <strong>not</strong>: it depends on the positive class, which is exactly why we put <code>died</code> <em>first</em>, so both metrics score death by default. Moving the decision threshold by a clinical false-negative / false-positive cost ratio is a deliberate <strong>Advanced</strong> topic; here we stop at threshold-free ranking.</p>
+<aside class="notes">
+<p>Voce docente (IT): RIVISTA come da feedback. Tolti tutti i numeri hard-coded (erano del run di test e diventerebbero falsi al render live) e tolti i fragment/incrementali. Resta il ragionamento di merito: perché DUE metriche, perché la CV è il confronto onesto (un singolo split piccolo può lusingare un modello debole), e il pattern atteso (forest in testa in CV). I numeri si leggono dall’esecuzione live. L’aside simmetria/asimmetria resta concettuale.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="sec-05-report" class="title-slide slide level1 center">
+<h1>Step 05 · Reproducible report</h1>
+<!-- Step 05 (demo, 13 min): render the report that RUNS the whole analysis; renv::snapshot; pre-hook to Advanced. -->
+<p><strong>Objectives.</strong> Ship the deliverable — reproducible <em>because</em> it runs the analysis.</p>
+<ul>
+<li>The report <code>.qmd</code> <strong>runs the whole pipeline in one render</strong> — split <span class="math inline">\(\to\)</span> recipe <span class="math inline">\(\to\)</span> tune <span class="math inline">\(\to\)</span> finalize <span class="math inline">\(\to\)</span> <code>last_fit</code> <span class="math inline">\(\to\)</span> tables &amp; curves — so every number is produced by the <em>same</em> run that prints it. Nothing cached by hand, nothing to drift.</li>
+<li>Close with <code>renv::snapshot()</code>: pinned env + <code>here</code> + <code>set.seed</code> = a colleague re-runs it and gets the same report.</li>
+</ul>
+<p style="text-align:center; margin:0.7em 0 0 0;">
+<img src="../../../img/horststyle/reproducible-report.jpg" style="max-height:360px; border-radius:8px;"> <span style="display:block; font-size:0.5em; color:#888;">Code + data + environment + location → one true report — illustration generated with Images2.0 (numbers illustrative)</span>
+</p>
+<aside class="notes">
+<p>Voce docente (IT): demo (~13 min). Immagine Images2.0 (reproducible-report.png): mostra code+data+renv+here → un solo report; i NUMERI nell’illustrazione sono di esempio, non i nostri. CAMBIO DI DESIGN (feedback #13): il report NON ricarica un <code>final_fit</code> cache-ato — FA tutte le analisi al render, così i numeri sono garantiti prodotti dallo stesso sistema che ha prodotto il report. A N=299 il tune è di ~secondi. La cache “fatta a mano” non è riproducibilità; quella vera (con audit) arriva con <code>targets</code> nell’Advanced.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-one-render-is-reproducibility" class="slide level2">
+<h2>Why “one render” <em>is</em> reproducibility</h2>
+<p>A report whose numbers are <strong>typed in</strong> — or reloaded from a stale cache — can silently disagree with the analysis. A <code>.qmd</code> that <strong>executes the analysis as it renders</strong> guarantees the figures and the code that made them are the <em>same object</em>. That is the whole point of a literate, executable document.</p>
+<ul>
+<li><strong><code>renv</code></strong> pins the packages, <strong><code>here</code></strong> the paths, <strong><code>set.seed</code></strong> the randomness <span class="math inline">\(\to\)</span> same inputs, same output, on any machine.</li>
+<li><strong>What about speed and big analyses?</strong> At N=299 a full tune is seconds. When an analysis gets heavy you don’t hand-cache <code>.rds</code> files — you reach for a <strong>pipeline</strong> (<code>targets</code>, the Advanced capstone) that caches <em>and stays reproducible</em>: <strong>inspectable intermediate targets</strong>, each re-derivable and hash-checked, all converging into the report the pipeline <strong>compiles itself</strong>.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): il principio chiarito. Il qmd garantisce numeri ⇔ codice mostrato. renv/here/set.seed per l’ambiente. Per analisi pesanti: NON cache a mano, ma <code>targets</code> — target intermedi esplorabili + report compilato dalla pipeline stessa (pre-hook all’Advanced, dove questo è il capstone).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="concept-map-the-whole-afternoon" class="slide level2">
+<h2>Concept map — the whole afternoon</h2>
+<style>
+/* Let mermaid size the boxes from its own themeVariables.fontSize (set in the .mmd),
+   then just scale the finished SVG to fit the slide. No font !important override here —
+   that desyncs text from the dagre-computed box width and makes labels spill out. */
+#sec-concept-map svg {
+  max-height: 1000px !important;
+  width: auto !important;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+</style>
+<div id="sec-concept-map">
+<div class="cell" data-reveal="true" data-file="concept-graph.mmd" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'themeVariables': {'fontSize': '22px'}, 'flowchart': {'nodeSpacing': 36, 'rankSpacing': 46, 'padding': 12}}}%%
+flowchart TD
+  PROJ["Reproducible project&lt;br/&gt;(renv + here + rio)"]
+  IMPORT["Import &amp; tidy data&lt;br/&gt;(rio + janitor +&lt;br/&gt;dplyr/tidyr)"]
+  LEAK["Data leakage&lt;br/&gt;(drop&lt;br/&gt;follow-up time)"]
+  EDA["Clinical EDA&lt;br/&gt;(tbl_summary&lt;br/&gt;+ ggplot)"]
+  OUT["Binary clinical&lt;br/&gt;outcome&lt;br/&gt;(died / survived)"]
+  SPLIT["Train/test split&lt;br/&gt;(rsample)"]
+  RECIPE["Recipe /&lt;br/&gt;preprocessing&lt;br/&gt;(recipes)"]
+  MODEL["Model spec&lt;br/&gt;(parsnip)"]
+  ENGINE["Engine-swap idiom&lt;br/&gt;(one line =&lt;br/&gt;new algorithm)"]
+  WF["Workflow&lt;br/&gt;(recipe + model)"]
+  METRIC["Metrics:&lt;br/&gt;AUC-ROC + AUC-PR&lt;br/&gt;(yardstick)"]
+  GLM["Plain glm baseline"]
+  ALGOS["The four algorithms&lt;br/&gt;(pen-logistic, kNN,&lt;br/&gt;SVM, RF)"]
+  PARAM["Hyperparameters&lt;br/&gt;(penalty, neighbors,&lt;br/&gt;cost, mtry...)"]
+  BV["Bias-variance /&lt;br/&gt;overfitting"]
+  CV["Cross-validation&lt;br/&gt;(vfold_cv v=5)"]
+  OPT["Optimism gap&lt;br/&gt;(single split lies)"]
+  WFSET["workflow_set +&lt;br/&gt;workflow_map&lt;br/&gt;(tune all at once)"]
+  TUNE["tune_grid&lt;br/&gt;(tiny grids, parallel)"]
+  COMPARE["rank_results /&lt;br/&gt;autoplot"]
+  BEST["select_best&lt;br/&gt;+ finalize"]
+  LASTFIT["last_fit on test set&lt;br/&gt;(honest estimate)"]
+  REPORT["Rendered Quarto&lt;br/&gt;report (runs full&lt;br/&gt;analysis) + renv::snapshot"]
+
+  PROJ --&gt;|enables| IMPORT
+  IMPORT --&gt;|guards-against| LEAK
+  IMPORT --&gt;|feeds| EDA
+  EDA --&gt;|describes| OUT
+  LEAK --&gt;|would-corrupt| OUT
+  PROJ --&gt;|underpins| REPORT
+  IMPORT --&gt;|required-by| SPLIT
+  SPLIT --&gt;|produces-train-for| RECIPE
+  RECIPE --&gt;|combined-in| WF
+  MODEL --&gt;|combined-in| WF
+  ENGINE --&gt;|is-a-setting-of| MODEL
+  WF --&gt;|scored-by| METRIC
+  GLM --&gt;|is-baseline-for| ALGOS
+  GLM --&gt;|same-task-as| MODEL
+  ALGOS --&gt;|are-instances-of| MODEL
+  PARAM --&gt;|tunes| ALGOS
+  PARAM --&gt;|controls| BV
+  BV --&gt;|motivates| CV
+  OPT --&gt;|motivates| CV
+  SPLIT --&gt;|single-split-causes| OPT
+  CV --&gt;|estimates| METRIC
+  ALGOS --&gt;|bundled-in| WFSET
+  WFSET --&gt;|tuned-by| TUNE
+  TUNE --&gt;|resamples-over| CV
+  TUNE --&gt;|compared-with| COMPARE
+  COMPARE --&gt;|leads-to| BEST
+  BEST --&gt;|finalized-then| LASTFIT
+  LASTFIT --&gt;|closes| OPT
+  METRIC --&gt;|reported-in| REPORT
+  LASTFIT --&gt;|reported-in| REPORT
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Voce docente (IT): mappa concettuale (spec §10.2). Mostrata a FINE giornata come sintesi, non all’inizio come programma. Font ingrandito (init nel .mmd + regola CSS .nodeLabel a 20px) e altezza alzata a 980px per leggibilità da fondo aula (mai sotto ~18pt).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="next-open-the-model-advanced" class="slide level2 center">
+<h2>Next: open the model — Advanced</h2>
+<p>You built and validated a model. <strong>Advanced opens this very model:</strong></p>
+<ul>
+<li><strong>Interpret it</strong> — permutation VIMP and SHAP, with the logistic as a sanity anchor.</li>
+<li><strong>Go beyond</strong> — deep learning (<code>torch</code> / <code>luz</code> / <code>brulee</code>), and <code>ellmer</code> as a typed, reproducible LLM-as-ETL.</li>
+</ul>
+<p>The validated <code>final_fit</code> you just produced is exactly what Advanced <strong>reloads</strong> on day one.</p>
+<aside class="notes">
+<p>Voce docente (IT): pre-hook ad Advanced (spec §11). L’Advanced apre RICARICANDO il workflow finalizzato di Basic e fa <code>predict</code> su una riga — niente retrain. Poi: interpretability (VIMP/SHAP), DL spectrum, <code>ellmer</code>, capstone <code>targets</code>. Il payoff dei pre-hook promessi nell’overview.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="further-reading-go-deeper-in-r" class="slide level2 inverse smaller" data-background-color="#1F4257">
+<h2>Further reading — go deeper in <span style="color:#E8741E;">R</span></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>tidymodels &amp; the tidyverse (free, online)</strong></p>
+<ul>
+<li><strong>Kuhn &amp; Silge.</strong> <em>Tidy Modeling with R</em> — <code>tmwr.org</code>. The canonical book for the spine we used (<code>rsample</code> <span class="math inline">\(\to\)</span> <code>recipes</code> <span class="math inline">\(\to\)</span> <code>parsnip</code> <span class="math inline">\(\to\)</span> <code>workflows</code> <span class="math inline">\(\to\)</span> <code>yardstick</code>).</li>
+<li><strong>Wickham, Çetinkaya-Rundel, Grolemund.</strong> <em>R for Data Science</em> (2e) — <code>r4ds.hadley.nz</code>. tidyverse foundations and the native pipe.</li>
+</ul>
+<p><strong>Concepts behind the build (free PDF)</strong></p>
+<ul>
+<li><strong>James, Witten, Hastie, Tibshirani.</strong> <em>An Introduction to Statistical Learning</em> (R) — the overview’s theory, in R.</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>Reproducibility &amp; the next step</strong></p>
+<ul>
+<li><strong><code>renv</code></strong> · <strong><code>here</code></strong> · <strong><code>set.seed</code></strong> — the three pillars we leaned on all afternoon.</li>
+<li><strong><code>targets</code></strong> — Will Landau’s pipeline toolkit; the backbone of the <strong>Advanced</strong> workshop.</li>
+<li><strong>Kuhn &amp; Johnson.</strong> <em>Feature Engineering and Selection</em> — <code>bookdown.org/max/FES</code>. Deeper on <code>recipes</code>.</li>
+</ul>
+</div></div>
+<aside class="notes">
+<p>Voce docente (IT): “Further reading” adattato dall’overview — referenze R/tidymodels. Consiglio numero uno: <em>Tidy Modeling with R</em>. ISLR è il ponte ai concetti dell’overview. Rilancio su <code>targets</code> → Advanced.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="thank-you-for-the-attention" class="slide level2 inverse center" data-background-color="#1F4257">
+<h2>Thank <span style="color:#E8741E;">you</span> for the attention!</h2>
+<p style="text-align:center;">
+<img src="../../../img/procione.jpeg" style="width:32%; border-radius:8px;">
+</p>
+<p><br></p>
+<p style="text-align:center;">
+<a href="https://www.unipd-ubep.it/"><code>unipd-ubep.it</code></a> &nbsp;·&nbsp; <a href="mailto:Corrado.Lanera@ubep.unipd.it"><code>Corrado.Lanera@ubep.unipd.it</code></a>
+</p>
+<p style="text-align:center;">
+<a href="https://github.com/corradolanera">GitHub <code>@CorradoLanera</code></a> &nbsp;·&nbsp; <a href="https://telegram.me/CorradoLanera">Telegram <code>@CorradoLanera</code></a> &nbsp;·&nbsp; <a href="https://github.com/UBESP-DCTV">GitHub <code>@UBESP-DCTV</code></a>
+</p>
+<p style="text-align:center;">
+<a href="https://calendly.com/corradolanera"><code>calendly.com/corradolanera</code></a>
+</p>
+<aside class="notes">
+<p>Voce docente (IT): chiusura gemella dell’overview — stesso procione, stessi contatti. Saluto finale leggero. Niente riferimenti temporali.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>Practical Artificial Intelligence for Medical Data Analyses with R — Basic</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="00-basic-deck_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="00-basic-deck_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="00-basic-deck_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="00-basic-deck_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="00-basic-deck_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="00-basic-deck_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="00-basic-deck_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="00-basic-deck_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="00-basic-deck_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="00-basic-deck_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1648,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
