@@ -35,7 +35,12 @@ def _rendered_html(root: Path, key: str) -> Path:
     src = _DECK_SRC[key]
     if key == "theory":
         return root / "slides" / "slides.html"
-    return next((root / src).glob("*.html"))
+    html_files = list((root / src).glob("*.html"))
+    if not html_files:
+        raise FileNotFoundError(
+            f"No HTML found in {root / src} — did 'quarto render {src}' succeed?"
+        )
+    return html_files[0]
 
 
 def build(root: Path) -> list[Path]:
