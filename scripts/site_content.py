@@ -9,11 +9,13 @@ from __future__ import annotations
 import re
 
 _CHAPTER_RE = re.compile(
-    r"slug:\s*([A-Za-z0-9-]+)\s*,"
+    r"slug:\s*([A-Za-z0-9_-]+)\s*,"
     r'\s*title:\s*"([^"]+)"\s*,'
     r"\s*include:\s*(true|false)\s*,"
     r"\s*minutes:\s*(\d+)",
 )
+
+_FORMATIVE_RE = re.compile(r"min-(\d+)-(.+)\.md$")
 
 
 def chapters_from_manifest(text: str) -> list[dict]:
@@ -56,11 +58,10 @@ def extract_objectives(md_text: str) -> str:
 
 def timeline_from_formatives(names: list[str]) -> list[dict]:
     """Map `min-NN-<slug>.md` filenames -> [{minute, label}] sorted by minute."""
-    rx = re.compile(r"min-(\d+)-(.+)\.md$")
     rows = []
     for n in names:
         base = n.replace("\\", "/").split("/")[-1]
-        m = rx.search(base)
+        m = _FORMATIVE_RE.search(base)
         if not m:
             continue
         rows.append({"minute": int(m.group(1)), "label": m.group(2).replace("-", " ")})

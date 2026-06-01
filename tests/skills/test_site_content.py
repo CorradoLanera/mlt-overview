@@ -63,3 +63,8 @@ def test_readme_section_extracts_body_until_next_heading():
     md = "# t\n\n## Prerequisites\n\nNeed R.\nAnd RStudio.\n\n## Dataset\n\nheart failure\n"
     assert sc.readme_section(md, "Prerequisites") == "Need R.\nAnd RStudio."
     assert sc.readme_section(md, "Missing") == ""
+
+
+def test_readme_section_heading_is_case_insensitive():
+    md = "## Prerequisites\n\nContent here.\n"
+    assert sc.readme_section(md, "prerequisites") == "Content here."
