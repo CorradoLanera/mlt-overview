@@ -1,0 +1,31 @@
+project:
+  type: website
+  output-dir: ../docs
+  render:
+    - "*.qmd"
+
+website:
+  title: "Machine Learning — An Applied Overview"
+  description: "UBEP course · three modules · biomedical/clinical graduate students"
+  site-url: "https://corradolanera.github.io/mlt-overview/"
+  repo-url: "https://github.com/CorradoLanera/mlt-overview"
+  navbar:
+    background: primary
+    left:
+      - { text: "Home",     href: index.qmd }
+      - { text: "Theory",   href: theory.qmd }
+      - { text: "Basic",    href: basic.qmd }
+      - { text: "Advanced", href: advanced.qmd }
+      - { text: "Schedule", href: schedule.qmd }
+      - { text: "Downloads", href: downloads.qmd }
+    right:
+      - { icon: github, href: "https://github.com/CorradoLanera/mlt-overview" }
+  page-footer:
+    center: "UBEP · University of Padova — Machine Learning: An Applied Overview"
+
+format:
+  html:
+    theme: [cosmo, _brand.scss]
+    toc: false
+    page-layout: full
+lang: en

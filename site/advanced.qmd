@@ -1,0 +1,31 @@
+---
+title: "Practice — Advanced (R)"
+---
+
+[Open the deck ↗](slides/workshops/mlt-r-advanced/00-advanced-deck.html){.btn-deck}
+[Download deck](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced-deck.html){.btn-dl}
+[Download workshop ZIP](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip){.btn-dl}
+
+{{< include _generated/advanced-overview.md >}}
+
+## Timeline
+
+{{< include _generated/advanced-timeline.md >}}
+
+## How to get & run it
+
+You need R (≥ 4.5) and RStudio.
+
+```r
+usethis::use_course(
+  "https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip"
+)
+```
+
+Open `mlt-r-advanced.Rproj`, then `renv::restore()`. The LLM step (`ellmer`) needs an OpenAI
+API key (optional — it falls back to a cached extraction): copy `.Renviron.example` → `.Renviron`
+and set your key.
+
+## Syllabus
+
+{{< include _generated/advanced-syllabus.md >}}

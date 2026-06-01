@@ -1,0 +1,18 @@
+/*-- scss:defaults --*/
+$primary:   #E8741E;
+$secondary: #1F4257;
+$body-color: #1a1a1a;
+$link-color: #C75A12;
+$font-family-sans-serif: "Noto Sans", system-ui, Arial, sans-serif;
+$headings-font-family:   "Cabin", "Noto Sans", sans-serif;
+$font-family-monospace:  "Source Code Pro", Consolas, monospace;
+
+/*-- scss:rules --*/
+.module-cards { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
+.module-card  { flex: 1 1 260px; border: 1px solid #e5e7eb; border-radius: 12px;
+                padding: 1.1rem 1.2rem; background: #fff; }
+.module-card h3 { color: #C75A12; margin-top: 0; }
+.btn-deck { display: inline-block; margin: .2rem .4rem .2rem 0; padding: .35rem .8rem;
+            border-radius: 8px; background: #E8741E; color: #fff !important; text-decoration: none; }
+.btn-dl   { display: inline-block; margin: .2rem .4rem .2rem 0; padding: .35rem .8rem;
+            border-radius: 8px; border: 1px solid #1F4257; color: #1F4257 !important; text-decoration: none; }

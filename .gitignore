@@ -31,3 +31,5 @@ __pycache__/
 dev/
 # Built workshop ZIPs — published as GitHub Release assets, not committed
 dist/
+# Generated site partials (rebuilt by scripts/build_site.py)
+site/_generated/

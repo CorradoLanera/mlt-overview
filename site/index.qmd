@@ -1,0 +1,39 @@
+---
+title: "Machine Learning — An Applied Overview"
+---
+
+A course for **biomedical/clinical graduate students** (UBEP, University of Padova).
+One course, **three modules**, taught in sequence.
+
+::: {.module-cards}
+::: {.module-card}
+### Theory Overview
+10 storyboard-narrated chapters (≈240 min).
+
+[Open slides](slides/slides.html){.btn-deck} [Details](theory.qmd){.btn-dl}
+:::
+::: {.module-card}
+### Practice — Basic
+Live-coded R: build & validate a clinical ML model.
+
+[Open deck](slides/workshops/mlt-r-basic/00-basic-deck.html){.btn-deck} [Details](basic.qmd){.btn-dl}
+:::
+::: {.module-card}
+### Practice — Advanced
+Live-coded R: interpretability + deep learning.
+
+[Open deck](slides/workshops/mlt-r-advanced/00-advanced-deck.html){.btn-deck} [Details](advanced.qmd){.btn-dl}
+:::
+:::
+
+## Learning path
+
+**Overview → Basic → Advanced.** The Overview ends (ch. 10) by pre-hooking into the Basic
+workshop; Basic pre-hooks into Advanced. Prerequisites are stated on each module page.
+
+## How the course works
+
+The Theory Overview is delivered as reveal.js slides (also downloadable as one self-contained
+file per cohort). The two R workshops are ~4-hour live-coding sessions: fetch a ZIP, restore the
+pinned package environment, and type every line together. See **[Schedule](schedule.qmd)** for the
+full plan and **[Downloads](downloads.qmd)** to get the materials.

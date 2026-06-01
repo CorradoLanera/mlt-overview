@@ -1,0 +1,29 @@
+---
+title: "Practice — Basic (R)"
+---
+
+[Open the deck ↗](slides/workshops/mlt-r-basic/00-basic-deck.html){.btn-deck}
+[Download deck](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic-deck.html){.btn-dl}
+[Download workshop ZIP](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic.zip){.btn-dl}
+
+{{< include _generated/basic-overview.md >}}
+
+## Timeline
+
+{{< include _generated/basic-timeline.md >}}
+
+## How to get & run it
+
+You need R (≥ 4.5) and RStudio.
+
+```r
+usethis::use_course(
+  "https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic.zip"
+)
+```
+
+Open `mlt-r-basic.Rproj` (its `renv` activates), then `renv::restore()`.
+
+## Syllabus
+
+{{< include _generated/basic-syllabus.md >}}

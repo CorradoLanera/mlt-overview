@@ -1,0 +1,25 @@
+---
+title: "Downloads"
+---
+
+All materials for the current cohort are published as **GitHub Release assets** (one release per
+cohort, e.g. tag `coorte-2026`).
+
+## Latest assets
+
+- [Theory deck (self-contained)](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-overview-theory-deck.html)
+- [Basic deck (self-contained)](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic-deck.html)
+- [Advanced deck (self-contained)](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced-deck.html)
+- [Basic workshop project (ZIP)](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic.zip)
+- [Advanced workshop project (ZIP)](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip)
+
+## Running a workshop
+
+You need R (≥ 4.5) and RStudio. Fetch a workshop with `usethis::use_course(<zip-url>)`, open its
+`.Rproj`, then `renv::restore()` to install the pinned packages.
+
+## Per-cohort model
+
+Each cohort gets its own Release (tag `coorte-AAAA`) with decks + workshop ZIPs frozen at that
+point. This site always shows the **latest** rendered slides; the Release assets are the **offline,
+citable snapshot**.

@@ -1,0 +1,7 @@
+---
+title: "Schedule & Planning"
+---
+
+The full plan across the three modules — for students, and for instructors evaluating the programme.
+
+{{< include _generated/schedule.md >}}
