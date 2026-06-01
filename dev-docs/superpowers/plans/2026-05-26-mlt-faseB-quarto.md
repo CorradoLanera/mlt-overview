@@ -8,7 +8,7 @@
 
 **Tech Stack:** Quarto 1.9.37 (revealjs), pandoc (bundled), `chrome-headless-shell` (for PDF), Python+pytest (the manifest→master generator), chrome-devtools MCP (visual QA).
 
-**Reference spec:** `docs/superpowers/specs/2026-05-26-mlt-course-toolkit-design.md` (§6.6). **Depends on:** Fase A (storyboards/narrative/objectives per chapter).
+**Reference spec:** `dev-docs/superpowers/specs/2026-05-26-mlt-course-toolkit-design.md` (§6.6). **Depends on:** Fase A (storyboards/narrative/objectives per chapter).
 
 ---
 

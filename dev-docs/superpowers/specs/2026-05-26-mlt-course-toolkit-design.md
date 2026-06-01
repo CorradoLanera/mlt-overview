@@ -273,7 +273,7 @@ Ogni nuovo script/skill passa da `feature-dev:code-reviewer`. TDD dove ha senso 
 2. **Base:** `index.Rmd` (corrente, insegnato). `index-full.Rmd` (più lungo ma più vecchio) viene **"minato"** per recuperare contenuti tagliati, da riproporre come **moduli opzionali** (`include: false`) — coerente con la filosofia modulare. Diff dei due da fare in Fase 0.
 3. **`mlt-subunits`:** attivabile **per-capitolo on-demand**, non obbligatorio ovunque.
 4. **Tema:** si parte dalla palette `xaringan-themer.css` (continuità), **liberi di variare**; **l'arancione è preferito** dal docente → accento dominante candidato.
-5. **Sezione Agents:** da **ampliare in modo proporzionato** usando la sorgente preservata `docs/sources/agents-from-storia-workshop.md` (modello 2×2→2×3 con la colonna agentica: Apprendista Stregone / Demiurgo Digitale; meccaniche "come funzionano gli agenti"). Resta una overview: il "come" applicativo è materia dei workshop di proseguimento → candidato **pre-hook** verso quei workshop. Spunto, non vincolo.
+5. **Sezione Agents:** da **ampliare in modo proporzionato** usando la sorgente preservata `dev-docs/sources/agents-from-storia-workshop.md` (modello 2×2→2×3 con la colonna agentica: Apprendista Stregone / Demiurgo Digitale; meccaniche "come funzionano gli agenti"). Resta una overview: il "come" applicativo è materia dei workshop di proseguimento → candidato **pre-hook** verso quei workshop. Spunto, non vincolo.
 
 ---
 

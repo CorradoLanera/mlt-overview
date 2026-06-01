@@ -1,7 +1,7 @@
 # CLAUDE.md — corso MLT (mlt-overview)
 
 Repo del corso "Machine Learning — An Applied Overview" (UBEP). Rinnovazione: vedi
-`docs/superpowers/specs/2026-05-26-mlt-course-toolkit-design.md`. Tracking nel vault:
+`dev-docs/superpowers/specs/2026-05-26-mlt-course-toolkit-design.md`. Tracking nel vault:
 `progetti/mlt-overview/` (privato).
 
 ## Convenzioni non negoziabili
@@ -31,6 +31,6 @@ Repo del corso "Machine Learning — An Applied Overview" (UBEP). Rinnovazione: 
 
 Un repo, un corso, tre moduli: **teoria/overview** (`course/` + `slides/`),
 **pratica base** (`workshops/mlt-r-basic/`), **pratica advanced** (`workshops/mlt-r-advanced/`, da creare).
-Layout e contratto: `docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md`.
+Layout e contratto: `dev-docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md`.
 I `CLAUDE.md` dei workshop contengono **solo** il delta R-authoring; lingua/matematica/liste/verifica
 visiva valgono da qui per tutti i moduli.

@@ -12,7 +12,7 @@
 
 ## Design source of truth
 
-The pedagogy is **already designed** in `docs/superpowers/specs/2026-05-30-mlt-r-workshops-design.md` **§11** (Advanced backward design): §11.1 summative capstone, §11.2 concept graph (28 nodes, Mermaid — paste verbatim), §11.3 timed agenda + 11 formatives, §11.4 load check. This plan implements §11 against the **current reality**: the Basic model is now a **random forest on heart-failure** (event-first `died`/`survived`), and the repo uses the unified-course architecture (`docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md`). Where this plan says "see §11.x", copy that content verbatim into the artifact.
+The pedagogy is **already designed** in `dev-docs/superpowers/specs/2026-05-30-mlt-r-workshops-design.md` **§11** (Advanced backward design): §11.1 summative capstone, §11.2 concept graph (28 nodes, Mermaid — paste verbatim), §11.3 timed agenda + 11 formatives, §11.4 load check. This plan implements §11 against the **current reality**: the Basic model is now a **random forest on heart-failure** (event-first `died`/`survived`), and the repo uses the unified-course architecture (`dev-docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md`). Where this plan says "see §11.x", copy that content verbatim into the artifact.
 
 ## Build deviations (as-built, 2026-05-31)
 
@@ -569,4 +569,4 @@ Expected: every step renders with no `FAIL` (00 reload, 01 VIMP+SHAP, 02 MLP+sha
 
 ## Execution handoff
 
-Plan saved to `docs/superpowers/plans/2026-05-31-mlt-r-advanced-build.md`. Built via **subagent-driven-development** (fresh subagent per task + two-stage review), same as the Basic workshop. Phase 0 must complete (torch backend in the project renv) before Phase 1; step 03 verification waits on the user's `OPENAI_API_KEY` (env only).
+Plan saved to `dev-docs/superpowers/plans/2026-05-31-mlt-r-advanced-build.md`. Built via **subagent-driven-development** (fresh subagent per task + two-stage review), same as the Basic workshop. Phase 0 must complete (torch backend in the project renv) before Phase 1; step 03 verification waits on the user's `OPENAI_API_KEY` (env only).

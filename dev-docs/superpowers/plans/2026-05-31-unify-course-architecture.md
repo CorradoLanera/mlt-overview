@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3 (stdlib only: `zipfile`, `shutil`, `argparse`, `re`, `fnmatch`, `pathlib`), pytest (existing `tests/skills/` harness), Quarto reveal.js + dart-sass theming, R + renv, git, Claude Code hooks/commands.
 
-**Spec:** [docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md](../specs/2026-05-31-unified-course-architecture-design.md)
+**Spec:** [dev-docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md](../specs/2026-05-31-unified-course-architecture-design.md)
 
 ---
 
@@ -109,7 +109,7 @@ To rebuild it:
 3. Knit `index.Rmd`.
 
 It is no longer maintained. The live course is the Quarto build at the repo root
-(`course/` + `slides/`). See `docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md`.
+(`course/` + `slides/`). See `dev-docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md`.
 ```
 
 - [ ] **Step 4: Commit**
@@ -593,7 +593,7 @@ workshop; Basic pre-hooks into Advanced. Prerequisites are stated at the top of 
 - `workshops/` — the two self-contained R workshops (each with its own `renv`).
 - `dist/` — built workshop ZIPs (git-ignored; published as GitHub Release assets).
 - `_archive/legacy-xaringan/` — the frozen, reproducible pre-Quarto deck.
-- `docs/superpowers/` — design specs and implementation plans.
+- `dev-docs/superpowers/` — design specs and implementation plans.
 
 ## Authoring
 
@@ -618,7 +618,7 @@ It already states the EN/IT rule. Add a short "Course = 3 modules" note so it is
 
 Un repo, un corso, tre moduli: **teoria/overview** (`course/` + `slides/`),
 **pratica base** (`workshops/mlt-r-basic/`), **pratica advanced** (`workshops/mlt-r-advanced/`, da creare).
-Layout e contratto: `docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md`.
+Layout e contratto: `dev-docs/superpowers/specs/2026-05-31-unified-course-architecture-design.md`.
 I `CLAUDE.md` dei workshop contengono **solo** il delta R-authoring; lingua/matematica/liste/verifica
 visiva valgono da qui per tutti i moduli.
 ```

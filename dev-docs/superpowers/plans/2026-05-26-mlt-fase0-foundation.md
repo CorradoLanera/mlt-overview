@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3 (stdlib only for the hook glue), pandoc 3.8.3 (via Quarto 1.9.37), YAML manifest, Claude Code hooks/commands, pytest for the hook tests.
 
-**Reference spec:** `docs/superpowers/specs/2026-05-26-mlt-course-toolkit-design.md`
+**Reference spec:** `dev-docs/superpowers/specs/2026-05-26-mlt-course-toolkit-design.md`
 
 ---
 
@@ -40,7 +40,7 @@
 # CLAUDE.md — corso MLT (mlt-overview)
 
 Repo del corso "Machine Learning — An Applied Overview" (UBEP). Rinnovazione: vedi
-`docs/superpowers/specs/2026-05-26-mlt-course-toolkit-design.md`. Tracking nel vault:
+`dev-docs/superpowers/specs/2026-05-26-mlt-course-toolkit-design.md`. Tracking nel vault:
 `progetti/mlt-overview/` (privato).
 
 ## Convenzioni non negoziabili

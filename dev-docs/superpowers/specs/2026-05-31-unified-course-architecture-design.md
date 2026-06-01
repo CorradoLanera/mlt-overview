@@ -63,7 +63,7 @@ mlt-overview/
 ├── _archive/
 │   └── legacy-xaringan/            # NUOVO — progetto xaringan congelato, riproducibile (vedi §6)
 ├── scripts/                        # build_portal.py + build_workshop_zip.py (NUOVO)
-└── docs/superpowers/specs/         # questo spec + i due precedenti (superseded-by-reference)
+└── dev-docs/superpowers/specs/     # questo spec + i due precedenti (superseded-by-reference)
 ```
 
 L'identità "un corso" vive nel README + nel contratto di stile, **non** nei nomi di cartella. Nessun glob di hook, path di skill, scanner di portal, manifest o riferimento `../img/storyboard/` cambia.

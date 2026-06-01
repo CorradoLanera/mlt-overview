@@ -47,4 +47,4 @@ a questo punto, il blocco 03 (`ellmer`) arriva con la working memory già satura
 da remoto via poll-doc. "Your turn" = compito + `{countdown}` → "My turn" = live-solve.
 
 Vedi spec §11.2 (concept graph) e §11.3 (formative map) in
-`docs/superpowers/specs/2026-05-30-mlt-r-workshops-design.md`.
+`dev-docs/superpowers/specs/2026-05-30-mlt-r-workshops-design.md`.

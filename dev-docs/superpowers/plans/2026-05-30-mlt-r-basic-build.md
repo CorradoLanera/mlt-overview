@@ -697,4 +697,4 @@ Expected: every step renders with no `FAIL` line — proving a student who opens
 
 ## Execution handoff
 
-Plan complete and saved to `docs/superpowers/plans/2026-05-30-mlt-r-basic-build.md`. The Advanced workshop is a **sibling plan** to author next (it begins by reloading `steps/04-zoo/output/final_fit.rds` from this build).
+Plan complete and saved to `dev-docs/superpowers/plans/2026-05-30-mlt-r-basic-build.md`. The Advanced workshop is a **sibling plan** to author next (it begins by reloading `steps/04-zoo/output/final_fit.rds` from this build).

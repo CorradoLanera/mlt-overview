@@ -23,7 +23,7 @@ workshop; Basic pre-hooks into Advanced. Prerequisites are stated at the top of 
 - `workshops/` — the two self-contained R workshops (each with its own `renv`).
 - `dist/` — built workshop ZIPs (git-ignored; published as GitHub Release assets).
 - `_archive/legacy-xaringan/` — the frozen, reproducible pre-Quarto deck.
-- `docs/superpowers/` — design specs and implementation plans.
+- `dev-docs/superpowers/` — design specs and implementation plans.
 
 ## Authoring
 

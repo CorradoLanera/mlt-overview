@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3 + pyyaml (read-only), pytest; Claude Code skills/commands; storia-companion v2 (must be installed — see Prereq).
 
-**Reference spec:** `docs/superpowers/specs/2026-05-26-mlt-course-toolkit-design.md` (§6.3–6.5, §6.8).
+**Reference spec:** `dev-docs/superpowers/specs/2026-05-26-mlt-course-toolkit-design.md` (§6.3–6.5, §6.8).
 
 ---
 
@@ -368,7 +368,7 @@ For each target enabled chapter (use `manifest.enabled_chapters`):
 4. **Pre-hook**: an explicit 1-2 sentence bridge to the NEXT enabled chapter. Compute it with
    `manifest.next_enabled(m, slug)`; if it returns None (last chapter), write a pre-hook toward "what comes
    next" (the applied follow-up workshops). For the **Agents** chapter, the pre-hook may point to those
-   workshops (see `docs/sources/agents-from-storia-workshop.md`).
+   workshops (see `dev-docs/sources/agents-from-storia-workshop.md`).
 
 ## Output
 

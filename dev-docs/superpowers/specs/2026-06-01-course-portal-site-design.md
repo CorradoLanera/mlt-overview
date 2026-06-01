@@ -41,7 +41,7 @@ Stato attuale (verificato 2026-06-01):
 | 3 | Impostazione visiva | **Landing + nav (multi-pagina).** |
 | 4 | Meccanismo di serving Pages | **A — Quarto website renderizzato in locale → `/docs`**, Pages "from branch `main` /docs". **Nessuna CI.** |
 | 5 | Syllabus | **3 syllabus (uno per modulo), forward-compatible:** link quando l'artefatto esiste, placeholder marcato quando manca. (Saranno prodotti da `/mlt` dopo le revisioni finali.) |
-| 6 | Pulizia di `/docs` | **Rilocazione:** `docs/superpowers/` + `docs/sources/` → cartella top-level non pubblicata `dev-docs/` (nome adattabile); `/docs` = **solo** sito. Richiede `git mv` + repoint dei riferimenti (CLAUDE.md root + progetto). |
+| 6 | Pulizia di `/docs` | **Rilocazione:** `docs/superpowers/` + `docs/sources/` → `dev-docs/` (top-level, non pubblicata); `/docs` = **solo** sito. Fatto via `git mv` + repoint dei riferimenti (CLAUDE.md root + progetto). Completato in Task A. |
 
 ## 3. Audience e principio di sorgente unica
 
@@ -111,12 +111,10 @@ mlt-overview/
 ```
 
 **Pulizia di `/docs` (decisione #6).** Pages "from /docs" pubblicherebbe *tutto* ciò che sta in `docs/`. Perciò le note interne
-oggi lì — `docs/superpowers/` (specs + plans) e `docs/sources/` — vengono **rilocate** in una cartella top-level **non
-pubblicata**, `dev-docs/` (nome adattabile in fase di piano), preservando la struttura interna (`dev-docs/superpowers/…`,
-`dev-docs/sources/…`). Così `/docs` ospita **solo** il sito. La migrazione è un `git mv` (storia preservata) + **repoint** dei
-riferimenti: il root `.claude/CLAUDE.md` e il `CLAUDE.md` di progetto citano `docs/superpowers/specs/…` → aggiornare a
-`dev-docs/…`. Anche questo spec, dopo la migrazione, vive in
-`dev-docs/superpowers/specs/2026-06-01-course-portal-site-design.md`.
+che erano in `docs/superpowers/` (specs + plans) e `docs/sources/` sono state **rilocate** in `dev-docs/` (cartella top-level
+non pubblicata), preservando la struttura interna (`dev-docs/superpowers/…`, `dev-docs/sources/…`). Così `/docs` ospita
+**solo** il sito. La migrazione è stata un `git mv` (storia preservata) + **repoint** dei riferimenti. Task A completato.
+Questo spec ora vive in `dev-docs/superpowers/specs/2026-06-01-course-portal-site-design.md`.
 
 ## 6. Build live — `scripts/build_site.py` (+ wrapper `/mlt-site`, opzionale)
 
