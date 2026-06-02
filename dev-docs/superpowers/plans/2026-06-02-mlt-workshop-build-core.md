@@ -493,7 +493,7 @@ metas <- list(
 
 test_that("packages_through gives the START state of step n = packages of beats 0..n-1", {
   expect_equal(packages_through(metas, 0L), character(0))            # step 0: nothing yet
-  expect_equal(packages_through(metas, 1L), "janitor")              # step 1: from beat 0
+  expect_equal(packages_through(metas, 1L), character(0))            # step 1: beat 0 introduced none
   expect_setequal(packages_through(metas, 2L), c("janitor"))        # step 2: beats 0..1
 })
 ```
