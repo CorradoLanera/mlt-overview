@@ -39,3 +39,6 @@ dist/
 site/_generated/
 # mltbuild scratch (plan 1)
 dev/mltbuild/**/_generated/
+
+# Transient visual reference (old solved HTML; not committed — see plan 2 Task 8)
+workshops/*/_authoring/_oracle/
