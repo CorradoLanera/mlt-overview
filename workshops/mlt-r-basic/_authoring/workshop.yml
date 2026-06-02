@@ -1,0 +1,5 @@
+slug: mlt-r-basic
+r_version: "4.6.0"
+ppm_snapshot: "2026-06-01"
+dataset: data-raw/heart_failure.csv
+steps: [00-setup, 01-import, 02-eda, 03-logistic, 04-zoo, 05-report]

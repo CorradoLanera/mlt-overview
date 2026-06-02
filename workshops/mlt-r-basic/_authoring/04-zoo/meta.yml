@@ -1,0 +1,4 @@
+type: append
+slug: 04-zoo
+title: "Step 04 — The zoo, tuned"
+packages: [workflowsets, future, glmnet, kknn, kernlab, ranger]

@@ -1,0 +1,197 @@
+---
+title: "Practical AI for Medical Data — a reproducible model report"
+subtitle: "Predicting in-hospital death after a heart-failure episode"
+date: today
+format:
+  html:
+    embed-resources: true
+    toc: true
+    code-fold: true
+execute:
+  warning: false
+  message: false
+---
+
+## What this report does
+
+This is the reproducible deliverable of the workshop. It **runs the entire analysis as it
+renders** — split → preprocess → tune four model families on cross-validation → finalize the
+winner → validate once on the held-out test set — and then reports the result. Nothing is
+typed in by hand and nothing is reloaded from a private cache: **every number and figure below
+was produced by the same render that prints it.** Re-render on any machine with the pinned
+environment and you reproduce the *analysis*, not just the document.
+
+```{r setup}
+library(here)
+library(rio)
+library(tidyverse)
+library(janitor)
+library(tidymodels)
+library(gtsummary)
+
+set.seed(123)
+```
+
+## The cohort
+
+```{r cohort}
+# Load & wrangle exactly as in Steps 00-01 ----
+hf <- import(here("data-raw", "heart_failure.csv"), setclass = "tibble") |>
+{{frag:wrangle-tail}}
+```
+
+The analysis cohort is the heart-failure clinical records (Chicco & Jurman 2020):
+`r nrow(hf)` patients, of whom
+`r scales::percent(mean(hf$outcome == "died"), accuracy = 0.1)` died during follow-up. The
+table below summarises the eleven candidate predictors, stratified by outcome.
+
+```{r baseline}
+hf |>
+  tbl_summary(
+    by = outcome,
+    include = c(
+      age, sex, ejection_fraction, serum_creatinine, serum_sodium,
+      creatinine_phosphokinase, platelets, anaemia, diabetes,
+      high_blood_pressure, smoking,
+    ),
+  )
+```
+
+## Split and preprocess
+
+We hold out a stratified 25% test set that **no tuning ever sees**, and build the same recipe
+used throughout the workshop (dummy-code, drop zero-variance, normalize — no imputation, the
+data has no missing values).
+
+```{r split-recipe}
+# Split: a held-out test set the tuning never touches ----
+{{frag:split}}
+
+# Recipe ----
+{{frag:recipe}}
+```
+
+## Tune four model families on cross-validation
+
+Each spec leaves its hyperparameters as `tune()`. We bundle the one recipe with the four
+specs into a `workflow_set`, then tune every workflow over a shared 5-fold cross-validation,
+scoring **both** AUC-ROC and AUC-PR.
+
+```{r tune}
+# Model specs (hyperparameters left to tune) ----
+{{frag:specs}}
+
+# One shared resampling scheme and metric set ----
+folds      <- vfold_cv(train, v = 5, strata = outcome)
+hf_metrics <- metric_set(roc_auc, pr_auc)
+
+# Bundle {one recipe} x {four specs}, then tune every workflow ----
+wf_set <- workflow_set(
+  preproc = list(rec = base_rec),
+  models  = list(penlog = penlog_spec, knn = knn_spec, svm = svm_spec, rf = rf_spec),
+)
+
+wf_res <- wf_set |>
+  workflow_map(
+    "tune_grid",
+    resamples = folds,
+    grid      = 8,
+    metrics   = hf_metrics,
+    seed      = 123,
+    verbose   = FALSE,
+  )
+```
+
+The ranking by cross-validated AUC-ROC (the honest comparison — it never touches the test
+set):
+
+```{r ranking}
+wf_rank <- rank_results(wf_res, rank_metric = "roc_auc", select_best = TRUE)
+
+model_label <- c(
+  rec_penlog = "Penalized logistic (glmnet)",
+  rec_knn    = "k-nearest neighbours",
+  rec_svm    = "RBF support vector machine",
+  rec_rf     = "Random forest"
+)
+
+wf_rank |>
+  dplyr::filter(.metric == "roc_auc") |>
+  transmute(
+    Model        = model_label[wflow_id],
+    `CV AUC-ROC` = round(mean, 3),
+    `Std. error` = round(std_err, 3),
+    Rank         = rank,
+  )
+```
+
+## Finalize the winner and validate once
+
+We take the top-ranked workflow, lock in its best hyperparameters, refit on the full training
+set, and score it **once** on the untouched test set.
+
+```{r finalize}
+best_id     <- wf_rank |>
+  dplyr::filter(.metric == "roc_auc") |>
+  dplyr::slice_min(rank, n = 1) |> dplyr::pull(wflow_id)
+best_res    <- extract_workflow_set_result(wf_res, best_id)
+best_params <- select_best(best_res, metric = "roc_auc")
+final_wf    <- wf_set |> extract_workflow(best_id) |> finalize_workflow(best_params)
+
+final_fit <- last_fit(
+  final_wf,
+  split   = data_split,
+  metrics = metric_set(roc_auc, pr_auc, accuracy),
+)
+
+cv_auc       <- wf_rank |>
+  dplyr::filter(.metric == "roc_auc") |>
+  dplyr::slice_min(rank, n = 1) |> dplyr::pull(mean)
+test_metrics <- collect_metrics(final_fit)
+get_metric   <- function(m) {
+  test_metrics |> dplyr::filter(.metric == m) |> dplyr::pull(.estimate)
+}
+test_roc <- get_metric("roc_auc")
+test_pr  <- get_metric("pr_auc")
+test_acc <- get_metric("accuracy")
+```
+
+The winner is **`r model_label[best_id]`**. Its cross-validated AUC-ROC was
+**`r round(cv_auc, 3)`**; refit on the training split and scored once on the held-out test
+set, it reached a test AUC-ROC of **`r round(test_roc, 3)`**, an AUC-PR of
+**`r round(test_pr, 3)`**, and an accuracy of **`r round(test_acc, 3)`**. The gap between the
+cross-validated and the single-split test numbers is the honest noise of a small cohort
+(~`r nrow(test)` test patients) — which is exactly why we pre-commit to one held-out
+evaluation and read it *alongside* the cross-validation, never a single number on its own.
+
+## Test-set ROC and PR curves
+
+```{r curves}
+preds <- collect_predictions(final_fit)
+
+preds |> roc_curve(outcome, .pred_died) |> autoplot()
+preds |> pr_curve(outcome, .pred_died) |> autoplot()
+```
+
+## Reproducibility
+
+Every result above is reproducible by construction:
+
+- **One render, one analysis.** This report *executes* the split → tune → finalize →
+  `last_fit` pipeline as it renders, so the printed numbers and the code that produced them
+  are guaranteed to be the same object — they cannot drift apart, because there is no
+  hand-made cache to fall out of date.
+- **Fixed randomness.** `set.seed(123)` makes the split, the folds, and the tuning grid
+  deterministic, so the same machine re-renders to the same numbers.
+- **Pinned environment.** Package versions are locked with `renv`; `renv::snapshot()` records
+  them in `renv.lock`, and `renv::restore()` rebuilds the exact library on another machine.
+- **Stable paths.** All file access goes through `here::here()`, anchored to this step's
+  `.here` sentinel, so the report renders identically regardless of the working directory.
+- **One outcome convention.** The event is `died` (the *first* factor level), so every metric
+  scores `.pred_died` as the positive class by default — consistently, end to end.
+
+That is the whole point: a clinical model someone else can re-run — and reproduce the
+*analysis*, number for number, not just the document. When an analysis grows too heavy to
+re-run on every render, the next step is not a hand-made `.rds` cache but a **pipeline**
+(`targets`, the Advanced capstone): it caches *with* inspectable, hash-checked intermediate
+targets — each one re-derivable and auditable — and compiles this very report itself.

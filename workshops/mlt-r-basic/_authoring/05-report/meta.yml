@@ -1,0 +1,5 @@
+type: transform-terminal
+slug: 05-report
+title: "Step 05 — Reproducible report"
+template: report.qmd
+packages: []
