@@ -127,3 +127,21 @@ Keep the per-step `_solved/NN-slug.html` open on a second screen: the **To-fill*
 student sees in `steps/NN-slug/NN-slug.R`; the **Solved** tab is the same code executed, with outputs. Close
 each as you finish a step. Students who fall behind just open the next `steps/` folder — it already contains
 the prior solutions as *given*.
+
+## Scaffolding a new beat
+
+`/mlt-beat <workshop-slug> <NN-slug> [type]` scaffolds `_authoring/<NN-slug>/{meta.yml,beat.R}` (or
+`report.qmd` for a transform step) with the correct marker grammar and wires it into `workshop.yml` — so you
+don't have to remember the syntax. Fill the placeholders, then rebuild.
+
+## Known gaps / next
+
+- **Release/portal pipeline is NOT yet fragment-aware.** `dev/release-assets/*.zip` (what students download)
+  and the published portal (`docs/`) are built by `/mlt-dist` + `scripts/build_release.py` +
+  `scripts/build_site.py`, which do **not** run the fragment build first — so a shipped `mlt-r-basic.zip`
+  can lag `_authoring/` (it currently still bundles the pre-migration hand-authored `steps/`). A dedicated
+  "consistency" pass will unify build → dist → portal into one idempotent entrypoint and make `/mlt-dist`
+  (and the `remind-workshop-dist.py` / `rebuild-portal.py` hooks) fragment-aware. **Until then:** after
+  editing `_authoring/`, rebuild AND re-run the dist + site scripts before publishing a release.
+- **Advanced (`mlt-r-advanced`) not yet migrated** to `_authoring/` (plan 3) — still the hand-authored
+  `steps/` tree.
