@@ -811,6 +811,12 @@ git commit -m "mltbuild: build CLI entry + /mlt-workshop-build command stub"
   `*-solved.html` (this session) modulo seed.
 - Advanced **self-seeding** (`00-recap` rebuilds the model from raw), and the **adversarial verifier**
   subagent that checks the §10 invariants.
+- **HARDEN `materialize_workshop()` before wiring `out_dir` to a real path (data-loss hazard).** It
+  currently runs `unlink(out_dir, recursive = TRUE)` — safe in plan 1 because `out_dir` is always a
+  throwaway tempdir. Plan 2 points `out_dir` at `workshops/<slug>/`, which **contains** the committed
+  `_authoring/` + `data-raw/` source-of-truth, so a naive call would delete the source on its first
+  line. Fix in plan 2: `unlink` only the generated subtrees (`steps/`, `full/`, `_solved/`), or refuse
+  to `unlink` any directory containing `_authoring/`/`workshop.yml`. (Flagged by the plan-1 final review.)
 
 ---
 
