@@ -44,3 +44,7 @@ dev/mltbuild/**/_generated/
 workshops/*/steps/
 workshops/*/full/
 workshops/*/_solved/
+
+# Transient QA/audit screenshots + runtime locks under .claude/ (scratch, not deliverables)
+/.claude/*.png
+/.claude/*.lock
