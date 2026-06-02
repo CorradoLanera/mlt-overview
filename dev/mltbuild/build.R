@@ -61,6 +61,7 @@ for (n in seq_along(wk$steps) - 1L) {
     tq <- file.path(sdir, paste0("_teacher-", slug, ".qmd"))
     writeLines(build_teacher_qmd(step$meta$title, blank, solved), tq)
     render_one(tq, file.path(solved_dir, paste0(slug, ".html")))
+    unlink(tq)   # transient: don't leave a teacher artifact in the student step folder
   }
   cat("rendered", slug, "\n")
 }
