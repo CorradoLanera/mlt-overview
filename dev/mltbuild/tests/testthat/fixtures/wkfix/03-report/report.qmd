@@ -1,0 +1,9 @@
+---
+title: "Toy report"
+format: html
+---
+
+```{r}
+{{frag:clean-call}}
+summary(toy)
+```

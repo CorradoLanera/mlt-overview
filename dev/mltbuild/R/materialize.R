@@ -15,6 +15,8 @@
 materialize_workshop <- function(wk, out_dir) {
   beats <- lapply(wk$steps, `[[`, "beat")
   metas <- lapply(wk$steps, `[[`, "meta")
+  frags <- collect_fragments(wk)
+
   # HARDENED: never unlink out_dir itself — it may hold the committed _authoring/ +
   # data-raw/ source-of-truth. Remove ONLY the generated subtrees.
   dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
@@ -22,17 +24,27 @@ materialize_workshop <- function(wk, out_dir) {
     unlink(file.path(out_dir, sub), recursive = TRUE)
   }
 
-  for (n in seq_along(wk$steps) - 1L) {           # 0-based index
-    slug <- wk$steps[[n + 1L]]$slug
-    step_dir <- file.path(out_dir, "steps", slug)
-    .write_lines(assemble_step(beats, n), file.path(step_dir, paste0(slug, ".R")))
-    .write_lines(packages_through(metas, n), file.path(step_dir, "packages.txt"))
-    .write_lines(character(0), file.path(step_dir, ".here"))
-    .copy_data_raw(wk$data_raw_dir, step_dir)
+  append_beats <- beats[vapply(metas, function(m) identical(m$type, "append"), logical(1))]
+
+  for (n in seq_along(wk$steps) - 1L) {           # 0-based
+    step  <- wk$steps[[n + 1L]]
+    slug  <- step$slug
+    sdir  <- file.path(out_dir, "steps", slug)
+    if (identical(step$meta$type, "transform-terminal")) {
+      .write_lines(render_report(step$template, frags), file.path(sdir, "report.qmd"))
+    } else if (identical(step$meta$type, "append")) {
+      ai <- sum(vapply(metas[seq_len(n + 1L)], function(m) identical(m$type, "append"), logical(1))) - 1L
+      .write_lines(assemble_step(append_beats, ai), file.path(sdir, paste0(slug, ".R")))
+    } else {
+      stop("unknown step type for '", slug, "': ", step$meta$type)
+    }
+    .write_lines(packages_through(metas, n), file.path(sdir, "packages.txt"))
+    .write_lines(character(0), file.path(sdir, ".here"))
+    .copy_data_raw(wk$data_raw_dir, sdir)
   }
 
   full_dir <- file.path(out_dir, "full")
-  .write_lines(assemble_full(beats), file.path(full_dir, "full.R"))
+  .write_lines(assemble_full(append_beats), file.path(full_dir, "full.R"))
   .write_lines(character(0), file.path(full_dir, ".here"))
   .copy_data_raw(wk$data_raw_dir, full_dir)
   invisible(out_dir)

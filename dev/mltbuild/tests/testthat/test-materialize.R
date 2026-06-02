@@ -43,3 +43,18 @@ test_that("materialize_workshop preserves _authoring/ and data-raw/ at the out_d
   expect_false(dir.exists(file.path(out, "steps", "stale")))           # stale subtree gone
   expect_true(dir.exists(file.path(out, "steps", "00-setup")))         # rebuilt
 })
+
+test_that("materialize writes a substituted report.qmd for transform-terminal steps (no .R)", {
+  out <- tempfile("wkout-")
+  wk  <- read_workshop(testthat::test_path("fixtures", "wkfix"))
+  materialize_workshop(wk, out)
+
+  rep_dir <- file.path(out, "steps", "03-report")
+  expect_true(file.exists(file.path(rep_dir, "report.qmd")))
+  expect_false(file.exists(file.path(rep_dir, "03-report.R")))   # transform: no student .R
+  rq <- readLines(file.path(rep_dir, "report.qmd"))
+  expect_true(any(grepl("clean_names\\(toy\\)", rq)))            # token substituted
+  expect_false(any(grepl("\\{\\{frag:", rq)))                    # no leftover tokens
+  # append steps still produce their .R:
+  expect_true(file.exists(file.path(out, "steps", "02-eda", "02-eda.R")))
+})
