@@ -28,8 +28,6 @@ library(tidyverse)
 library(janitor)
 library(tidymodels)
 library(gtsummary)
-
-set.seed(123)
 ```
 
 ## The cohort
@@ -65,6 +63,7 @@ data has no missing values).
 
 ```{r split-recipe}
 # Split: a held-out test set the tuning never touches ----
+set.seed(123)
 {{frag:split}}
 
 # Recipe ----
