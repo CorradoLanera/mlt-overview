@@ -13,13 +13,19 @@
 assemble_step <- function(beats, n) {
   # beats: list of parsed beats (0-indexed conceptually); n: 0-based step index.
   stopifnot(n >= 0, n < length(beats))
-  prior <- if (n >= 1L) lapply(beats[seq_len(n)], render_beat, mode = "solved") else list()
+  prior   <- if (n >= 1L) lapply(beats[seq_len(n)], render_beat, mode = "solved") else list()
   current <- list(render_beat(beats[[n + 1L]], mode = "blank"))
-  .join_beats(c(prior, current))
+  strip_frag_markers(.join_beats(c(prior, current)))
 }
 
 assemble_full <- function(beats) {
-  .join_beats(lapply(beats, render_beat, mode = "solved"))
+  strip_frag_markers(.join_beats(lapply(beats, render_beat, mode = "solved")))
+}
+
+assemble_solved_through <- function(beats, n) {
+  # All of beats 0..n rendered SOLVED (teacher "Solved" tab). 0-based n.
+  stopifnot(n >= 0, n < length(beats))
+  strip_frag_markers(.join_beats(lapply(beats[seq_len(n + 1L)], render_beat, mode = "solved")))
 }
 
 packages_through <- function(metas, n) {

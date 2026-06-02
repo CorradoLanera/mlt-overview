@@ -36,3 +36,26 @@ test_that("packages_through gives the START state of step n = packages of beats 
   expect_equal(packages_through(metas, 1L), character(0))            # step 1: from beat 0 (empty)
   expect_setequal(packages_through(metas, 2L), c("janitor"))        # step 2: beats 0..1
 })
+
+test_that("assemble_step strips frag markers from prior solved beats", {
+  fb <- list(
+    parse_beat(c("# B0 ----", "x <- 0 |>", "  # >>>frag id=f", "  g()", "  # <<<frag")),
+    parse_beat(c("# B1 ----", "# >>>hole id=h kind=fill prompt=p",
+                 "#   solved:", "y <- 1", "#   blank:", "y <- ___", "# <<<hole"))
+  )
+  out <- assemble_step(fb, 1L)
+  expect_false(any(grepl(">>>frag|<<<frag", out)))
+  expect_true(all(c("x <- 0 |>", "  g()", "y <- ___") %in% out))
+})
+
+test_that("assemble_solved_through joins beats 0..n all solved, strips frags", {
+  fb <- list(
+    parse_beat(c("# B0 ----", "x <- 0 |>", "  # >>>frag id=f", "  g()", "  # <<<frag")),
+    parse_beat(c("# B1 ----", "y <- 1")),
+    parse_beat(c("# B2 ----", "z <- 2"))
+  )
+  out <- assemble_solved_through(fb, 1L)
+  expect_true(all(c("x <- 0 |>", "  g()", "y <- 1") %in% out))   # 0..1 solved, frag inlined
+  expect_false("z <- 2" %in% out)                                # beat 2 excluded
+  expect_false(any(grepl(">>>frag|<<<frag", out)))               # markers stripped (now non-vacuous)
+})
