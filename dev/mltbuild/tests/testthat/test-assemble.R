@@ -59,3 +59,15 @@ test_that("assemble_solved_through joins beats 0..n all solved, strips frags", {
   expect_false("z <- 2" %in% out)                                # beat 2 excluded
   expect_false(any(grepl(">>>frag|<<<frag", out)))               # markers stripped (now non-vacuous)
 })
+
+test_that("assemble_step hoists library() calls from all beats to the top", {
+  hb <- list(
+    parse_beat(c("library(here)", "x <- 0")),
+    parse_beat(c("library(dplyr)", "# >>>hole id=h kind=fill prompt=p",
+                 "#   solved:", "y <- 1", "#   blank:", "y <- ___", "# <<<hole"))
+  )
+  out <- assemble_step(hb, 1L)
+  expect_equal(out[1:2], c("library(here)", "library(dplyr)"))   # both at top
+  expect_false(any(grepl("library\\(", out[-(1:2)])))            # none left in the body
+  expect_true("y <- ___" %in% out)                               # current beat still blank
+})

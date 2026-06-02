@@ -15,17 +15,31 @@ assemble_step <- function(beats, n) {
   stopifnot(n >= 0, n < length(beats))
   prior   <- if (n >= 1L) lapply(beats[seq_len(n)], render_beat, mode = "solved") else list()
   current <- list(render_beat(beats[[n + 1L]], mode = "blank"))
-  strip_frag_markers(.join_beats(c(prior, current)))
+  hoist_libraries(strip_frag_markers(.join_beats(c(prior, current))))
 }
 
 assemble_full <- function(beats) {
-  strip_frag_markers(.join_beats(lapply(beats, render_beat, mode = "solved")))
+  hoist_libraries(strip_frag_markers(.join_beats(lapply(beats, render_beat, mode = "solved"))))
 }
 
 assemble_solved_through <- function(beats, n) {
   # All of beats 0..n rendered SOLVED (teacher "Solved" tab). 0-based n.
   stopifnot(n >= 0, n < length(beats))
-  strip_frag_markers(.join_beats(lapply(beats[seq_len(n + 1L)], render_beat, mode = "solved")))
+  hoist_libraries(strip_frag_markers(.join_beats(lapply(beats[seq_len(n + 1L)], render_beat, mode = "solved"))))
+}
+
+hoist_libraries <- function(lines) {
+  # Lift every `library(...)` call to the top (first-appearance order, deduped),
+  # squeezing the blank gaps left behind. set.seed() and everything else stay put.
+  is_lib <- grepl("^\\s*library\\([^)]*\\)\\s*$", lines)
+  if (!any(is_lib)) return(lines)
+  libs <- unique(trimws(lines[is_lib]))            # first-appearance order, deduped, de-indented
+  body <- lines[!is_lib]
+  is_blank <- body == ""
+  drop <- is_blank & c(FALSE, utils::head(is_blank, -1L))   # a blank immediately after another blank
+  body <- body[!drop]
+  while (length(body) && body[[1]] == "") body <- body[-1L] # trim leading blank
+  c(libs, "", body)
 }
 
 packages_through <- function(metas, n) {
