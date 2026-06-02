@@ -5,13 +5,11 @@
   writeLines(lines, path)
 }
 
-.copy_data_raw <- function(authoring_dir, dest_dir) {
-  src <- file.path(authoring_dir, "data-raw")
-  if (dir.exists(src)) {
-    dir.create(file.path(dest_dir, "data-raw"), recursive = TRUE, showWarnings = FALSE)
-    file.copy(list.files(src, full.names = TRUE), file.path(dest_dir, "data-raw"),
-              recursive = TRUE)
-  }
+.copy_data_raw <- function(data_raw_dir, dest_dir) {
+  if (is.na(data_raw_dir) || !dir.exists(data_raw_dir)) return(invisible())
+  dir.create(file.path(dest_dir, "data-raw"), recursive = TRUE, showWarnings = FALSE)
+  file.copy(list.files(data_raw_dir, full.names = TRUE),
+            file.path(dest_dir, "data-raw"), recursive = TRUE)
 }
 
 materialize_workshop <- function(wk, out_dir) {
@@ -30,12 +28,12 @@ materialize_workshop <- function(wk, out_dir) {
     .write_lines(assemble_step(beats, n), file.path(step_dir, paste0(slug, ".R")))
     .write_lines(packages_through(metas, n), file.path(step_dir, "packages.txt"))
     .write_lines(character(0), file.path(step_dir, ".here"))
-    .copy_data_raw(wk$authoring_dir, step_dir)
+    .copy_data_raw(wk$data_raw_dir, step_dir)
   }
 
   full_dir <- file.path(out_dir, "full")
   .write_lines(assemble_full(beats), file.path(full_dir, "full.R"))
   .write_lines(character(0), file.path(full_dir, ".here"))
-  .copy_data_raw(wk$authoring_dir, full_dir)
+  .copy_data_raw(wk$data_raw_dir, full_dir)
   invisible(out_dir)
 }
