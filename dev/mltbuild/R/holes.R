@@ -1,9 +1,11 @@
 # Parse / render beat fragments with hole markers. Base R only.
 
 .parse_hole_header <- function(line) {
+  if (!grepl("\\bid=", line)) stop("hole header missing required id=: ", line)
   rest <- sub("^#\\s*>>>hole\\s+", "", line)
   id     <- sub("^.*\\bid=([^ ]+).*$", "\\1", rest)
   kind   <- if (grepl("\\bkind=", rest)) sub("^.*\\bkind=([^ ]+).*$", "\\1", rest) else "fill"
+  # Note: prompt= is captured greedily to end-of-line; it must be the LAST field on the header line.
   prompt <- if (grepl("\\bprompt=", rest)) sub("^.*\\bprompt=(.*)$", "\\1", rest) else ""
   list(id = id, kind = kind, prompt = prompt)
 }
@@ -34,6 +36,7 @@ parse_beat <- function(lines) {
         else if (identical(section, "blank"))  { blank  <- c(blank,  l) }
         i <- i + 1L
       }
+      if (i > n) stop("unclosed hole '", hdr$id, "' (missing '# <<<hole')")
       segs[[length(segs) + 1L]] <- list(
         type = "hole", id = hdr$id, kind = hdr$kind, prompt = hdr$prompt,
         solved = solved, blank = blank

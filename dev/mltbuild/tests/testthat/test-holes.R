@@ -62,3 +62,13 @@ test_that("render_beat blank for parsons reverses solved lines under a prompt", 
     c("# Reorder the lines to: order these", "step_two()", "step_one()")
   )
 })
+
+test_that("parse_beat errors on an unclosed hole", {
+  beat <- c("# >>>hole id=h kind=fill prompt=p", "#   solved:", "x <- 1")  # no # <<<hole
+  expect_error(parse_beat(beat), "unclosed")
+})
+
+test_that("parse_beat errors on a hole header without id", {
+  beat <- c("# >>>hole kind=fill prompt=p", "#   solved:", "x <- 1", "# <<<hole")
+  expect_error(parse_beat(beat), "id")
+})
