@@ -17,7 +17,12 @@
 materialize_workshop <- function(wk, out_dir) {
   beats <- lapply(wk$steps, `[[`, "beat")
   metas <- lapply(wk$steps, `[[`, "meta")
-  unlink(out_dir, recursive = TRUE)
+  # HARDENED: never unlink out_dir itself — it may hold the committed _authoring/ +
+  # data-raw/ source-of-truth. Remove ONLY the generated subtrees.
+  dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+  for (sub in c("steps", "full", "_solved")) {
+    unlink(file.path(out_dir, sub), recursive = TRUE)
+  }
 
   for (n in seq_along(wk$steps) - 1L) {           # 0-based index
     slug <- wk$steps[[n + 1L]]$slug

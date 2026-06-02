@@ -24,3 +24,22 @@ test_that("materialize_workshop writes step scripts, data-raw, .here, packages.t
   expect_true(any(grepl('"toy.csv"', full)))
   expect_false(any(grepl("___", full)))
 })
+
+test_that("materialize_workshop preserves _authoring/ and data-raw/ at the out_dir root", {
+  out <- tempfile("wkout-")
+  dir.create(file.path(out, "_authoring"), recursive = TRUE)
+  writeLines("sentinel", file.path(out, "_authoring", "keep.txt"))
+  dir.create(file.path(out, "data-raw"), recursive = TRUE)
+  writeLines("a,b\n1,2", file.path(out, "data-raw", "toy.csv"))
+  # a stale generated subtree that MUST be wiped + rebuilt:
+  dir.create(file.path(out, "steps", "stale"), recursive = TRUE)
+  writeLines("old", file.path(out, "steps", "stale", "old.R"))
+
+  wk <- read_workshop(testthat::test_path("fixtures", "wkfix"))
+  materialize_workshop(wk, out)
+
+  expect_true(file.exists(file.path(out, "_authoring", "keep.txt")))   # source untouched
+  expect_true(file.exists(file.path(out, "data-raw", "toy.csv")))      # source untouched
+  expect_false(dir.exists(file.path(out, "steps", "stale")))           # stale subtree gone
+  expect_true(dir.exists(file.path(out, "steps", "00-setup")))         # rebuilt
+})
