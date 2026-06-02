@@ -21,3 +21,13 @@ assemble_step <- function(beats, n) {
 assemble_full <- function(beats) {
   .join_beats(lapply(beats, render_beat, mode = "solved"))
 }
+
+packages_through <- function(metas, n) {
+  # Lock for step n = union of packages introduced by beats 0..n-1 (the START state).
+  stopifnot(n >= 0, n <= length(metas))
+  if (n == 0L) return(character(0))
+  pk <- unlist(lapply(metas[seq_len(n)], function(m) m$packages %||% character(0)))
+  unique(pk %||% character(0))
+}
+
+`%||%` <- function(x, y) if (is.null(x)) y else x

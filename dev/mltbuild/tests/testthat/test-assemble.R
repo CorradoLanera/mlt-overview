@@ -24,3 +24,15 @@ test_that("assemble_full shows every beat solved", {
   expect_true(all(c("x <- 0", "y <- 1", "z <- 2") %in% out))
   expect_false(any(grepl("___", out)))
 })
+
+metas <- list(
+  list(packages = character(0)),   # step 0
+  list(packages = c("janitor")),   # step 1
+  list(packages = c("janitor", "gtsummary"))  # step 2
+)
+
+test_that("packages_through gives the START state of step n = packages of beats 0..n-1", {
+  expect_equal(packages_through(metas, 0L), character(0))            # step 0: nothing yet
+  expect_equal(packages_through(metas, 1L), character(0))            # step 1: from beat 0 (empty)
+  expect_setequal(packages_through(metas, 2L), c("janitor"))        # step 2: beats 0..1
+})
