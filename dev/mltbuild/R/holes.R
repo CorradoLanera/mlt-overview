@@ -47,3 +47,23 @@ parse_beat <- function(lines) {
   flush_text()
   segs
 }
+
+.render_hole <- function(seg, mode) {
+  if (identical(mode, "solved")) return(seg$solved)
+  # mode == "blank"
+  switch(seg$kind,
+    fill    = seg$blank,
+    prose   = paste0("# TODO: ", seg$prompt),
+    parsons = c(paste0("# Reorder the lines to: ", seg$prompt), rev(seg$solved)),
+    stop("unknown hole kind: ", seg$kind)
+  )
+}
+
+render_beat <- function(segments, mode = c("solved", "blank")) {
+  mode <- match.arg(mode)
+  out <- character(0)
+  for (seg in segments) {
+    out <- c(out, if (seg$type == "text") seg$lines else .render_hole(seg, mode))
+  }
+  out
+}
