@@ -43,6 +43,7 @@ append_beats <- beats[vapply(metas, function(m) identical(m$type, "append"), log
 render_one <- function(qmd_abs, html_out) {
   quarto::quarto_render(input = qmd_abs, quiet = TRUE)
   produced <- sub("[.]qmd$", ".html", qmd_abs)
+  if (!file.exists(produced)) stop("render produced no HTML: ", produced)
   file.copy(produced, html_out, overwrite = TRUE); unlink(produced)
 }
 
