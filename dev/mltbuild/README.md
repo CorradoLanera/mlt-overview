@@ -5,16 +5,40 @@ Pure base-R engine in `R/`, `{testthat}` suite in `tests/`.
 
 ## Build a workshop
 
+Two ways, same result — use whichever you remember:
+
 ```sh
 RS='/c/Program Files/R/R-4.6.0/bin/Rscript.exe'   # R 4.6 on this machine
+
+# One command for everything (build + structural gate), all workshops or a named one:
+"$RS" dev/mltbuild/rebuild.R                       # every workshop with an _authoring/ source
+"$RS" dev/mltbuild/rebuild.R mlt-r-basic           # just one
+
+# …or the underlying steps directly:
 "$RS" dev/mltbuild/build.R   workshops/<slug>      # → steps/ + full/ + _solved/ + per-step renv.lock
 "$RS" dev/mltbuild/parity.R  workshops/<slug>      # structural gate: every step renders the expected output kinds
 "$RS" dev/mltbuild/run-tests.R                     # engine unit tests
 ```
 
+From inside Claude Code you (or Claude, on request) can run `/mlt-workshop-build` (no arg = rebuild all)
+— it just calls `rebuild.R`.
+
 `steps/`, `full/`, `_solved/` are **gitignored** — only `_authoring/` + `data-raw/` + the workshop
 `renv.lock` are committed. Edit a fragment, rebuild, and the change propagates to every downstream
 cumulative step automatically (**drift zero**).
+
+Generated `.R` scripts get all their `library()` calls **hoisted to the top** (first-appearance order,
+deduped); `set.seed()` stays exactly where it acts. Because hoisting changes *when* packages load
+relative to the code, there is an on-demand **hoist-safety certification** (heavier — runs the analysis
+twice; use after changing package loading or before a release, not on every edit):
+
+```sh
+"$RS" dev/mltbuild/check-masking.R workshops/<slug>   # → MASKING CHECK OK
+```
+
+It runs `full.R` with libraries interleaved vs hoisted and asserts the deterministic result metrics are
+identical — i.e. no beat uses a function a later package masks differently. If it fails, qualify the
+offending call as `pkg::fun`.
 
 ## Authoring a workshop — `workshops/<slug>/_authoring/`
 
