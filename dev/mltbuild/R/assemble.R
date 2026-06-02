@@ -29,5 +29,3 @@ packages_through <- function(metas, n) {
   pk <- unlist(lapply(metas[seq_len(n)], function(m) m$packages %||% character(0)))
   unique(pk %||% character(0))
 }
-
-`%||%` <- function(x, y) if (is.null(x)) y else x
