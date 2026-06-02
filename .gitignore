@@ -37,3 +37,5 @@ dev/release-assets/
 dist/
 # Generated site partials (rebuilt by scripts/build_site.py)
 site/_generated/
+# mltbuild scratch (plan 1)
+dev/mltbuild/**/_generated/
