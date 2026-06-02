@@ -23,12 +23,16 @@ slides/chapters/*_files/
 # Headless-browser QA screenshots used while authoring the deck
 slides/qa-shots/
 .qa-screenshots/
-dev/*.png
 # Python
 __pycache__/
 .pytest_cache/
-# Transient QA screenshots — not a deliverable
-dev/
+# Transient QA screenshots and scratch files in dev/ — not deliverables
+# (dev/ is NOT globally ignored so that dev/mltbuild/ can be tracked)
+dev/*.png
+dev/*.R
+dev/*.txt
+dev/*.py
+dev/release-assets/
 # Built workshop ZIPs — published as GitHub Release assets, not committed
 dist/
 # Generated site partials (rebuilt by scripts/build_site.py)
