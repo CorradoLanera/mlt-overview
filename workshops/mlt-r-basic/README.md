@@ -82,3 +82,7 @@ Rscript dev/mltbuild/parity.R workshops/mlt-r-basic
 `steps/`, `full/`, and `_solved/` are gitignored — only `_authoring/`, `data-raw/`, and the
 workshop `renv.lock` are committed. Edit one beat, rebuild, and the change propagates to every
 downstream cumulative step automatically (drift zero).
+
+The authoring conventions — the `beat.R` hole/fragment grammar, `meta.yml` fields, and the
+per-step `renv.lock` semantics — live in [`dev/mltbuild/README.md`](../../dev/mltbuild/README.md).
+The teacher keeps `_solved/NN-slug.html` (To-fill / Solved tabs) open while live-coding each step.
