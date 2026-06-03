@@ -61,6 +61,8 @@ sibling_full <- function(authoring_dir, slug) {
   sib <- file.path(dirname(dirname(authoring_dir)), slug, "_authoring")
   if (!dir.exists(sib)) stop("seed_from: sibling workshop not found: ", sib)
   swk    <- read_workshop(sib)
+  if (any(vapply(swk$steps, function(s) !is.null(s$meta$seed_from), logical(1))))
+    stop("seed_from: sibling '", slug, "' itself uses seed_from; chained seeding is not supported")
   smetas <- lapply(swk$steps, `[[`, "meta")
   sbeats <- lapply(swk$steps, `[[`, "beat")
   ab     <- sbeats[vapply(smetas, function(m) identical(m$type, "append"), logical(1))]

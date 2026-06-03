@@ -53,6 +53,7 @@ packages_through <- function(metas, n) {
 packages_for_step <- function(metas, n) {
   # Lock for step n = cumulative START (beats 0..n-1). EXCEPTION: a seeded step
   # ships pre-populated given-code, so it needs ITS OWN packages already present.
+  stopifnot(n >= 0, n < length(metas))
   base <- packages_through(metas, n)
   if (isTRUE(metas[[n + 1L]]$seeded)) base <- unique(c(base, metas[[n + 1L]]$packages))
   base

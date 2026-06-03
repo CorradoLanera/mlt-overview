@@ -40,6 +40,8 @@ test_that("seed_from inlines the sibling's full into the seeded step", {
   expect_true(any(grepl("a_value <- 1", s0)))        # base beat 00 solved, inlined
   expect_true(any(grepl("b_value <- 2", s0)))        # base beat 01 solved, inlined
   expect_true(any(grepl("warm <- TRUE", s0)))        # the recap's own beat, appended after the seed
+  # the seed is PREPENDED: sibling content precedes the recap's own beat
+  expect_lt(which(grepl("a_value <- 1", s0))[[1]], which(grepl("warm <- TRUE", s0))[[1]])
 })
 
 test_that("a seeded step 0 is a FULL renv project (not bare) and carries the unioned packages", {
