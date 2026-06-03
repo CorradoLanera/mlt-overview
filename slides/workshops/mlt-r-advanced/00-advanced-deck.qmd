@@ -679,7 +679,7 @@ Voce docente (IT): chiusura Step 03. Una sola estrazione live; il batch map è w
 
 <!-- Step 04 (demo, 20 min): read the targets DAG (tar_visnetwork); first build runs; re-run all-skip; pipeline renders the report. -->
 
-**Objectives.** Make the whole story reproducible by construction — *and auditable*.
+**Why this step.** A pipeline a colleague cannot re-run is not reproducible. `targets` makes the whole explain→deep→LLM story re-derivable by construction: inspectable intermediate targets, a report the pipeline compiles itself, and an all-skip re-run that proves nothing drifted.
 
 - Read the `targets` **DAG** (`tar_visnetwork()`): every analysis is an **explicit, inspectable
   intermediate target** you can `tar_read()` on its own — `cohort`, `model`, `explanation`.
@@ -717,6 +717,44 @@ Voce docente (IT): nuova slide che esplicita il principio del feedback #13. Diff
 dal Basic: lì il qmd FA tutto al render (giusto, a N piccolo). Qui, per analisi pesanti, la
 pipeline tiene target intermedi esplorabili (audit per-step) E compila il report dai target
 (`tar_quarto`), e ricostruisce solo ciò che cambia. Cache onesta, non `.rds` a mano.
+:::
+
+## Your turn — predict the second `tar_make()`
+
+We ran `tar_make()` and watched the pipeline build. Now we run `tar_make()` **again, unchanged**.
+
+1. **Predict:** what status does every target report, and why?
+2. We changed nothing — so is the second run just "using a cache"? What's the conceptual difference?
+
+::: {.notes}
+Voce docente (IT): predict-output min-138 (capstone check, Engage). Faccio predire PRIMA di eseguire.
+:::
+
+## The reveal — all-skip is reproducibility, not a cache
+
+**Every target reports `skip`.**
+
+The reason is **input-hash checking**: `targets` hashes each target's inputs (function source, upstream target objects, file dependencies). Nothing changed → hashes match → re-running would reproduce the same result → it skips. That's **reproducibility** (re-derivable from unchanged inputs), not a stored value.
+
+Difference from a cache: change *any* input (data, code, a parameter) and the affected target + everything downstream go **stale** and rebuild. A cache returns a stored value regardless; `targets` re-derives or skips by content hash.
+
+**Going further.** Swap `model/final_fit.rds` (a `format = "file"` target) → `model_file` re-hashes → `model` → the `explanation` bridge rebuild; `cohort` stays `skip`. Edit the VIMP knobs inside `explain_model()` → only `explanation` rebuilds. And the **GPU device** is an *ambient* input (`cuda_is_available()` inside the function body) — invisible to the DAG unless promoted to a `tar_target(device, ...)`.
+
+::: {.notes}
+Voce docente (IT): Reveal min-138. Provo col valore di ritorno, non col messaggio:
+`tar_outdated()` == character(0). Il bridge `explanation` ricalcola DAVVERO la VIMP. Going
+further = ex-stretch (stale propagation + device cieco).
+:::
+
+## Go to code — `steps/04-targets/` {.center}
+
+**Follow along.** Open `steps/04-targets/`: read the DAG (`tar_visnetwork()`), `tar_make()`, then re-run → all-skip.
+
+- Each analysis is a named, inspectable target (`cohort`, `model`, `explanation`); the pipeline compiles the report itself.
+- The loop closes: Basic validated the model, Advanced re-derives its explanation, deterministically.
+
+::: {.notes}
+Voce docente (IT): chiusura Step 04 (demo → "follow along"). Chiude il loop Basic↔Advanced.
 :::
 
 ## Concept map — the whole workshop {#sec-concept-map-h .smaller}
