@@ -761,9 +761,11 @@ Voce docente (IT): chiusura Step 04 (demo → "follow along"). Chiude il loop Ba
 
 ```{=html}
 <style>
-/* Mermaid sizes boxes from its own themeVariables.fontSize (set in the .mmd); we only
-   scale the finished SVG to fit. No font !important override — it desyncs text from the
-   dagre-computed box width and makes labels spill out of their rectangles. */
+/* Mermaid sizes the boxes using its init fontFamily (now a system font — see the .mmd).
+   Force the rendered labels to the SAME system font so an unloaded webfont can never desync
+   the text from its box in embedded webviews (e.g. the Positron viewer). Then scale the SVG. */
+#sec-concept-map .nodeLabel, #sec-concept-map .nodeLabel *,
+#sec-concept-map .edgeLabel, #sec-concept-map .edgeLabel * { font-family: Arial, Helvetica, sans-serif !important; }
 #sec-concept-map svg {
   max-height: 1000px !important;
   width: auto !important;
