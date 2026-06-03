@@ -12,6 +12,20 @@
             file.path(dest_dir, "data-raw"), recursive = TRUE)
 }
 
+.copy_carry <- function(authoring_dir, metas, upto_n, dest_dir) {
+  # Copy every file declared in `carry:` by steps 0..upto_n into dest_dir at the same rel path.
+  files <- unique(unlist(lapply(metas[seq_len(upto_n + 1L)], function(m) m$carry %||% character(0))))
+  for (rel in files) {
+    owner <- which(vapply(metas[seq_len(upto_n + 1L)],
+                          function(m) rel %in% (m$carry %||% character(0)), logical(1)))[1]
+    src <- file.path(authoring_dir, metas[[owner]]$slug, rel)
+    if (!file.exists(src)) stop("carry: file not found: ", src)
+    dst <- file.path(dest_dir, rel)
+    dir.create(dirname(dst), recursive = TRUE, showWarnings = FALSE)
+    file.copy(src, dst, overwrite = TRUE)
+  }
+}
+
 materialize_workshop <- function(wk, out_dir) {
   beats <- lapply(wk$steps, `[[`, "beat")
   metas <- lapply(wk$steps, `[[`, "meta")
@@ -42,6 +56,7 @@ materialize_workshop <- function(wk, out_dir) {
     .write_lines(pk, file.path(sdir, "packages.txt"))
     .write_lines(character(0), file.path(sdir, ".here"))
     .copy_data_raw(wk$data_raw_dir, sdir)
+    .copy_carry(wk$authoring_dir, metas, n, sdir)
     # 00-setup has no cumulative packages -> bare .Rproj; all others -> full renv project.
     write_step_project(sdir, wk$renv_dir, with_renv = length(pk) > 0L)
   }
@@ -50,6 +65,7 @@ materialize_workshop <- function(wk, out_dir) {
   .write_lines(assemble_full(append_beats), file.path(full_dir, "full.R"))
   .write_lines(character(0), file.path(full_dir, ".here"))
   .copy_data_raw(wk$data_raw_dir, full_dir)
+  .copy_carry(wk$authoring_dir, metas, length(metas) - 1L, full_dir)
   write_step_project(full_dir, wk$renv_dir, with_renv = TRUE)
   invisible(out_dir)
 }
