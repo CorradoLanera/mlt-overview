@@ -1,0 +1,6 @@
+slug: 03-ellmer
+title: "Step 03 — An LLM as a typed, reproducible ETL"
+packages: [ellmer]
+check:
+  kw: [type_object, type_enum, chat_structured, ischemic]
+  imgs: 0
