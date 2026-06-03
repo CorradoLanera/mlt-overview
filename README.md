@@ -48,10 +48,13 @@ After content changes, run `python scripts/build_site.py` (or `/mlt-build`) and 
 - `site/` — the public Quarto website sources (built into `docs/`).
 - `docs/` — the published site served by GitHub Pages (`main` `/docs`).
 - `styles/_brand.scss` — shared palette + fonts used by every deck.
+- `img/` — shared figures and storyboard images consumed by the decks (referenced via relative paths from `slides/`).
 - `workshops/` — the two self-contained R workshops (each with its own `renv`).
 - `dist/` — built workshop ZIPs (git-ignored; published as GitHub Release assets).
 - `scripts/build_site.py` — builds the live site into `docs/`; `scripts/build_release.py` — builds per-cohort Release assets.
-- `_archive/legacy-xaringan/` — the frozen, reproducible pre-Quarto deck.
+- `dev/` — build engine + author scratch: `dev/mltbuild/` (the tracked fragment-build engine) plus gitignored scratch (`dev/*.png`, `dev/release-assets/`).
+- `tests/` — pytest suite for the repo tooling (`tests/hooks/`, `tests/skills/`).
+- `_archive/` — frozen, reproducible pre-Quarto artifacts: `legacy-xaringan/` (the old deck, still the manifest `base_source`) and `legacy-portal/` (the old portal, rebuild hook disabled).
 - `dev-docs/` — internal design specs & plans (not published).
 
 ## Authoring
