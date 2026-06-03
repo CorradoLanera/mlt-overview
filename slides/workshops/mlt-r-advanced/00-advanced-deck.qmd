@@ -316,7 +316,7 @@ Voce docente (IT): chiusura Step 01. La stessa riga di explainer gira su logisti
 
 <!-- Step 02 (hands-on + demo, 67 min): MLP knobs -> train MLP live + SHAP callback -> write CNN/RNN/fused (shape-check) -> GPU-vs-CPU -> option B. -->
 
-**Objectives.** Train one net honestly; write the rest.
+**Why this step.** Interpretability is model-agnostic — so the same explainer follows us into deep learning. We train **one** small net honestly, write the richer architectures (validated by a shape-check, not trained), and keep one labeled exception explicit.
 
 - **Knobs first**, then train a small `brulee` **MLP live** (≤30 epochs, seconds).
 - Explain it with the **same agnostic SHAP line** — only the model object changed.
@@ -355,6 +355,64 @@ come regolarizzatore" (NO, l'activation non regolarizza). Fallo dal vivo cambian
 solo numero. La slide-parametro viene PRIMA del train (knob pre-caricati).
 :::
 
+## Your turn — the MLP is overfitting; which knob?
+
+Training loss keeps dropping, validation loss has levelled off or risen. Which intervention most directly addresses the overfit?
+
+- **A.** **Increase `penalty`** (L2) **or decrease `hidden_units`** — reduce capacity, push toward high-bias / low-variance.
+- **B.** **Train for more epochs** — it just needs more gradient steps.
+- **C.** **Raise the learning rate** — a bigger step escapes the sharp overfit minima.
+- **D.** **Change the activation** (ReLU → tanh) — a smoother activation regularises.
+
+*Pick one — then we reveal it.*
+
+::: {.notes}
+Voce docente (IT): MCQ min-60 (Engage). Lo faccio dal vivo cambiando UN numero. Distrattori:
+B = più epoche (peggiora); C = learning-rate↑ (diverge); D = activation regolarizza (NO).
+:::
+
+## The answer — A: penalty ↑ / hidden_units ↓
+
+**✓ A.** Capacity and weight-decay are the overfit knobs in an MLP.
+
+- **✗ B** — *more epochs.* Backwards: more training **deepens** the overfit; early stopping is the remedy, not the cause.
+- **✗ C** — *raise learning rate.* That's optimisation dynamics, not capacity; it may destabilise training and does not regularise.
+- **✗ D** — *activation as regulariser.* Activation shapes gradient flow/expressiveness, but it is not a direct regulariser; `penalty` and width are.
+
+::: {.notes}
+Voce docente (IT): Reveal min-60. penalty↑ / hidden↓ (o taglia epochs). La slide-parametro
+precede il train.
+:::
+
+## Your turn — the same explainer, now on the MLP
+
+We have `mlp_fit`. Using the **same explainer call** as on the logistic anchor (just swap the model), make a waterfall for observation 1:
+
+```r
+kernelshap(mlp_fit, X = bg[1, ], bg_X = bg, pred_fun = pred_fun) |>
+  shapviz() |>
+  sv_waterfall()
+```
+
+Run it: do the top features match what VIMP told us?
+
+::: {.notes}
+Voce docente (IT): your-turn min-66 (Engage). Stessa riga del blocco 01, cambia solo il modello.
+:::
+
+## My turn — model-agnostic, unchanged
+
+The call runs **unchanged** — only the fitted model differs. `kernelshap` reaches the model **only** through `pred_fun`; it never looks inside. The waterfall still puts `ejection_fraction` and `serum_creatinine` near the top (consistent with VIMP), though magnitudes differ (SHAP is per-observation; VIMP is averaged).
+
+The point: the **same three lines** worked on logistic, RF (Step 01), and now the MLP — the explainer is truly model-agnostic.
+
+**Going further.** Why? `kernelshap` needs only `pred_fun(object, X, ...)` mapping rows → probabilities. It treats the model as a black box (no coefficients, splits, or weights), evaluating it on feature coalitions and fitting a weighted regression to recover Shapley values. "Give me a prediction function" is the only assumption — so it spans the whole model zoo.
+
+::: {.notes}
+Voce docente (IT): Reveal/my-turn min-66. Riuso intenzionale di SHAP (non nuovo carico):
+rinforza l'agnosticismo. Going further = ex-stretch.
+:::
+
 ## CNN / RNN / fused — written, not trained {.smaller}
 
 <!-- NNMOD/CNN/RNN/FUSED nodes — Parsons reorder, min-80. -->
@@ -376,6 +434,46 @@ Voce docente (IT): min-80 (Parsons). Riordina il `forward()` della rete fusa: 3 
 concat-e-head; la larghezza d'ingresso della head = somma delle larghezze dei 3 rami.
 Lo split scrivi-non-addestra collassa CNN+RNN+fused in UN solo schema ("modulo cablato
 dal forward") → da 9 a ~5 chunk effettivi. Nessun training: solo `[5,2]`.
+:::
+
+## Your turn — reorder the fused `forward()`
+
+The `forward()` of the fused network is scrambled. Put these six lines in execution order:
+
+```
+(a)  self$head(torch_cat(list(t, c, r), dim = 2))
+(b)  t <- self$tab(x_tab)
+(c)  r <- self$rnn(x_seq)
+(d)  torch_cat(list(t, c, r), dim = 2)
+(e)  c <- self$cnn(x_sig)
+(f)  forward = function(x_tab, x_sig, x_seq) {
+```
+
+Then: (1) branch widths are 16, `sig_ch`, `hidden` — what must the **head's input dim** equal? (2) The head emits 2 logits — what's the output **shape** for a batch of $B = 5$?
+
+::: {.notes}
+Voce docente (IT): Parsons min-80 (Engage). (d) è il distrattore (concat senza head). Errori
+comuni: concat prima dei tre rami, o head prima del concat → shape error a runtime.
+:::
+
+## The answer — branches first, then concat + head
+
+**Order:** f → b → e → c → a (build `t`, `c`, `r` in any order, then concat + head in one call):
+
+```r
+forward = function(x_tab, x_sig, x_seq) {
+  t <- self$tab(x_tab)   # [B, 16]
+  c <- self$cnn(x_sig)   # [B, sig_ch]
+  r <- self$rnn(x_seq)   # [B, hidden]
+  self$head(torch_cat(list(t, c, r), dim = 2))
+}
+```
+
+**Head input dim:** $16 + \text{sig\_ch} + \text{hidden}$ — `torch_cat(dim = 2)` concatenates along the feature axis; any mismatch errors at the first forward pass. **Output shape:** $[5, 2]$ — one row per observation, two logits per row (batch is always `dim = 1`).
+
+::: {.notes}
+Voce docente (IT): Reveal min-80. Riga (d) scartata. torch segnala lo shape mismatch subito →
+scrivere il forward + un batch fittizio è il modo più rapido di validare un'architettura.
 :::
 
 ## The honesty rule — one labeled exception {.smaller}
@@ -406,6 +504,34 @@ senza label" (NO), "identico al cache di targets" (NO — la riproducibilità ha
 un'altra cosa). Distinzione chiave da far atterrare prima del capstone.
 :::
 
+## Your turn — does the loss curve break the honesty rule?
+
+We showed the fused network's loss curve and said *"I trained this earlier on GPU."* How does this fit the workshop's honesty rule?
+
+- **A.** It's the **single labeled exception** — announced as pre-trained, shown as a *didactic object*, not a live result. The killed CPU epoch **was** live (a real performance gap). Everything else is computed in real time.
+- **B.** **Nothing is ever cached** — the honesty rule means everything runs live, including this curve.
+- **C.** **All DL outputs** can be pre-trained and shown **without a label** — training time justifies skipping live-coding.
+- **D.** A labeled pre-trained result is **identical to the `targets` "skip"** — both pre-computed, same rule.
+
+*Pick one — then we reveal it.*
+
+::: {.notes}
+Voce docente (IT): MCQ min-92 (Engage). Distinzione chiave da far atterrare prima del capstone.
+:::
+
+## The answer — A: one labeled exception
+
+**✓ A.** Labeled, announced, shown as a didactic object; the killed CPU epoch was genuinely live.
+
+- **✗ B** — *nothing is ever cached.* The rule is "don't show pre-cooked **as if live**"; a clearly labeled artifact is allowed.
+- **✗ C** — *pre-train without a label.* Strips the rule of its key condition — undisclosed pre-training is exactly what's prohibited.
+- **✗ D** — *same as `targets` skip.* Different: `targets` "skip" is **re-derivable** from unchanged inputs (reproducibility); the loss curve is a one-off GPU artifact that can't be reproduced live.
+
+::: {.notes}
+Voce docente (IT): Reveal min-92. La riproducibilità hash-checked di targets è un'altra cosa
+dal pre-cotto etichettato.
+:::
+
 ## GPU payoff — where the accelerator actually pays {.smaller}
 
 The accelerator is **not** a magic speed button. Match it to the workload.
@@ -421,6 +547,19 @@ Voce docente (IT): non vendere la GPU sul giocattolo (MLP minuscolo), vendila su
 vero (CNN/fuso). L'epoca CPU "uccisa" è un'epoca reale interrotta, non simulata: parte sul
 serio, arranca, la fermi → rerun con `cpu = FALSE`, stesso codice, cambia solo
 l'acceleratore. Su questa macchina di build gira solo in lettura (eval false).
+:::
+
+## Go to code — `steps/02-deep-learning/` {.center}
+
+Open `steps/02-deep-learning/`: train the MLP live, explain it with the same SHAP line, write (don't train) CNN/RNN/fused, run the GPU-vs-CPU demo.
+
+- The MLP's `roc_auc` is single-split — **not** comparable to Basic's CV ~0.79 (apples to oranges).
+- One labeled exception (the loss curve); everything else live.
+- **Behind?** Copy `steps/03-ellmer/` and you are back in sync.
+
+::: {.notes}
+Voce docente (IT): chiusura Step 02 (l'hotspot). Break dopo questo step (uscita dall'hotspot).
+Non vendere l'MLP come vincitore della foresta.
 :::
 
 # Step 03 · LLM as typed ETL {#sec-03-ellmer .center}
