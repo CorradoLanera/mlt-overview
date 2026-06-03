@@ -159,7 +159,7 @@ Voce docente (IT): chiusura Step 00 (demo → "follow along"). Il workflow final
 
 <!-- Step 01 (hands-on, 48 min): permutation VIMP (logistic+RF); agnostic SHAP (anchor + 1 RF row); logistic as sanity. -->
 
-**Objectives.** Open the black box with two model-agnostic tools.
+**Why this step.** A probability is not an explanation. We open the black box with two model-agnostic tools — permutation VIMP and SHAP — anchored on a logistic model we *can* read, so we can trust them on the forest we cannot.
 
 - **Permutation VIMP** (`{vip}`): shuffle a predictor $\to$ how far AUC-ROC drops = how much
   the model **relies** on it. Reliance, **not** causation.
@@ -172,6 +172,35 @@ VIMP = reliance, NON causazione / coefficiente con segno / p-value. Numero reale
 build: la VIMP a permutazione mette in cima ejection_fraction e serum_creatinine (con
 age) — i predittori clinicamente sensati, con effetti soglia/non-monotoni. Sono le
 feature che la foresta ha imparato a USARE, non un'affermazione causale né di direzione.
+:::
+
+## Your turn — what does permutation VIMP measure?
+
+The permutation-importance plot for the random forest puts **`ejection_fraction`** and **`serum_creatinine`** on top. What does that score actually measure?
+
+- **A.** Permuting a predictor breaks its link to the outcome; the **drop in AUC-ROC** measures how much the model **relies on** it. High = the model can't do without it — *not* that it causes the outcome.
+- **B.** A high score means `ejection_fraction` **causes** heart-failure death.
+- **C.** Importance is a **signed coefficient**: positive = raises predicted risk, negative = lowers it.
+- **D.** Importance is a **p-value**: above a threshold = statistically significant.
+
+*Pick one — then we reveal it.*
+
+::: {.notes}
+Voce docente (IT): MCQ min-24 (Engage). Distrattori: B = importanza = causazione; C = coefficiente
+con segno; D = p-value.
+:::
+
+## The answer — A: reliance, not causation
+
+**✓ A.** The AUC-ROC drop on permutation = how much the model **relies** on the predictor to discriminate.
+
+- **✗ B** — *importance = causation.* It quantifies the model's dependence, says nothing about the data-generating mechanism.
+- **✗ C** — *importance = signed coefficient.* A permutation score on a tree ensemble has **no sign** and no additive reading.
+- **✗ D** — *importance = p-value.* It's a performance measure, not a test statistic from a null hypothesis.
+
+::: {.notes}
+Voce docente (IT): Reveal min-24. Numero reale: la VIMP mette in cima ejection_fraction e
+serum_creatinine (con age) — feature che la foresta USA, non un'affermazione causale.
 :::
 
 ## The logistic anchor — SHAP must recover what we already know {.smaller}
@@ -196,6 +225,30 @@ kernelshap() = ibrido sull'RF (11 feature, scelta pratica). "Your turn" min-66: 
 stessa riga del blocco 01 puntata sull'RF — cambia solo l'oggetto-modello.
 :::
 
+## Your turn — predict the SHAP shape on the anchor
+
+We ran `kernelshap` on the **logistic regression** (the anchor) and called `sv_waterfall()`. Before we look:
+
+1. What **shape** do the waterfall bars take vs the model's raw `coef()` — same sign, same order, or something else?
+2. Why run SHAP on the **logistic** model *first*, before pointing it at the random forest?
+
+::: {.notes}
+Voce docente (IT): predict-output min-38 (Engage). Faccio predire la forma PRIMA del reveal.
+:::
+
+## The reveal — SHAP must recover the known
+
+**Shape:** the predictors that dominate the coefficient table dominate the waterfall, and **directions agree** (a negative coefficient → a negative/blue SHAP bar where the feature pushes the prediction down). Signs match; relative magnitudes mostly mirror the weighted contributions.
+
+It is a **directional sanity check, not an exact identity** — we explain in probability space and `permshap` samples at this feature count, so it is not exactly $\beta_j (x_j - \bar{x}_j)$.
+
+**Why first:** the anchor is a sanity check **for the method**. We know the ground truth (the coefficients); if the agnostic explainer recovers them, we can trust it on the random forest — whose logic we cannot read directly. Run it on the black box first and we'd have no way to know the explanation is real.
+
+::: {.notes}
+Voce docente (IT): Reveal min-38. permshap() esatto sul lineare (sanity-check più pulito);
+kernelshap() ibrido sull'RF. "Model-agnostic" = l'approssimazione è il punto.
+:::
+
 ## SHAP settings — variance vs. cost {.smaller}
 
 <!-- PARAMS_I node — replaces the old "nsim" framing; we use kernelshap now. -->
@@ -217,6 +270,46 @@ kernelshap (override 2026-05-31, §11). Lezione invariata: varianza-vs-costo. Di
 adattati: "meno background = più accurato" (NO, più rumoroso), "background conta solo per
 alberi" (NO, è agnostico), "X = numero di feature" (NO, sono le righe da spiegare).
 permshap esatto sull'ancora lineare, kernelshap ibrido come p cresce.
+:::
+
+## Your turn — the SHAP variance-vs-cost knobs
+
+In `kernelshap`, which **two** knobs govern the variance-vs-cost trade-off of the estimates?
+
+- **A.** The **size of `bg_X`** (background) and the **sampling effort** (coalitions per row): larger + more sampling → lower variance, higher cost. A tiny background (30–50 rows) for the live demo trades precision for speed.
+- **B.** A **smaller background is more accurate** — fewer, more representative rows reduce noise.
+- **C.** The **number of sampling iterations equals the number of features** — fixed by the data.
+- **D.** The **background only matters for tree models** — logistic/NN ignore `bg_X`.
+
+*Pick one — then we reveal it.*
+
+::: {.notes}
+Voce docente (IT): MCQ min-46 (Engage). Distrattori: B = meno background = più accurato (NO);
+C = iterazioni fisse (NO); D = solo per alberi (NO, è agnostico).
+:::
+
+## The answer — A: background size + sampling effort
+
+**✓ A.** Larger `bg_X` + more coalitions → lower-variance attributions at higher cost; the tiny live background is a deliberate speed trade.
+
+- **✗ B** — *smaller background = more accurate.* Inverts it: fewer reference points **increase** variance.
+- **✗ C** — *iterations fixed by the data.* The coalition count is a user knob (a heuristic default), not a property of the feature set.
+- **✗ D** — *background only for trees.* That's TreeSHAP; **kernel** SHAP uses the background as a universal baseline for **every** model family.
+
+::: {.notes}
+Voce docente (IT): Reveal min-46. permshap esatto sull'ancora lineare, kernelshap ibrido come
+p cresce. Background piccolo = più economico e più rumoroso.
+:::
+
+## Go to code — `steps/01-interpret/` {.center}
+
+Open `steps/01-interpret/`: permutation VIMP, then the **same** agnostic SHAP line on the logistic anchor and the RF.
+
+- The anchor first: SHAP must recover the coefficients before we trust it on the forest.
+- **Behind?** Copy `steps/02-deep-learning/` and you are back in sync.
+
+::: {.notes}
+Voce docente (IT): chiusura Step 01. La stessa riga di explainer gira su logistic → RF → (poi) MLP.
 :::
 
 # Step 02 · Deep learning {#sec-02-deep-learning .center}
