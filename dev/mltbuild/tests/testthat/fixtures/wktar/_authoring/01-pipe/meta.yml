@@ -1,0 +1,5 @@
+type: transform-terminal
+engine: targets
+slug: 01-pipe
+title: "Pipe"
+packages: [targets]

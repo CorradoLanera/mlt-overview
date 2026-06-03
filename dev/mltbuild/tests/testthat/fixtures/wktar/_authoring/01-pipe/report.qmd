@@ -1,0 +1,7 @@
+---
+title: Report
+---
+
+```{r}
+targets::tar_read(x)
+```

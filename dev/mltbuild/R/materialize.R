@@ -12,6 +12,24 @@
             file.path(dest_dir, "data-raw"), recursive = TRUE)
 }
 
+.render_authored_file <- function(src, mode) {
+  # Parse hole markers in an authored .R/.qmd, render to `mode` (blank|solved), strip frag markers.
+  strip_frag_markers(render_beat(parse_beat(readLines(src)), mode = mode))
+}
+
+.emit_targets_step <- function(auth_step, dest, mode) {
+  # Emit every authored file (except meta.yml): .R/.qmd hole-rendered to `mode`, others copied verbatim.
+  base <- normalizePath(auth_step, winslash = "/")
+  for (src in list.files(auth_step, recursive = TRUE, full.names = TRUE)) {
+    if (basename(src) == "meta.yml") next
+    rel <- sub(paste0("^", base, "/?"), "", normalizePath(src, winslash = "/"))
+    dst <- file.path(dest, rel)
+    dir.create(dirname(dst), recursive = TRUE, showWarnings = FALSE)
+    if (grepl("[.](R|qmd)$", src)) .write_lines(.render_authored_file(src, mode), dst)
+    else                          file.copy(src, dst, overwrite = TRUE)
+  }
+}
+
 .copy_carry <- function(authoring_dir, metas, upto_n, dest_dir) {
   # Copy every file declared in `carry:` by steps 0..upto_n into dest_dir at the same rel path.
   files <- unique(unlist(lapply(metas[seq_len(upto_n + 1L)], function(m) m$carry %||% character(0))))
@@ -45,7 +63,11 @@ materialize_workshop <- function(wk, out_dir) {
     slug  <- step$slug
     sdir  <- file.path(out_dir, "steps", slug)
     if (identical(step$meta$type, "transform-terminal")) {
-      .write_lines(render_report(step$template, frags), file.path(sdir, "report.qmd"))
+      if (identical(step$meta$engine, "targets")) {
+        .emit_targets_step(file.path(wk$authoring_dir, slug), sdir, mode = "blank")
+      } else {
+        .write_lines(render_report(step$template, frags), file.path(sdir, "report.qmd"))
+      }
     } else if (identical(step$meta$type, "append")) {
       ai <- sum(vapply(metas[seq_len(n + 1L)], function(m) identical(m$type, "append"), logical(1))) - 1L
       .write_lines(assemble_step(append_beats, ai), file.path(sdir, paste0(slug, ".R")))

@@ -1,0 +1,5 @@
+slug: wktar
+r_version: "4.6.0"
+ppm_snapshot: "2026-06-01"
+dataset: data-raw/none.csv
+steps: [01-pipe]

@@ -2,7 +2,7 @@
 
 .parse_hole_header <- function(line) {
   if (!grepl("\\bid=", line)) stop("hole header missing required id=: ", line)
-  rest <- sub("^#\\s*>>>hole\\s+", "", line)
+  rest <- sub("^\\s*#\\s*>>>hole\\s+", "", line)
   id     <- sub("^.*\\bid=([^ ]+).*$", "\\1", rest)
   kind   <- if (grepl("\\bkind=", rest)) sub("^.*\\bkind=([^ ]+).*$", "\\1", rest) else "fill"
   # Note: prompt= is captured greedily to end-of-line; it must be the LAST field on the header line.
@@ -23,15 +23,15 @@ parse_beat <- function(lines) {
   n <- length(lines)
   while (i <= n) {
     line <- lines[[i]]
-    if (grepl("^#\\s*>>>hole\\b", line)) {
+    if (grepl("^\\s*#\\s*>>>hole\\b", line)) {
       flush_text()
       hdr <- .parse_hole_header(line)
       solved <- character(0); blank <- character(0); section <- NA_character_
       i <- i + 1L
-      while (i <= n && !grepl("^#\\s*<<<hole\\s*$", lines[[i]])) {
+      while (i <= n && !grepl("^\\s*#\\s*<<<hole\\s*$", lines[[i]])) {
         l <- lines[[i]]
-        if (grepl("^#\\s*solved:\\s*$", l)) { section <- "solved" }
-        else if (grepl("^#\\s*blank:\\s*$", l)) { section <- "blank" }
+        if (grepl("^\\s*#\\s*solved:\\s*$", l)) { section <- "solved" }
+        else if (grepl("^\\s*#\\s*blank:\\s*$", l)) { section <- "blank" }
         else if (identical(section, "solved")) { solved <- c(solved, l) }
         else if (identical(section, "blank"))  { blank  <- c(blank,  l) }
         i <- i + 1L

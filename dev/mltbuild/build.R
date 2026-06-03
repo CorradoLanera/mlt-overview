@@ -53,7 +53,20 @@ for (n in seq_along(wk$steps) - 1L) {
   sdir <- file.path(workshop, "steps", slug)
   dir.create(file.path(sdir, "output"), showWarnings = FALSE)   # for any ggsave in solved
   if (identical(step$meta$type, "transform-terminal")) {
-    render_one(file.path(sdir, "report.qmd"), file.path(solved_dir, paste0(slug, ".html")))
+    if (identical(step$meta$engine, "targets")) {
+      tdir <- tempfile("tar-solved-"); dir.create(tdir)
+      .emit_targets_step(file.path(authoring, slug), tdir, mode = "solved")
+      .copy_data_raw(wk$data_raw_dir, tdir)
+      old2 <- getwd(); setwd(tdir)
+      targets::tar_make(callr_function = NULL)
+      setwd(old2)
+      produced <- file.path(tdir, "report.html")
+      if (!file.exists(produced)) stop("targets pipeline produced no report.html: ", produced)
+      file.copy(produced, file.path(solved_dir, paste0(slug, ".html")), overwrite = TRUE)
+      unlink(tdir, recursive = TRUE)
+    } else {
+      render_one(file.path(sdir, "report.qmd"), file.path(solved_dir, paste0(slug, ".html")))
+    }
   } else {
     ai <- ai + 1L
     blank  <- assemble_step(append_beats, ai)
