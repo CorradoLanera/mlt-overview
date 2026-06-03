@@ -35,3 +35,8 @@ test_that("wlib_path derives the R-major.minor library segment from r_version", 
   expect_match(p, "renv/library/windows/R-4\\.6/x86_64-w64-mingw32$")
   expect_match(wlib_path("/tmp/ws", "4.5.2"), "R-4\\.5/")
 })
+
+test_that("read_workshop surfaces skip_masking, defaulting to FALSE", {
+  wk <- read_workshop(fixroot)          # fixture has no skip_masking key
+  expect_false(wk$skip_masking)
+})

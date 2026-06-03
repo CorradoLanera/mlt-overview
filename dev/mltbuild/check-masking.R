@@ -17,6 +17,13 @@ root <- dirname(sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value =
 for (f in list.files(file.path(root, "R"), pattern = "[.]R$", full.names = TRUE)) source(f)
 
 wk   <- read_workshop(file.path(workshop, "_authoring"))
+# Opt-out: a workshop whose full.R cannot be re-run in a bare cert subprocess (e.g. torch's
+# Lantern backend, or any non-portable runtime) declares `skip_masking: true`. Hoist-safety is
+# then covered by the pkg:: discipline + the adversarial invariant verifier instead of this gate.
+if (isTRUE(wk$skip_masking)) {
+  cat("MASKING CHECK SKIPPED - workshop declares skip_masking: true (full.R is not cert-subprocess portable).\n")
+  quit(status = 0L)
+}
 wlib <- normalizePath(wlib_path(workshop, wk$r_version), winslash = "/", mustWork = FALSE)
 full <- normalizePath(file.path(workshop, "full"), winslash = "/", mustWork = FALSE)
 if (!file.exists(file.path(full, ".here"))) stop("build the workshop first (no full/.here): ", full)

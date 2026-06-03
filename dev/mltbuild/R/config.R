@@ -52,7 +52,7 @@ read_workshop <- function(authoring_dir) {
     slug = wk$slug, r_version = wk$r_version, ppm_snapshot = wk$ppm_snapshot,
     dataset = wk$dataset, authoring_dir = authoring_dir,
     data_raw_dir = data_raw_dir, renv_dir = renv_dir,
-    steps = steps
+    skip_masking = isTRUE(wk$skip_masking), steps = steps
   )
 }
 
