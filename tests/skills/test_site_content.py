@@ -68,3 +68,16 @@ def test_readme_section_extracts_body_until_next_heading():
 def test_readme_section_heading_is_case_insensitive():
     md = "## Prerequisites\n\nContent here.\n"
     assert sc.readme_section(md, "prerequisites") == "Content here."
+
+
+def test_solutions_tabset_md_one_tab_per_step():
+    md = sc.solutions_tabset_md("mlt-r-basic", ["00-setup", "01-import", "05-report"])
+    assert "::: {.panel-tabset}" in md
+    assert "## 00-setup" in md and "## 05-report" in md
+    assert 'src="solutions/mlt-r-basic/00-setup.html"' in md
+    assert md.count("<iframe") == 3
+    assert md.strip().endswith(":::")
+
+
+def test_solutions_tabset_md_empty_when_no_steps():
+    assert sc.solutions_tabset_md("mlt-r-basic", []) == ""

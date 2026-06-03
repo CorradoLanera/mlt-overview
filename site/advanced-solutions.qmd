@@ -1,0 +1,8 @@
+---
+title: "Coding solutions — Advanced (R)"
+---
+
+Worked, executed solutions for every step of the Advanced workshop (the teacher
+*To fill / Solved* tabs). Pick a step.
+
+{{< include _generated/advanced-solutions.md >}}

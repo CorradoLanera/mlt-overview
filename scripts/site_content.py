@@ -86,3 +86,26 @@ def readme_section(md_text: str, heading: str) -> str:
             break
         body.append(ln)
     return "\n".join(body).strip()
+
+
+def solutions_tabset_md(slug: str, steps: list[str]) -> str:
+    """Quarto panel-tabset embedding one iframe per step's _solved HTML.
+
+    Each iframe points at solutions/<slug>/<step>.html (copied into docs/ by
+    build_site). "" when there are no steps.
+    """
+    if not steps:
+        return ""
+    out = ["::: {.panel-tabset}", ""]
+    # slug/step are controlled (WORKSHOPS constant + filesystem stems) -> no HTML escaping needed.
+    for step in steps:
+        out.append(f"## {step}")
+        out.append("")
+        out.append(
+            f'<iframe src="solutions/{slug}/{step}.html" '
+            f'style="width:100%;height:75vh;border:1px solid #ddd;" '
+            f'title="{slug} {step} solution"></iframe>'
+        )
+        out.append("")
+    out.append(":::")
+    return "\n".join(out)

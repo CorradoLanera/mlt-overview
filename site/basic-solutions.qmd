@@ -1,0 +1,8 @@
+---
+title: "Coding solutions — Basic (R)"
+---
+
+Worked, executed solutions for every step of the Basic workshop (the teacher
+*To fill / Solved* tabs). Pick a step.
+
+{{< include _generated/basic-solutions.md >}}

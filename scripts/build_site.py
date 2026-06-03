@@ -84,6 +84,24 @@ def _overview_md(root: Path, slug: str) -> str:
     return ("\n\n".join(chunks) if chunks else "_Overview to be published._") + "\n"
 
 
+_SOLUTIONS_PLACEHOLDER = "_Coding solutions will appear here once the workshop is built._\n"
+
+
+def _solved_steps(root: Path, slug: str) -> list[str]:
+    """Sorted step names that have a rendered _solved/<step>.html."""
+    sol = root / "workshops" / slug / "_solved"
+    if not sol.is_dir():
+        return []
+    return sorted(p.stem for p in sol.glob("*.html"))
+
+
+def _solutions_md(root: Path, slug: str) -> str:
+    """Solutions partial: a tabset when _solved/ exists, else a placeholder."""
+    steps = _solved_steps(root, slug)
+    md = sc.solutions_tabset_md(slug, steps)
+    return md + "\n" if md else _SOLUTIONS_PLACEHOLDER
+
+
 def write_partials(root: Path, out_dir: Path) -> list[Path]:
     root = Path(root)
     out_dir = Path(out_dir)
@@ -109,6 +127,7 @@ def write_partials(root: Path, out_dir: Path) -> list[Path]:
         _emit(f"{key}-overview.md", _overview_md(root, slug))
         _emit(f"{key}-timeline.md", _timeline_md(root, slug))
         _emit(f"{key}-syllabus.md", _syllabus_partial(root, key))
+        _emit(f"{key}-solutions.md", _solutions_md(root, slug))
 
     return written
 
@@ -170,6 +189,21 @@ def render_workshop_deck(root: Path, slug: str) -> None:
             shutil.copytree(d, dst / d.name, dirs_exist_ok=True)
 
 
+def copy_solutions(root: Path, docs: Path) -> None:
+    """Copy each workshop's _solved/*.html (+ sidecar _files) into docs/solutions/<slug>/."""
+    for slug, _key in WORKSHOPS:
+        sol = root / "workshops" / slug / "_solved"
+        if not sol.is_dir():
+            continue
+        dst = docs / "solutions" / slug
+        dst.mkdir(parents=True, exist_ok=True)
+        for p in sol.glob("*.html"):
+            shutil.copy2(p, dst / p.name)
+        for d in sol.glob("*_files"):
+            if d.is_dir():
+                shutil.copytree(d, dst / d.name, dirs_exist_ok=True)
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Build the live public site into /docs")
     ap.add_argument("--root", default=".")
@@ -186,6 +220,7 @@ def main(argv=None) -> int:
     render_theory_deck(root)
     for slug, _key in WORKSHOPS:
         render_workshop_deck(root, slug)
+    copy_solutions(root, root / DOCS)
     shutil.copytree(root / "img", root / DOCS / "img", dirs_exist_ok=True)
     (root / DOCS / ".nojekyll").write_text("", encoding="utf-8")
 

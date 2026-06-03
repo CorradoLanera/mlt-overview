@@ -46,6 +46,7 @@ def test_write_partials_emits_expected_files(tmp_path):
         "basic-overview.md", "basic-timeline.md", "basic-syllabus.md",
         "advanced-overview.md", "advanced-timeline.md", "advanced-syllabus.md",
         "theory-syllabus.md",
+        "basic-solutions.md", "advanced-solutions.md",
     }:
         assert expected in names
         assert (out / expected).exists()
@@ -86,3 +87,27 @@ def test_overview_placeholder_when_readme_absent(tmp_path):
     bs.write_partials(root, out)  # must not raise
     ov = (out / "advanced-overview.md").read_text(encoding="utf-8")
     assert "to be published" in ov.lower()
+
+
+def test_solutions_partial_and_copy(tmp_path):
+    root = _mini_repo(tmp_path)
+    sol = root / "workshops" / "mlt-r-basic" / "_solved"
+    sol.mkdir(parents=True)
+    (sol / "00-setup.html").write_text("<html>s0</html>", encoding="utf-8")
+    (sol / "01-import.html").write_text("<html>s1</html>", encoding="utf-8")
+    out = tmp_path / "site" / "_generated"
+    bs.write_partials(root, out)
+    part = (out / "basic-solutions.md").read_text(encoding="utf-8")
+    assert "## 00-setup" in part and "## 01-import" in part
+    # advanced has no _solved -> placeholder, not an error
+    adv = (out / "advanced-solutions.md").read_text(encoding="utf-8")
+    assert adv.strip() != ""
+
+    sidecar = sol / "00-setup_files"
+    sidecar.mkdir()
+    (sidecar / "widget.js").write_text("var x=1;", encoding="utf-8")
+
+    docs = tmp_path / "docs"
+    bs.copy_solutions(root, docs)
+    assert (docs / "solutions" / "mlt-r-basic" / "00-setup.html").exists()
+    assert (docs / "solutions" / "mlt-r-basic" / "00-setup_files" / "widget.js").exists()
