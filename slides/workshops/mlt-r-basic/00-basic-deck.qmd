@@ -209,22 +209,18 @@ here di Horst.
 
 # Step 01 · Import & wrangle {#sec-01-import .center}
 
-<!-- Step 01 (hands-on, 32 min): tidyverse primer; clean/recode with dplyr/tidyr and `|>`; outcome to factor. -->
+<!-- Step 01 (hands-on, 32 min): tidyverse primer; clean/recode with dplyr/tidyr and `|>`; outcome to factor; drop leaky `time`. -->
 
-**Objectives.** Meet the tidyverse and shape the data.
+**Why this step.** Raw clinical data lies in two ways: messy names and types, and a column that *secretly encodes the outcome*. We tidy the first and **dodge the second — leakage** — before any model sees the data.
 
-- A tidyverse primer: the native pipe `|>`, verbs that **return a new tibble**.
-- Clean and recode with `dplyr`/`tidyr`; `janitor::clean_names()`.
-- **Drop the leaky `time` column** (follow-up days mechanically anticipate the outcome).
-- Make the outcome a factor with the **event first** (`died`) — so every metric scores
-  death as positive by default.
+- A tidyverse primer: the native pipe `|>`, verbs that return a **new** tibble.
+- Clean and recode with `dplyr`/`tidyr` + `janitor`; **drop the leaky `time`**; make the outcome an **event-first** factor.
 
 ::: {.notes}
-Voce docente (IT): hands-on, il più lungo (~32 min) — apposta, è il picco di
-carico-sintassi per chi parte da zero R. Rete fall-behind con la cartella `01-import/`.
-"Your turn" al min 30: `clean_names → select(-time) → outcome event-first → factor dei
-flag → glimpse` (12 colonne). Le 4 slide di teoria che seguono coprono i concetti che
-poi chiediamo: senza teoria niente "your turn".
+Voce docente (IT): intro Step 01 (hands-on, ~32 min, il picco di carico-sintassi per chi parte
+da zero). Apro col PERCHÉ (i due modi in cui i dati grezzi ingannano: nomi/tipi + leakage),
+non con un elenco asettico. Rete fall-behind con `steps/01-import/`. Le 4 slide di teoria che
+seguono coprono i concetti che poi le formative verificano.
 :::
 
 ## The tidyverse — one grammar for data
@@ -284,6 +280,40 @@ parola-chiave per leggerlo. Screenshot mio ECDC: come abilitarlo in RStudio
 (Ctrl+Shift+M → native pipe).
 :::
 
+## Your turn — what does this pipeline do?
+
+```r
+hf_raw |> clean_names() |> select(ejection_fraction, age) |> filter(age > 60)
+```
+
+Which statement best describes what happens?
+
+- **A.** The tibble flows in as the *first argument* of each verb, and each verb returns a *brand-new copy* — `hf_raw` is unchanged until you assign.
+- **B.** The verbs edit `hf_raw` *in place* (like Stata's `keep if` / `drop`) — afterwards `hf_raw` itself has fewer rows and columns.
+- **C.** `select(ejection_fraction, age)` fails — `ejection_fraction` and `age` are not objects in the global environment.
+- **D.** The pipe forwards the *last object you created*, not the left-hand side.
+
+*Pick one — then we reveal it.*
+
+::: {.notes}
+Voce docente (IT): MCQ min-31 (Engage), dopo la teoria del pipe. Distrattori diagnostici:
+B = modello mentale in-place/Stata; C = NSE non capita; D = il pipe inoltra l'ultimo oggetto.
+Li faccio votare PRIMA di scoprire la risposta (presenza: alzata di mano; remoto: poll).
+:::
+
+## The answer — A: functional, returns a new tibble
+
+**✓ A.** The left-hand value enters the *first argument*; every verb returns a **new** tibble. `hf_raw` is untouched until you assign with `<-`.
+
+- **✗ B** — *in-place / Stata mental model.* dplyr is functional: it returns a new object, the input stays intact.
+- **✗ C** — *NSE not understood.* dplyr evaluates bare column names inside the data frame's scope (tidy/NSE), not as global variables.
+- **✗ D** — *pipe forwards the LHS* — the value on its left — into the first argument, not "the most recent object".
+
+::: {.notes}
+Voce docente (IT): Reveal min-31. Il punto: pipeline funzionale, copia nuova, NSE. Se la sala
+sceglie B è il misconcetto Stata da ri-spiegare prima del your-turn wrangle.
+:::
+
 ## Reshaping with verbs — `dplyr`, `janitor`, `forcats`
 
 :::: {.columns}
@@ -334,6 +364,65 @@ scores beautifully in the slides, and **fails in the clinic**.
 Voce docente (IT): tidy data (1 var/colonna, 1 oss/riga, 1 valore/cella) + la
 mini-lezione di LEAKAGE che giustifica il drop di `time`. Il messaggio forte: il leakage
 si riconosce col ragionamento clinico, non col codice.
+:::
+
+## Your turn — build the analysis cohort
+
+From the imported `hf_raw`, build `hf` with a **single `|>` chain**:
+
+1. `clean_names()` — snake_case the names.
+2. `select(-time)` — drop the follow-up duration (it leaks the outcome).
+3. Make `outcome` a two-level factor, **event first** (`"died"`, `"survived"`) from `death_event`; then drop `death_event`.
+4. Make the 0/1 flags (`anaemia, diabetes, high_blood_pressure, sex, smoking`) factors.
+5. `glimpse()` — confirm **12 columns** and the factor.
+
+*Your turn — type it at the R prompt.*
+
+::: {.notes}
+Voce docente (IT): your-turn min-30 (Engage), il task integrativo dello step. Lo studente lo
+scrive AL PROMPT R sul proprio laptop (o apre `steps/01-import/` se è rimasto indietro). Do
+~3 min di timer. "Type it" = la doctrine live: si scrive, non si incolla. Poi col my-turn lo
+risolvo dal vivo.
+:::
+
+## My turn — the wrangle, one chain
+
+```r
+hf <- hf_raw |>
+  clean_names() |>
+  select(-time) |>
+  mutate(
+    outcome = factor(
+      if_else(death_event == 1, "died", "survived"),
+      levels = c("died", "survived"),
+    ),
+  ) |>
+  select(-death_event) |>
+  mutate(across(c(anaemia, diabetes, high_blood_pressure, sex, smoking), factor)) |>
+  glimpse()
+```
+
+Each verb takes the tibble first and returns a **new** tibble — the chain never mutates `hf_raw`.
+
+**Going further.** Why is `time` leakage? It is follow-up days *until death-or-censoring* — partly a function of the outcome (patients who die early have small `time`). A model handed `time` "predicts" death by reading its own answer: deceptively high in training, collapses in prospective use. A predictor must be knowable **at the moment you would predict**.
+
+::: {.notes}
+Voce docente (IT): Reveal/my-turn min-30. Live-codo la catena. "Going further" = ex-stretch
+(Davide), de-personalizzato: il leakage si riconosce col ragionamento clinico, non col codice.
+:::
+
+## Go to code — `steps/01-import/` {.center}
+
+Now **do it in the project**: open `steps/01-import/` and run the wrangle end to end.
+
+- Type it, run it — the snapshot in `steps/01-import/` is your safety net.
+- The *solution* of this step is the *start* of the next.
+- **Fell behind?** Copy `steps/02-eda/` and you are back in sync.
+
+::: {.notes}
+Voce docente (IT): chiusura Step 01 → hands-on nel progetto. Pattern "Go to code" di
+riferimento: cosa fare nel folder + rete checkpoint (la soluzione dello step N è l'inizio di
+N+1) + bridge al prossimo. Per gli step demo diventa "follow along".
 :::
 
 # Step 02 · Clinical EDA {#sec-02-eda .center}
