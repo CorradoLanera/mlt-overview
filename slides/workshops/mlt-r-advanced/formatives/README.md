@@ -1,5 +1,11 @@
 # Formative — workshop Advanced (nota docente)
 
+> **Nota (2026-06-03):** il *contenuto* di queste formative ora vive **inline nel deck unico**
+> (`../00-advanced-deck.qmd`) come coppie di slide **Engage → Reveal**, integrate al loro punto
+> dell'arco per-step (intro→teoria→formative→go-to-code). Questo file resta la **mappa**
+> formativa→step→minuto→nodo (e il razionale dei distrattori). Gli HTML standalone delle
+> formative sono stati ritirati come deliverable.
+
 Le 11 formative del workshop **mlt-r-advanced**, una ogni ~10–15 min (metodo
 *Teaching Tech Together*: check che fanno emergere i misconcetti dal vivo). Le MCQ
 hanno **distrattori diagnostici** — ogni risposta sbagliata rivela un misconcetto
