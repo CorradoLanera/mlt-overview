@@ -642,12 +642,17 @@ One spine, reused all afternoon. **Five objects, one chain:**
 ```{=html}
 <style>
 #sec-object-map svg { max-width: 100% !important; height: auto !important; display: block; margin: 0.3em auto; }
+/* Race-proof font: mermaid sizes the boxes using its init fontFamily; force the rendered
+   labels to the SAME system font so an unloaded webfont can never desync the text from its
+   box (the overflow that shows up in embedded webviews like the Positron viewer). */
+#sec-object-map .nodeLabel, #sec-object-map .nodeLabel *,
+#sec-object-map .edgeLabel, #sec-object-map .edgeLabel * { font-family: Arial, Helvetica, sans-serif !important; }
 </style>
 ```
 
 ::: {#sec-object-map}
 ```{mermaid}
-%%{init: {'flowchart': {'nodeSpacing': 26, 'rankSpacing': 40, 'padding': 16}, 'themeVariables': {'fontSize': '24px'}}}%%
+%%{init: {'fontFamily': 'Arial, Helvetica, sans-serif', 'flowchart': {'nodeSpacing': 26, 'rankSpacing': 40, 'padding': 16}, 'themeVariables': {'fontSize': '26px'}}}%%
 flowchart LR
   RS["rsample<br/>split<br/>train / test"] --> RC["recipes<br/>preprocess"]
   RC --> PS["parsnip<br/>model spec"]
@@ -1123,9 +1128,12 @@ finalizzato di Basic è ciò che l'Advanced ricarica al giorno uno (pre-hook).
 
 ```{=html}
 <style>
-/* Let mermaid size the boxes from its own themeVariables.fontSize (set in the .mmd),
-   then just scale the finished SVG to fit the slide. No font !important override here —
-   that desyncs text from the dagre-computed box width and makes labels spill out. */
+/* Mermaid sizes the boxes using its init fontFamily (now a system font — see the .mmd).
+   Force the rendered labels to the SAME system font so an unloaded webfont can never desync
+   the text from its box (the overflow that shows up in embedded webviews like the Positron
+   viewer). Then just scale the finished SVG to fit the slide. */
+#sec-concept-map .nodeLabel, #sec-concept-map .nodeLabel *,
+#sec-concept-map .edgeLabel, #sec-concept-map .edgeLabel * { font-family: Arial, Helvetica, sans-serif !important; }
 #sec-concept-map svg {
   max-height: 1000px !important;
   width: auto !important;
