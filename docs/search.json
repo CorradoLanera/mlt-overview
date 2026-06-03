@@ -4,7 +4,7 @@
     "href": "theory.html",
     "title": "Theory Overview",
     "section": "",
-    "text": "Open the slides ↗ Download self-contained deck\nTen chapters, storyboard-narrated, ≈240 minutes of contact time."
+    "text": "Open the slides ↗ Download self-contained deck\nTen chapters, storyboard-narrated, ≈225 minutes of contact time."
   },
   {
     "objectID": "theory.html#chapters",
@@ -18,7 +18,56 @@
     "href": "theory.html#syllabus",
     "title": "Theory Overview",
     "section": "Syllabus",
-    "text": "Syllabus\nSyllabus in preparation — it will appear here once finalised."
+    "text": "Syllabus"
+  },
+  {
+    "objectID": "theory.html#official-course-information",
+    "href": "theory.html#official-course-information",
+    "title": "Theory Overview",
+    "section": "Official course information",
+    "text": "Official course information\n\n\n\n\n\n\n\nDenomination\nMachine Learning: Overview of machine learning techniques, algorithms, and applications\n\n\nSSD\nMEDS-24/A — Statistica medica\n\n\nInstructors\nIleana Baldi, Corrado Lanera\n\n\nHours / Credits\n10 hours · 1 CFU\n\n\nPeriod\nYear I, second semester\n\n\nDelivery\nDual (in-person + remote, simultaneous)\n\n\nLanguage\nEnglish\n\n\nAttendance\nMandatory (80%)\n\n\nExam\nMoodle quiz\n\n\nPrerequisites\nNone"
+  },
+  {
+    "objectID": "theory.html#course-description",
+    "href": "theory.html#course-description",
+    "title": "Theory Overview",
+    "section": "Course description",
+    "text": "Course description\nA conceptual, applied overview of machine learning for biomedical and clinical graduate students. The module builds from first principles — what machine learning is, and how it differs from traditional programming — through the core families of models and the discipline that makes them trustworthy, up to the architectures behind today’s tools. Across ten storyboard-narrated chapters students meet classifiers and the geometry of decision regions; three algorithm families (\\(k\\)-NN, SVM, random forest); model selection, cross-validation, overfitting and data leakage; deep learning (the artificial neuron, the forward pass, gradient descent); architectures for unstructured data (CNNs and RNNs); Transformers and large language models; the practical and ethical use of ChatGPT; agents and the trust boundary; and best practices for real ML projects. Every concept is anchored to a clinical application, so that students leave able to frame, judge, and communicate an ML approach to a medical problem — not to implement one (that is the role of the two R workshops)."
+  },
+  {
+    "objectID": "theory.html#intended-learning-outcomes",
+    "href": "theory.html#intended-learning-outcomes",
+    "title": "Theory Overview",
+    "section": "Intended learning outcomes",
+    "text": "Intended learning outcomes\nBy the end of the module, students can:\n\nFrame a clinical problem as a machine-learning problem via Task (\\(T\\)), Performance (\\(P\\)) and Experience (\\(E\\)), and contrast ML with traditional programming (in ML the model is the output, learned from data: \\(Y \\simeq f(X)\\)).\nClassify a scenario into the correct learning paradigm — supervised, unsupervised, active, reinforcement — justifying the choice from the kind and availability of supervision.\nInterpret a classifier as a partition of feature space into decision regions, and choose performance metrics fit for the problem — recognising why accuracy misleads on imbalanced clinical outcomes.\nApply the train / validation / test split and \\(K\\)-fold cross-validation, diagnose overfitting, and state the data-leakage rule (any number you act on becomes a training number).\nExplain, at the level of why each one exists, the modern architectures: the artificial neuron and gradient descent, CNNs and RNNs for unstructured data, and the Transformer / LLM.\nJudge agentic and LLM tool use by the competence rule and by reversibility, and plan an ML project starting from the simplest defensible model."
+  },
+  {
+    "objectID": "theory.html#topics-schedule",
+    "href": "theory.html#topics-schedule",
+    "title": "Theory Overview",
+    "section": "Topics & schedule",
+    "text": "Topics & schedule\nThe ten chapters and their contact time are listed on the Schedule page. In brief:\n\n01 · What is Machine Learning? — 25 min\n02 · Classifiers — 20 min\n03 · Algorithm examples — 35 min\n04 · Model selection & validation — 30 min\n05 · Deep Learning — 25 min\n06 · Unstructured data (CNN/RNN) — 20 min\n07 · LLMs & Transformers — 25 min\n08 · Using ChatGPT in practice — 15 min\n09 · Agents — 15 min\n10 · Best practices for ML projects — 15 min\n\nTotal contact content ≈ 225 min, within the 10 officially allocated hours (the remainder covers setup, discussion, and assessment)."
+  },
+  {
+    "objectID": "theory.html#assessment",
+    "href": "theory.html#assessment",
+    "title": "Theory Overview",
+    "section": "Assessment",
+    "text": "Assessment\nSummative assessment is a Moodle quiz. In addition, each chapter runs one live, dual-mode formative/summative exercise in which in-person and remote students converge on a single shared artifact (a table, poster, or shared document), so that mastery is observable live for both cohorts."
+  },
+  {
+    "objectID": "theory.html#learning-path",
+    "href": "theory.html#learning-path",
+    "title": "Theory Overview",
+    "section": "Learning path",
+    "text": "Learning path\nThis is Module 1 of the course. The path is Overview → Basic → Advanced: the Overview ends (ch. 10) by pre-hooking into the Practice — Basic R workshop, which in turn pre-hooks into Advanced."
+  },
+  {
+    "objectID": "theory.html#reading-materials",
+    "href": "theory.html#reading-materials",
+    "title": "Theory Overview",
+    "section": "Reading & materials",
+    "text": "Reading & materials\n\nJames, G., Witten, D., Hastie, T., & Tibshirani, R. — An Introduction to Statistical Learning (ISL).\nMitchell, T. M. (1997). Machine Learning. McGraw-Hill — the \\(T/P/E\\) definition.\nVaswani, A., et al. (2017). “Attention is all you need.” — the Transformer architecture.\nLecturer-provided slides (the storyboard-narrated reveal.js deck).\n\nNota docente: l’header riporta i dati amministrativi ufficiali (Offerta Formativa). Il contenuto erogato è più ampio del blurb ufficiale dell’Offerta — che si ferma a bias-variance e metriche — e include deep learning, CNN/RNN, Transformer/LLM, uso pratico di ChatGPT e agenti: i dieci capitoli qui elencati sono la versione corrente e sono la fonte di verità per gli obiettivi."
   },
   {
     "objectID": "index.html",
@@ -74,7 +123,14 @@
     "href": "basic.html#timeline",
     "title": "Practice — Basic (R)",
     "section": "Timeline",
-    "text": "Timeline\nTimeline to be published."
+    "text": "Timeline"
+  },
+  {
+    "objectID": "basic.html#steps",
+    "href": "basic.html#steps",
+    "title": "Practice — Basic (R)",
+    "section": "Steps",
+    "text": "Steps\n\nStep 00 — Setup · 25 min\nInitialise a reproducible RStudio project from scratch with renv and here.\n\n\nStep 01 — Import & wrangle · 35 min\nImport the heart-failure data and wrangle it tidily, dropping the leaky follow-up column.\n\n\nStep 02 — Clinical EDA · 30 min\nExplore the cohort with clinically meaningful summaries (gtsummary).\n\n\nStep 03 — Logistic spine · 45 min\nFit a logistic-regression spine and score it on two metrics — AUC-ROC and AUC-PR.\n\n\nStep 04 — The zoo, tuned · 70 min\nTune and compare a small model zoo with a workflow_set, then validate the winner with last_fit.\n\n\nStep 05 — Reproducible report · 35 min\nWrap the whole analysis in a reproducible Quarto report.\nTotal contact time: 240 min."
   },
   {
     "objectID": "basic.html#how-to-get-run-it",
@@ -88,7 +144,63 @@
     "href": "basic.html#syllabus",
     "title": "Practice — Basic (R)",
     "section": "Syllabus",
-    "text": "Syllabus\nSyllabus in preparation — it will appear here once finalised."
+    "text": "Syllabus"
+  },
+  {
+    "objectID": "basic.html#official-course-information",
+    "href": "basic.html#official-course-information",
+    "title": "Practice — Basic (R)",
+    "section": "Official course information",
+    "text": "Official course information\n\n\n\n\n\n\n\nDenomination\nPractical Artificial Intelligence for Medical Data Analyses with R — Basic\n\n\nSSD\nMEDS-24/A — Statistica medica\n\n\nInstructors\nCorrado Lanera, Luca Vedovelli, Giulia Lorenzoni\n\n\nHours / Credits\n10 hours · 1 CFU\n\n\nPeriod\nFirst semester\n\n\nDelivery\nDual (in-person + remote, simultaneous)\n\n\nLanguage\nEnglish\n\n\nAttendance\nMandatory (80%)\n\n\nExam\nPractical / in-class assessment (see Assessment)\n\n\nPrerequisites\nBasic statistics and programming"
+  },
+  {
+    "objectID": "basic.html#course-description",
+    "href": "basic.html#course-description",
+    "title": "Practice — Basic (R)",
+    "section": "Course description",
+    "text": "Course description\nA ~4-hour, live-coded workshop in which we build and validate a clinical machine-learning model in R — reproducibly, from raw data to a rendered report. Working hands-on in RStudio, we type every line together: we import and wrangle a real heart-failure dataset (dropping a leaky column along the way), explore it with clinically meaningful summaries, fit a logistic-regression spine scored on two metrics (AUC-ROC and AUC-PR), tune and compare a small “zoo” of models with a workflow_set, validate the winner on held-out data with last_fit, and wrap everything in a reproducible Quarto report. The day turns the disciplines met in the Theory Overview into working code."
+  },
+  {
+    "objectID": "basic.html#intended-learning-outcomes",
+    "href": "basic.html#intended-learning-outcomes",
+    "title": "Practice — Basic (R)",
+    "section": "Intended learning outcomes",
+    "text": "Intended learning outcomes\nBy the end of the workshop, students can:\n\nInitialise a reproducible R project from scratch — renv for pinned packages, here for paths, {rio} for I/O.\nImport and wrangle clinical data tidily, and recognise and remove outcome leakage (the dropped follow-up column).\nSummarise a clinical cohort with meaningful exploratory tables (gtsummary).\nFit and validate a supervised classifier with tidymodels, choosing metrics — AUC-ROC and AUC-PR — appropriate to a ~32%-event imbalanced outcome.\nTune and compare candidate models with a workflow_set, validate the winner with last_fit, and produce a reproducible Quarto report."
+  },
+  {
+    "objectID": "basic.html#steps-schedule",
+    "href": "basic.html#steps-schedule",
+    "title": "Practice — Basic (R)",
+    "section": "Steps & schedule",
+    "text": "Steps & schedule\nThe six steps and their contact time are on the Schedule page:\n\nStep 00 · Setup — 25 min\nStep 01 · Import & wrangle — 35 min\nStep 02 · Clinical EDA — 30 min\nStep 03 · Logistic spine — 45 min\nStep 04 · The zoo, tuned — 70 min\nStep 05 · Reproducible report — 35 min\n\nTotal ≈ 240 min, within the 10 officially allocated hours."
+  },
+  {
+    "objectID": "basic.html#dataset-1",
+    "href": "basic.html#dataset-1",
+    "title": "Practice — Basic (R)",
+    "section": "Dataset",
+    "text": "Dataset\nThe heart-failure clinical records (Chicco & Jurman 2020; 299 patients, ~32% event rate), seeded into data-raw/heart_failure.csv. The outcome is in-hospital death (died / survived). We deliberately drop the follow-up-time column, which would leak the outcome — the first data-hygiene lesson of the day."
+  },
+  {
+    "objectID": "basic.html#assessment",
+    "href": "basic.html#assessment",
+    "title": "Practice — Basic (R)",
+    "section": "Assessment",
+    "text": "Assessment\nThe official exam method for this workshop is not yet fixed in the Offerta Formativa. The working model is in-class formative assessment: short checkpoints roughly every 10–15 minutes (live environment checks, MCQs with diagnostic distractors, and “your turn” coding tasks), plus a culminating hands-on task in which the class tunes and validates the model end-to-end. All checkpoints run dual-mode, with in-person and remote students converging on shared artifacts."
+  },
+  {
+    "objectID": "basic.html#prerequisites-learning-path",
+    "href": "basic.html#prerequisites-learning-path",
+    "title": "Practice — Basic (R)",
+    "section": "Prerequisites & learning path",
+    "text": "Prerequisites & learning path\nFrom the Theory Overview (Module 1) you should arrive with: what supervised classification is and how it differs from regression (ch. 2); the train / validation / test split and why holding out data prevents overfitting (ch. 4); and why accuracy misleads on imbalanced outcomes and why the test set stays sealed until the end (ch. 10). No prior experience with R modelling is needed — we type every line together, live. This is Module 2; it pre-hooks into the Advanced workshop."
+  },
+  {
+    "objectID": "basic.html#tools-materials",
+    "href": "basic.html#tools-materials",
+    "title": "Practice — Basic (R)",
+    "section": "Tools & materials",
+    "text": "Tools & materials\nR (≥ 4.5) and RStudio; the tidyverse, tidymodels, gtsummary, and renv packages; lecturer-provided materials and package documentation. Materials are distributed as a per-cohort GitHub Release (a bundle of per-step R projects) — see Downloads.\nNota docente: il blurb ufficiale dell’Offerta cita caret e la regressione lineare; il workshop erogato usa tidymodels e la regressione logistica sul dataset heart-failure. Lo stack erogato (tidymodels) è quello corrente e intenzionale; l’header riporta comunque i dati amministrativi ufficiali."
   },
   {
     "objectID": "advanced.html",
@@ -123,7 +235,14 @@
     "href": "advanced.html#timeline",
     "title": "Practice — Advanced (R)",
     "section": "Timeline",
-    "text": "Timeline\nTimeline to be published."
+    "text": "Timeline"
+  },
+  {
+    "objectID": "advanced.html#steps",
+    "href": "advanced.html#steps",
+    "title": "Practice — Advanced (R)",
+    "section": "Steps",
+    "text": "Steps\n\nStep 00 — Recap & setup · 30 min\nReopen the validated Basic random forest and warm up the torch backend.\n\n\nStep 01 — Open the black box · 45 min\nOpen the black box with permutation importance and agnostic SHAP (kernelshap + shapviz).\n\n\nStep 02 — Deep learning, honestly · 70 min\nTrain a small MLP live with torch/luz, then write and shape-check CNN, RNN and fused nets.\n\n\nStep 03 — An LLM as a typed, reproducible ETL · 45 min\nUse an LLM as a typed, reproducible ETL to extract structured fields from clinical notes (ellmer).\n\n\nStep 04 — Reproducibility capstone · 50 min\nSeal the full arc in a targets DAG reproducible with a single tar_make().\nTotal contact time: 240 min."
   },
   {
     "objectID": "advanced.html#how-to-get-run-it",
@@ -137,7 +256,63 @@
     "href": "advanced.html#syllabus",
     "title": "Practice — Advanced (R)",
     "section": "Syllabus",
-    "text": "Syllabus\nSyllabus in preparation — it will appear here once finalised."
+    "text": "Syllabus"
+  },
+  {
+    "objectID": "advanced.html#official-course-information",
+    "href": "advanced.html#official-course-information",
+    "title": "Practice — Advanced (R)",
+    "section": "Official course information",
+    "text": "Official course information\n\n\n\n\n\n\n\nDenomination\nPractical Artificial Intelligence for Medical Data Analyses with R — Advanced\n\n\nSSD\nMEDS-24/A — Statistica medica\n\n\nInstructors\nCorrado Lanera, Luca Vedovelli, Giulia Lorenzoni\n\n\nHours / Credits\n10 hours · 1 CFU\n\n\nPeriod\nSecond semester\n\n\nDelivery\nDual (in-person + remote, simultaneous)\n\n\nLanguage\nEnglish\n\n\nAttendance\nMandatory (80%)\n\n\nExam\nPractical / in-class assessment (see Assessment)\n\n\nPrerequisites\nBasic R and ML — completion of the Basic workshop required"
+  },
+  {
+    "objectID": "advanced.html#course-description",
+    "href": "advanced.html#course-description",
+    "title": "Practice — Advanced (R)",
+    "section": "Course description",
+    "text": "Course description\nA ~4-hour, live-coded workshop in which we reopen a validated clinical ML model and push it further. Starting from the validated heart-failure random forest built in the Basic workshop (bundled in the project), we: interpret it with permutation variable importance and agnostic SHAP; go deeper with neural networks; use a large language model as a typed, reproducible ETL over clinical notes; and seal the whole pipeline in a reproducible targets DAG. We work hands-on in RStudio, type every line together, and end with a pipeline we can explain, extend, and re-run."
+  },
+  {
+    "objectID": "advanced.html#intended-learning-outcomes",
+    "href": "advanced.html#intended-learning-outcomes",
+    "title": "Practice — Advanced (R)",
+    "section": "Intended learning outcomes",
+    "text": "Intended learning outcomes\nBy the end of the workshop, students can:\n\nInterpret a fitted model with permutation variable importance and agnostic SHAP (kernelshap + shapviz), anchored by a logistic permshap() sanity-check.\nTrain a small MLP with torch / luz, and read and shape-check CNN, RNN, and fused architectures (written-not-trained, so class stays on schedule).\nUse an LLM (ellmer) as a typed, reproducible ETL to extract structured fields from synthetic clinical notes.\nAssemble a reproducible targets pipeline that re-runs the full arc — raw data to interpreted predictions — with a single tar_make().\nWeigh the interpretability / performance trade-off in a clinical-deployment context."
+  },
+  {
+    "objectID": "advanced.html#steps-schedule",
+    "href": "advanced.html#steps-schedule",
+    "title": "Practice — Advanced (R)",
+    "section": "Steps & schedule",
+    "text": "Steps & schedule\nThe five steps and their contact time are on the Schedule page:\n\nStep 00 · Recap & setup — 30 min\nStep 01 · Open the black box — 45 min\nStep 02 · Deep learning, honestly — 70 min\nStep 03 · An LLM as a typed, reproducible ETL — 45 min\nStep 04 · Reproducibility capstone — 50 min\n\nTotal ≈ 240 min, within the 10 officially allocated hours."
+  },
+  {
+    "objectID": "advanced.html#dataset-1",
+    "href": "advanced.html#dataset-1",
+    "title": "Practice — Advanced (R)",
+    "section": "Dataset",
+    "text": "Dataset\nThe workshop reloads the heart-failure clinical records (Chicco & Jurman 2020; 299 patients, ~32% event rate) from data-raw/heart_failure.csv (bundled) and the already-fitted random forest from model/final_fit.rds (bundled). It adds ~12 synthetic, de-identified clinical notes in data-raw/hf_notes.csv for the LLM extraction step. No PHI is present in any bundled file."
+  },
+  {
+    "objectID": "advanced.html#assessment",
+    "href": "advanced.html#assessment",
+    "title": "Practice — Advanced (R)",
+    "section": "Assessment",
+    "text": "Assessment\nAs for the Basic workshop, the official exam method is not yet fixed in the Offerta Formativa. The working model is in-class formative assessment — dual-mode checkpoints throughout — plus a hands-on reproducibility capstone (the targets DAG) as the culminating task."
+  },
+  {
+    "objectID": "advanced.html#prerequisites-learning-path",
+    "href": "advanced.html#prerequisites-learning-path",
+    "title": "Practice — Advanced (R)",
+    "section": "Prerequisites & learning path",
+    "text": "Prerequisites & learning path\nYou must have completed the Basic workshop (Module 2): the validated random forest it produces is the starting point here (bundled, so you do not need it on disk). From the Theory Overview the relevant background is model interpretability (ch. 4, revisited ch. 10), the neural network (ch. 5), CNN/RNN architectures (ch. 6), and what an LLM is (ch. 7). This is Module 3, the final module."
+  },
+  {
+    "objectID": "advanced.html#tools-materials",
+    "href": "advanced.html#tools-materials",
+    "title": "Practice — Advanced (R)",
+    "section": "Tools & materials",
+    "text": "Tools & materials\nR (≥ 4.5) and RStudio; tidymodels, vip, kernelshap, shapviz, torch, luz, brulee, ellmer, targets, and tarchetypes. The LLM step optionally uses an OPENAI_API_KEY (set locally in .Renviron, never committed); without a key it falls back to a labeled cached extraction so the workshop can continue. Lecturer materials and package documentation complete the set. Materials are distributed as a per-cohort GitHub Release — see Downloads.\nNota docente: il blurb ufficiale dell’Offerta (random forest / gradient boosting / unsupervised / feature engineering) è ormai datato rispetto all’arco erogato — interpretabilità con SHAP, deep learning con torch, ETL con LLM (ellmer), pipeline targets. Il contenuto erogato è quello corrente e intenzionale; l’header riporta i dati amministrativi ufficiali."
   },
   {
     "objectID": "advanced-solutions.html",
@@ -207,13 +382,27 @@
     "href": "schedule.html#module-2-practice-basic-4h",
     "title": "Schedule & Planning",
     "section": "Module 2 · Practice — Basic (≈4h)",
-    "text": "Module 2 · Practice — Basic (≈4h)\nTimeline to be published."
+    "text": "Module 2 · Practice — Basic (≈4h)"
+  },
+  {
+    "objectID": "schedule.html#steps",
+    "href": "schedule.html#steps",
+    "title": "Schedule & Planning",
+    "section": "Steps",
+    "text": "Steps\n\nStep 00 — Setup · 25 min\nInitialise a reproducible RStudio project from scratch with renv and here.\n\n\nStep 01 — Import & wrangle · 35 min\nImport the heart-failure data and wrangle it tidily, dropping the leaky follow-up column.\n\n\nStep 02 — Clinical EDA · 30 min\nExplore the cohort with clinically meaningful summaries (gtsummary).\n\n\nStep 03 — Logistic spine · 45 min\nFit a logistic-regression spine and score it on two metrics — AUC-ROC and AUC-PR.\n\n\nStep 04 — The zoo, tuned · 70 min\nTune and compare a small model zoo with a workflow_set, then validate the winner with last_fit.\n\n\nStep 05 — Reproducible report · 35 min\nWrap the whole analysis in a reproducible Quarto report.\nTotal contact time: 240 min."
   },
   {
     "objectID": "schedule.html#module-3-practice-advanced-4h",
     "href": "schedule.html#module-3-practice-advanced-4h",
     "title": "Schedule & Planning",
     "section": "Module 3 · Practice — Advanced (≈4h)",
-    "text": "Module 3 · Practice — Advanced (≈4h)\nTimeline to be published."
+    "text": "Module 3 · Practice — Advanced (≈4h)"
+  },
+  {
+    "objectID": "schedule.html#steps-1",
+    "href": "schedule.html#steps-1",
+    "title": "Schedule & Planning",
+    "section": "Steps",
+    "text": "Steps\n\nStep 00 — Recap & setup · 30 min\nReopen the validated Basic random forest and warm up the torch backend.\n\n\nStep 01 — Open the black box · 45 min\nOpen the black box with permutation importance and agnostic SHAP (kernelshap + shapviz).\n\n\nStep 02 — Deep learning, honestly · 70 min\nTrain a small MLP live with torch/luz, then write and shape-check CNN, RNN and fused nets.\n\n\nStep 03 — An LLM as a typed, reproducible ETL · 45 min\nUse an LLM as a typed, reproducible ETL to extract structured fields from clinical notes (ellmer).\n\n\nStep 04 — Reproducibility capstone · 50 min\nSeal the full arc in a targets DAG reproducible with a single tar_make().\nTotal contact time: 240 min."
   }
 ]

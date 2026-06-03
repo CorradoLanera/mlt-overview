@@ -285,13 +285,63 @@ window.Quarto = {
 </section>
 <section id="module-2-practice-basic-4h" class="level2">
 <h2 class="anchored" data-anchor-id="module-2-practice-basic-4h">Module 2 · Practice — Basic (≈4h)</h2>
-<p><em>Timeline to be published.</em></p>
+</section>
+<section id="steps" class="level2">
+<h2 class="anchored" data-anchor-id="steps">Steps</h2>
+<section id="step-00-setup-25-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-00-setup-25-min">Step 00 — Setup · 25 min</h3>
+<p>Initialise a reproducible RStudio project from scratch with <code>renv</code> and <code>here</code>.</p>
+</section>
+<section id="step-01-import-wrangle-35-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-01-import-wrangle-35-min">Step 01 — Import &amp; wrangle · 35 min</h3>
+<p>Import the heart-failure data and wrangle it tidily, dropping the leaky follow-up column.</p>
+</section>
+<section id="step-02-clinical-eda-30-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-02-clinical-eda-30-min">Step 02 — Clinical EDA · 30 min</h3>
+<p>Explore the cohort with clinically meaningful summaries (<code>gtsummary</code>).</p>
+</section>
+<section id="step-03-logistic-spine-45-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-03-logistic-spine-45-min">Step 03 — Logistic spine · 45 min</h3>
+<p>Fit a logistic-regression spine and score it on two metrics — AUC-ROC and AUC-PR.</p>
+</section>
+<section id="step-04-the-zoo-tuned-70-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-04-the-zoo-tuned-70-min">Step 04 — The zoo, tuned · 70 min</h3>
+<p>Tune and compare a small model zoo with a <code>workflow_set</code>, then validate the winner with <code>last_fit</code>.</p>
+</section>
+<section id="step-05-reproducible-report-35-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-05-reproducible-report-35-min">Step 05 — Reproducible report · 35 min</h3>
+<p>Wrap the whole analysis in a reproducible Quarto report.</p>
+<p><strong>Total contact time: 240 min.</strong></p>
+</section>
 </section>
 <section id="module-3-practice-advanced-4h" class="level2">
 <h2 class="anchored" data-anchor-id="module-3-practice-advanced-4h">Module 3 · Practice — Advanced (≈4h)</h2>
-<p><em>Timeline to be published.</em></p>
+</section>
+<section id="steps-1" class="level2">
+<h2 class="anchored" data-anchor-id="steps-1">Steps</h2>
+<section id="step-00-recap-setup-30-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-00-recap-setup-30-min">Step 00 — Recap &amp; setup · 30 min</h3>
+<p>Reopen the validated Basic random forest and warm up the <code>torch</code> backend.</p>
+</section>
+<section id="step-01-open-the-black-box-45-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-01-open-the-black-box-45-min">Step 01 — Open the black box · 45 min</h3>
+<p>Open the black box with permutation importance and agnostic SHAP (<code>kernelshap</code> + <code>shapviz</code>).</p>
+</section>
+<section id="step-02-deep-learning-honestly-70-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-02-deep-learning-honestly-70-min">Step 02 — Deep learning, honestly · 70 min</h3>
+<p>Train a small MLP live with <code>torch</code>/<code>luz</code>, then write and shape-check CNN, RNN and fused nets.</p>
+</section>
+<section id="step-03-an-llm-as-a-typed-reproducible-etl-45-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-03-an-llm-as-a-typed-reproducible-etl-45-min">Step 03 — An LLM as a typed, reproducible ETL · 45 min</h3>
+<p>Use an LLM as a typed, reproducible ETL to extract structured fields from clinical notes (<code>ellmer</code>).</p>
+</section>
+<section id="step-04-reproducibility-capstone-50-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-04-reproducibility-capstone-50-min">Step 04 — Reproducibility capstone · 50 min</h3>
+<p>Seal the full arc in a <code>targets</code> DAG reproducible with a single <code>tar_make()</code>.</p>
+<p><strong>Total contact time: 240 min.</strong></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

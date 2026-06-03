@@ -186,7 +186,7 @@ window.Quarto = {
 
 
 <p><a href="slides/slides.html" class="btn-deck">Open the slides ↗</a> <a href="https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-overview-theory-deck.html" class="btn-dl">Download self-contained deck</a></p>
-<p>Ten chapters, storyboard-narrated, ≈240 minutes of contact time.</p>
+<p>Ten chapters, storyboard-narrated, ≈225 minutes of contact time.</p>
 <section id="chapters" class="level2">
 <h2 class="anchored" data-anchor-id="chapters">Chapters</h2>
 <section id="what-is-machine-learning-25-min" class="level3">
@@ -283,7 +283,108 @@ window.Quarto = {
 </section>
 <section id="syllabus" class="level2">
 <h2 class="anchored" data-anchor-id="syllabus">Syllabus</h2>
-<p><em>Syllabus in preparation — it will appear here once finalised.</em></p>
+</section>
+<section id="official-course-information" class="level2">
+<h2 class="anchored" data-anchor-id="official-course-information">Official course information</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Denomination</strong></td>
+<td>Machine Learning: Overview of machine learning techniques, algorithms, and applications</td>
+</tr>
+<tr class="even">
+<td><strong>SSD</strong></td>
+<td>MEDS-24/A — Statistica medica</td>
+</tr>
+<tr class="odd">
+<td><strong>Instructors</strong></td>
+<td>Ileana Baldi, Corrado Lanera</td>
+</tr>
+<tr class="even">
+<td><strong>Hours / Credits</strong></td>
+<td>10 hours · 1 CFU</td>
+</tr>
+<tr class="odd">
+<td><strong>Period</strong></td>
+<td>Year I, second semester</td>
+</tr>
+<tr class="even">
+<td><strong>Delivery</strong></td>
+<td>Dual (in-person + remote, simultaneous)</td>
+</tr>
+<tr class="odd">
+<td><strong>Language</strong></td>
+<td>English</td>
+</tr>
+<tr class="even">
+<td><strong>Attendance</strong></td>
+<td>Mandatory (80%)</td>
+</tr>
+<tr class="odd">
+<td><strong>Exam</strong></td>
+<td>Moodle quiz</td>
+</tr>
+<tr class="even">
+<td><strong>Prerequisites</strong></td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="course-description" class="level2">
+<h2 class="anchored" data-anchor-id="course-description">Course description</h2>
+<p>A conceptual, applied overview of machine learning for biomedical and clinical graduate students. The module builds from first principles — what machine learning <em>is</em>, and how it differs from traditional programming — through the core families of models and the discipline that makes them trustworthy, up to the architectures behind today’s tools. Across ten storyboard-narrated chapters students meet classifiers and the geometry of decision regions; three algorithm families (<span class="math inline">\(k\)</span>-NN, SVM, random forest); model selection, cross-validation, overfitting and data leakage; deep learning (the artificial neuron, the forward pass, gradient descent); architectures for unstructured data (CNNs and RNNs); Transformers and large language models; the practical and ethical use of ChatGPT; agents and the trust boundary; and best practices for real ML projects. Every concept is anchored to a clinical application, so that students leave able to <em>frame</em>, <em>judge</em>, and <em>communicate</em> an ML approach to a medical problem — not to implement one (that is the role of the two R workshops).</p>
+</section>
+<section id="intended-learning-outcomes" class="level2">
+<h2 class="anchored" data-anchor-id="intended-learning-outcomes">Intended learning outcomes</h2>
+<p>By the end of the module, students can:</p>
+<ol type="1">
+<li><strong>Frame</strong> a clinical problem as a machine-learning problem via Task (<span class="math inline">\(T\)</span>), Performance (<span class="math inline">\(P\)</span>) and Experience (<span class="math inline">\(E\)</span>), and <strong>contrast</strong> ML with traditional programming (in ML the model is the <em>output</em>, learned from data: <span class="math inline">\(Y \simeq f(X)\)</span>).</li>
+<li><strong>Classify</strong> a scenario into the correct learning paradigm — supervised, unsupervised, active, reinforcement — justifying the choice from the kind and availability of supervision.</li>
+<li><strong>Interpret</strong> a classifier as a partition of feature space into decision regions, and <strong>choose</strong> performance metrics fit for the problem — recognising why accuracy misleads on imbalanced clinical outcomes.</li>
+<li><strong>Apply</strong> the train / validation / test split and <span class="math inline">\(K\)</span>-fold cross-validation, <strong>diagnose</strong> overfitting, and <strong>state</strong> the data-leakage rule (any number you act on becomes a training number).</li>
+<li><strong>Explain</strong>, at the level of <em>why each one exists</em>, the modern architectures: the artificial neuron and gradient descent, CNNs and RNNs for unstructured data, and the Transformer / LLM.</li>
+<li><strong>Judge</strong> agentic and LLM tool use by the competence rule and by reversibility, and <strong>plan</strong> an ML project starting from the simplest defensible model.</li>
+</ol>
+</section>
+<section id="topics-schedule" class="level2">
+<h2 class="anchored" data-anchor-id="topics-schedule">Topics &amp; schedule</h2>
+<p>The ten chapters and their contact time are listed on the <a href="./schedule.html">Schedule</a> page. In brief:</p>
+<ul>
+<li>01 · What is Machine Learning? — 25 min</li>
+<li>02 · Classifiers — 20 min</li>
+<li>03 · Algorithm examples — 35 min</li>
+<li>04 · Model selection &amp; validation — 30 min</li>
+<li>05 · Deep Learning — 25 min</li>
+<li>06 · Unstructured data (CNN/RNN) — 20 min</li>
+<li>07 · LLMs &amp; Transformers — 25 min</li>
+<li>08 · Using ChatGPT in practice — 15 min</li>
+<li>09 · Agents — 15 min</li>
+<li>10 · Best practices for ML projects — 15 min</li>
+</ul>
+<p>Total contact content ≈ 225 min, within the 10 officially allocated hours (the remainder covers setup, discussion, and assessment).</p>
+</section>
+<section id="assessment" class="level2">
+<h2 class="anchored" data-anchor-id="assessment">Assessment</h2>
+<p>Summative assessment is a <strong>Moodle quiz</strong>. In addition, each chapter runs <strong>one live, dual-mode formative/summative exercise</strong> in which in-person and remote students converge on a single shared artifact (a table, poster, or shared document), so that mastery is observable live for both cohorts.</p>
+</section>
+<section id="learning-path" class="level2">
+<h2 class="anchored" data-anchor-id="learning-path">Learning path</h2>
+<p>This is <strong>Module 1</strong> of the course. The path is <strong>Overview → Basic → Advanced</strong>: the Overview ends (ch.&nbsp;10) by pre-hooking into the <em>Practice — Basic</em> R workshop, which in turn pre-hooks into <em>Advanced</em>.</p>
+</section>
+<section id="reading-materials" class="level2">
+<h2 class="anchored" data-anchor-id="reading-materials">Reading &amp; materials</h2>
+<ul>
+<li>James, G., Witten, D., Hastie, T., &amp; Tibshirani, R. — <em>An Introduction to Statistical Learning</em> (ISL).</li>
+<li>Mitchell, T. M. (1997). <em>Machine Learning</em>. McGraw-Hill — the <span class="math inline">\(T/P/E\)</span> definition.</li>
+<li>Vaswani, A., et al.&nbsp;(2017). “Attention is all you need.” — the Transformer architecture.</li>
+<li>Lecturer-provided slides (the storyboard-narrated reveal.js deck).</li>
+</ul>
+<p><em>Nota docente:</em> l’header riporta i dati amministrativi ufficiali (Offerta Formativa). Il contenuto erogato è più ampio del blurb ufficiale dell’Offerta — che si ferma a bias-variance e metriche — e include deep learning, CNN/RNN, Transformer/LLM, uso pratico di ChatGPT e agenti: i dieci capitoli qui elencati sono la versione corrente e sono la fonte di verità per gli obiettivi.</p>
 
 
 </section>

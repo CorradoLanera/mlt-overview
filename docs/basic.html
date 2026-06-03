@@ -212,7 +212,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="timeline" class="level2">
 <h2 class="anchored" data-anchor-id="timeline">Timeline</h2>
-<p><em>Timeline to be published.</em></p>
+</section>
+<section id="steps" class="level2">
+<h2 class="anchored" data-anchor-id="steps">Steps</h2>
+<section id="step-00-setup-25-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-00-setup-25-min">Step 00 — Setup · 25 min</h3>
+<p>Initialise a reproducible RStudio project from scratch with <code>renv</code> and <code>here</code>.</p>
+</section>
+<section id="step-01-import-wrangle-35-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-01-import-wrangle-35-min">Step 01 — Import &amp; wrangle · 35 min</h3>
+<p>Import the heart-failure data and wrangle it tidily, dropping the leaky follow-up column.</p>
+</section>
+<section id="step-02-clinical-eda-30-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-02-clinical-eda-30-min">Step 02 — Clinical EDA · 30 min</h3>
+<p>Explore the cohort with clinically meaningful summaries (<code>gtsummary</code>).</p>
+</section>
+<section id="step-03-logistic-spine-45-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-03-logistic-spine-45-min">Step 03 — Logistic spine · 45 min</h3>
+<p>Fit a logistic-regression spine and score it on two metrics — AUC-ROC and AUC-PR.</p>
+</section>
+<section id="step-04-the-zoo-tuned-70-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-04-the-zoo-tuned-70-min">Step 04 — The zoo, tuned · 70 min</h3>
+<p>Tune and compare a small model zoo with a <code>workflow_set</code>, then validate the winner with <code>last_fit</code>.</p>
+</section>
+<section id="step-05-reproducible-report-35-min" class="level3">
+<h3 class="anchored" data-anchor-id="step-05-reproducible-report-35-min">Step 05 — Reproducible report · 35 min</h3>
+<p>Wrap the whole analysis in a reproducible Quarto report.</p>
+<p><strong>Total contact time: 240 min.</strong></p>
+</section>
 </section>
 <section id="how-to-get-run-it" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-get-run-it">How to get &amp; run it</h2>
@@ -224,7 +251,102 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="syllabus" class="level2">
 <h2 class="anchored" data-anchor-id="syllabus">Syllabus</h2>
-<p><em>Syllabus in preparation — it will appear here once finalised.</em></p>
+</section>
+<section id="official-course-information" class="level2">
+<h2 class="anchored" data-anchor-id="official-course-information">Official course information</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Denomination</strong></td>
+<td>Practical Artificial Intelligence for Medical Data Analyses with R — Basic</td>
+</tr>
+<tr class="even">
+<td><strong>SSD</strong></td>
+<td>MEDS-24/A — Statistica medica</td>
+</tr>
+<tr class="odd">
+<td><strong>Instructors</strong></td>
+<td>Corrado Lanera, Luca Vedovelli, Giulia Lorenzoni</td>
+</tr>
+<tr class="even">
+<td><strong>Hours / Credits</strong></td>
+<td>10 hours · 1 CFU</td>
+</tr>
+<tr class="odd">
+<td><strong>Period</strong></td>
+<td>First semester</td>
+</tr>
+<tr class="even">
+<td><strong>Delivery</strong></td>
+<td>Dual (in-person + remote, simultaneous)</td>
+</tr>
+<tr class="odd">
+<td><strong>Language</strong></td>
+<td>English</td>
+</tr>
+<tr class="even">
+<td><strong>Attendance</strong></td>
+<td>Mandatory (80%)</td>
+</tr>
+<tr class="odd">
+<td><strong>Exam</strong></td>
+<td>Practical / in-class assessment (see <em>Assessment</em>)</td>
+</tr>
+<tr class="even">
+<td><strong>Prerequisites</strong></td>
+<td>Basic statistics and programming</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="course-description" class="level2">
+<h2 class="anchored" data-anchor-id="course-description">Course description</h2>
+<p>A ~4-hour, live-coded workshop in which we build and validate a clinical machine-learning model in R — reproducibly, from raw data to a rendered report. Working hands-on in RStudio, we type every line together: we import and wrangle a real heart-failure dataset (dropping a leaky column along the way), explore it with clinically meaningful summaries, fit a logistic-regression spine scored on <strong>two</strong> metrics (AUC-ROC and AUC-PR), tune and compare a small “zoo” of models with a <code>workflow_set</code>, validate the winner on held-out data with <code>last_fit</code>, and wrap everything in a reproducible Quarto report. The day turns the disciplines met in the Theory Overview into working code.</p>
+</section>
+<section id="intended-learning-outcomes" class="level2">
+<h2 class="anchored" data-anchor-id="intended-learning-outcomes">Intended learning outcomes</h2>
+<p>By the end of the workshop, students can:</p>
+<ol type="1">
+<li><strong>Initialise</strong> a reproducible R project from scratch — <code>renv</code> for pinned packages, <code>here</code> for paths, <code>{rio}</code> for I/O.</li>
+<li><strong>Import and wrangle</strong> clinical data tidily, and <strong>recognise and remove</strong> outcome leakage (the dropped follow-up column).</li>
+<li><strong>Summarise</strong> a clinical cohort with meaningful exploratory tables (<code>gtsummary</code>).</li>
+<li><strong>Fit and validate</strong> a supervised classifier with <code>tidymodels</code>, <strong>choosing</strong> metrics — AUC-ROC <em>and</em> AUC-PR — appropriate to a ~32%-event imbalanced outcome.</li>
+<li><strong>Tune and compare</strong> candidate models with a <code>workflow_set</code>, validate the winner with <code>last_fit</code>, and <strong>produce</strong> a reproducible Quarto report.</li>
+</ol>
+</section>
+<section id="steps-schedule" class="level2">
+<h2 class="anchored" data-anchor-id="steps-schedule">Steps &amp; schedule</h2>
+<p>The six steps and their contact time are on the <a href="./schedule.html">Schedule</a> page:</p>
+<ul>
+<li>Step 00 · Setup — 25 min</li>
+<li>Step 01 · Import &amp; wrangle — 35 min</li>
+<li>Step 02 · Clinical EDA — 30 min</li>
+<li>Step 03 · Logistic spine — 45 min</li>
+<li>Step 04 · The zoo, tuned — 70 min</li>
+<li>Step 05 · Reproducible report — 35 min</li>
+</ul>
+<p>Total ≈ 240 min, within the 10 officially allocated hours.</p>
+</section>
+<section id="dataset-1" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-1">Dataset</h2>
+<p>The <strong>heart-failure clinical records</strong> (Chicco &amp; Jurman 2020; 299 patients, ~32% event rate), seeded into <code>data-raw/heart_failure.csv</code>. The outcome is in-hospital death (<code>died</code> / <code>survived</code>). We deliberately drop the follow-up-time column, which would <em>leak</em> the outcome — the first data-hygiene lesson of the day.</p>
+</section>
+<section id="assessment" class="level2">
+<h2 class="anchored" data-anchor-id="assessment">Assessment</h2>
+<p>The official exam method for this workshop is not yet fixed in the Offerta Formativa. The working model is <strong>in-class formative assessment</strong>: short checkpoints roughly every 10–15 minutes (live environment checks, MCQs with diagnostic distractors, and “your turn” coding tasks), plus a culminating hands-on task in which the class tunes and validates the model end-to-end. All checkpoints run dual-mode, with in-person and remote students converging on shared artifacts.</p>
+</section>
+<section id="prerequisites-learning-path" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites-learning-path">Prerequisites &amp; learning path</h2>
+<p>From the <strong>Theory Overview</strong> (Module 1) you should arrive with: what supervised classification is and how it differs from regression (ch.&nbsp;2); the train / validation / test split and why holding out data prevents overfitting (ch.&nbsp;4); and why accuracy misleads on imbalanced outcomes and why the test set stays sealed until the end (ch.&nbsp;10). No prior experience with R modelling is needed — we type every line together, live. This is <strong>Module 2</strong>; it pre-hooks into the <em>Advanced</em> workshop.</p>
+</section>
+<section id="tools-materials" class="level2">
+<h2 class="anchored" data-anchor-id="tools-materials">Tools &amp; materials</h2>
+<p>R (≥ 4.5) and RStudio; the <code>tidyverse</code>, <code>tidymodels</code>, <code>gtsummary</code>, and <code>renv</code> packages; lecturer-provided materials and package documentation. Materials are distributed as a per-cohort GitHub Release (a bundle of per-step R projects) — see <a href="./downloads.html">Downloads</a>.</p>
+<p><em>Nota docente:</em> il blurb ufficiale dell’Offerta cita <code>caret</code> e la regressione lineare; il workshop erogato usa <code>tidymodels</code> e la regressione logistica sul dataset heart-failure. Lo stack erogato (tidymodels) è quello corrente e intenzionale; l’header riporta comunque i dati amministrativi ufficiali.</p>
 
 
 </section>
