@@ -2,4 +2,10 @@ slug: mlt-r-advanced
 r_version: "4.6.0"
 ppm_snapshot: "2026-06-01"
 dataset: data-raw/heart_failure.csv
+# full.R inlines the Basic pipeline (final_fit) PLUS torch (pre-warm + MLP). The masking cert
+# re-runs full.R in a bare subprocess where torch's Lantern backend is not loadable, and the
+# only deterministic metric (final_fit) is the Basic pipeline's — already masking-certified by
+# the Basic workshop. So skip the gate here; hoist-safety is covered by the pkg:: discipline
+# (04-targets/R/pipeline-fns.R) + the §10 adversarial verifier.
+skip_masking: true
 steps: [00-recap, 01-interpret, 02-deep-learning, 03-ellmer, 04-targets]
