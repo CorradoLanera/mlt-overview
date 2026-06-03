@@ -21,9 +21,7 @@ DECK_ASSETS = {
 }
 ZIP_ASSETS = [
     "mlt-r-basic.zip", "mlt-r-basic-teacher.zip",
-    "mlt-r-advanced.zip",
-    # "mlt-r-advanced-teacher.zip" — added once Advanced is fragment-built (W3);
-    # until then it is never produced, so listing it would warn on every release.
+    "mlt-r-advanced.zip", "mlt-r-advanced-teacher.zip",
 ]
 _DECK_SRC = {
     "theory":   "slides/slides.qmd",

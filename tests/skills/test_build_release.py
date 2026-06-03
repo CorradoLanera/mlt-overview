@@ -15,7 +15,8 @@ def test_asset_names_are_contractual():
     assert br.DECK_ASSETS["basic"] == "mlt-r-basic-deck.html"
     assert br.DECK_ASSETS["advanced"] == "mlt-r-advanced-deck.html"
     assert br.ZIP_ASSETS == [
-        "mlt-r-basic.zip", "mlt-r-basic-teacher.zip", "mlt-r-advanced.zip",
+        "mlt-r-basic.zip", "mlt-r-basic-teacher.zip",
+        "mlt-r-advanced.zip", "mlt-r-advanced-teacher.zip",
     ]
 
 
