@@ -4,13 +4,15 @@ course:
   title: "Machine Learning — An Applied Overview"
   slug: mlt-overview
   language: en
-  total_minutes_gross: 240
+  total_minutes_gross: 225
   audience: "biomedical/clinical graduate students (UBEP, University of Padova)"
   base_source: _archive/legacy-xaringan/index.Rmd        # index-full.Rmd (in _archive/legacy-xaringan) mined for optional modules
   global:
     six_words: null
     hundred_words: null
     arc: null
+# Per-chapter `objectives`/`subunits` completion is derived from the filesystem
+# (skills/lib/manifest.py::artifact_status), not these arrays — left empty intentionally.
 chapters:
   - { slug: 01-introduction,       title: "What is Machine Learning?",      include: true,  minutes: 25, objectives: [], subunits: [] }
   - { slug: 02-classifiers,        title: "Classifiers",                    include: true,  minutes: 20, objectives: [], subunits: [] }

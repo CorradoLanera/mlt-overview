@@ -15,7 +15,7 @@ Live site (slides, schedule, downloads): <https://corradolanera.github.io/mlt-ov
 ## Learning path
 
 **Overview → Basic → Advanced.** The Overview ends (ch. 10) by pre-hooking into the Basic
-workshop; Basic pre-hooks into Advanced. Prerequisites are stated at the top of each module.
+workshop; Basic pre-hooks into Advanced. Prerequisites are stated on each module page (pulled from the workshop READMEs into the site at build time).
 
 ## Build & release — one pipeline, three audiences
 

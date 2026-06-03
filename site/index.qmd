@@ -8,7 +8,7 @@ One course, **three modules**, taught in sequence.
 ::: {.module-cards}
 ::: {.module-card}
 ### Theory Overview
-10 storyboard-narrated chapters (≈240 min).
+10 storyboard-narrated chapters (≈225 min).
 
 [Open slides](slides/slides.html){.btn-deck} [Details](theory.qmd){.btn-dl}
 :::
