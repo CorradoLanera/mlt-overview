@@ -30,12 +30,10 @@ CHAPTER_ARTIFACTS: list[tuple[str, str, str]] = [
     ("items_valutativi.html", "Assessment items",  "items"),
 ]
 
-# Per-chapter artifacts that live OUTSIDE the chapter folder (e.g. compiled
-# slide decks under slides/chapters/). Path template uses {slug} and is resolved
-# against the repo root. Same display semantics as CHAPTER_ARTIFACTS.
-EXTERNAL_ARTIFACTS: list[tuple[str, str, str]] = [
-    ("slides/chapters/{slug}.html", "Slides", "slides"),
-]
+# Per-chapter external artifacts. The per-chapter deck scheme
+# (slides/chapters/<slug>.html) was retired by the unified single-deck build
+# (slides/slides.qmd); the dashboard no longer links a broken per-chapter deck.
+EXTERNAL_ARTIFACTS: list[tuple[str, str, str]] = []
 
 ALL_ARTIFACT_CODES = (
     [code for _, _, code in CHAPTER_ARTIFACTS]
