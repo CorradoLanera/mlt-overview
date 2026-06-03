@@ -3,3 +3,6 @@ slug: 05-report
 title: "Step 05 — Reproducible report"
 template: report.qmd
 packages: []
+check:
+  kw: [Random forest, roc_auc, Reproducibility]
+  imgs: 2

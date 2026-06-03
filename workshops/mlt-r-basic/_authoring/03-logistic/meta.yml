@@ -2,3 +2,6 @@ type: append
 slug: 03-logistic
 title: "Step 03 — Logistic spine"
 packages: [tidymodels]
+check:
+  kw: [roc_auc, pr_auc, augment]
+  imgs: 0

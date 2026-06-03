@@ -2,3 +2,6 @@ type: append
 slug: 00-setup
 title: "Step 00 — Setup"
 packages: [here, rio]
+check:
+  kw: [panel-tabset, To fill, Solved, dim]
+  imgs: 0

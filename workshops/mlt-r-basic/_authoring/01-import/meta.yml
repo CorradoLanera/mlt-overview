@@ -2,3 +2,6 @@ type: append
 slug: 01-import
 title: "Step 01 — Import & wrangle"
 packages: [tidyverse, janitor]
+check:
+  kw: [outcome, died, survived, glimpse]
+  imgs: 0
