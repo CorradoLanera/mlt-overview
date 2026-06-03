@@ -566,7 +566,7 @@ Non vendere l'MLP come vincitore della foresta.
 
 <!-- Step 03 (hands-on, 36 min): type_object schema; ONE live extraction; batch map written-not-run; temperature 0. -->
 
-**Objectives.** Turn an LLM into a reproducible ETL, not a chat.
+**Why this step.** A chat returns prose you must re-parse; an **ETL returns a record**. With a typed schema and `temperature = 0`, the LLM becomes a reproducible extractor — the same note always yields the same validated row.
 
 - A **typed schema** (`type_object()`) is the **contract**: declare fields + R types $\to$
   every note comes back as the same validated record.
@@ -600,6 +600,79 @@ Voce docente (IT): min-124 (MCQ). temperature bassa + `map`: ✓ determinismo (E
 iterazione elemento-per-elemento. Distrattori: "temp = qualità" (NO), "temp alta + map su
 GPU" (NO), "temp irrilevante per extraction" (NO). La cache etichettata è la stessa
 dottrina dell'opzione-B: un vero record salvato prima, mostrato con etichetta, mai finto.
+:::
+
+## Your turn — predict the typed record
+
+This `type_object()` schema extracts from clinical notes:
+
+```r
+schema <- type_object(
+  age               = type_integer("patient age in years"),
+  ejection_fraction = type_number("ejection fraction %; NA if not stated"),
+  on_betablocker    = type_boolean("TRUE if a beta-blocker is given/continued"),
+  primary_dx        = type_enum(c("ischemic", "hypertensive", "valvular", "other"), "primary cardiac diagnosis")
+)
+```
+
+(1) How many **fields**, and their **R types** after parsing? (2) A note says *"60-year-old male, EF 30%, no medications listed."* — `primary_dx` is **absent**. What does `ellmer` return for it?
+
+::: {.notes}
+Voce docente (IT): predict-output min-112 (Engage). Modello reale: gpt-5.4-nano.
+:::
+
+## The reveal — four fields, graceful absence
+
+**Fields / R types:** `age` → `integer`; `ejection_fraction` → declared `type_number`, but **arrives as `integer`** for a whole-number JSON value (e.g. 30) or `double` if decimal; `on_betablocker` → `logical`; `primary_dx` → `character` (one enum value, or `NA`/`NULL` if absent). **Four fields.**
+
+**Integer vs double subtlety:** JSON has no integer/float distinction for whole numbers; `EF = 30` parses to R **integer**. `stopifnot(is.double(rec$ejection_fraction))` would **fail** — coerce with `as.double(...)` when needed.
+
+**Absent enum:** `ellmer` returns `NULL` (or `NA`), **no error** — the schema says what to look for, not that it must be present. That graceful handling is what makes it robust on messy notes.
+
+::: {.notes}
+Voce docente (IT): Reveal min-112. La sottigliezza integer-vs-double sorprende: type_number non
+garantisce double; conta la rappresentazione JSON.
+:::
+
+## Your turn — temperature 0 + `map()`, together?
+
+We set `temperature = 0` and wrap the extraction in `purrr::map()`. What do these two achieve together?
+
+- **A.** `temperature = 0` = **determinism** (same input → same record → a reproducible ETL, not a chat); `purrr::map()` applies the extraction **element-by-element**, one record per note.
+- **B.** A **lower temperature improves quality** — the LLM is more accurate at 0, always the right choice.
+- **C.** **High temperature + `map()` runs on the GPU** — `map()` parallelises across cores, high temp enables GPU sampling.
+- **D.** **Temperature is irrelevant** with a `type_object()` schema — valid JSON regardless.
+
+*Pick one — then we reveal it.*
+
+::: {.notes}
+Voce docente (IT): MCQ min-124 (Engage). Distrattori: B = temp = qualità; C = temp + map = GPU;
+D = temp irrilevante con schema.
+:::
+
+## The answer — A: determinism + element-wise iteration
+
+**✓ A.** `temperature = 0` makes the ETL reproducible; `map()` iterates note-by-note into one record each.
+
+- **✗ B** — *temperature = quality.* It controls randomness, not capability; for extraction we want **zero** randomness.
+- **✗ C** — *high temp + map = GPU.* Invented: `map()` iterates (sequentially, or parallel via `furrr`); neither it nor temperature touches the GPU.
+- **✗ D** — *temperature irrelevant with a schema.* Even typed, at `temperature > 0` two calls can differ; `0` = greedy, deterministic.
+
+::: {.notes}
+Voce docente (IT): Reveal min-124. La cache etichettata (senza API key) è la stessa dottrina
+dell'opzione-B: un record vero salvato prima, mostrato con etichetta, mai finto.
+:::
+
+## Go to code — `steps/03-ellmer/` {.center}
+
+Open `steps/03-ellmer/`: define the typed schema, run **one** live extraction, read the batch `map` (written, not run).
+
+- `temperature = 0` → deterministic ETL; the typed record is the contract.
+- No API key? A labeled cached result from an earlier live run — never a faked record.
+- **Behind?** Copy `steps/04-targets/` and you are back in sync.
+
+::: {.notes}
+Voce docente (IT): chiusura Step 03. Una sola estrazione live; il batch map è write-only.
 :::
 
 # Step 04 · Reproducibility capstone {#sec-04-targets .center}
