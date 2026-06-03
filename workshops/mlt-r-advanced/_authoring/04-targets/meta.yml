@@ -1,0 +1,8 @@
+type: transform-terminal
+engine: targets
+slug: 04-targets
+title: "Step 04 — Reproducibility capstone"
+packages: [targets, tarchetypes, ranger]
+check:
+  kw: [Permutation VIMP, Importance, ejection_fraction]
+  imgs: 1

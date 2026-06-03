@@ -1,0 +1,55 @@
+---
+title: "Explanation report — compiled by the `targets` pipeline"
+subtitle: "Permutation VIMP of the reloaded Basic random forest"
+format:
+  html:
+    embed-resources: true
+    toc: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+<!--
+Nota docente (IT): questo e' il REPORT COMPILATO DALLA PIPELINE (feedback #13). NON
+ri-esegue l'analisi inline: legge i TARGET INTERMEDI con tar_read(). tar_quarto() in
+_targets.R rileva tar_read(explanation) e crea la dipendenza, cosi' il report e' un
+target a valle, riproducibile e auditabile. Cambia un input a monte -> il report si
+invalida e si ricompila; altrimenti e' skip.
+-->
+
+This report is **compiled by the `targets` pipeline itself** (`tarchetypes::tar_quarto()`).
+It does **not** re-run the analysis inline — it **reads the intermediate targets**
+(`tar_read(explanation)`), so what you see here is, by construction, exactly what the
+pipeline produced upstream. Change an input and the report is rebuilt; change nothing and
+it is skipped.
+
+```{r read-target}
+library(targets)
+library(ggplot2)
+
+# Read the upstream intermediate target — NOT a re-computation ----
+explanation <- tar_read(explanation)
+explanation
+```
+
+## Permutation VIMP — read straight from the target
+
+```{r plot-target}
+explanation |>
+  dplyr::mutate(Variable = stats::reorder(Variable, Importance)) |>
+  ggplot(aes(x = Importance, y = Variable)) +
+  geom_col() +
+  labs(
+    title = "Permutation VIMP of the reloaded Basic random forest",
+    subtitle = "Value of the `explanation` target — compiled by the pipeline",
+    x = "Drop in AUC-ROC when permuted",
+    y = NULL,
+  )
+```
+
+`ejection_fraction`, `serum_creatinine`, and `age` lead — the reliance ordering the Basic
+forest learned, re-derived once by the pipeline and presented here without any retraining.
+Because this document is a downstream **target**, re-rendering it is governed by input hashes:
+identical inputs ⇒ an all-skip rebuild, the signature of reproducibility.
