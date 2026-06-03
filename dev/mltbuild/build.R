@@ -57,7 +57,11 @@ for (n in seq_along(wk$steps) - 1L) {
       .emit_targets_step(file.path(authoring, slug), tdir, mode = "solved")
       .copy_data_raw(wk$data_raw_dir, tdir)
       old2 <- getwd(); setwd(tdir)
-      targets::tar_make(callr_function = NULL)
+      # Default callr_function: targets runs the DAG analysis + pipeline in a fresh callr
+      # subprocess that inherits R_LIBS (set above) -> finds the workshop library. A cold
+      # in-process run (callr_function = NULL) hits a spurious is_dag() cycle in targets'
+      # static analysis, so we use the standard subprocess path here.
+      targets::tar_make()
       setwd(old2)
       produced <- file.path(tdir, "report.html")
       if (!file.exists(produced)) stop("targets pipeline produced no report.html: ", produced)
