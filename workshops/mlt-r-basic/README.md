@@ -27,37 +27,31 @@ No prior experience with R modelling is needed: we type every line together, liv
 
 ## How to start
 
-You need R (>= 4.5) and RStudio.
+You need R (>= 4.5) and RStudio. Fetch the workshop materials:
 
-1. In R, fetch the workshop materials:
+```r
+usethis::use_course(
+  "https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic.zip"
+)
+```
 
-   ```r
-   usethis::use_course(
-     "https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic.zip"
-   )
-   ```
+The download is a **bundle of step snapshots**, not a single project. Each `steps/NN-slug/`
+opens as its own RStudio project (double-click its `.Rproj`).
 
-2. Open the project (`mlt-r-basic.Rproj`) so its own `renv` activates, then restore the
-   pinned package environment:
-
-   ```r
-   renv::restore()
-   ```
-
-That gives you exactly the package versions used to build the workshop.
+- **`steps/00-setup/`** ships *without* renv on purpose: it is where we run `renv::init()` and
+  build the project from scratch — that is the first lesson.
+- **`steps/01-import/` … `steps/05-report/`** each ship a complete renv project: open the step's
+  `.Rproj` (its `renv` auto-activates), then `renv::restore()` to install the exact pinned
+  packages for that step.
 
 ## How the `steps/` folders work
 
-The workshop is split into numbered step folders, `steps/NN-slug/`. Each folder is a
-**complete, cumulative snapshot** of the project up to that point — not just a diff. The
-solution to step N is simply step N+1.
+Each `steps/NN-slug/` is a **complete, cumulative snapshot** of the project up to that point — not
+a diff. The solution to step N is simply step N+1.
 
-If you fall behind during the live coding, do not panic: just open the **next** step folder
-and continue from there. You will always have a clean, runnable starting point.
-
-Each `steps/NN-slug/` also ships its own `renv.lock` pinned to the workshop's package
-snapshot, so every step restores the exact same environment. Step `00-setup` ships **without**
-a lock on purpose — it is where we run `renv::init()` and start the project from scratch.
+If you fall behind during the live coding, do not panic: open the **next** step's `.Rproj`,
+`renv::restore()`, and continue from a clean, runnable starting point. `full/` holds the whole
+solved project for reference.
 
 ## Dataset
 
