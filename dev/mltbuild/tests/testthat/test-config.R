@@ -29,3 +29,9 @@ test_that("read_workshop resolves renv_dir (authoring dir first)", {
   expect_true(!is.na(wk$renv_dir))
   expect_true(file.exists(file.path(wk$renv_dir, "activate.R")))
 })
+
+test_that("wlib_path derives the R-major.minor library segment from r_version", {
+  p <- wlib_path("/tmp/ws", "4.6.0")
+  expect_match(p, "renv/library/windows/R-4\\.6/x86_64-w64-mingw32$")
+  expect_match(wlib_path("/tmp/ws", "4.5.2"), "R-4\\.5/")
+})

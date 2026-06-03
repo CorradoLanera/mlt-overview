@@ -16,12 +16,10 @@ workshop <- args[[1]]
 root <- dirname(sub("^--file=", "", grep("^--file=", commandArgs(FALSE), value = TRUE)))
 for (f in list.files(file.path(root, "R"), pattern = "[.]R$", full.names = TRUE)) source(f)
 
-wlib <- normalizePath(file.path(workshop, "renv", "library", "windows", "R-4.6", "x86_64-w64-mingw32"),
-                      winslash = "/", mustWork = FALSE)
+wk   <- read_workshop(file.path(workshop, "_authoring"))
+wlib <- normalizePath(wlib_path(workshop, wk$r_version), winslash = "/", mustWork = FALSE)
 full <- normalizePath(file.path(workshop, "full"), winslash = "/", mustWork = FALSE)
 if (!file.exists(file.path(full, ".here"))) stop("build the workshop first (no full/.here): ", full)
-
-wk    <- read_workshop(file.path(workshop, "_authoring"))
 metas <- lapply(wk$steps, `[[`, "meta")
 beats <- lapply(wk$steps, `[[`, "beat")
 ab    <- beats[vapply(metas, function(m) identical(m$type, "append"), logical(1))]

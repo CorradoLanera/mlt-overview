@@ -11,11 +11,10 @@ root      <- normalizePath(dirname(sub("^--file=", "", grep("^--file=", commandA
 for (f in list.files(file.path(root, "R"), pattern = "[.]R$", full.names = TRUE)) source(f)
 
 # Make quarto's child R see the workshop library (packages are NOT in the global lib).
-wlib <- file.path(workshop, "renv", "library", "windows", "R-4.6", "x86_64-w64-mingw32")
+wk   <- read_workshop(authoring)
+wlib <- wlib_path(workshop, wk$r_version)
 Sys.setenv(R_LIBS = normalizePath(wlib, winslash = "/"))
 .libPaths(c(normalizePath(wlib, winslash = "/"), .libPaths()))
-
-wk  <- read_workshop(authoring)
 ppm <- paste0("https://packagemanager.posit.co/cran/", wk$ppm_snapshot)
 
 # 1. Steps + full (.R / report.qmd, packages.txt, .here, data-raw)
