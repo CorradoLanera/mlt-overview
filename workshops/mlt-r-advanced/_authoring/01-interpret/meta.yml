@@ -1,0 +1,6 @@
+slug: 01-interpret
+title: "Step 01 — Open the black box"
+packages: [vip, kernelshap, shapviz]
+check:
+  kw: [permute, kernelshap, permshap, sv_waterfall]
+  imgs: 2
