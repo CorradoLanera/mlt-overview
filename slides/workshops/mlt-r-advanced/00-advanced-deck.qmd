@@ -103,7 +103,7 @@ Everything live-coded; nothing pre-baked is shown as live (one labeled exception
 
 <!-- Step 00 (demo, 12 min): reload Basic's finalized workflow; predict 1 row; pre-warm torch. -->
 
-**Objective.** Reopen the validated model — without retraining.
+**Why first.** Advanced doesn't rebuild anything — it **reopens** the model you validated in Basic. Day one reloads that exact `final_fit`, so a clean, warm session is the precondition for everything that follows.
 
 - Reload Basic's finalized random forest: `extract_workflow(readRDS("final_fit.rds"))`.
 - `predict()` on **one** patient row — a probability, not yet an explanation.
@@ -114,6 +114,45 @@ Voce docente (IT): demo (~12 min). Si RICARICA, non si riaddestra. Live-check al
 min 10: reload + `predict` su 1 riga + `torch_tensor(1)` SENZA download (torch caldo).
 GREEN/RED. Su questa macchina di build `cuda_is_available()` è FALSE; in aula, sulla
 NVIDIA, è TRUE. Il punto: una probabilità non è una spiegazione → apre lo step 01.
+:::
+
+## Live check — did the model reload, is torch warm?
+
+Run three checks. Signal **GREEN** if all pass, **RED** if any fails:
+
+1. Does `predict(fitted_wf, hf_tbl[1, ], type = "prob")` return a **1-row tibble** (no error, no retrain)?
+2. Does **`torch_tensor(1)`** run **without a download** — backend loads instantly (torch pre-warmed)?
+3. Is the loaded object the **finalized workflow from Basic** (the one that passed `last_fit()`)?
+
+::: {.notes}
+Voce docente (IT): live-check min-10 (Engage). Presenza: alzata di mano GREEN/RED; remoto: poll.
+:::
+
+## GREEN — Basic's model, reopened (not retrained)
+
+All three pass:
+
+- `predict()` on the extracted `fitted_wf` returns immediately — the model is baked in, no `fit()`;
+- `torch_tensor(1)` runs without downloading libtorch — the session was pre-warmed at setup;
+- the object is Basic's finalized `last_fit` workflow (`model/final_fit.rds` → `readRDS()` → `extract_workflow()`).
+
+**RED on torch?** Run `library(torch)` now and wait for backend init — normal once per session, never mid-workshop. **RED on the model?** Reload from the checkpoint before continuing — all of Step 01 depends on it.
+
+::: {.notes}
+Voce docente (IT): Reveal min-10. Su questa macchina `cuda_is_available()` è FALSE; in aula
+sulla NVIDIA è TRUE. Una probabilità non è una spiegazione → apre lo step 01.
+:::
+
+## Go to code — `steps/00-recap/` {.center}
+
+**Follow along.** Open `steps/00-recap/`: reload Basic's `final_fit`, `predict()` one row, pre-warm torch.
+
+- Live check at minute 10: GREEN / RED.
+- We never retrain — Advanced opens the model Basic validated.
+
+::: {.notes}
+Voce docente (IT): chiusura Step 00 (demo → "follow along"). Il workflow finalizzato di Basic
+è il soggetto di tutta la giornata.
 :::
 
 # Step 01 · Interpretability {#sec-01-interpret .center}
