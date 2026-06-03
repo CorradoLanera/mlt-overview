@@ -15,18 +15,29 @@ One course, three modules, for biomedical/clinical graduate students (UBEP, Univ
 **Overview → Basic → Advanced.** The Overview ends (ch. 10) by pre-hooking into the Basic
 workshop; Basic pre-hooks into Advanced. Prerequisites are stated at the top of each module.
 
-## Public site
+## Build & release — one pipeline, three audiences
 
-Browse the course at **<https://corradolanera.github.io/mlt-overview/>** — slides, schedule, and
-downloads, navigable by students and by external instructors reviewing the programme. The site is a
-Quarto website in `site/` built into `/docs` by `python scripts/build_site.py` (no CI; commit `/docs`).
+The whole course rebuilds from a single idempotent entrypoint:
 
-Per-cohort materials — the three self-contained decks and the two workshop ZIPs — ship as **GitHub
-Release assets** (one release per cohort, tag `coorte-AAAA`), built with `python scripts/build_release.py`.
+```sh
+python scripts/build_all.py            # all workshops: rebuild -> decks -> ZIPs -> site
+python scripts/build_all.py --release  # also assemble dev/release-assets/ (embed decks + ZIPs)
+```
 
-> **One-time:** GitHub → Settings → Pages → *Deploy from a branch* → `main` / `/docs`.
-> **After content changes:** `python scripts/build_site.py --clean`, then commit `/docs`.
-> **Per cohort:** `python scripts/build_release.py` → `git tag coorte-AAAA` → create the Release → upload the 5 assets.
+(Equivalently the `/mlt-build` command.) It chains, in dependency order:
+`dev/mltbuild/rebuild.R` (fragment-build each workshop tree from `workshops/<slug>/_authoring/`)
+→ `check-masking.R` → `quarto render` decks → `scripts/build_workshop_zip.py` (student ZIP +
+teacher bundle, packaged from the generated on-disk tree) → `scripts/build_release.py` →
+`scripts/build_site.py` (→ `docs/`). Only workshops with `_authoring/` are fragment-built; others
+fall back to shipping their git-tracked tree.
+
+- **Student** downloads `mlt-r-<lvl>.zip`: a bundle of per-step R projects (Model C). Source of
+  truth is `_authoring/`; `steps/ full/ _solved/` are generated and gitignored.
+- **Teacher** downloads `mlt-r-<lvl>-teacher.zip` (student tree + `_solved/` worked solutions),
+  or reads them on the site (the tile's **Coding solutions** button).
+- **Dev/author** edits `_authoring/` beats and re-runs `/mlt-build`; drift is zero.
+
+After content changes, run `python scripts/build_site.py` (or `/mlt-build`) and commit `/docs`.
 
 ## Repository map
 
