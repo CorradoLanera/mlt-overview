@@ -136,12 +136,11 @@ don't have to remember the syntax. Fill the placeholders, then rebuild.
 
 ## Known gaps / next
 
-- **Release/portal pipeline is NOT yet fragment-aware.** `dev/release-assets/*.zip` (what students download)
-  and the published portal (`docs/`) are built by `/mlt-dist` + `scripts/build_release.py` +
-  `scripts/build_site.py`, which do **not** run the fragment build first — so a shipped `mlt-r-basic.zip`
-  can lag `_authoring/` (it currently still bundles the pre-migration hand-authored `steps/`). A dedicated
-  "consistency" pass will unify build → dist → portal into one idempotent entrypoint and make `/mlt-dist`
-  (and the `remind-workshop-dist.py` / `rebuild-portal.py` hooks) fragment-aware. **Until then:** after
-  editing `_authoring/`, rebuild AND re-run the dist + site scripts before publishing a release.
+- ~~Release/portal pipeline is NOT yet fragment-aware.~~ **CLOSED (2026-06-03).** The unified
+  entrypoint `python scripts/build_all.py` (`/mlt-build`) fragment-builds each workshop, renders
+  the decks, packages the student ZIP + teacher bundle **from the generated on-disk tree**, then
+  runs `build_release.py` + `build_site.py`. The student ZIP ships per-step R projects (Model C);
+  `materialize.R` scaffolds each step (`.Rproj` + `.Rprofile` + `renv/`; `00-setup` stays bare).
+  The `remind-workshop-dist.py` hook now points at `/mlt-build`.
 - **Advanced (`mlt-r-advanced`) not yet migrated** to `_authoring/` (plan 3) — still the hand-authored
   `steps/` tree.
