@@ -5,6 +5,7 @@ title: "Practice — Basic (R)"
 [Open the deck ↗](slides/workshops/mlt-r-basic/00-basic-deck.html){.btn-deck}
 [Download deck](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic-deck.html){.btn-dl}
 [Download workshop ZIP](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic.zip){.btn-dl}
+[Coding solutions ↗](basic-solutions.html){.btn-deck}
 
 {{< include _generated/basic-overview.md >}}
 
@@ -22,7 +23,10 @@ usethis::use_course(
 )
 ```
 
-Open `mlt-r-basic.Rproj` (its `renv` activates), then `renv::restore()`.
+The download is a **bundle of per-step projects**, not a single project. Open the step you are
+on — start with `steps/00-setup/00-setup.Rproj`. At `00-setup` you run `renv::init()` from scratch
+(that is the first lesson); from `01-import` on, opening a step's `.Rproj` auto-activates its
+`renv` — then `renv::restore()` for the pinned packages.
 
 ## Syllabus
 
