@@ -19,7 +19,10 @@ DECK_ASSETS = {
     "basic":    "mlt-r-basic-deck.html",
     "advanced": "mlt-r-advanced-deck.html",
 }
-ZIP_ASSETS = ["mlt-r-basic.zip", "mlt-r-advanced.zip"]
+ZIP_ASSETS = [
+    "mlt-r-basic.zip", "mlt-r-basic-teacher.zip",
+    "mlt-r-advanced.zip", "mlt-r-advanced-teacher.zip",
+]
 _DECK_SRC = {
     "theory":   "slides/slides.qmd",
     "basic":    "slides/workshops/mlt-r-basic",
@@ -43,6 +46,22 @@ def _rendered_html(root: Path, key: str) -> Path:
     return html_files[0]
 
 
+def zip_is_fresh(zip_path: Path, workshop_dir: Path) -> bool:
+    """True if zip_path is newer than every file under workshop_dir/_authoring.
+
+    Non-fragment workshops (no _authoring/) are always considered fresh.
+    """
+    authoring = Path(workshop_dir) / "_authoring"
+    if not authoring.is_dir():
+        return True
+    if not Path(zip_path).exists():
+        return False
+    zmt = Path(zip_path).stat().st_mtime
+    newest = max((p.stat().st_mtime for p in authoring.rglob("*") if p.is_file()),
+                 default=0.0)
+    return zmt >= newest
+
+
 def build(root: Path) -> list[Path]:
     out = root / OUT
     out.mkdir(parents=True, exist_ok=True)
@@ -54,11 +73,17 @@ def build(root: Path) -> list[Path]:
         made.append(dst)
     for z in ZIP_ASSETS:
         srcz = root / "dist" / z
-        if srcz.exists():
-            shutil.copy2(srcz, out / z)
-            made.append(out / z)
-        else:
-            print(f"WARNING: {srcz} missing — run /mlt-dist first", file=sys.stderr)
+        if not srcz.exists():
+            print(f"WARNING: {srcz} missing — run /mlt-build first", file=sys.stderr)
+            continue
+        slug = z.replace("-teacher", "").replace(".zip", "")
+        wdir = root / "workshops" / slug
+        if not zip_is_fresh(srcz, wdir):
+            raise SystemExit(
+                f"ERROR: {srcz} is STALE vs {wdir}/_authoring — rebuild via /mlt-build"
+            )
+        shutil.copy2(srcz, out / z)
+        made.append(out / z)
     return made
 
 
