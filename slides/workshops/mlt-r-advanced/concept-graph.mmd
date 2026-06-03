@@ -1,37 +1,39 @@
+%%{init: {'themeVariables': {'fontSize': '21px'}, 'flowchart': {'nodeSpacing': 44, 'rankSpacing': 46, 'padding': 12}}}%%
 flowchart TD
-  BASIC[Basic's validated tidymodels workflow]
-  PRED[1-row predict on finalized model]
+  BASIC[Basic's validated<br/>tidymodels workflow]
+  PRED[1-row predict on<br/>finalized model]
   WARM[Pre-warm torch session]
 
-  INTERP[Interpretability: open the black box]
-  VIMP[Permutation VIMP via vip]
-  SHAP[Agnostic SHAP via kernelshap + shapviz]
-  ANCHOR[Logistic regression ANCHOR]
-  COEF[Logistic coefficients = sanity check]
-  PARAMS_I[SHAP params: background size / which rows / exact-vs-sampling]
+  INTERP[Interpretability:<br/>open the black box]
+  VIMP[Permutation VIMP<br/>via vip]
+  SHAP[Agnostic SHAP via<br/>kernelshap + shapviz]
+  ANCHOR[Logistic regression<br/>ANCHOR]
+  COEF[Logistic coefficients<br/>= sanity check]
+  PARAMS_I[SHAP params:<br/>background / which rows /<br/>exact-vs-sampling]
 
-  DL[Deep Learning: differentiable composable modules]
+  DL[Deep Learning:<br/>differentiable<br/>composable modules]
   MLP[Tiny MLP via brulee/luz]
-  PARAMS_DL[MLP knobs: epochs / learn_rate / hidden_units / batch / activation / penalty]
+  PARAMS_DL[MLP hyperparameters:<br/>epochs / learn_rate /<br/>hidden_units / batch /<br/>activation / penalty]
   BV[Bias-variance tradeoff]
-  NNMOD[nn_module architectures written not trained]
-  CNN[1D-CNN: kernel / stride / channels]
-  RNN[RNN: hidden / sequence / LSTM-GRU]
-  FUSED[Fused 3-branch net: single forward / shape-check]
-  GPU[Hardware matters: GPU payoff]
-  OPTB[OPTION B: pre-trained loss curve labeled]
+  NNMOD[nn_module architectures<br/>written not trained]
+  CNN[1D-CNN:<br/>kernel / stride / channels]
+  RNN[RNN: hidden /<br/>sequence / LSTM-GRU]
+  FUSED[Fused 3-branch net:<br/>single forward /<br/>shape-check]
+  GPU[Hardware matters:<br/>GPU payoff]
+  OPTB[OPTION B:<br/>pre-trained loss<br/>curve labeled]
 
-  TRANS[Transformer to ellmer bridge]
-  ELLMER[LLM as typed reproducible ETL]
-  SCHEMA[type_object typed schema]
-  LLMPAR[LLM params: model / temperature / typing]
-  BATCH[purrr::map batch written not run]
+  TRANS[Transformer to<br/>ellmer bridge]
+  ELLMER[LLM as typed<br/>reproducible ETL]
+  SCHEMA[type_object<br/>typed schema]
+  LLMPAR[LLM params:<br/>model / temperature /<br/>typing]
+  BATCH[purrr::map batch<br/>written not run]
 
-  TARGETS[targets = reproducibility signature]
-  DAG[tar_visnetwork DAG]
-  SKIP[tar_make then re-run all-skip]
+  TARGETS[targets =<br/>reproducibility signature]
+  DAG[tar_visnetwork DAG:<br/>inspectable<br/>intermediate targets]
+  SKIP[tar_make then<br/>re-run all-skip]
+  REPORT[Report compiled BY<br/>the pipeline:<br/>tar_quarto from targets]
 
-  HONESTY[Honesty rule: nothing pre-baked shown as live]
+  HONESTY[Honesty rule:<br/>nothing pre-baked<br/>shown as live]
 
   BASIC -->|enables| PRED
   PRED -->|sets up| INTERP
@@ -46,7 +48,7 @@ flowchart TD
   VIMP -->|compares-with| SHAP
   INTERP -->|enables| DL
   DL -->|is-realized-by| MLP
-  MLP -->|has-knob| PARAMS_DL
+  MLP -->|has-hyperparameter| PARAMS_DL
   PARAMS_DL -->|governs| BV
   MLP -->|carries| SHAP
   DL -->|generalizes-to| NNMOD
@@ -66,6 +68,8 @@ flowchart TD
   ELLMER -->|is-traced-by| TARGETS
   TARGETS -->|visualized-by| DAG
   TARGETS -->|demonstrated-by| SKIP
+  TARGETS -->|compiles| REPORT
+  DAG -->|feeds| REPORT
   HONESTY -->|constrains| MLP
   HONESTY -->|constrains| ELLMER
   HONESTY -->|constrains| SKIP

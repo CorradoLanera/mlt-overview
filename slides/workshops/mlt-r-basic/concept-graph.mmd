@@ -1,27 +1,28 @@
+%%{init: {'themeVariables': {'fontSize': '22px'}, 'flowchart': {'nodeSpacing': 36, 'rankSpacing': 46, 'padding': 12}}}%%
 flowchart TD
   PROJ["Reproducible project<br/>(renv + here + rio)"]
-  IMPORT["Import & tidy data<br/>(rio + janitor + dplyr/tidyr)"]
-  LEAK["Data leakage<br/>(drop follow-up time)"]
-  EDA["Clinical EDA<br/>(tbl_summary + ggplot)"]
-  OUT["Binary clinical outcome<br/>(heart failure: died/survived)"]
+  IMPORT["Import & tidy data<br/>(rio + janitor +<br/>dplyr/tidyr)"]
+  LEAK["Data leakage<br/>(drop<br/>follow-up time)"]
+  EDA["Clinical EDA<br/>(tbl_summary<br/>+ ggplot)"]
+  OUT["Binary clinical<br/>outcome<br/>(died / survived)"]
   SPLIT["Train/test split<br/>(rsample)"]
-  RECIPE["Recipe / preprocessing<br/>(recipes)"]
+  RECIPE["Recipe /<br/>preprocessing<br/>(recipes)"]
   MODEL["Model spec<br/>(parsnip)"]
-  ENGINE["Engine-swap idiom<br/>(one line = new algorithm)"]
+  ENGINE["Engine-swap idiom<br/>(one line =<br/>new algorithm)"]
   WF["Workflow<br/>(recipe + model)"]
-  METRIC["Metrics: AUC-ROC + AUC-PR<br/>(yardstick)"]
+  METRIC["Metrics:<br/>AUC-ROC + AUC-PR<br/>(yardstick)"]
   GLM["Plain glm baseline"]
-  ALGOS["The four algorithms<br/>(pen-logistic, kNN, SVM, RF)"]
-  PARAM["Hyperparameters<br/>(penalty, neighbors, cost, mtry...)"]
-  BV["Bias-variance / overfitting"]
+  ALGOS["The four algorithms<br/>(pen-logistic, kNN,<br/>SVM, RF)"]
+  PARAM["Hyperparameters<br/>(penalty, neighbors,<br/>cost, mtry...)"]
+  BV["Bias-variance /<br/>overfitting"]
   CV["Cross-validation<br/>(vfold_cv v=5)"]
   OPT["Optimism gap<br/>(single split lies)"]
-  WFSET["workflow_set + workflow_map<br/>(tune all at once)"]
+  WFSET["workflow_set +<br/>workflow_map<br/>(tune all at once)"]
   TUNE["tune_grid<br/>(tiny grids, parallel)"]
-  COMPARE["rank_results / autoplot"]
-  BEST["select_best + finalize"]
+  COMPARE["rank_results /<br/>autoplot"]
+  BEST["select_best<br/>+ finalize"]
   LASTFIT["last_fit on test set<br/>(honest estimate)"]
-  REPORT["Rendered Quarto report<br/>(cached) + renv::snapshot"]
+  REPORT["Rendered Quarto<br/>report (runs full<br/>analysis) + renv::snapshot"]
 
   PROJ -->|enables| IMPORT
   IMPORT -->|guards-against| LEAK
@@ -33,12 +34,12 @@ flowchart TD
   SPLIT -->|produces-train-for| RECIPE
   RECIPE -->|combined-in| WF
   MODEL -->|combined-in| WF
-  ENGINE -->|is-a-knob-of| MODEL
+  ENGINE -->|is-a-setting-of| MODEL
   WF -->|scored-by| METRIC
   GLM -->|is-baseline-for| ALGOS
   GLM -->|same-task-as| MODEL
   ALGOS -->|are-instances-of| MODEL
-  PARAM -->|is-a-knob-of| ALGOS
+  PARAM -->|tunes| ALGOS
   PARAM -->|controls| BV
   BV -->|motivates| CV
   OPT -->|motivates| CV

@@ -69,34 +69,96 @@ This hands-on workshop is the practical companion to the **Machine Learning — 
 
 - **Built on the UBEP teaching tradition** — colleagues whose examples and feedback shaped earlier editions of the practical courses.
 - **Dataset:** *Heart-failure clinical records* (Chicco & Jurman, 2020) — a real, open clinical cohort.
-- **Tooling:** the **tidymodels** stack (Kuhn, Silge et al.) on **R**, with **Quarto** · revealjs.
+- **Tooling:** the **tidymodels** stack (Kuhn, Silge et al.) on **R**, authored in **Quarto**.
+- **Illustrations:** Allison Horst (CC BY 4.0) and the UBEP ECDC R course (2023); additional figures generated with **Images2.0** in a friendly hand-painted style (style anchor + prompts in `slides/workshops/_assets/horststyle-prompts.md`).
 - **Course design & materials (this edition):** *Corrado Lanera*, built with **Claude** (Anthropic) via Claude Code.
 
 ::: {.notes}
-Voce docente (IT): credits adattati al workshop — niente sfondi-storyboard (sono
-overview-specific). Cito la citazione del dataset (Chicco & Jurman 2020) perché qui
-si lavora su dati reali, e lo stack tidymodels come base tecnica. Coerente con cap.
-07-08 dell'overview: si dice quando e come si usa l'IA.
+Voce docente (IT): credits adattati al workshop. Cito la citazione del dataset (Chicco
+& Jurman 2020) perché qui si lavora su dati reali, e lo stack tidymodels come base
+tecnica. Aggiunta la riga illustrazioni: Horst (CC BY 4.0) + immagini ECDC mie +
+figure Images2.0 (anchor e prompt nel file _assets). Coerente con cap. 07-08
+dell'overview: si dice quando e come si usa l'IA. Tolto "revealjs" (dettaglio tecnico
+inutile).
 :::
 
 # Build and validate a clinical ML model in R {.center}
 
-::: {.notes}
-Voce docente (IT): apertura. L'arco dell'intera giornata è `fit → tune → validate`,
-sul dataset heart-failure clinical records (299 pazienti, esito: morte). Il
-deliverable finale è un report Quarto riproducibile. Mentre carico/scaldo
-`renv::restore()` in background, anticipo le quattro tappe: setup pulito, dati
-ordinati, una spina logistica, lo zoo tunato.
-:::
-
-We will spend the afternoon doing one thing well: take a real clinical cohort
-(**heart-failure clinical records**, 299 patients), and **build, tune, and validate**
-a model that predicts in-hospital death — ending with a **reproducible report** a
-colleague can re-run.
+Over the next **~4 hours** we do one thing well: take a real clinical cohort
+(**heart-failure clinical records**, 299 patients), and **build, tune, and validate** a
+model that predicts in-hospital death — ending with a **reproducible report** a colleague
+can re-run.
 
 - The spine is **tidymodels**: `rsample` $\to$ `recipes` $\to$ `parsnip` $\to$ `workflows` $\to$ `yardstick`.
-- One outcome, four algorithms, **one** honest test-set evaluation.
+- One outcome, four model families, **one** fair test-set evaluation.
+- **Modular & incremental.** Six short steps; each `steps/NN/` folder is a complete
+  snapshot, and the *solution* of one step is the *start* of the next — fall behind, copy
+  the next folder, and you are back in sync.
 - Everything live-coded, everything reproducible (`renv` + `here` + `set.seed`).
+
+::: {.notes}
+Voce docente (IT): apertura. Durata ~4 ore (non "un pomeriggio": dipende dall'edizione).
+Arco della giornata = `fit → tune → validate` sul dataset heart-failure (299 pazienti,
+esito morte). Deliverable finale = report Quarto riproducibile. Sottolineo la dinamica
+MODULARE/INCREMENTALE: ogni cartella step è uno snapshot autonomo, la soluzione dello
+step N è il punto di partenza dello step N+1 → chi resta indietro copia la cartella
+successiva e rientra. Mentre parlo, `renv::restore()` scalda in background.
+:::
+
+## The clinical question, and the cohort
+
+:::: {.columns}
+::: {.column width="58%"}
+**The question.** After a heart-failure episode, can routine baseline variables predict
+**in-hospital death** during follow-up?
+
+**The cohort.** *Heart-failure clinical records* — **299 patients**, 105 deaths
+(~**32%**), collected in 2015 (Faisalabad, Pakistan).
+
+- One row per patient; **13 columns** = 12 clinical fields + the outcome `DEATH_EVENT`.
+- A **real, open** dataset — small enough to live-code, real enough to mislead you if you
+  are careless (we will meet exactly one such trap: *leakage*).
+
+**Where to get it (free).**
+
+- **UCI ML Repository** — *Heart failure clinical records* (2020).
+- **Kaggle** — *Heart Failure Prediction* (same data).
+- **Citation:** Chicco & Jurman (2020), *BMC Med. Inform. Decis. Mak.*
+:::
+::: {.column width="42%"}
+<img src="../../../img/heartj.jpg" style="max-width:100%; max-height:520px; border-radius:8px;"/>
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): nuova slide-dataset (richiesta esplicita). Cosa prevediamo, su chi,
+dove si scarica, come si cita. ~32% eventi (classe positiva = morte) — è il seme della
+scelta a due metriche più avanti. Anticipo la trappola del leakage (`time`), che
+risolviamo allo step 01.
+:::
+
+## The variables — 11 predictors, one outcome
+
+**Outcome** — `outcome`: `died` / `survived` (we make `died` the *first* level, so every
+metric scores death as the positive class).
+
+**Predictors (11), grouped:**
+
+- *Demographics* — `age`, `sex`.
+- *Comorbidities* — `anaemia`, `diabetes`, `high_blood_pressure`, `smoking`.
+- *Labs & cardiac function* — `ejection_fraction` (pump efficiency), `serum_creatinine`,
+  `serum_sodium`, `creatinine_phosphokinase`, `platelets`.
+
+**Dropped on purpose** — `time` (follow-up days): it *leaks* the outcome (longer follow-up
+is mechanically tied to who survives). Keeping it would inflate every score and fail in
+the clinic.
+
+::: {.notes}
+Voce docente (IT): le covariate, raggruppate per leggibilità clinica. `ejection_fraction`
+e `serum_creatinine` sono i predittori clinicamente forti (li ritroviamo nella VIMP
+dell'Advanced). Ribadisco il drop di `time` = leakage. 11 predittori + outcome = 12
+colonne dopo il wrangle.
+:::
 
 # Step 00 · Setup {#sec-00-setup .center}
 
@@ -105,12 +167,44 @@ colleague can re-run.
 **Objective.** Start from a healthy, reproducible project.
 
 - Open the `.Rproj`; let `renv::restore()` rebuild the pinned library.
-- Load data through `here::here()` (stable paths) and `{rio}::import()`.
+- Load data through `here::here()` (stable paths) and `rio::import()`.
 
 ::: {.notes}
-Voce docente (IT): demo (~10 min). Ambiente sano = precondizione di tutto. `renv` è
-già in restore in background dall'opening. Mostro `renv::status()` in sync e
-`here::here()` che punta alla root del progetto. Live-check al minuto 9: GREEN/RED.
+Voce docente (IT): demo (~10 min). Ambiente sano = precondizione di tutto. `renv` è già
+in restore in background dall'opening. Mostro `renv::status()` in sync e `here::here()`
+che punta alla root del progetto. Live-check al minuto 9: GREEN/RED. (De-braced: `rio`,
+non `{rio}`.)
+:::
+
+## A reproducible project — `renv`, `here`, `rio`
+
+:::: {.columns}
+::: {.column width="34%"}
+<img src="../../../img/ecdc/renv-workflow.png" style="max-width:100%; max-height:300px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">UBEP ECDC R course (2023)</p>
+:::
+::: {.column width="33%"}
+<img src="../../../img/horst/here.jpg" style="max-width:100%; max-height:300px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">Artwork by Allison Horst (CC BY 4.0)</p>
+:::
+::: {.column width="33%"}
+<img src="../../../img/ecdc/rio-formats.png" style="max-width:100%; max-height:300px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">UBEP ECDC R course (2023)</p>
+:::
+::::
+
+- **`renv`** pins every package version: `renv::restore()` rebuilds the *exact* library on
+  any machine, `renv::snapshot()` records what you used. No more "works on my laptop".
+- **`here`** builds paths from the **project root**, not your working directory — so
+  `here::here("data-raw", "x.csv")` works for everyone. Never `setwd()`.
+- **`rio`** is one verb for many formats: `rio::import()` reads `.csv`, `.xlsx`, `.rds`… —
+  it picks the right reader from the file extension.
+
+::: {.notes}
+Voce docente (IT): teoria dei tre pilastri base (richiesti dall'utente: spiegare ogni
+comando non banale). renv = riproducibilità dell'ambiente; here = path stabili (no
+setwd); rio = un import() per tutti i formati. Immagini: renv/rio dal mio corso ECDC,
+here di Horst.
 :::
 
 # Step 01 · Import & wrangle {#sec-01-import .center}
@@ -121,16 +215,125 @@ già in restore in background dall'opening. Mostro `renv::status()` in sync e
 
 - A tidyverse primer: the native pipe `|>`, verbs that **return a new tibble**.
 - Clean and recode with `dplyr`/`tidyr`; `janitor::clean_names()`.
-- **Drop the leaky `time` column** (follow-up days mechanically anticipate death).
-- Make the outcome a factor with the **event first** (`died`) — so every metric
-  scores death as positive by default.
+- **Drop the leaky `time` column** (follow-up days mechanically anticipate the outcome).
+- Make the outcome a factor with the **event first** (`died`) — so every metric scores
+  death as positive by default.
 
 ::: {.notes}
-Voce docente (IT): hands-on, il più lungo (~32 min) — apposta, perché è il picco di
-carico-sintassi per Lucia (zero R). Rete fall-behind con la cartella `01-import/`.
-"Your turn" al min 30: `clean_names → select(-time) → outcome event-first → factor
-dei flag → glimpse` (12 colonne). Il drop di `time` è la mini-lezione di LEAKAGE
-(giorni di follow-up anticipano la morte). MCQ al min 31 sulla semantica pipe/verbi.
+Voce docente (IT): hands-on, il più lungo (~32 min) — apposta, è il picco di
+carico-sintassi per chi parte da zero R. Rete fall-behind con la cartella `01-import/`.
+"Your turn" al min 30: `clean_names → select(-time) → outcome event-first → factor dei
+flag → glimpse` (12 colonne). Le 4 slide di teoria che seguono coprono i concetti che
+poi chiediamo: senza teoria niente "your turn".
+:::
+
+## The tidyverse — one grammar for data
+
+:::: {.columns}
+::: {.column width="60%"}
+A family of packages that share **one design**: a tidy **tibble** goes in, a tidy tibble
+comes out.
+
+- A **tibble** is a data frame that prints cleanly and never surprises you (no silent type
+  coercions, no row names).
+- Every verb **returns a new tibble** — it does *not* edit in place. You build a result by
+  **chaining** verbs, then assign once with `<-`.
+- One consistent style across `dplyr`, `tidyr`, `ggplot2`, … — learn the grammar once,
+  reuse it everywhere.
+:::
+::: {.column width="40%"}
+<img src="../../../img/horst/tidyverse_celestial.jpg" style="max-width:100%; max-height:520px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">Artwork by Allison Horst (CC BY 4.0)</p>
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): cos'è il tidyverse e il modello mentale chiave = funzioni pure che
+ritornano una NUOVA tibble (niente modifica in-place). Questo prepara il "your turn":
+si concatena e si assegna una volta sola.
+:::
+
+## The native pipe `|>`
+
+:::: {.columns}
+::: {.column width="55%"}
+The pipe sends the value on its **left** into the **first argument** of the function on its
+**right**. It turns inside-out nesting into a left-to-right recipe.
+
+`x |> f() |> g()`  **is**  `g(f(x))` — but you read it in the order it happens.
+
+```r
+hf_raw |>
+  clean_names() |>
+  select(-time) |>
+  glimpse()
+```
+
+Read it aloud: *take the raw data, **then** clean the names, **then** drop `time`, **then**
+look.* No temporary variables, no nested parentheses.
+:::
+::: {.column width="45%"}
+<img src="../../../img/ecdc/rstudio-native-pipe.png" style="max-width:100%; max-height:300px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">UBEP ECDC R course (2023)</p>
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): il pipe nativo `|>` (mai `%>%` nel codice del workshop). "then" è la
+parola-chiave per leggerlo. Screenshot mio ECDC: come abilitarlo in RStudio
+(Ctrl+Shift+M → native pipe).
+:::
+
+## Reshaping with verbs — `dplyr`, `janitor`, `forcats`
+
+:::: {.columns}
+::: {.column width="58%"}
+A handful of verbs do almost all of wrangling:
+
+- `select()` — keep / drop **columns** (e.g. `select(-time)`).
+- `mutate()` — **add or change** columns (e.g. build `outcome`).
+- `filter()` — keep **rows** by a condition.
+- `across()` — apply one transform to **many columns** at once.
+- `janitor::clean_names()` — tidy, snake_case, machine-safe column names.
+- `factor()` / `forcats` — turn text into a **factor** with explicit **levels**; we set
+  `died` *first* so it is the positive class everywhere.
+:::
+::: {.column width="42%"}
+<img src="../../../img/horst/dplyr_wrangling.jpg" style="max-width:100%; max-height:520px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">Artwork by Allison Horst (CC BY 4.0)</p>
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): i verbi che useremo davvero nel "your turn" — select/mutate/filter/
+across, clean_names, factor con livelli. La convenzione EVENT-FIRST (`died` primo) è ciò
+che rende le metriche automatiche più avanti.
+:::
+
+## Tidy data — and the leakage trap
+
+:::: {.columns}
+::: {.column width="45%"}
+<img src="../../../img/horst/tidydata_3.jpg" style="max-width:100%; max-height:480px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">Tidy data art: Lowndes & Horst, Openscapes (CC BY 4.0)</p>
+:::
+::: {.column width="55%"}
+**Tidy data:** each **variable** is a column, each **observation** a row, each **cell** one
+value. Tidy in $\to$ everything downstream just works.
+
+**Leakage:** a predictor that secretly encodes the outcome. Here `time` (follow-up days) is
+mechanically longer for survivors — a model that uses it "predicts" death by *cheating*,
+scores beautifully in the slides, and **fails in the clinic**.
+
+- The fix is one line — `select(-time)` — but spotting leakage is a **clinical-judgement**
+  skill, not a coding one. Always ask: *could this column only be known after the outcome?*
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): tidy data (1 var/colonna, 1 oss/riga, 1 valore/cella) + la
+mini-lezione di LEAKAGE che giustifica il drop di `time`. Il messaggio forte: il leakage
+si riconosce col ragionamento clinico, non col codice.
 :::
 
 # Step 02 · Clinical EDA {#sec-02-eda .center}
@@ -139,34 +342,97 @@ dei flag → glimpse` (12 colonne). Il drop di `time` è la mini-lezione di LEAK
 
 **Objectives.** Describe the cohort and read its shape.
 
-- `gtsummary::tbl_summary(by = outcome)` — a table Marco already recognises.
-- One `ggplot` to see a predictor against the outcome.
+- `gtsummary::tbl_summary(by = outcome)` — a clinical Table 1.
+- One `ggplot` of a predictor against the outcome.
 - **Read the class imbalance** (~32% events) $\to$ it drives the **dual-metric** choice
   (AUC-ROC **and** AUC-PR) later.
 
 ::: {.notes}
-Voce docente (IT): hands-on *elastico* (~22 min, comprimibile se siamo in ritardo).
-L'imbalance ~32% qui visto in tabella è il seme del ragionamento "accuracy inganna →
-guardiamo DUE metriche, AUC-ROC e AUC-PR" dello step 04. MCQ al min 50 proprio su
-questo (perché due metriche, e cosa è la baseline della AUC-PR). Boxplot di
-`ejection_fraction`: chi sopravvive ha frazione d'eiezione più alta.
+Voce docente (IT): hands-on *elastico* (~22 min, comprimibile se in ritardo).
+L'imbalance ~32% visto in tabella è il seme del ragionamento "accuracy inganna →
+guardiamo DUE metriche". Boxplot di `ejection_fraction`: chi sopravvive ha frazione
+d'eiezione più alta.
 :::
 
-## Supervised vs unsupervised — a one-sentence bridge
+## `gtsummary` — a clinical Table 1
 
-Today every model **learns from a labelled outcome** (`died` / `survived`) — that is
-**supervised** learning.
+:::: {.columns}
+::: {.column width="58%"}
+`tbl_summary(by = outcome)` builds the **publication-style "Table 1"** clinicians already
+read: one row per variable, one column per outcome group, with sensible summaries chosen
+automatically (median [IQR] for numbers, n (%) for categories).
 
-::: {.fragment}
-**Unsupervised** learning (finding structure with *no* labels — clustering, PCA)
-exists and you met the paradigm in the Overview; it is **deliberately out of scope**
-here so we can do one supervised pipeline thoroughly.
+```r
+hf |>
+  tbl_summary(by = outcome)
+```
+
+- It is **descriptive, not a test** — it shows *where* the groups differ, which is how you
+  build intuition *before* any model.
+- Reading it here, you already see the **imbalance** (~32% deaths) that will steer the
+  metric choice.
 :::
+::: {.column width="42%"}
+<img src="../../../img/horststyle/gtsummary.jpg" style="max-width:100%; max-height:480px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">Illustration generated with Images2.0 (illustrative figures, not our cohort)</p>
+:::
+::::
 
 ::: {.notes}
-Voce docente (IT): una sola frase-ponte (cfr. spec §6). L'unsupervised hands-on è
-tagliato di proposito (niente carico cognitivo gratuito). Resta concetto, già
-incontrato nell'overview ch01. Non apriamo cluster/PCA qui.
+Voce docente (IT): gtsummary = la "Table 1" che il clinico riconosce. Descrittiva, non
+inferenza. Immagine Images2.0 (img/horststyle/gtsummary.jpg): i NUMERI nell'illustrazione
+sono di esempio, NON la nostra coorte — lo dico per onestà (la Table 1 vera è quella che
+generiamo dal vivo allo step 02).
+:::
+
+## `ggplot2` — the grammar of graphics
+
+:::: {.columns}
+::: {.column width="55%"}
+A plot is built in **layers**, added with `+`:
+
+```r
+hf |>
+  ggplot(aes(x = outcome, y = ejection_fraction)) +
+  geom_boxplot()
+```
+
+- **data** piped in, then `aes()` **maps** variables to position / colour / fill…
+- **geoms** (`geom_boxplot`, `geom_point`, …) draw the data.
+- add `+ theme_*()`, `+ labs()` to refine. The *same* grammar builds every chart.
+:::
+::: {.column width="45%"}
+<img src="../../../img/ecdc/ggplot-layers.png" style="max-width:100%; max-height:480px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">UBEP ECDC R course (2023)</p>
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): ggplot = grammatica a layer. Dati nel `|>`, layer con `+`, poi
+`ggsave()`. Una sola grammatica per ogni grafico. Diagramma dei layer dal mio corso
+ECDC.
+:::
+
+## Where today's model fits — learning paradigms
+
+Today we do **supervised** learning: every patient carries a known label (`died` /
+`survived`) and the model learns the mapping from features to label.
+
+- **Supervised** — labelled outcome; *classification* (our case) or *regression*. ← today
+- **Unsupervised** — *no* labels; find structure (clustering, PCA). You met it in the
+  Overview; out of scope here so we can do **one** supervised pipeline thoroughly.
+- **Reinforcement** — an agent learns from **rewards** by acting, not from a table of
+  labels (think treatment policies that improve with feedback).
+- **Active / online** — the model **asks** for the most useful next label, or keeps
+  learning as data **streams** in.
+
+One labelled table, one clear target: that is *why* supervised methods fit this problem.
+
+::: {.notes}
+Voce docente (IT): ex-"supervised vs unsupervised" (slide 8), tolto il fragment e
+ESPANSO ai quattro paradigmi (supervised oggi, + unsupervised, reinforcement, active/
+online) come chiesto. Inquadra perché il nostro problema è supervised. Nessuna rivelazione
+incrementale.
 :::
 
 # Step 03 · Logistic spine {#sec-03-logistic .center}
@@ -175,29 +441,60 @@ incontrato nell'overview ch01. Non apriamo cluster/PCA qui.
 
 **Objectives.** Lay the tidymodels spine with a `glm` baseline.
 
-- Frame the task as **supervised** (one sentence on unsupervised, out of scope).
 - Walk the **object-map** `rsample` $\to$ `recipes` $\to$ `parsnip` $\to$ `workflows` $\to$ `yardstick`.
 - Fit a plain `glm` baseline and score it with `yardstick` — **AUC-ROC and AUC-PR**.
 
 ::: {.notes}
-Voce docente (IT): hands-on (~38 min). È la zona di rischio per profondità: 7 oggetti
-nuovi nell'object-map. Mitigazione: ancorare la mappa a `glm` (riconoscimento, non
-nuova astrazione) e insegnarla come **una** mappa. "Your turn" min 72: `glm` vs
-workflow danno la stessa AUC ("same model, more scaffolding"). Break subito dopo.
+Voce docente (IT): hands-on (~38 min). Zona di rischio per profondità: la mappa di
+oggetti nuovi. Mitigazione: ancorare la mappa a `glm` (riconoscimento, non nuova
+astrazione) e insegnarla come UNA mappa. "Your turn" min 72: `glm` vs workflow danno la
+stessa AUC. Tolto il bullet ridondante "frame as supervised" (già nella slide
+paradigmi). Break subito dopo.
 :::
 
-## The tidymodels object-map {.smaller}
+## tidymodels — one spine, five packages
+
+:::: {.columns}
+::: {.column width="55%"}
+**tidymodels** is the tidyverse for modelling: the *same* five-package spine fits **any**
+algorithm. Learn it once on a logistic regression; reuse it for the whole zoo.
+
+- You declare *what* you want (a model **spec**), not *how* each engine wants its inputs.
+- Swapping algorithm = changing **one line** (the `parsnip` spec). Everything else holds.
+- Because the recipe and model travel together in a **workflow**, preprocessing can never
+  leak from test into train.
+:::
+::: {.column width="45%"}
+<img src="../../../img/horst/parsnip.jpg" style="max-width:100%; max-height:420px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">parsnip <code>set_engine()</code> — Artwork by Allison Horst (CC BY 4.0)</p>
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): cosa è tidymodels e perché conviene = una spina riusabile, engine-swap
+in una riga, niente leakage grazie al workflow. Prepara la object-map e lo step 04.
+:::
+
+## The tidymodels object-map
 
 One spine, reused all afternoon. **Five objects, one chain:**
 
-```{mermaid}
-%%{init: {'flowchart': {'nodeSpacing': 24, 'rankSpacing': 32}}}%%
-flowchart LR
-  RS["rsample<br/>split train / test"] --> RC["recipes<br/>preprocess"]
-  RC --> PS["parsnip<br/>model spec"]
-  PS --> WF["workflows<br/>recipe + model"]
-  WF --> YS["yardstick<br/>score (AUC-ROC + AUC-PR)"]
+```{=html}
+<style>
+#sec-object-map svg { max-width: 100% !important; height: auto !important; display: block; margin: 0.3em auto; }
+</style>
 ```
+
+::: {#sec-object-map}
+```{mermaid}
+%%{init: {'flowchart': {'nodeSpacing': 26, 'rankSpacing': 40, 'padding': 16}, 'themeVariables': {'fontSize': '24px'}}}%%
+flowchart LR
+  RS["rsample<br/>split<br/>train / test"] --> RC["recipes<br/>preprocess"]
+  RC --> PS["parsnip<br/>model spec"]
+  PS --> WF["workflows<br/>recipe<br/>+ model"]
+  WF --> YS["yardstick<br/>score:<br/>ROC + PR AUC"]
+```
+:::
 
 - **`rsample`** — `initial_split()` / `vfold_cv()`: who trains, who tests.
 - **`recipes`** — dummy-code, drop zero-variance, normalize.
@@ -206,193 +503,286 @@ flowchart LR
 - **`yardstick`** — `roc_auc()`, `pr_auc()`: two complementary scorers.
 
 ::: {.notes}
-Voce docente (IT): questa mappa è la spina dorsale riusata tutto il pomeriggio. Lo
-step 04 cambia solo il nodo `parsnip` (engine-swap) e moltiplica per quattro. Tutto
-il resto resta identico → "1 cosa, 4 manopole", non 4 pipeline.
+Voce docente (IT): la mappa è la spina dorsale del pomeriggio. Lo step 04 cambia solo il
+nodo `parsnip` (engine-swap) e moltiplica per quattro: "1 cosa, 4 manopole", non 4
+pipeline. Font del mermaid ingrandito (22px) e tolto `.smaller`.
+:::
+
+## The five packages — and the functions we use
+
+| package | role | the calls you will type |
+|---|---|---|
+| `rsample` | split & resample | `initial_split()`, `training()`, `testing()`, `vfold_cv()` |
+| `recipes` | preprocess | `recipe()`, `step_dummy()`, `step_zv()`, `step_normalize()` |
+| `parsnip` | model spec | `logistic_reg()`, `set_engine()`, `set_mode()` |
+| `workflows` | bundle | `workflow()`, `add_recipe()`, `add_model()`, `fit()` |
+| `yardstick` | score | `metric_set()`, `roc_auc()`, `pr_auc()`, `augment()` |
+
+The same five every time. Step 04 changes only the `parsnip` line — four times — and wraps
+the tuning around it.
+
+<p style="text-align:center; margin:0.6em 0 0 0;">
+<img src="../../../img/horststyle/rsample.jpg"   style="height:190px; margin:0 10px; border-radius:6px; vertical-align:middle;"/>
+<img src="../../../img/horststyle/recipes.jpg"   style="height:190px; margin:0 10px; border-radius:6px; vertical-align:middle;"/>
+<img src="../../../img/horststyle/workflows.jpg"  style="height:190px; margin:0 10px; border-radius:6px; vertical-align:middle;"/>
+<img src="../../../img/horststyle/yardstick.jpg"  style="height:190px; margin:0 10px; border-radius:6px; vertical-align:middle;"/>
+</p>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0;">rsample · recipes · workflows · yardstick — illustrations generated with Images2.0</p>
+
+::: {.notes}
+Voce docente (IT): risponde alla richiesta esplicita — i 5 pacchetti E le funzioni che
+useremo davvero, in una tabella di riferimento, più la striscia di 4 card Images2.0
+(rsample/recipes/workflows/yardstick). Tabella a font pieno per leggibilità da fondo aula.
 :::
 
 # Hyperparameters, one algorithm at a time {.center}
 
-Same map, **one knob at a time.** For each algorithm: *what the knob is* $\to$ *what it
-controls* $\to$ *its effect on bias / variance / overfitting.*
+A **hyperparameter** is a setting you fix *before* fitting — unlike the ordinary
+parameters (coefficients, split points) that the fit *learns* from the data. Same spine,
+**one hyperparameter at a time**: *what it is* $\to$ *what it controls* $\to$ *its effect on
+bias / variance / overfitting.*
 
 ::: {.notes}
-Voce docente (IT): le 4 slide-parametro precedono il tuning. Introducono `PARAM/BV`
-un algoritmo per volta, così lo step 04 (picco di ampiezza, 10 nodi) non esplode.
-Ogni slide è ~4 min. Non si tuna ancora nulla: si capiscono le manopole.
+Voce docente (IT): le 4 slide-iperparametro precedono il tuning. Definisco subito
+"iperparametro" (scelto prima del fit) vs "parametro" (appreso) — così rispondo al
+"perché non chiamarli iperparametri": ora li chiamiamo così. Una slide ~4 min ciascuna,
+non si tuna ancora nulla.
 :::
 
-## Penalized logistic — `penalty` / `mixture` {.smaller}
+## Penalized logistic — `penalty` / `mixture`
 
-The `glm` baseline, **regularized**: shrink coefficients to trade a little bias for
-much less variance.
+The `glm` baseline, **regularized**: shrink coefficients to trade a little bias for much
+less variance.
 
-| knob | what it means | effect |
+| hyperparameter | what it means | effect |
 |---|---|---|
 | `penalty` ($\lambda$) | strength of shrinkage toward 0 | $\uparrow$ penalty $\to$ more bias, less variance (guards overfit); too high $\to$ underfit |
-| `mixture` ($\alpha$) | ridge $\leftrightarrow$ lasso dial | `0` = **ridge** (shrink all); `1` = **lasso** (some coefs $\to$ exactly 0, selects); in between = **elastic-net** |
+| `mixture` ($\alpha$) | ridge $\leftrightarrow$ lasso dial | `0` = **ridge** (shrink all); `1` = **lasso** (some coefs $\to$ exactly 0, *selects*); in between = **elastic-net** |
 
-- Regularization is the **bias–variance knob** made explicit: more penalty = simpler model.
 - Engine `glmnet`; both left as `tune()` in the `workflow_set`.
 
 ::: {.notes}
 Voce docente (IT): collega al glm dello step 03 — "stesso modello, con un freno".
-`mixture` non tocca bias/variance da solo: sceglie *come* si penalizza (ridge vs
-lasso vs elastic-net). Lasso fa anche selezione di variabili (coef esattamente 0).
+`mixture` sceglie *come* si penalizza (ridge/lasso/elastic-net); lasso fa anche selezione
+(coef esattamente 0). Tolto il bullet-slogan; mantenuto engine + tune.
 :::
 
-## $k$-NN — `neighbors` {.smaller}
+## $k$-NN — `neighbors`
 
-Predict from the **$k$ closest** patients. The single knob `neighbors` *is* the
+Predict from the **$k$ closest** patients. The single hyperparameter `neighbors` *is* the
 bias–variance dial.
 
 | `neighbors` ($k$) | behaviour | bias / variance |
 |---|---|---|
-| **small** $k$ (e.g. 1–3) | follows local noise, jagged boundary | **low bias, high variance** (overfits) |
-| **large** $k$ | averages over many neighbours, smooth boundary | **high bias, low variance** (can underfit) |
+| **small** $k$ (e.g. 1–3) | follows local noise, jagged boundary | low bias, **high variance** (overfits) |
+| **large** $k$ | averages over many neighbours, smooth boundary | **high bias**, low variance (can underfit) |
 
-- No "more is always better": $k$ is a tradeoff, not a quality score.
-- $k$ controls flexibility only — it is **not** just a speed setting.
+- **Range.** $k$ runs from $1$ to $n_{\text{train}}$: at $k = 1$ it memorizes, at
+  $k \to n$ it just predicts the majority class. The good value is **interior**, so we
+  **tune** it.
+- Engine `kknn`; `neighbors` left as `tune()`.
 
 ::: {.notes}
-Voce docente (IT): qui atterra la MCQ del min 118 (direzione bias-variance del k).
-Distrattori diagnostici: "più k sempre meglio", "k solo velocità", "direzione
-invertita". Slide pensata per smontarli prima che emergano.
+Voce docente (IT): qui atterra la MCQ del min 118 (direzione bias-variance di k). Tolto il
+bullet-slogan ("più k sempre meglio"/"solo velocità"); aggiunto il RANGE 1..n_train e
+l'idea che l'ottimo è interno → si tuna. Engine + tune come gli altri.
 :::
 
-## SVM (RBF) — `cost` / `rbf_sigma` {.smaller}
+## SVM (RBF) — `cost` / `rbf_sigma`
 
 Separate the classes with a **margin**; the RBF kernel lets the boundary curve.
 
-| knob | what it means | effect |
+| hyperparameter | what it means | effect |
 |---|---|---|
-| `cost` (C) | penalty for margin violations | $\uparrow$ cost $\to$ harder margin, fits training tighter $\to$ **lower bias, higher variance** (overfit risk) |
-| `rbf_sigma` ($\sigma$) | kernel **reach** (how far one point's influence extends) | large $\sigma$ $\to$ wider reach, smoother boundary (more bias); small $\sigma$ $\to$ local, wiggly (more variance) |
+| `cost` ($C$) | penalty for margin violations | $\uparrow$ cost $\to$ harder margin, fits training tighter $\to$ lower bias, **higher variance** |
+| `rbf_sigma` ($\sigma$) | how fast a patient's influence **fades** with distance | see below |
 
-- The two knobs interact: a soft margin (`cost` $\downarrow$) with a local kernel (`rbf_sigma` $\uparrow$) are both regularizers.
-- Engine `kernlab`; both `tune()`d together.
+**`rbf_sigma`, in words.** The RBF kernel rates two patients by a similarity that *fades
+with distance*; $\sigma$ sets **how fast** it fades. **Small $\sigma$** $\to$ influence
+reaches far $\to$ a smooth, almost-linear boundary (**more bias**). **Large $\sigma$** $\to$
+influence is very local $\to$ the boundary wiggles around individual points (**more
+variance**, overfit risk).
+
+- Engine `kernlab`; `cost` and `rbf_sigma` are `tune()`d together (they interact).
 
 ::: {.notes}
-Voce docente (IT): `cost` = morbidezza del margine; `rbf_sigma` = portata del kernel.
-Si tunano insieme perché interagiscono. Compatta apposta — è una slide da ~4 min.
+Voce docente (IT): CORREZIONE rispetto alla versione precedente — la direzione di
+`rbf_sigma` era invertita. In kernlab il kernel è $\exp(-\sigma\,\lVert x-x'\rVert^2)$:
+$\sigma$ ALTO = decadimento rapido = influenza LOCALE = confine ondulato = più varianza;
+$\sigma$ BASSO = portata ampia = confine liscio = più bias. Spiegato a parole come chiesto.
 :::
 
-## Random forest — `mtry` / `min_n` / `trees` {.smaller}
+## Random forest — `mtry` / `min_n` / `trees`
 
-Many decorrelated trees, **averaged**. The knobs control *how decorrelated* and *how
-deep* — and one knob is **not** an overfit dial.
+Many decorrelated trees, **averaged**. Two hyperparameters we tune — and one quantity we
+just set large enough.
 
-| knob | what it means | effect |
+| setting | what it means | effect |
 |---|---|---|
 | `mtry` | predictors offered at each split | small `mtry` $\to$ trees more **decorrelated** $\to$ lower variance; large $\to$ trees agree more |
-| `min_n` | minimum samples in a leaf | large `min_n` $\to$ shallower leaves, simpler trees (more bias, less variance) |
-| `trees` | number of trees | **stability** knob: more trees = less Monte-Carlo noise — **not** an overfitting knob (more trees won't overfit) |
+| `min_n` | minimum samples in a leaf | large `min_n` $\to$ shallower, simpler trees (more bias, less variance) |
+| `trees` | number of trees | a **convergence** quantity, *not* a tuning dial — see below |
 
-- Engine `ranger`; `mtry` and `min_n` are `tune()`d, `trees` is just set large enough.
+**`trees` is not a hyperparameter to tune.** More trees never overfit; they only shrink
+Monte-Carlo noise until the averaged prediction **converges**. Cost grows **linearly** with
+`trees`, so the only task is to set it **large enough to have converged** — bigger than
+that is wasted compute, not better accuracy. A converged-but-oversized forest needs **no**
+refit at a smaller value (the answer won't change); you'd revisit `trees` only if the
+*problem itself* changes. So we **tune** `mtry` / `min_n` and merely **fix** `trees` large.
+
+- Engine `ranger`; `mtry` and `min_n` are `tune()`d, `trees` is set (not tuned).
 
 ::: {.notes}
-Voce docente (IT): punto chiave da non sbagliare — `trees` NON è una manopola di
-overfit. Aumentarli stabilizza la stima, non la fa overfittare. `mtry` è il vero
-decorrelatore (l'idea che distingue RF dal bagging). `min_n` = dimensione foglia.
+Voce docente (IT): punto chiave (e accordo con l'utente) — `trees` NON è una manopola di
+overfit né da tunare: è una quantità di CONVERGENZA. Costo lineare nei trees → metterne
+"ancora di più" è inutile; basta garantire la convergenza. Non si riaddestra più piccolo
+se era sovradimensionato (stesso risultato); si rivede solo se cambia il problema.
 :::
 
-# Step 04 · The zoo, tuned & validated {#sec-04-zoo .center}
+# Step 04 · The model zoo, tuned & validated {#sec-04-zoo}
 
 <!-- Step 04 (hands-on, 68 min): workflow_set + workflow_map; tune over vfold_cv; rank_results; finalize; last_fit. -->
 
-**Objectives.** Let four models compete — fairly, once.
+The **zoo** = the four model families (penalized logistic, $k$-NN, RBF-SVM, random forest)
+brought together to compete — fairly, once.
 
 - Bundle the four specs into **one** `workflow_set`; tune all with `workflow_map("tune_grid")`.
 - Tune over **one shared** `vfold_cv(v = 5)`; `rank_results()` / `autoplot()` to compare.
 - `finalize` the winner; `last_fit()` **once** on the untouched test set.
 
+<p style="text-align:center; margin:0.8em 0 0 0;">
+<img src="../../../img/horststyle/workflowset.jpg" style="max-height:360px; border-radius:8px;"/>
+<span style="display:block; font-size:0.5em; color:#888;">The four families racing on one shared 5-fold CV — illustration generated with Images2.0</span>
+</p>
+
 ::: {.notes}
-Voce docente (IT): hands-on, il CUORE (~68 min). Picco di ampiezza (10 nodi), ma lo
-scaffolding dello step 03 è già automatico → non ri-conta come carico. Un solo
-oggetto `folds` riusato per tutti. "Your turn" culminante al min 150 (il summative).
-Predict-output al min 165: ordinare le AUC dei 4 modelli prima del reveal.
-Convenzione EVENT-FIRST (`died` primo livello) → niente `event_level` nel codice.
-Il toggle parallelo `plan(multisession, workers = detectCores()-1)` è OPZIONALE:
-a N=299 il tuning è di ~secondi, lo dico e lo posso commentare ("così attiviamo il
-parallelismo, ma non è necessario").
+Voce docente (IT): hands-on, il CUORE (~68 min). "Zoo" = metafora delle quattro famiglie
+di modelli messe in gara insieme (glossato in slide, niente termine tecnico nascosto). Un
+solo oggetto `folds` riusato per tutti. "Your turn" culminante al min 150. Convenzione
+EVENT-FIRST (`died` primo) → niente `event_level` nel codice. Parallelo `future`
+OPZIONALE (a N=299 il tuning è di ~secondi).
 :::
 
-## Two metrics — and why a single split lies {.smaller}
+## Tuning machinery — `workflow_set`, `tune_grid`, CV
 
-**Why two.** With a ~32%-event outcome, "always predict *survived*" is ~68% accurate
-and clinically useless. We watch two complementary numbers:
+:::: {.columns}
+::: {.column width="55%"}
+- **`vfold_cv(v = 5)`** splits *train* into 5 folds; each model is scored on each held-out
+  fold and averaged — an honest estimate that **never touches the test set**.
+- **`workflow_set()`** bundles {one recipe} × {four specs} into four workflows at once.
+- **`workflow_map("tune_grid", grid = 8)`** tries 8 hyperparameter combos per model over the
+  folds, scoring **both** metrics.
+- **`rank_results()` / `autoplot()`** compare; **`select_best()` + `finalize_workflow()`**
+  lock the winner's settings; **`last_fit()`** trains on all of *train* and scores **once**
+  on *test*.
+:::
+::: {.column width="45%"}
+<img src="../../../img/horststyle/crossval.jpg" style="max-width:100%; max-height:520px; border-radius:8px;"/>
+<p style="text-align:center; font-size:0.5em; color:#888; margin:0.2em 0;">5-fold CV — illustration generated with Images2.0</p>
+:::
+::::
+
+::: {.notes}
+Voce docente (IT): spiega i comandi "non base" dello step 04 (richiesta esplicita):
+vfold_cv, workflow_set, workflow_map/tune_grid, rank_results, select_best, finalize,
+last_fit. Immagine CV friendly (Images2.0); la metafora "gara" (workflowset.png) è sulla
+slide-titolo dello Step 04.
+:::
+
+## Two metrics — and why a single split lies
+
+**Why two.** With a ~32%-event outcome, "always predict *survived*" is ~68% accurate and
+clinically useless. We watch two complementary numbers:
 
 - **AUC-ROC** — ranking of risk across all thresholds; prevalence-free, chance $= 0.5$.
-- **AUC-PR** — performance on the *positive* (death) class; no-skill baseline $=$ the
-  prevalence ($\approx 0.32$), so it stays honest when the event is rare.
+- **AUC-PR** — performance on the *positive* (death) class; its no-skill baseline is the
+  prevalence ($\approx 0.32$), so it stays meaningful when the event is rare.
 
-**The tournament (cross-validated).** Four models, one shared `vfold_cv(v = 5)`:
+**Why cross-validate.** A single ~75-patient test split is **high-variance**: by luck it can
+*flatter a weak model* — even make a plain `glm` look unbeatable — while 5-fold CV, which
+averages over five held-out slices, gives the **honest** comparison. Across the zoo the
+**random forest typically leads on CV** while the linear models trail; the test set then
+confirms the *finalized* winner once.
 
-| model | CV AUC-ROC |
-|---|---|
-| **Random forest** | **0.79** |
-| penalized logistic | 0.74 |
-| RBF-SVM | 0.73 |
-| $k$-NN | 0.66 |
+> **Numbers are read live.** Exact AUCs depend on the seed and the run, so we read them from
+> the **live execution**, not from the slide. What is stable is the **pattern**:
+> cross-validation is the honest ranking, and one number on a small cohort is luck.
 
-The forest wins, and the spread ($0.79 \to 0.66$) shows the *model choice* matters.
-Validated once on the untouched test set: **AUC-ROC 0.87, AUC-PR 0.75, accuracy 0.77**.
-
-::: {.fragment .callout-warning appearance="simple"}
-**A single split lies.** The plain `glm` scored a flattering **0.88** on one
-75-patient test split — *above* the forest's 0.87 — yet on 5-fold cross-validation
-**no linear model reaches the random forest's 0.79** (the penalized logistic sits at
-0.74). One number on a small cohort is luck; **cross-validation is the honest comparison.**
-:::
-
-::: {.fragment .callout-note appearance="simple"}
-**Aside.** AUC-ROC is **symmetric** — the positive class doesn't change it.
-**AUC-PR is not**: it depends on the positive class — which is exactly why we put
-`died` *first*, so both metrics score death by default.
-:::
-
-::: {.fragment .callout-note appearance="simple"}
-**Threshold.** The reported accuracy uses the default cut $\tau = 0.5$. *Moving* the
-cut by a clinical false-negative / false-positive cost ratio is a deliberate
-**Advanced**-workshop topic — here we stop at threshold-free ranking (AUC-ROC, AUC-PR).
-:::
+**Aside (no numbers needed).** AUC-ROC is **symmetric** — the positive class doesn't change
+it. AUC-PR is **not**: it depends on the positive class, which is exactly why we put `died`
+*first*, so both metrics score death by default. Moving the decision threshold by a clinical
+false-negative / false-positive cost ratio is a deliberate **Advanced** topic; here we stop
+at threshold-free ranking.
 
 ::: {.notes}
-Voce docente (IT): la winner è il **random forest** (ranger), CV AUC-ROC ~0.79; sul
-test AUC-ROC 0.87, AUC-PR 0.75, accuracy 0.77. Punto chiave (il "regalo" del seed):
-il glm vanilla segna 0.88 su UN singolo split di ~75 pazienti ma in CV nessun modello
-lineare raggiunge lo ~0.79 del forest (penlog 0.74) → un singolo numero su coorte
-piccola è fortuna, la CV è il confronto onesto, e il
-forest la vince. L'aside lega la convenzione event-first alla AUC-PR (NON simmetrica,
-a differenza della AUC-ROC). Se le due callout fragment sfondano in altezza a 1080p,
-spezzo la slide (tournament | single-split-lies).
+Voce docente (IT): RIVISTA come da feedback. Tolti tutti i numeri hard-coded (erano del run
+di test e diventerebbero falsi al render live) e tolti i fragment/incrementali. Resta il
+ragionamento di merito: perché DUE metriche, perché la CV è il confronto onesto (un singolo
+split piccolo può lusingare un modello debole), e il pattern atteso (forest in testa in CV).
+I numeri si leggono dall'esecuzione live. L'aside simmetria/asimmetria resta concettuale.
 :::
 
-# Step 05 · Reproducible report {#sec-05-report .center}
+# Step 05 · Reproducible report {#sec-05-report}
 
-<!-- Step 05 (demo, 13 min): render cached Quarto report + renv::snapshot; pre-hook to Advanced. -->
+<!-- Step 05 (demo, 13 min): render the report that RUNS the whole analysis; renv::snapshot; pre-hook to Advanced. -->
 
-**Objectives.** Ship the deliverable, reproducibly.
+**Objectives.** Ship the deliverable — reproducible *because* it runs the analysis.
 
-- Render a **cached** Quarto report — it reloads the validated `final_fit`, never re-tunes.
-- Close with `renv::snapshot()`: pinned env + `here` + `set.seed` = runnable by a peer.
+- The report `.qmd` **runs the whole pipeline in one render** — split $\to$ recipe $\to$ tune
+  $\to$ finalize $\to$ `last_fit` $\to$ tables & curves — so every number is produced by the
+  *same* run that prints it. Nothing cached by hand, nothing to drift.
+- Close with `renv::snapshot()`: pinned env + `here` + `set.seed` = a colleague re-runs it and
+  gets the same report.
+
+<p style="text-align:center; margin:0.7em 0 0 0;">
+<img src="../../../img/horststyle/reproducible-report.jpg" style="max-height:360px; border-radius:8px;"/>
+<span style="display:block; font-size:0.5em; color:#888;">Code + data + environment + location → one true report — illustration generated with Images2.0 (numbers illustrative)</span>
+</p>
 
 ::: {.notes}
-Voce docente (IT): demo (~13 min). Il report NON ri-tuna: ricarica `final_fit.rds` e
-`wf_rank.rds` dallo step 04 e li presenta — onesto e veloce. MCQ riproducibilità al
-min 175: `renv` + `here` + `set.seed` + report cache-ato (non "basta emailare lo
-script", non "basta set.seed", non "salvare il numero finale").
+Voce docente (IT): demo (~13 min). Immagine Images2.0 (reproducible-report.png): mostra
+code+data+renv+here → un solo report; i NUMERI nell'illustrazione sono di esempio, non i
+nostri. CAMBIO DI DESIGN (feedback #13): il report NON ricarica
+un `final_fit` cache-ato — FA tutte le analisi al render, così i numeri sono garantiti
+prodotti dallo stesso sistema che ha prodotto il report. A N=299 il tune è di ~secondi.
+La cache "fatta a mano" non è riproducibilità; quella vera (con audit) arriva con `targets`
+nell'Advanced.
 :::
 
-## Concept map — the whole afternoon {.smaller}
+## Why "one render" *is* reproducibility
+
+A report whose numbers are **typed in** — or reloaded from a stale cache — can silently
+disagree with the analysis. A `.qmd` that **executes the analysis as it renders** guarantees
+the figures and the code that made them are the *same object*. That is the whole point of a
+literate, executable document.
+
+- **`renv`** pins the packages, **`here`** the paths, **`set.seed`** the randomness $\to$ same
+  inputs, same output, on any machine.
+- **What about speed and big analyses?** At N=299 a full tune is seconds. When an analysis gets
+  heavy you don't hand-cache `.rds` files — you reach for a **pipeline** (`targets`, the
+  Advanced capstone) that caches *and stays reproducible*: **inspectable intermediate targets**,
+  each re-derivable and hash-checked, all converging into the report the pipeline **compiles
+  itself**.
+
+::: {.notes}
+Voce docente (IT): il principio chiarito. Il qmd garantisce numeri ⇔ codice mostrato.
+renv/here/set.seed per l'ambiente. Per analisi pesanti: NON cache a mano, ma `targets` —
+target intermedi esplorabili + report compilato dalla pipeline stessa (pre-hook all'Advanced,
+dove questo è il capstone).
+:::
+
+## Concept map — the whole afternoon
 
 ```{=html}
 <style>
+/* Let mermaid size the boxes from its own themeVariables.fontSize (set in the .mmd),
+   then just scale the finished SVG to fit the slide. No font !important override here —
+   that desyncs text from the dagre-computed box width and makes labels spill out. */
 #sec-concept-map svg {
-  max-height: 880px !important;
-  height: 880px !important;
+  max-height: 1000px !important;
   width: auto !important;
   max-width: 100% !important;
+  height: auto !important;
   display: block;
   margin: 0 auto;
 }
@@ -406,10 +796,9 @@ script", non "basta set.seed", non "salvare il numero finale").
 :::
 
 ::: {.notes}
-Voce docente (IT): mappa concettuale dei 25 nodi (spec §10.2). 25 concetti / 240 min
-è gestibile SOLO perché l'agenda li spezza in 6 fasi, ciascuna ≤ 7±2, e le fasi
-precedenti sono "compilate" prima delle successive. La mappa è anche il rilevatore di
-sovraccarico: la mostro a fine giornata come sintesi, non all'inizio come programma.
+Voce docente (IT): mappa concettuale (spec §10.2). Mostrata a FINE giornata come sintesi,
+non all'inizio come programma. Font ingrandito (init nel .mmd + regola CSS .nodeLabel a
+20px) e altezza alzata a 980px per leggibilità da fondo aula (mai sotto ~18pt).
 :::
 
 ## Next: open the model — Advanced {.center}
@@ -420,14 +809,13 @@ You built and validated a model. **Advanced opens this very model:**
 - **Go beyond** — deep learning (`torch` / `luz` / `brulee`), and `ellmer` as a typed,
   reproducible LLM-as-ETL.
 
-The validated `final_fit` you just produced is exactly what Advanced **reloads** on
-day one.
+The validated `final_fit` you just produced is exactly what Advanced **reloads** on day one.
 
 ::: {.notes}
-Voce docente (IT): pre-hook ad Advanced (cfr. spec §11). L'Advanced apre RICARICANDO
-il workflow finalizzato di Basic e fa `predict` su una riga — niente retrain. Poi:
-interpretability (VIMP/SHAP, logistic come ancora), DL spectrum, `ellmer`, capstone
-`targets`. Il payoff dei pre-hook promessi nell'overview.
+Voce docente (IT): pre-hook ad Advanced (spec §11). L'Advanced apre RICARICANDO il workflow
+finalizzato di Basic e fa `predict` su una riga — niente retrain. Poi: interpretability
+(VIMP/SHAP), DL spectrum, `ellmer`, capstone `targets`. Il payoff dei pre-hook promessi
+nell'overview.
 :::
 
 ## Further reading — go deeper in <span style="color:#E8741E;">R</span> {.inverse .smaller background-color="#1F4257"}
@@ -457,10 +845,9 @@ interpretability (VIMP/SHAP, logistic come ancora), DL spectrum, `ellmer`, capst
 ::::
 
 ::: {.notes}
-Voce docente (IT): "Further reading" adattato dall'overview — referenze sostituite con
-suggerimenti R/tidymodels (non i video concettuali). Consiglio numero uno: *Tidy
-Modeling with R* per chi vuole il libro della spina che abbiamo usato. ISLR è il ponte
-ai concetti dell'overview. Rilancio su `targets` → Advanced.
+Voce docente (IT): "Further reading" adattato dall'overview — referenze R/tidymodels.
+Consiglio numero uno: *Tidy Modeling with R*. ISLR è il ponte ai concetti dell'overview.
+Rilancio su `targets` → Advanced.
 :::
 
 ## Thank <span style="color:#E8741E;">you</span> for the attention! {.inverse .center background-color="#1F4257"}
@@ -490,7 +877,6 @@ ai concetti dell'overview. Rilancio su `targets` → Advanced.
 </p>
 
 ::: {.notes}
-Voce docente (IT): chiusura gemella dell'overview — stesso procione, stessi contatti
-(email istituzionale, GitHub, Telegram, Calendly). Saluto finale leggero. Niente
-riferimenti temporali.
+Voce docente (IT): chiusura gemella dell'overview — stesso procione, stessi contatti.
+Saluto finale leggero. Niente riferimenti temporali.
 :::

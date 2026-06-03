@@ -67,13 +67,15 @@ This hands-on workshop is the practical companion to the **Machine Learning — 
 
 - **Built on the UBEP teaching tradition** — colleagues whose examples and feedback shaped earlier editions.
 - **Dataset:** *Heart-failure clinical records* (Chicco & Jurman, 2020) — the same cohort the Basic model was validated on.
-- **Tooling:** `tidymodels` · `torch`/`luz`/`brulee` · `kernelshap`/`shapviz` · `ellmer` · `targets`, on **R**, with **Quarto** · revealjs.
+- **Tooling:** `tidymodels` · `torch`/`luz`/`brulee` · `kernelshap`/`shapviz` · `ellmer` · `targets`, on **R**, authored in **Quarto**.
+- **Illustrations:** Allison Horst (CC BY 4.0) and the UBEP ECDC R course (2023); additional figures generated with **Images2.0** (style anchor + prompts in `slides/workshops/_assets/horststyle-prompts.md`).
 - **Course design & materials (this edition):** *Corrado Lanera*, built with **Claude** (Anthropic) via Claude Code.
 
 ::: {.notes}
 Voce docente (IT): credits adattati all'Advanced — stack tecnico esteso (interpret,
 deep, LLM, pipeline). Stesso dataset del Basic (continuità). IA dichiarata come nei
-cap. 07-08 dell'overview.
+cap. 07-08 dell'overview. Tolto "revealjs" (dettaglio tecnico inutile); aggiunta la
+riga illustrazioni come nel Basic.
 :::
 
 # Open the model you validated in Basic {.center}
@@ -155,13 +157,13 @@ kernelshap() = ibrido sull'RF (11 feature, scelta pratica). "Your turn" min-66: 
 stessa riga del blocco 01 puntata sull'RF — cambia solo l'oggetto-modello.
 :::
 
-## SHAP knobs — variance vs. cost {.smaller}
+## SHAP settings — variance vs. cost {.smaller}
 
 <!-- PARAMS_I node — replaces the old "nsim" framing; we use kernelshap now. -->
 
-Three knobs govern an agnostic SHAP run. None of them is a quality dial.
+Three settings govern an agnostic SHAP run. None of them is a quality dial.
 
-| knob | what it is | the tradeoff |
+| setting | what it is | the tradeoff |
 |---|---|---|
 | **background** (`bg_X`) | reference rows SHAP integrates over | larger $\to$ lower-variance attributions, **higher cost**; tiny $\to$ cheap but noisier |
 | **which rows** (`X`) | the patients you explain | a waterfall explains **one** row; pick the case(s) you actually care about |
@@ -197,21 +199,21 @@ batte la foresta). CNN/RNN/fused = SCRITTE non addestrate, validate solo dallo s
 `[5,2]`. SHAP riusato al min-66 = riuso intenzionale, non nuovo carico.
 :::
 
-## MLP knobs — and the overfit cure {.smaller}
+## MLP hyperparameters — and the overfit cure {.smaller}
 
 <!-- PARAMS_DL node. The param slide precedes the train. -->
 
-A small `brulee` MLP has four primary knobs (plus two minor). With generous defaults a small
-net **overfits** this 299-patient cohort — and the cure is always the same.
+A small `brulee` MLP has four primary hyperparameters (plus two minor). With generous defaults
+a small net **overfits** this 299-patient cohort — and the cure is always the same.
 
-| knob | what it controls | bias / variance |
+| hyperparameter | what it controls | bias / variance |
 |---|---|---|
 | `epochs` | how long it trains | too many $\to$ fits noise (**overfit**) |
 | `learn_rate` | step size of each update | too high $\to$ diverges; too low $\to$ underfits in budget |
 | `hidden_units` | capacity (width) | more $\to$ lower bias, **higher variance** |
 | `penalty` | weight decay (regularization) | $\uparrow$ penalty $\to$ more bias, **less variance** |
 
-- Minor knobs: `batch` (gradient noise) and `activation` (nonlinearity) — **not** regularizers.
+- Minor settings: `batch` (gradient noise) and `activation` (nonlinearity) — **not** regularizers.
 - **Overfit cure:** turn `penalty` **up** and `hidden_units` **down** (or cut `epochs`).
 
 ::: {.notes}
@@ -227,7 +229,7 @@ solo numero. La slide-parametro viene PRIMA del train (knob pre-caricati).
 
 Three richer `nn_module`s, **written not trained** — validated only by a `forward()` shape-check.
 
-| net | the knobs | shape role |
+| net | the hyperparameters | shape role |
 |---|---|---|
 | **1D-CNN** | `kernel` / `stride` / `channels` | slides a filter over a signal |
 | **RNN** | `hidden` / `sequence` / LSTM-GRU | reads a vitals sequence over time |
@@ -254,12 +256,12 @@ Everything on screen is either **live** or **declared write-only**. The doctrine
 - The CNN/RNN/fused nets are **shape-checked write-only** — never presented as trained.
 - The GPU demo's killed CPU epoch **was live** — a real interrupted epoch, not a simulation.
 
-::: {.fragment .callout-warning appearance="simple"}
+::: {.callout-warning appearance="simple"}
 **The one labeled exception.** The fused-net **loss curve** is pre-computed — *"I trained
 this earlier on GPU."* It is labeled in the plot title and is the **only** pre-baked result.
 :::
 
-::: {.fragment .callout-note appearance="simple"}
+::: {.callout-note appearance="simple"}
 **`targets` is not an exception.** A cached target re-shown as *"skip"* is **reproducibility**
 (re-derivable, hash-checked: same input $\Rightarrow$ same output), not fakery — conceptually
 the opposite of a pre-baked number shown as live.
@@ -317,7 +319,7 @@ A chat returns prose you must re-parse; an **ETL returns a record**. The schema 
 - Optional fields (EF not stated, beta-blocker not mentioned) come back as **`NA`** — the record stays valid.
 - The batch is **written, not run**: `map()` iterates note-by-note into a tidy tibble; `temperature = 0` keeps it deterministic.
 
-::: {.fragment .callout-note appearance="simple"}
+::: {.callout-note appearance="simple"}
 **Honesty (carried forward).** With no API key, we show a **labeled cached** result from an
 earlier live run — never a faked record. The key lives only in a gitignored `.Renviron`.
 :::
@@ -331,33 +333,60 @@ dottrina dell'opzione-B: un vero record salvato prima, mostrato con etichetta, m
 
 # Step 04 · Reproducibility capstone {#sec-04-targets .center}
 
-<!-- Step 04 (demo, 20 min): read the targets DAG (tar_visnetwork); first build runs; re-run all-skip. -->
+<!-- Step 04 (demo, 20 min): read the targets DAG (tar_visnetwork); first build runs; re-run all-skip; pipeline renders the report. -->
 
-**Objectives.** Make the whole story reproducible by construction.
+**Objectives.** Make the whole story reproducible by construction — *and auditable*.
 
-- Read the `targets` **DAG** (`tar_visnetwork()`): `cohort_file` $\to$ `cohort`, `model_file` $\to$ `model`,
-  and `model + cohort` $\to$ `explanation`.
-- The `explanation` target is the **bridge**: it reloads the Basic RF and re-derives its VIMP.
+- Read the `targets` **DAG** (`tar_visnetwork()`): every analysis is an **explicit, inspectable
+  intermediate target** you can `tar_read()` on its own — `cohort`, `model`, `explanation`.
+- The pipeline **compiles the report itself**: a final `report` target renders the Quarto doc
+  *from* those intermediates, so the document and its inputs can never disagree.
 - A **second** `tar_make()` is **all-skip** — input hashes unchanged ⇒ reproducibility, not fakery.
 
 ::: {.notes}
-Voce docente (IT): capstone (~20 min, demo). Min-138 (predict-output): predire che il 2°
-`tar_make()` riporti "skip" ovunque + ragione (hash degli input invariati). PROVA col
-valore di ritorno, non col messaggio: `tar_outdated()` == character(0) e `tar_progress()`
-= tutti "skipped" (5 target). Il bridge `explanation` ricalcola DAVVERO la VIMP della RF
-ricaricata → stesso ordine: ejection_fraction / serum_creatinine / age. Stretch Davide:
-il device GPU è un input CIECO se non è un target (targets non lo hash-a).
+Voce docente (IT): capstone (~20 min, demo). REFRAME (feedback #13): il punto di `targets`
+NON è "cache così il report è veloce". È: (1) ogni analisi è un TARGET INTERMEDIO esplicito,
+ispezionabile con `tar_read()` uno per uno (audit per-step); (2) la PIPELINE COMPILA IL REPORT
+(`tar_quarto`/`tar_render`), che legge i target — così documento e input non possono divergere;
+(3) il 2° `tar_make()` è all-skip per hash invariati = riproducibilità, non finzione. PROVA col
+valore di ritorno, non col messaggio: `tar_outdated()` == character(0) e `tar_progress()` tutti
+"skipped". Il bridge `explanation` ricalcola DAVVERO la VIMP → ejection_fraction / serum_creatinine
+/ age. Stretch Davide: il device GPU è un input CIECO se non è un target.
+:::
+
+## Why a pipeline, not a hand-made cache {.smaller}
+
+In Basic, the report **ran the whole analysis on render** — perfect at N=299. As analyses grow
+heavy, you do **not** start hand-saving `.rds` files and reloading them (that breaks the
+guarantee that the numbers came from *this* run). You reach for a **pipeline**.
+
+- **Inspectable intermediates.** Each step is a named target — `cohort`, `model`, `explanation` —
+  that you can `tar_read()` and audit *in isolation*, without re-running the rest.
+- **The pipeline compiles the report.** A `report` target (`tarchetypes::tar_quarto()`) renders
+  the document *from* the upstream targets, so what the report shows is exactly what the pipeline
+  produced — auditable end to end.
+- **Caching that stays honest.** A re-run rebuilds **only** what changed (hash-checked) and skips
+  the rest. That is caching *with* reproducibility — the opposite of a stale hand-made `.rds`.
+
+::: {.notes}
+Voce docente (IT): nuova slide che esplicita il principio del feedback #13. Differenza chiave
+dal Basic: lì il qmd FA tutto al render (giusto, a N piccolo). Qui, per analisi pesanti, la
+pipeline tiene target intermedi esplorabili (audit per-step) E compila il report dai target
+(`tar_quarto`), e ricostruisce solo ciò che cambia. Cache onesta, non `.rds` a mano.
 :::
 
 ## Concept map — the whole workshop {#sec-concept-map-h .smaller}
 
 ```{=html}
 <style>
+/* Mermaid sizes boxes from its own themeVariables.fontSize (set in the .mmd); we only
+   scale the finished SVG to fit. No font !important override — it desyncs text from the
+   dagre-computed box width and makes labels spill out of their rectangles. */
 #sec-concept-map svg {
-  max-height: 880px !important;
-  height: 880px !important;
+  max-height: 1000px !important;
   width: auto !important;
   max-width: 100% !important;
+  height: auto !important;
   display: block;
   margin: 0 auto;
 }
