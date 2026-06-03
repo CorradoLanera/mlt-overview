@@ -2,6 +2,8 @@
 
 One course, three modules, for biomedical/clinical graduate students (UBEP, University of Padova).
 
+Live site (slides, schedule, downloads): <https://corradolanera.github.io/mlt-overview/>.
+
 ## The three modules
 
 | # | Module | What it is | Where | How to get it |
