@@ -74,7 +74,7 @@
     "href": "basic.html#timeline",
     "title": "Practice — Basic (R)",
     "section": "Timeline",
-    "text": "Timeline\n\n\n\nMinute\nCheckpoint\n\n\n\n\nmin 9\nlive check\n\n\nmin 30\nyourturn wrangle\n\n\nmin 31\nmcq pipe\n\n\nmin 50\nmcq metric\n\n\nmin 72\nyourturn glm\n\n\nmin 88\nmcq engine swap\n\n\nmin 118\nmcq knn\n\n\nmin 150\nyourturn culminating\n\n\nmin 165\npredict output\n\n\nmin 175\nmcq repro"
+    "text": "Timeline\nTimeline to be published."
   },
   {
     "objectID": "basic.html#how-to-get-run-it",
@@ -123,7 +123,7 @@
     "href": "advanced.html#timeline",
     "title": "Practice — Advanced (R)",
     "section": "Timeline",
-    "text": "Timeline\n\n\n\nMinute\nCheckpoint\n\n\n\n\nmin 10\nlive check\n\n\nmin 24\nmcq vimp\n\n\nmin 38\npredict shap coef\n\n\nmin 46\nmcq shap\n\n\nmin 60\nmcq mlp\n\n\nmin 66\nyourturn shap nn\n\n\nmin 80\nparsons fused\n\n\nmin 92\nmcq honesty\n\n\nmin 112\npredict ellmer\n\n\nmin 124\nmcq temperature\n\n\nmin 138\npredict capstone"
+    "text": "Timeline\nTimeline to be published."
   },
   {
     "objectID": "advanced.html#how-to-get-run-it",
@@ -207,13 +207,13 @@
     "href": "schedule.html#module-2-practice-basic-4h",
     "title": "Schedule & Planning",
     "section": "Module 2 · Practice — Basic (≈4h)",
-    "text": "Module 2 · Practice — Basic (≈4h)\n\n\n\nMinute\nCheckpoint\n\n\n\n\nmin 9\nlive check\n\n\nmin 30\nyourturn wrangle\n\n\nmin 31\nmcq pipe\n\n\nmin 50\nmcq metric\n\n\nmin 72\nyourturn glm\n\n\nmin 88\nmcq engine swap\n\n\nmin 118\nmcq knn\n\n\nmin 150\nyourturn culminating\n\n\nmin 165\npredict output\n\n\nmin 175\nmcq repro"
+    "text": "Module 2 · Practice — Basic (≈4h)\nTimeline to be published."
   },
   {
     "objectID": "schedule.html#module-3-practice-advanced-4h",
     "href": "schedule.html#module-3-practice-advanced-4h",
     "title": "Schedule & Planning",
     "section": "Module 3 · Practice — Advanced (≈4h)",
-    "text": "Module 3 · Practice — Advanced (≈4h)\n\n\n\nMinute\nCheckpoint\n\n\n\n\nmin 10\nlive check\n\n\nmin 24\nmcq vimp\n\n\nmin 38\npredict shap coef\n\n\nmin 46\nmcq shap\n\n\nmin 60\nmcq mlp\n\n\nmin 66\nyourturn shap nn\n\n\nmin 80\nparsons fused\n\n\nmin 92\nmcq honesty\n\n\nmin 112\npredict ellmer\n\n\nmin 124\nmcq temperature\n\n\nmin 138\npredict capstone"
+    "text": "Module 3 · Practice — Advanced (≈4h)\nTimeline to be published."
   }
 ]

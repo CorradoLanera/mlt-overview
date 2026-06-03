@@ -367,13 +367,13 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <section id="sec-00-setup" class="title-slide slide level1 center">
 <h1>Step 00 · Setup</h1>
 <!-- Step 00 (demo, 10 min): open `.Rproj`, `renv::restore`, load with `here` + `rio`. -->
-<p><strong>Objective.</strong> Start from a healthy, reproducible project.</p>
+<p><strong>Why first.</strong> Every number we produce today is only as trustworthy as the project that produced it. So we start from a <strong>healthy, reproducible environment</strong> — before touching the data.</p>
 <ul>
 <li>Open the <code>.Rproj</code>; let <code>renv::restore()</code> rebuild the pinned library.</li>
 <li>Load data through <code>here::here()</code> (stable paths) and <code>rio::import()</code>.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): demo (~10 min). Ambiente sano = precondizione di tutto. <code>renv</code> è già in restore in background dall’opening. Mostro <code>renv::status()</code> in sync e <code>here::here()</code> che punta alla root del progetto. Live-check al minuto 9: GREEN/RED. (De-braced: <code>rio</code>, non <code>{rio}</code>.)</p>
+<p>Voce docente (IT): demo (~10 min). Apro col PERCHÉ: l’ambiente sano è la precondizione di tutto. <code>renv</code> è già in restore in background dall’opening. Mostro <code>renv::status()</code> in sync e <code>here::here()</code> alla root. Live-check al minuto 9: GREEN/RED.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -423,20 +423,84 @@ UBEP ECDC R course (2023)
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="live-check-is-your-project-healthy" class="slide level2">
+<h2>Live check — is your project healthy?</h2>
+<p>Run three checks. Signal <strong>GREEN</strong> if all pass, <strong>RED</strong> if any fails:</p>
+<ol type="1">
+<li>Is your <strong><code>.Rproj</code></strong> open (the project, not a loose script)?</li>
+<li>Does <strong><code>renv::status()</code></strong> report the library <strong>in sync</strong> with the lockfile?</li>
+<li>Does <strong><code>here::here()</code></strong> point to the <strong>project root</strong>?</li>
+</ol>
+<aside class="notes">
+<p>Voce docente (IT): live-check min-09 (Engage). Presenza: alzata di mano GREEN/RED; remoto: poll.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="green-a-healthy-environment" class="slide level2">
+<h2>GREEN — a healthy environment</h2>
+<p>All three pass:</p>
+<ul>
+<li>the <code>.Rproj</code> is open → the working directory is anchored to the project;</li>
+<li><code>renv::status()</code> says <em>“The project is already synchronized with the lockfile”</em>;</li>
+<li><code>here::here()</code> returns the project-root path (where <code>.Rproj</code> / <code>.here</code> lives).</li>
+</ul>
+<p><strong>RED on any?</strong> Fix it now — re-open the <code>.Rproj</code>, run <code>renv::restore()</code>, or check the <code>.here</code> sentinel — before the hands-on starts.</p>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-09. Un ambiente sano è la precondizione: se RED, lo risolvo ora.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="go-to-code-steps00-setup" class="slide level2 center">
+<h2>Go to code — <code>steps/00-setup/</code></h2>
+<p><strong>Follow along.</strong> Open <code>steps/00-setup/</code>, run <code>renv::restore()</code>, load the data with <code>here</code> + <code>rio</code>.</p>
+<ul>
+<li>Live check at minute 9: GREEN / RED.</li>
+<li>The folder is your snapshot — fall behind anywhere today and copy the next one.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 00 (demo → “follow along”). Mentre parlo, <code>renv::restore()</code> ha già scaldato in background.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="sec-01-import" class="title-slide slide level1 center">
 <h1>Step 01 · Import &amp; wrangle</h1>
-<!-- Step 01 (hands-on, 32 min): tidyverse primer; clean/recode with dplyr/tidyr and `|>`; outcome to factor. -->
-<p><strong>Objectives.</strong> Meet the tidyverse and shape the data.</p>
+<!-- Step 01 (hands-on, 32 min): tidyverse primer; clean/recode with dplyr/tidyr and `|>`; outcome to factor; drop leaky `time`. -->
+<p><strong>Why this step.</strong> Raw clinical data lies in two ways: messy names and types, and a column that <em>secretly encodes the outcome</em>. We tidy the first and <strong>dodge the second — leakage</strong> — before any model sees the data.</p>
 <ul>
-<li>A tidyverse primer: the native pipe <code>|&gt;</code>, verbs that <strong>return a new tibble</strong>.</li>
-<li>Clean and recode with <code>dplyr</code>/<code>tidyr</code>; <code>janitor::clean_names()</code>.</li>
-<li><strong>Drop the leaky <code>time</code> column</strong> (follow-up days mechanically anticipate the outcome).</li>
-<li>Make the outcome a factor with the <strong>event first</strong> (<code>died</code>) — so every metric scores death as positive by default.</li>
+<li>A tidyverse primer: the native pipe <code>|&gt;</code>, verbs that return a <strong>new</strong> tibble.</li>
+<li>Clean and recode with <code>dplyr</code>/<code>tidyr</code> + <code>janitor</code>; <strong>drop the leaky <code>time</code></strong>; make the outcome an <strong>event-first</strong> factor.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): hands-on, il più lungo (~32 min) — apposta, è il picco di carico-sintassi per chi parte da zero R. Rete fall-behind con la cartella <code>01-import/</code>. “Your turn” al min 30: <code>clean_names → select(-time) → outcome event-first → factor dei flag → glimpse</code> (12 colonne). Le 4 slide di teoria che seguono coprono i concetti che poi chiediamo: senza teoria niente “your turn”.</p>
+<p>Voce docente (IT): intro Step 01 (hands-on, ~32 min, il picco di carico-sintassi per chi parte da zero). Apro col PERCHÉ (i due modi in cui i dati grezzi ingannano: nomi/tipi + leakage), non con un elenco asettico. Rete fall-behind con <code>steps/01-import/</code>. Le 4 slide di teoria che seguono coprono i concetti che poi le formative verificano.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -510,6 +574,53 @@ UBEP ECDC R course (2023)
           display:block!important;
       }</style></aside>
 </section>
+<section id="your-turn-what-does-this-pipeline-do" class="slide level2">
+<h2>Your turn — what does this pipeline do?</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>hf_raw <span class="sc">|&gt;</span> <span class="fu">clean_names</span>() <span class="sc">|&gt;</span> <span class="fu">select</span>(ejection_fraction, age) <span class="sc">|&gt;</span> <span class="fu">filter</span>(age <span class="sc">&gt;</span> <span class="dv">60</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Which statement best describes what happens?</p>
+<ul>
+<li><strong>A.</strong> The tibble flows in as the <em>first argument</em> of each verb, and each verb returns a <em>brand-new copy</em> — <code>hf_raw</code> is unchanged until you assign.</li>
+<li><strong>B.</strong> The verbs edit <code>hf_raw</code> <em>in place</em> (like Stata’s <code>keep if</code> / <code>drop</code>) — afterwards <code>hf_raw</code> itself has fewer rows and columns.</li>
+<li><strong>C.</strong> <code>select(ejection_fraction, age)</code> fails — <code>ejection_fraction</code> and <code>age</code> are not objects in the global environment.</li>
+<li><strong>D.</strong> The pipe forwards the <em>last object you created</em>, not the left-hand side.</li>
+</ul>
+<p><em>Pick one — then we reveal it.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): MCQ min-31 (Engage), dopo la teoria del pipe. Distrattori diagnostici: B = modello mentale in-place/Stata; C = NSE non capita; D = il pipe inoltra l’ultimo oggetto. Li faccio votare PRIMA di scoprire la risposta (presenza: alzata di mano; remoto: poll).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-functional-returns-a-new-tibble" class="slide level2">
+<h2>The answer — A: functional, returns a new tibble</h2>
+<p><strong>✓ A.</strong> The left-hand value enters the <em>first argument</em>; every verb returns a <strong>new</strong> tibble. <code>hf_raw</code> is untouched until you assign with <code>&lt;-</code>.</p>
+<ul>
+<li><strong>✗ B</strong> — <em>in-place / Stata mental model.</em> dplyr is functional: it returns a new object, the input stays intact.</li>
+<li><strong>✗ C</strong> — <em>NSE not understood.</em> dplyr evaluates bare column names inside the data frame’s scope (tidy/NSE), not as global variables.</li>
+<li><strong>✗ D</strong> — <em>pipe forwards the LHS</em> — the value on its left — into the first argument, not “the most recent object”.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-31. Il punto: pipeline funzionale, copia nuova, NSE. Se la sala sceglie B è il misconcetto Stata da ri-spiegare prima del your-turn wrangle.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="reshaping-with-verbs-dplyr-janitor-forcats" class="slide level2">
 <h2>Reshaping with verbs — <code>dplyr</code>, <code>janitor</code>, <code>forcats</code></h2>
 <div class="columns">
@@ -571,19 +682,95 @@ Tidy data art: Lowndes &amp; Horst, Openscapes (CC BY 4.0)
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="your-turn-build-the-analysis-cohort" class="slide level2">
+<h2>Your turn — build the analysis cohort</h2>
+<p>From the imported <code>hf_raw</code>, build <code>hf</code> with a <strong>single <code>|&gt;</code> chain</strong>:</p>
+<ol type="1">
+<li><code>clean_names()</code> — snake_case the names.</li>
+<li><code>select(-time)</code> — drop the follow-up duration (it leaks the outcome).</li>
+<li>Make <code>outcome</code> a two-level factor, <strong>event first</strong> (<code>"died"</code>, <code>"survived"</code>) from <code>death_event</code>; then drop <code>death_event</code>.</li>
+<li>Make the 0/1 flags (<code>anaemia, diabetes, high_blood_pressure, sex, smoking</code>) factors.</li>
+<li><code>glimpse()</code> — confirm <strong>12 columns</strong> and the factor.</li>
+</ol>
+<p><em>Your turn — type it at the R prompt.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): your-turn min-30 (Engage), il task integrativo dello step. Lo studente lo scrive AL PROMPT R sul proprio laptop (o apre <code>steps/01-import/</code> se è rimasto indietro). Do ~3 min di timer. “Type it” = la doctrine live: si scrive, non si incolla. Poi col my-turn lo risolvo dal vivo.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="my-turn-the-wrangle-one-chain" class="slide level2">
+<h2>My turn — the wrangle, one chain</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>hf <span class="ot">&lt;-</span> hf_raw <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href=""></a>  <span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href=""></a>  <span class="fu">select</span>(<span class="sc">-</span>time) <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-5"><a href=""></a>    <span class="at">outcome =</span> <span class="fu">factor</span>(</span>
+<span id="cb3-6"><a href=""></a>      <span class="fu">if_else</span>(death_event <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"died"</span>, <span class="st">"survived"</span>),</span>
+<span id="cb3-7"><a href=""></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"died"</span>, <span class="st">"survived"</span>),</span>
+<span id="cb3-8"><a href=""></a>    ),</span>
+<span id="cb3-9"><a href=""></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-10"><a href=""></a>  <span class="fu">select</span>(<span class="sc">-</span>death_event) <span class="sc">|&gt;</span></span>
+<span id="cb3-11"><a href=""></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(anaemia, diabetes, high_blood_pressure, sex, smoking), factor)) <span class="sc">|&gt;</span></span>
+<span id="cb3-12"><a href=""></a>  <span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each verb takes the tibble first and returns a <strong>new</strong> tibble — the chain never mutates <code>hf_raw</code>.</p>
+<p><strong>Going further.</strong> Why is <code>time</code> leakage? It is follow-up days <em>until death-or-censoring</em> — partly a function of the outcome (patients who die early have small <code>time</code>). A model handed <code>time</code> “predicts” death by reading its own answer: deceptively high in training, collapses in prospective use. A predictor must be knowable <strong>at the moment you would predict</strong>.</p>
+<aside class="notes">
+<p>Voce docente (IT): Reveal/my-turn min-30. Live-codo la catena. “Going further” = ex-stretch (Davide), de-personalizzato: il leakage si riconosce col ragionamento clinico, non col codice.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="go-to-code-steps01-import" class="slide level2 center">
+<h2>Go to code — <code>steps/01-import/</code></h2>
+<p>Now <strong>do it in the project</strong>: open <code>steps/01-import/</code> and run the wrangle end to end.</p>
+<ul>
+<li>Type it, run it — the snapshot in <code>steps/01-import/</code> is your safety net.</li>
+<li>The <em>solution</em> of this step is the <em>start</em> of the next.</li>
+<li><strong>Fell behind?</strong> Copy <code>steps/02-eda/</code> and you are back in sync.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 01 → hands-on nel progetto. Pattern “Go to code” di riferimento: cosa fare nel folder + rete checkpoint (la soluzione dello step N è l’inizio di N+1) + bridge al prossimo. Per gli step demo diventa “follow along”.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="sec-02-eda" class="title-slide slide level1 center">
 <h1>Step 02 · Clinical EDA</h1>
 <!-- Step 02 (hands-on, 22 min): tbl_summary(by = outcome); one ggplot; read imbalance -> metric choice. -->
-<p><strong>Objectives.</strong> Describe the cohort and read its shape.</p>
+<p><strong>Why this step.</strong> Before modelling, <em>read the cohort</em> — a model is only as honest as your grasp of its data. The shape we find here, especially the <strong>class imbalance</strong>, drives the metric choice for the rest of the day.</p>
 <ul>
 <li><code>gtsummary::tbl_summary(by = outcome)</code> — a clinical Table 1.</li>
-<li>One <code>ggplot</code> of a predictor against the outcome.</li>
-<li><strong>Read the class imbalance</strong> (~32% events) <span class="math inline">\(\to\)</span> it drives the <strong>dual-metric</strong> choice (AUC-ROC <strong>and</strong> AUC-PR) later.</li>
+<li>One <code>ggplot</code> of a predictor against the outcome; <strong>read the ~32% imbalance</strong> <span class="math inline">\(\to\)</span> the dual metric.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): hands-on <em>elastico</em> (~22 min, comprimibile se in ritardo). L’imbalance ~32% visto in tabella è il seme del ragionamento “accuracy inganna → guardiamo DUE metriche”. Boxplot di <code>ejection_fraction</code>: chi sopravvive ha frazione d’eiezione più alta.</p>
+<p>Voce docente (IT): hands-on elastico (~22 min, comprimibile). Apro col PERCHÉ: l’imbalance ~32% visto qui è il seme del ragionamento “accuracy inganna → due metriche”.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -601,8 +788,8 @@ Tidy data art: Lowndes &amp; Horst, Openscapes (CC BY 4.0)
 <div class="columns">
 <div class="column" style="width:58%;">
 <p><code>tbl_summary(by = outcome)</code> builds the <strong>publication-style “Table 1”</strong> clinicians already read: one row per variable, one column per outcome group, with sensible summaries chosen automatically (median [IQR] for numbers, n (%) for categories).</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>hf <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href=""></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> outcome)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>hf <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href=""></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> outcome)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>It is <strong>descriptive, not a test</strong> — it shows <em>where</em> the groups differ, which is how you build intuition <em>before</em> any model.</li>
 <li>Reading it here, you already see the <strong>imbalance</strong> (~32% deaths) that will steer the metric choice.</li>
@@ -632,9 +819,9 @@ Illustration generated with Images2.0 (illustrative figures, not our cohort)
 <div class="columns">
 <div class="column" style="width:55%;">
 <p>A plot is built in <strong>layers</strong>, added with <code>+</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>hf <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> outcome, <span class="at">y =</span> ejection_fraction)) <span class="sc">+</span></span>
-<span id="cb3-3"><a href=""></a>  <span class="fu">geom_boxplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>hf <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> outcome, <span class="at">y =</span> ejection_fraction)) <span class="sc">+</span></span>
+<span id="cb5-3"><a href=""></a>  <span class="fu">geom_boxplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><strong>data</strong> piped in, then <code>aes()</code> <strong>maps</strong> variables to position / colour / fill…</li>
 <li><strong>geoms</strong> (<code>geom_boxplot</code>, <code>geom_point</code>, …) draw the data.</li>
@@ -648,6 +835,52 @@ UBEP ECDC R course (2023)
 </div></div>
 <aside class="notes">
 <p>Voce docente (IT): ggplot = grammatica a layer. Dati nel <code>|&gt;</code>, layer con <code>+</code>, poi <code>ggsave()</code>. Una sola grammatica per ogni grafico. Diagramma dei layer dal mio corso ECDC.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="your-turn-why-watch-auc-pr-too" class="slide level2">
+<h2>Your turn — why watch AUC-PR too?</h2>
+<p>Death occurs in about <strong>32%</strong> of patients, and we score every model with <strong>both</strong> AUC-ROC <strong>and</strong> AUC-PR. Why watch <strong>AUC-PR alongside</strong> AUC-ROC, not AUC-ROC alone?</p>
+<ul>
+<li><strong>A.</strong> AUC-PR focuses on the <em>death</em> class; its no-skill baseline is the <em>prevalence</em> (<span class="math inline">\(\approx 0.32\)</span>), not 0.5 — so it exposes poor performance on the patients we care about that a flattering AUC-ROC can hide.</li>
+<li><strong>B.</strong> AUC-ROC and AUC-PR always rank models the same way — AUC-PR is a redundant second opinion.</li>
+<li><strong>C.</strong> Like AUC-ROC, AUC-PR’s no-skill baseline is always 0.5.</li>
+<li><strong>D.</strong> Under imbalance AUC-ROC cannot be computed; AUC-PR is its only valid replacement.</li>
+</ul>
+<p><em>Pick one — then we reveal it.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): MCQ min-50 (Engage). Distrattori: B = metriche intercambiabili; C = baseline PR = 0.5; D = imbalance “rompe” la ROC. Li faccio votare prima del reveal.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-auc-pr-is-anchored-to-prevalence" class="slide level2">
+<h2>The answer — A: AUC-PR is anchored to prevalence</h2>
+<p><strong>✓ A.</strong> AUC-PR scores the positive (death) class; its no-skill line is the prevalence (<span class="math inline">\(\approx 0.32\)</span>), so it stays meaningful as the event gets rarer.</p>
+<ul>
+<li><strong>✗ B</strong> — <em>interchangeable.</em> The two can and do disagree — that is the whole reason to watch both.</li>
+<li><strong>✗ C</strong> — <em>PR baseline is 0.5.</em> No: the AUC-PR no-skill line is the prevalence itself; a “0.6” at 32% is far less impressive than it looks.</li>
+<li><strong>✗ D</strong> — <em>imbalance breaks AUC-ROC.</em> AUC-ROC is perfectly computable under imbalance — it just does not, alone, speak about the minority class.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-50. La lezione: due metriche complementari; la PR è ancorata alla prevalenza. Atterra prima dello step 03/04 dove leggo ROC+PR.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -683,18 +916,39 @@ UBEP ECDC R course (2023)
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="go-to-code-steps02-eda" class="slide level2 center">
+<h2>Go to code — <code>steps/02-eda/</code></h2>
+<p>Open <code>steps/02-eda/</code>: build the Table 1 and one plot, and read the imbalance.</p>
+<ul>
+<li>Keep it short — EDA is elastic; the metric lesson is the keeper.</li>
+<li><strong>Behind?</strong> Copy <code>steps/03-logistic/</code> and you are back in sync.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 02. La slide “learning paradigms” resta come ponte verso lo step 03 (supervised). Il folder 02-eda è comprimibile se sono in ritardo.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="sec-03-logistic" class="title-slide slide level1 center">
 <h1>Step 03 · Logistic spine</h1>
 <!-- Step 03 (hands-on, 38 min): object-map rsample -> recipes -> parsnip -> workflows -> yardstick; glm baseline. -->
-<p><strong>Objectives.</strong> Lay the tidymodels spine with a <code>glm</code> baseline.</p>
+<p><strong>Why this step.</strong> Four algorithms are coming — and we do <em>not</em> want four bespoke pipelines. We lay <strong>one reusable spine</strong> now, on a model we can read (<code>glm</code>), so Step 04 changes only <strong>one line</strong>.</p>
 <ul>
-<li>Walk the <strong>object-map</strong> <code>rsample</code> <span class="math inline">\(\to\)</span> <code>recipes</code> <span class="math inline">\(\to\)</span> <code>parsnip</code> <span class="math inline">\(\to\)</span> <code>workflows</code> <span class="math inline">\(\to\)</span> <code>yardstick</code>.</li>
-<li>Fit a plain <code>glm</code> baseline and score it with <code>yardstick</code> — <strong>AUC-ROC and AUC-PR</strong>.</li>
+<li>Walk the object-map <code>rsample</code> <span class="math inline">\(\to\)</span> <code>recipes</code> <span class="math inline">\(\to\)</span> <code>parsnip</code> <span class="math inline">\(\to\)</span> <code>workflows</code> <span class="math inline">\(\to\)</span> <code>yardstick</code>.</li>
+<li>Fit a plain <code>glm</code> baseline; score it with <code>yardstick</code> — <strong>AUC-ROC and AUC-PR</strong>.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): hands-on (~38 min). Zona di rischio per profondità: la mappa di oggetti nuovi. Mitigazione: ancorare la mappa a <code>glm</code> (riconoscimento, non nuova astrazione) e insegnarla come UNA mappa. “Your turn” min 72: <code>glm</code> vs workflow danno la stessa AUC. Tolto il bullet ridondante “frame as supervised” (già nella slide paradigmi). Break subito dopo.</p>
+<p>Voce docente (IT): hands-on (~38 min), picco di profondità (la object-map). Apro col PERCHÉ: una spina riusabile + glm come ancora di riconoscimento, non nuova astrazione. Break dopo lo step.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -742,6 +996,11 @@ parsnip <code>set_engine()</code> — Artwork by Allison Horst (CC BY 4.0)
 <p>One spine, reused all afternoon. <strong>Five objects, one chain:</strong></p>
 <style>
 #sec-object-map svg { max-width: 100% !important; height: auto !important; display: block; margin: 0.3em auto; }
+/* Race-proof font: mermaid sizes the boxes using its init fontFamily; force the rendered
+   labels to the SAME system font so an unloaded webfont can never desync the text from its
+   box (the overflow that shows up in embedded webviews like the Positron viewer). */
+#sec-object-map .nodeLabel, #sec-object-map .nodeLabel *,
+#sec-object-map .edgeLabel, #sec-object-map .edgeLabel * { font-family: Arial, Helvetica, sans-serif !important; }
 </style>
 <div id="sec-object-map">
 <div class="cell" data-reveal="true" data-layout-align="default">
@@ -749,7 +1008,7 @@ parsnip <code>set_engine()</code> — Artwork by Allison Horst (CC BY 4.0)
 <div>
 <p></p><figure class=""><p></p>
 <div>
-<pre class="mermaid mermaid-js">%%{init: {'flowchart': {'nodeSpacing': 26, 'rankSpacing': 40, 'padding': 16}, 'themeVariables': {'fontSize': '24px'}}}%%
+<pre class="mermaid mermaid-js">%%{init: {'fontFamily': 'Arial, Helvetica, sans-serif', 'flowchart': {'nodeSpacing': 26, 'rankSpacing': 40, 'padding': 16}, 'themeVariables': {'fontSize': '26px'}}}%%
 flowchart LR
   RS["rsample&lt;br/&gt;split&lt;br/&gt;train / test"] --&gt; RC["recipes&lt;br/&gt;preprocess"]
   RC --&gt; PS["parsnip&lt;br/&gt;model spec"]
@@ -846,13 +1105,124 @@ rsample · recipes · workflows · yardstick — illustrations generated with Im
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="your-turn-do-the-two-routes-agree" class="slide level2">
+<h2>Your turn — do the two routes agree?</h2>
+<p>You fit a plain <code>glm</code> logistic two ways: (a) a bare <code>glm</code>-engine <code>logistic_reg()</code>, and (b) the same model wrapped in a <code>workflow()</code> (recipe + spec). Score both on the test set with <strong>both</strong> metrics:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>hf_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(roc_auc, pr_auc)</span>
+<span id="cb6-2"><a href=""></a>... <span class="sc">|&gt;</span> <span class="fu">augment</span>(<span class="at">new_data =</span> test) <span class="sc">|&gt;</span> <span class="fu">hf_metrics</span>(<span class="at">truth =</span> outcome, .pred_died)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>(No <code>event_level</code> needed — <code>died</code> is the first level.) <strong>Do the two routes give the same AUC-ROC and AUC-PR? Why, in one sentence?</strong></p>
+<aside class="notes">
+<p>Voce docente (IT): your-turn min-72 (Engage). Lo studente lo prova al prompt; ~2-3 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="my-turn-same-model-more-scaffolding" class="slide level2">
+<h2>My turn — same model, more scaffolding</h2>
+<p><strong>Yes — identical</strong> across both routes. The <code>workflow</code> does not change the statistical model; it only <strong>bundles</strong> the recipe and the spec so the <em>same</em> logistic regression is fit on the <em>same</em> preprocessed data. The estimator is identical <span class="math inline">\(\to\)</span> the numbers match.</p>
+<p><strong>Going further.</strong> What does recipe + workflow <em>buy</em> you over a bare <code>glm</code>? It makes preprocessing <strong>part of the model</strong> (dummy-coding, normalization, zero-variance removal travel with the fit), re-applied identically at prediction time — no leakage, no “I forgot to scale the test set” — and the whole thing becomes one swappable, tunable object: exactly what lets Step 04 swap engines and tune four models at once.</p>
+<aside class="notes">
+<p>Voce docente (IT): Reveal/my-turn min-72. “Same model, more scaffolding”. Going further = ex-stretch: cosa compra recipe+workflow vs glm nudo.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="your-turn-logistic-random-forest-minimal-change" class="slide level2">
+<h2>Your turn — logistic → random forest, minimal change?</h2>
+<p>You built a logistic-regression workflow. To turn it into a <strong>random forest</strong> workflow on the <em>same</em> data, what is the <strong>minimal</strong> change?</p>
+<ul>
+<li><strong>A.</strong> Change <em>only the model spec</em> — swap <code>logistic_reg() |&gt; set_engine("glm")</code> for <code>rand_forest() |&gt; set_engine("ranger")</code>. Split, recipe, workflow scaffold stay identical.</li>
+<li><strong>B.</strong> Rewrite the recipe and the train/test split to suit the new algorithm.</li>
+<li><strong>C.</strong> Abandon the tidymodels scaffold and call <code>ranger::ranger()</code> directly with its own formula.</li>
+<li><strong>D.</strong> Keep <code>logistic_reg()</code> and just change <code>set_mode()</code> from <code>"classification"</code> to <code>"regression"</code>.</li>
+</ul>
+<p><em>Pick one — then we reveal it.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): MCQ min-88 (Engage), pre-break. Distrattori: B = riscrivi recipe/split per algoritmo; C = torni a funzioni package-specifiche; D = confonde MODE con ENGINE.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-change-only-the-spec" class="slide level2">
+<h2>The answer — A: change only the spec</h2>
+<p><strong>✓ A.</strong> One line — the <code>parsnip</code> spec. The split, recipe and workflow are model-agnostic.</p>
+<ul>
+<li><strong>✗ B</strong> — <em>rewrite recipe/split per algorithm.</em> Preprocessing and split are shared; bespoke pipelines defeat the engine-swap idiom.</li>
+<li><strong>✗ C</strong> — <em>back to package-specific functions.</em> <code>parsnip</code> is the unified front-end; calling <code>ranger()</code> directly loses the one-line swap.</li>
+<li><strong>✗ D</strong> — <em>confuses MODE with ENGINE.</em> Mode = classification vs regression; it does not turn logistic into a forest.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-88. L’idiom engine-swap: “1 cosa, 4 manopole”, non 4 pipeline. Prepara lo step 04.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="go-to-code-steps03-logistic" class="slide level2 center">
+<h2>Go to code — <code>steps/03-logistic/</code></h2>
+<p>Open <code>steps/03-logistic/</code>: lay the spine and fit the <code>glm</code> baseline.</p>
+<ul>
+<li>Build the object-map once — Step 04 only swaps the <code>parsnip</code> line.</li>
+<li><strong>Behind?</strong> Copy <code>steps/04-zoo/</code> and you are back in sync.</li>
+</ul>
+<p><em>Break next — then the zoo.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 03 + annuncio del break. Dopo il break entro nello step 04 (picco di ampiezza) con la teoria già “compilata”.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
-<section id="hyperparameters-one-algorithm-at-a-time" class="title-slide slide level1 center">
-<h1>Hyperparameters, one algorithm at a time</h1>
-<p>A <strong>hyperparameter</strong> is a setting you fix <em>before</em> fitting — unlike the ordinary parameters (coefficients, split points) that the fit <em>learns</em> from the data. Same spine, <strong>one hyperparameter at a time</strong>: <em>what it is</em> <span class="math inline">\(\to\)</span> <em>what it controls</em> <span class="math inline">\(\to\)</span> <em>its effect on bias / variance / overfitting.</em></p>
+<section id="sec-04-zoo" class="title-slide slide level1 center">
+<h1>Step 04 · The model zoo, tuned &amp; validated</h1>
+<!-- Step 04 (hands-on, 68 min): hyperparameters one at a time -> workflow_set + workflow_map; tune over vfold_cv; rank_results; finalize; last_fit. -->
+<p><strong>Why this step.</strong> Same spine, four families — penalized logistic, <span class="math inline">\(k\)</span>-NN, RBF-SVM, random forest — brought together to compete <strong>fairly, once</strong>. First, the dials we will turn.</p>
+<p>A <strong>hyperparameter</strong> is a setting you fix <em>before</em> fitting — unlike the ordinary parameters (coefficients, split points) that the fit <em>learns</em> from the data. We take them <strong>one algorithm at a time</strong> — <em>what it is</em> <span class="math inline">\(\to\)</span> <em>what it controls</em> <span class="math inline">\(\to\)</span> <em>its effect on bias / variance / overfitting</em> — then tune all four together over one shared cross-validation.</p>
+<p style="text-align:center; margin:0.8em 0 0 0;">
+<img src="../../../img/horststyle/workflowset.jpg" style="max-height:300px; border-radius:8px;"> <span style="display:block; font-size:0.5em; color:#888;">The four families racing on one shared 5-fold CV — illustration generated with Images2.0</span>
+</p>
 <aside class="notes">
-<p>Voce docente (IT): le 4 slide-iperparametro precedono il tuning. Definisco subito “iperparametro” (scelto prima del fit) vs “parametro” (appreso) — così rispondo al “perché non chiamarli iperparametri”: ora li chiamiamo così. Una slide ~4 min ciascuna, non si tuna ancora nulla.</p>
+<p>Voce docente (IT): hands-on, il CUORE (~68 min, picco di ampiezza). L’intro FONDE l’ex-divider “Hyperparameters” (definizione iperparametro vs parametro) con il framing “zoo = 4 famiglie in gara”. Le 4 slide-parametro che seguono introducono PARAM/BV un algoritmo per volta. Convenzione EVENT-FIRST → niente <code>event_level</code> nel codice. “Your turn” culminante al min 150. Parallelo <code>future</code> opzionale (a N=299 il tuning è di ~secondi).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1056,22 +1426,41 @@ rsample · recipes · workflows · yardstick — illustrations generated with Im
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section></section>
-<section>
-<section id="sec-04-zoo" class="title-slide slide level1 center">
-<h1>Step 04 · The model zoo, tuned &amp; validated</h1>
-<!-- Step 04 (hands-on, 68 min): workflow_set + workflow_map; tune over vfold_cv; rank_results; finalize; last_fit. -->
-<p>The <strong>zoo</strong> = the four model families (penalized logistic, <span class="math inline">\(k\)</span>-NN, RBF-SVM, random forest) brought together to compete — fairly, once.</p>
+</section>
+<section id="your-turn-how-does-k-shape-bias-variance" class="slide level2">
+<h2>Your turn — how does k shape bias &amp; variance?</h2>
+<p>For <span class="math inline">\(k\)</span>-nearest-neighbours, how does the number of neighbours <strong><code>k</code></strong> affect bias and variance?</p>
 <ul>
-<li>Bundle the four specs into <strong>one</strong> <code>workflow_set</code>; tune all with <code>workflow_map("tune_grid")</code>.</li>
-<li>Tune over <strong>one shared</strong> <code>vfold_cv(v = 5)</code>; <code>rank_results()</code> / <code>autoplot()</code> to compare.</li>
-<li><code>finalize</code> the winner; <code>last_fit()</code> <strong>once</strong> on the untouched test set.</li>
+<li><strong>A.</strong> Small <code>k</code> (1–3) <span class="math inline">\(\to\)</span> low bias, <strong>high variance</strong> (boundary follows local noise, overfits); large <code>k</code> <span class="math inline">\(\to\)</span> <strong>high bias</strong>, low variance (smoothed, may underfit). <code>k</code> is the bias–variance dial.</li>
+<li><strong>B.</strong> Larger <code>k</code> is always better — more neighbours = more information = higher accuracy.</li>
+<li><strong>C.</strong> <code>k</code> only controls computation speed; it does not change predictions or bias/variance.</li>
+<li><strong>D.</strong> Small <code>k</code> <span class="math inline">\(\to\)</span> high bias, low variance; large <code>k</code> <span class="math inline">\(\to\)</span> low bias, high variance (the reverse of A).</li>
 </ul>
-<p style="text-align:center; margin:0.8em 0 0 0;">
-<img src="../../../img/horststyle/workflowset.jpg" style="max-height:360px; border-radius:8px;"> <span style="display:block; font-size:0.5em; color:#888;">The four families racing on one shared 5-fold CV — illustration generated with Images2.0</span>
-</p>
+<p><em>Pick one — then we reveal it.</em></p>
 <aside class="notes">
-<p>Voce docente (IT): hands-on, il CUORE (~68 min). “Zoo” = metafora delle quattro famiglie di modelli messe in gara insieme (glossato in slide, niente termine tecnico nascosto). Un solo oggetto <code>folds</code> riusato per tutti. “Your turn” culminante al min 150. Convenzione EVENT-FIRST (<code>died</code> primo) → niente <code>event_level</code> nel codice. Parallelo <code>future</code> OPZIONALE (a N=299 il tuning è di ~secondi).</p>
+<p>Voce docente (IT): MCQ min-118 (Engage), dopo le 4 slide-parametro. Distrattori: B = più k sempre meglio; C = k solo velocità; D = direzione bias-variance invertita.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-k-is-the-biasvariance-dial" class="slide level2">
+<h2>The answer — A: k is the bias–variance dial</h2>
+<p><strong>✓ A.</strong> Small <code>k</code> overfits (low bias, high variance); large <code>k</code> over-smooths (high bias, low variance). The good <code>k</code> is <strong>interior</strong> <span class="math inline">\(\to\)</span> we tune it.</p>
+<ul>
+<li><strong>✗ B</strong> — <em>more k is always better.</em> Treats <code>k</code> as a score to maximize; very large <code>k</code> underfits.</li>
+<li><strong>✗ C</strong> — <em>k is only a speed setting.</em> It governs flexibility, hence the tradeoff.</li>
+<li><strong>✗ D</strong> — <em>direction inverted.</em> A flexible small-<code>k</code> model is high-variance, not high-bias.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-118. Atterra PARAM→BV un algoritmo per volta; il range di k è 1..n_train, l’ottimo è interno → si tuna.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1139,21 +1528,134 @@ rsample · recipes · workflows · yardstick — illustrations generated with Im
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="your-turn-the-culminating-task" class="slide level2">
+<h2>Your turn — the culminating task</h2>
+<p>From the <code>workflow_set</code> of the four algorithms (or <code>steps/04-zoo/</code> if behind):</p>
+<ol type="1">
+<li>Tune all four in <strong>one</strong> call on the <strong>same</strong> resamples: <code>workflow_map("tune_grid", resamples = folds, grid = 8, metrics = metric_set(roc_auc, pr_auc))</code> over one <code>vfold_cv(v = 5)</code>.</li>
+<li><code>rank_results()</code> / <code>autoplot()</code> <span class="math inline">\(\to\)</span> <strong>name the winner</strong> by CV AUC-ROC.</li>
+<li><code>select_best("roc_auc")</code> <span class="math inline">\(\to\)</span> <code>finalize_workflow()</code> <span class="math inline">\(\to\)</span> <strong><code>last_fit()</code></strong> on the untouched test set (once), with <code>metric_set(roc_auc, pr_auc, accuracy)</code>.</li>
+<li>Report the CV AUC <strong>and</strong> the test AUC-ROC/AUC-PR; one sentence on why a single ~75-patient split is not trustworthy.</li>
+</ol>
+<p><em>Your turn — compose the blocks you built in 03–04.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): your-turn min-150 (Engage), il culminating task (§10.1). È COMPORRE blocchi già verificati, non scrivere da zero. Chi è indietro parte da <code>steps/04-zoo/</code>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="my-turn-one-fair-race-one-honest-read" class="slide level2">
+<h2>My turn — one fair race, one honest read</h2>
+<ul>
+<li><strong>One</strong> <code>folds</code> object reused for all four workflows.</li>
+<li>Name the winner (here: <strong>random forest</strong>, ranger); watch <strong>both</strong> metrics for the ~32% imbalance (“always survived” <span class="math inline">\(\approx\)</span> 68% accurate, useless; AUC-PR baseline = prevalence, not 0.5).</li>
+<li><code>last_fit()</code> <strong>once</strong>; read the AUC in <strong>clinical</strong> terms (discrimination of mortality risk).</li>
+<li><strong>A single split is noisy:</strong> a plain <code>glm</code> can score high on one test split, yet in 5-fold CV no linear model reaches the forest — so we trust the <strong>CV ranking</strong>, not one number on a small cohort.</li>
+</ul>
+<p><strong>Going further.</strong> Add a <em>5th engine</em> with a one-line swap into the same <code>workflow_map</code>. And when does <code>rank_results</code> top-by-mean mislead? When CV intervals overlap <span class="math inline">\(\to\)</span> use the <strong>one-standard-error rule</strong> (the simplest model within 1 SE of the best). On this small cohort the SEs are wide — a perfect occasion to make the point.</p>
+<blockquote>
+<p><strong>Numbers are read live.</strong> Exact AUCs depend on the seed and the run; what is stable is the <strong>pattern</strong> — CV is the honest ranking, one number on a small cohort is luck.</p>
+</blockquote>
+<aside class="notes">
+<p>Voce docente (IT): Reveal/my-turn min-150. Niente numeri hard-coded (li leggo dal vivo). “Going further” = ex-stretch: 5° engine + regola 1-SE quando le CV si sovrappongono.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="your-turn-predict-the-order" class="slide level2">
+<h2>Your turn — predict the order</h2>
+<p>Three AUC-ROC values for the winning <strong>random forest</strong>:</p>
+<ul>
+<li><strong>A</strong> = resubstitution AUC (scored on the <strong>training</strong> data it was fit on)</li>
+<li><strong>B</strong> = cross-validated AUC (mean over the 5 folds)</li>
+<li><strong>C</strong> = test AUC (<code>last_fit()</code> on the <strong>held-out</strong> test set)</li>
+</ul>
+<p><strong>Which is clearly the largest? Can you be sure whether B &gt; C or C &gt; B?</strong></p>
+<aside class="notes">
+<p>Voce docente (IT): predict-output min-165 (Engage). Faccio predire l’ordine PRIMA del reveal: se la sala dice A=B=C, l’optimism gap non è atterrato.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-reveal-a-flatters-b-vs-c-is-noise" class="slide level2">
+<h2>The reveal — A flatters; B vs C is noise</h2>
+<p><span class="math display">\[\text{A (resubstitution)} \;\gg\; \{\text{B (CV)},\; \text{C (test)}\}\]</span></p>
+<p><strong>A is by far the largest</strong> — a forest scored on its own rows nearly memorizes them (AUC <span class="math inline">\(\approx 1\)</span>); <strong>never quote it.</strong> You <strong>cannot</strong> be sure of B vs C: both are honest-ish estimates, and on a small cohort their gap is mostly <strong>noise</strong> — here the single test split can land <em>above</em> the CV, the opposite of the textbook “test is lowest”.</p>
+<p>That flip <strong>is</strong> the lesson: on ~75 test patients one number is unreliable <span class="math inline">\(\to\)</span> we select on <strong>cross-validation</strong>, and read <code>last_fit()</code> once <em>alongside</em> it, never instead of it.</p>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-165. La sorpresa C&gt;B è il momento didattico: il gap CV-vs-test è rumore di campionamento su N piccolo, non un ordine garantito.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="go-to-code-steps04-zoo" class="slide level2 center">
+<h2>Go to code — <code>steps/04-zoo/</code></h2>
+<p>Open <code>steps/04-zoo/</code>: tune the four, rank them, finalize, <code>last_fit()</code> <strong>once</strong>.</p>
+<ul>
+<li>One <code>folds</code> object for all four; read the AUCs <strong>live</strong>.</li>
+<li><strong>Behind?</strong> Copy <code>steps/05-report/</code> and you are back in sync.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 04. Il parallelo <code>future</code> è opzionale (a N=299 il tuning è di ~secondi). I numeri li leggo dall’esecuzione live.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="sec-05-report" class="title-slide slide level1 center">
 <h1>Step 05 · Reproducible report</h1>
 <!-- Step 05 (demo, 13 min): render the report that RUNS the whole analysis; renv::snapshot; pre-hook to Advanced. -->
-<p><strong>Objectives.</strong> Ship the deliverable — reproducible <em>because</em> it runs the analysis.</p>
+<p><strong>Why this step.</strong> A result a colleague cannot re-run is not a result. We ship the deliverable as a report that is reproducible <strong>because it runs the analysis</strong> — every number produced by the same render that prints it.</p>
 <ul>
-<li>The report <code>.qmd</code> <strong>runs the whole pipeline in one render</strong> — split <span class="math inline">\(\to\)</span> recipe <span class="math inline">\(\to\)</span> tune <span class="math inline">\(\to\)</span> finalize <span class="math inline">\(\to\)</span> <code>last_fit</code> <span class="math inline">\(\to\)</span> tables &amp; curves — so every number is produced by the <em>same</em> run that prints it. Nothing cached by hand, nothing to drift.</li>
-<li>Close with <code>renv::snapshot()</code>: pinned env + <code>here</code> + <code>set.seed</code> = a colleague re-runs it and gets the same report.</li>
+<li>The report <code>.qmd</code> runs the whole pipeline in one render: split <span class="math inline">\(\to\)</span> recipe <span class="math inline">\(\to\)</span> tune <span class="math inline">\(\to\)</span> finalize <span class="math inline">\(\to\)</span> <code>last_fit</code> <span class="math inline">\(\to\)</span> tables &amp; curves.</li>
+<li>Close with <code>renv::snapshot()</code>: pinned env + <code>here</code> + <code>set.seed</code> <span class="math inline">\(\to\)</span> a peer re-runs it and gets the same report.</li>
 </ul>
 <p style="text-align:center; margin:0.7em 0 0 0;">
-<img src="../../../img/horststyle/reproducible-report.jpg" style="max-height:360px; border-radius:8px;"> <span style="display:block; font-size:0.5em; color:#888;">Code + data + environment + location → one true report — illustration generated with Images2.0 (numbers illustrative)</span>
+<img src="../../../img/horststyle/reproducible-report.jpg" style="max-height:300px; border-radius:8px;"> <span style="display:block; font-size:0.5em; color:#888;">Code + data + environment + location → one true report — illustration generated with Images2.0 (numbers illustrative)</span>
 </p>
 <aside class="notes">
-<p>Voce docente (IT): demo (~13 min). Immagine Images2.0 (reproducible-report.png): mostra code+data+renv+here → un solo report; i NUMERI nell’illustrazione sono di esempio, non i nostri. CAMBIO DI DESIGN (feedback #13): il report NON ricarica un <code>final_fit</code> cache-ato — FA tutte le analisi al render, così i numeri sono garantiti prodotti dallo stesso sistema che ha prodotto il report. A N=299 il tune è di ~secondi. La cache “fatta a mano” non è riproducibilità; quella vera (con audit) arriva con <code>targets</code> nell’Advanced.</p>
+<p>Voce docente (IT): demo (~13 min). Apro col PERCHÉ: riproducibile PERCHÉ gira (numeri ⇔ codice). Il report NON ricarica una cache: fa le analisi al render (a N=299 il tune è di ~secondi). Immagine Images2.0: i numeri sono illustrativi, non i nostri. La cache “a mano” non è riproducibilità; quella vera (con audit) arriva con <code>targets</code> nell’Advanced.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1187,12 +1689,82 @@ rsample · recipes · workflows · yardstick — illustrations generated with Im
           display:block!important;
       }</style></aside>
 </section>
+<section id="your-turn-what-makes-it-reproducible" class="slide level2">
+<h2>Your turn — what makes it reproducible?</h2>
+<p>A colleague should reproduce <strong>every number and figure</strong> on their own machine. What actually makes that possible?</p>
+<ul>
+<li><strong>A.</strong> The combination: a pinned environment (<code>renv</code> lockfile) + stable paths (<code>here::here()</code>) + a fixed seed (<code>set.seed</code>) + a report that <strong>re-renders the analysis</strong> deterministically. All together.</li>
+<li><strong>B.</strong> Just email the script — if they have the <code>.R</code>/<code>.qmd</code>, they can run it.</li>
+<li><strong>C.</strong> Just <code>set.seed(123)</code> — a fixed seed alone guarantees identical output on any machine.</li>
+<li><strong>D.</strong> Save the final number (the test AUC) in a text file.</li>
+</ul>
+<p><em>Pick one — then we reveal it.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): MCQ min-175 (Engage). Distrattori: B = basta lo script; C = basta il seed; D = salvare il numero = riproducibile.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-the-whole-combination" class="slide level2">
+<h2>The answer — A: the whole combination</h2>
+<p><strong>✓ A.</strong> Environment + paths + seed + an executable report, <strong>together</strong>.</p>
+<ul>
+<li><strong>✗ B</strong> — <em>emailing the script is enough.</em> Code depends on package versions, file paths and data that differ across machines.</li>
+<li><strong>✗ C</strong> — <em><code>set.seed</code> alone.</em> A seed fixes the random stream, not the package versions; a different <code>glmnet</code>/<code>ranger</code> can still change the numbers.</li>
+<li><strong>✗ D</strong> — <em>saving the number = reproducible.</em> Recording a result is not being able to <strong>re-derive</strong> it.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-175. La riproducibilità è la combinazione; il singolo pezzo non basta. Pre-hook a <code>targets</code> (capstone Advanced) per analisi pesanti.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="go-to-code-steps05-report" class="slide level2 center">
+<h2>Go to code — <code>steps/05-report/</code></h2>
+<p><strong>Follow along.</strong> Render <code>steps/05-report/</code> — the report that <em>runs</em> the analysis — then <code>renv::snapshot()</code>.</p>
+<ul>
+<li>One render = the numbers and the code that made them are the same object.</li>
+<li>This validated <code>final_fit</code> is exactly what <strong>Advanced reopens</strong> on day one.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 05 (demo → “follow along”). Ponte all’Advanced: il workflow finalizzato di Basic è ciò che l’Advanced ricarica al giorno uno (pre-hook).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="concept-map-the-whole-afternoon" class="slide level2">
 <h2>Concept map — the whole afternoon</h2>
 <style>
-/* Let mermaid size the boxes from its own themeVariables.fontSize (set in the .mmd),
-   then just scale the finished SVG to fit the slide. No font !important override here —
-   that desyncs text from the dagre-computed box width and makes labels spill out. */
+/* Mermaid sizes the boxes using its init fontFamily (now a system font — see the .mmd).
+   Force the rendered labels to the SAME system font so an unloaded webfont can never desync
+   the text from its box (the overflow that shows up in embedded webviews like the Positron
+   viewer). Then just scale the finished SVG to fit the slide. */
+#sec-concept-map .nodeLabel, #sec-concept-map .nodeLabel *,
+#sec-concept-map .edgeLabel, #sec-concept-map .edgeLabel * { font-family: Arial, Helvetica, sans-serif !important; }
 #sec-concept-map svg {
   max-height: 1000px !important;
   width: auto !important;
@@ -1208,7 +1780,7 @@ rsample · recipes · workflows · yardstick — illustrations generated with Im
 <div>
 <p></p><figure class=""><p></p>
 <div>
-<pre class="mermaid mermaid-js">%%{init: {'themeVariables': {'fontSize': '22px'}, 'flowchart': {'nodeSpacing': 36, 'rankSpacing': 46, 'padding': 12}}}%%
+<pre class="mermaid mermaid-js">%%{init: {'fontFamily': 'Arial, Helvetica, sans-serif', 'themeVariables': {'fontSize': '22px'}, 'flowchart': {'nodeSpacing': 36, 'rankSpacing': 46, 'padding': 12}}}%%
 flowchart TD
   PROJ["Reproducible project&lt;br/&gt;(renv + here + rio)"]
   IMPORT["Import &amp; tidy data&lt;br/&gt;(rio + janitor +&lt;br/&gt;dplyr/tidyr)"]

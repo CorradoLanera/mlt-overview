@@ -30,6 +30,72 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="00-advanced-deck_files/libs/revealjs/dist/theme/quarto-d74d9e59c140c08814bbc49056e1c7ea.css">
   <link href="00-advanced-deck_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -241,10 +307,11 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <p>Everything live-coded; nothing pre-baked is shown as live (one labeled exception).</p>
 </section>
 
+<section>
 <section id="sec-00-recap" class="title-slide slide level1 center">
 <h1>Step 00 · Recap &amp; setup</h1>
 <!-- Step 00 (demo, 12 min): reload Basic's finalized workflow; predict 1 row; pre-warm torch. -->
-<p><strong>Objective.</strong> Reopen the validated model — without retraining.</p>
+<p><strong>Why first.</strong> Advanced doesn’t rebuild anything — it <strong>reopens</strong> the model you validated in Basic. Day one reloads that exact <code>final_fit</code>, so a clean, warm session is the precondition for everything that follows.</p>
 <ul>
 <li>Reload Basic’s finalized random forest: <code>extract_workflow(readRDS("final_fit.rds"))</code>.</li>
 <li><code>predict()</code> on <strong>one</strong> patient row — a probability, not yet an explanation.</li>
@@ -264,12 +331,77 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
-
+<section id="live-check-did-the-model-reload-is-torch-warm" class="slide level2">
+<h2>Live check — did the model reload, is torch warm?</h2>
+<p>Run three checks. Signal <strong>GREEN</strong> if all pass, <strong>RED</strong> if any fails:</p>
+<ol type="1">
+<li>Does <code>predict(fitted_wf, hf_tbl[1, ], type = "prob")</code> return a <strong>1-row tibble</strong> (no error, no retrain)?</li>
+<li>Does <strong><code>torch_tensor(1)</code></strong> run <strong>without a download</strong> — backend loads instantly (torch pre-warmed)?</li>
+<li>Is the loaded object the <strong>finalized workflow from Basic</strong> (the one that passed <code>last_fit()</code>)?</li>
+</ol>
+<aside class="notes">
+<p>Voce docente (IT): live-check min-10 (Engage). Presenza: alzata di mano GREEN/RED; remoto: poll.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="green-basics-model-reopened-not-retrained" class="slide level2">
+<h2>GREEN — Basic’s model, reopened (not retrained)</h2>
+<p>All three pass:</p>
+<ul>
+<li><code>predict()</code> on the extracted <code>fitted_wf</code> returns immediately — the model is baked in, no <code>fit()</code>;</li>
+<li><code>torch_tensor(1)</code> runs without downloading libtorch — the session was pre-warmed at setup;</li>
+<li>the object is Basic’s finalized <code>last_fit</code> workflow (<code>model/final_fit.rds</code> → <code>readRDS()</code> → <code>extract_workflow()</code>).</li>
+</ul>
+<p><strong>RED on torch?</strong> Run <code>library(torch)</code> now and wait for backend init — normal once per session, never mid-workshop. <strong>RED on the model?</strong> Reload from the checkpoint before continuing — all of Step 01 depends on it.</p>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-10. Su questa macchina <code>cuda_is_available()</code> è FALSE; in aula sulla NVIDIA è TRUE. Una probabilità non è una spiegazione → apre lo step 01.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="go-to-code-steps00-recap" class="slide level2 center">
+<h2>Go to code — <code>steps/00-recap/</code></h2>
+<p><strong>Follow along.</strong> Open <code>steps/00-recap/</code>: reload Basic’s <code>final_fit</code>, <code>predict()</code> one row, pre-warm torch.</p>
+<ul>
+<li>Live check at minute 10: GREEN / RED.</li>
+<li>We never retrain — Advanced opens the model Basic validated.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 00 (demo → “follow along”). Il workflow finalizzato di Basic è il soggetto di tutta la giornata.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
 <section>
 <section id="sec-01-interpret" class="title-slide slide level1 center">
 <h1>Step 01 · Interpretability</h1>
 <!-- Step 01 (hands-on, 48 min): permutation VIMP (logistic+RF); agnostic SHAP (anchor + 1 RF row); logistic as sanity. -->
-<p><strong>Objectives.</strong> Open the black box with two model-agnostic tools.</p>
+<p><strong>Why this step.</strong> A probability is not an explanation. We open the black box with two model-agnostic tools — permutation VIMP and SHAP — anchored on a logistic model we <em>can</em> read, so we can trust them on the forest we cannot.</p>
 <ul>
 <li><strong>Permutation VIMP</strong> (<code>{vip}</code>): shuffle a predictor <span class="math inline">\(\to\)</span> how far AUC-ROC drops = how much the model <strong>relies</strong> on it. Reliance, <strong>not</strong> causation.</li>
 <li><strong>Agnostic SHAP</strong> via <strong><code>kernelshap</code> + <code>shapviz</code></strong>: attribute one prediction across features.</li>
@@ -277,6 +409,52 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): hands-on (~48 min), zona di rischio per profondità. Min-24 (MCQ): VIMP = reliance, NON causazione / coefficiente con segno / p-value. Numero reale di build: la VIMP a permutazione mette in cima ejection_fraction e serum_creatinine (con age) — i predittori clinicamente sensati, con effetti soglia/non-monotoni. Sono le feature che la foresta ha imparato a USARE, non un’affermazione causale né di direzione.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="your-turn-what-does-permutation-vimp-measure" class="slide level2">
+<h2>Your turn — what does permutation VIMP measure?</h2>
+<p>The permutation-importance plot for the random forest puts <strong><code>ejection_fraction</code></strong> and <strong><code>serum_creatinine</code></strong> on top. What does that score actually measure?</p>
+<ul>
+<li><strong>A.</strong> Permuting a predictor breaks its link to the outcome; the <strong>drop in AUC-ROC</strong> measures how much the model <strong>relies on</strong> it. High = the model can’t do without it — <em>not</em> that it causes the outcome.</li>
+<li><strong>B.</strong> A high score means <code>ejection_fraction</code> <strong>causes</strong> heart-failure death.</li>
+<li><strong>C.</strong> Importance is a <strong>signed coefficient</strong>: positive = raises predicted risk, negative = lowers it.</li>
+<li><strong>D.</strong> Importance is a <strong>p-value</strong>: above a threshold = statistically significant.</li>
+</ul>
+<p><em>Pick one — then we reveal it.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): MCQ min-24 (Engage). Distrattori: B = importanza = causazione; C = coefficiente con segno; D = p-value.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-reliance-not-causation" class="slide level2">
+<h2>The answer — A: reliance, not causation</h2>
+<p><strong>✓ A.</strong> The AUC-ROC drop on permutation = how much the model <strong>relies</strong> on the predictor to discriminate.</p>
+<ul>
+<li><strong>✗ B</strong> — <em>importance = causation.</em> It quantifies the model’s dependence, says nothing about the data-generating mechanism.</li>
+<li><strong>✗ C</strong> — <em>importance = signed coefficient.</em> A permutation score on a tree ensemble has <strong>no sign</strong> and no additive reading.</li>
+<li><strong>✗ D</strong> — <em>importance = p-value.</em> It’s a performance measure, not a test statistic from a null hypothesis.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-24. Numero reale: la VIMP mette in cima ejection_fraction e serum_creatinine (con age) — feature che la foresta USA, non un’affermazione causale.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -300,6 +478,46 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <p>Then the agnosticism payoff: the <strong>same</strong> call points at the random forest (no coefficients at all) — <code>kernelshap()</code> for the forest, <code>permshap()</code> reserved for the linear anchor.</p>
 <aside class="notes">
 <p>Voce docente (IT): predict-output al min-38 — che forma ha lo SHAP rispetto ai coefficienti logistici? Perché rassicura PRIMA di puntare l’RF: l’agnostico deve <em>recuperare</em> il noto. permshap() = esatto sul lineare (il sanity-check più pulito); kernelshap() = ibrido sull’RF (11 feature, scelta pratica). “Your turn” min-66: la stessa riga del blocco 01 puntata sull’RF — cambia solo l’oggetto-modello.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="your-turn-predict-the-shap-shape-on-the-anchor" class="slide level2">
+<h2>Your turn — predict the SHAP shape on the anchor</h2>
+<p>We ran <code>kernelshap</code> on the <strong>logistic regression</strong> (the anchor) and called <code>sv_waterfall()</code>. Before we look:</p>
+<ol type="1">
+<li>What <strong>shape</strong> do the waterfall bars take vs the model’s raw <code>coef()</code> — same sign, same order, or something else?</li>
+<li>Why run SHAP on the <strong>logistic</strong> model <em>first</em>, before pointing it at the random forest?</li>
+</ol>
+<aside class="notes">
+<p>Voce docente (IT): predict-output min-38 (Engage). Faccio predire la forma PRIMA del reveal.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-reveal-shap-must-recover-the-known" class="slide level2">
+<h2>The reveal — SHAP must recover the known</h2>
+<p><strong>Shape:</strong> the predictors that dominate the coefficient table dominate the waterfall, and <strong>directions agree</strong> (a negative coefficient → a negative/blue SHAP bar where the feature pushes the prediction down). Signs match; relative magnitudes mostly mirror the weighted contributions.</p>
+<p>It is a <strong>directional sanity check, not an exact identity</strong> — we explain in probability space and <code>permshap</code> samples at this feature count, so it is not exactly <span class="math inline">\(\beta_j (x_j - \bar{x}_j)\)</span>.</p>
+<p><strong>Why first:</strong> the anchor is a sanity check <strong>for the method</strong>. We know the ground truth (the coefficients); if the agnostic explainer recovers them, we can trust it on the random forest — whose logic we cannot read directly. Run it on the black box first and we’d have no way to know the explanation is real.</p>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-38. permshap() esatto sul lineare (sanity-check più pulito); kernelshap() ibrido sull’RF. “Model-agnostic” = l’approssimazione è il punto.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -364,12 +582,79 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="your-turn-the-shap-variance-vs-cost-knobs" class="slide level2">
+<h2>Your turn — the SHAP variance-vs-cost knobs</h2>
+<p>In <code>kernelshap</code>, which <strong>two</strong> knobs govern the variance-vs-cost trade-off of the estimates?</p>
+<ul>
+<li><strong>A.</strong> The <strong>size of <code>bg_X</code></strong> (background) and the <strong>sampling effort</strong> (coalitions per row): larger + more sampling → lower variance, higher cost. A tiny background (30–50 rows) for the live demo trades precision for speed.</li>
+<li><strong>B.</strong> A <strong>smaller background is more accurate</strong> — fewer, more representative rows reduce noise.</li>
+<li><strong>C.</strong> The <strong>number of sampling iterations equals the number of features</strong> — fixed by the data.</li>
+<li><strong>D.</strong> The <strong>background only matters for tree models</strong> — logistic/NN ignore <code>bg_X</code>.</li>
+</ul>
+<p><em>Pick one — then we reveal it.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): MCQ min-46 (Engage). Distrattori: B = meno background = più accurato (NO); C = iterazioni fisse (NO); D = solo per alberi (NO, è agnostico).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-background-size-sampling-effort" class="slide level2">
+<h2>The answer — A: background size + sampling effort</h2>
+<p><strong>✓ A.</strong> Larger <code>bg_X</code> + more coalitions → lower-variance attributions at higher cost; the tiny live background is a deliberate speed trade.</p>
+<ul>
+<li><strong>✗ B</strong> — <em>smaller background = more accurate.</em> Inverts it: fewer reference points <strong>increase</strong> variance.</li>
+<li><strong>✗ C</strong> — <em>iterations fixed by the data.</em> The coalition count is a user knob (a heuristic default), not a property of the feature set.</li>
+<li><strong>✗ D</strong> — <em>background only for trees.</em> That’s TreeSHAP; <strong>kernel</strong> SHAP uses the background as a universal baseline for <strong>every</strong> model family.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-46. permshap esatto sull’ancora lineare, kernelshap ibrido come p cresce. Background piccolo = più economico e più rumoroso.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="go-to-code-steps01-interpret" class="slide level2 center">
+<h2>Go to code — <code>steps/01-interpret/</code></h2>
+<p>Open <code>steps/01-interpret/</code>: permutation VIMP, then the <strong>same</strong> agnostic SHAP line on the logistic anchor and the RF.</p>
+<ul>
+<li>The anchor first: SHAP must recover the coefficients before we trust it on the forest.</li>
+<li><strong>Behind?</strong> Copy <code>steps/02-deep-learning/</code> and you are back in sync.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 01. La stessa riga di explainer gira su logistic → RF → (poi) MLP.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="sec-02-deep-learning" class="title-slide slide level1 center">
 <h1>Step 02 · Deep learning</h1>
 <!-- Step 02 (hands-on + demo, 67 min): MLP knobs -> train MLP live + SHAP callback -> write CNN/RNN/fused (shape-check) -> GPU-vs-CPU -> option B. -->
-<p><strong>Objectives.</strong> Train one net honestly; write the rest.</p>
+<p><strong>Why this step.</strong> Interpretability is model-agnostic — so the same explainer follows us into deep learning. We train <strong>one</strong> small net honestly, write the richer architectures (validated by a shape-check, not trained), and keep one labeled exception explicit.</p>
 <ul>
 <li><strong>Knobs first</strong>, then train a small <code>brulee</code> <strong>MLP live</strong> (≤30 epochs, seconds).</li>
 <li>Explain it with the <strong>same agnostic SHAP line</strong> — only the model object changed.</li>
@@ -448,6 +733,92 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
+<section id="your-turn-the-mlp-is-overfitting-which-knob" class="slide level2">
+<h2>Your turn — the MLP is overfitting; which knob?</h2>
+<p>Training loss keeps dropping, validation loss has levelled off or risen. Which intervention most directly addresses the overfit?</p>
+<ul>
+<li><strong>A.</strong> <strong>Increase <code>penalty</code></strong> (L2) <strong>or decrease <code>hidden_units</code></strong> — reduce capacity, push toward high-bias / low-variance.</li>
+<li><strong>B.</strong> <strong>Train for more epochs</strong> — it just needs more gradient steps.</li>
+<li><strong>C.</strong> <strong>Raise the learning rate</strong> — a bigger step escapes the sharp overfit minima.</li>
+<li><strong>D.</strong> <strong>Change the activation</strong> (ReLU → tanh) — a smoother activation regularises.</li>
+</ul>
+<p><em>Pick one — then we reveal it.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): MCQ min-60 (Engage). Lo faccio dal vivo cambiando UN numero. Distrattori: B = più epoche (peggiora); C = learning-rate↑ (diverge); D = activation regolarizza (NO).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-penalty-hidden_units" class="slide level2">
+<h2>The answer — A: penalty ↑ / hidden_units ↓</h2>
+<p><strong>✓ A.</strong> Capacity and weight-decay are the overfit knobs in an MLP.</p>
+<ul>
+<li><strong>✗ B</strong> — <em>more epochs.</em> Backwards: more training <strong>deepens</strong> the overfit; early stopping is the remedy, not the cause.</li>
+<li><strong>✗ C</strong> — <em>raise learning rate.</em> That’s optimisation dynamics, not capacity; it may destabilise training and does not regularise.</li>
+<li><strong>✗ D</strong> — <em>activation as regulariser.</em> Activation shapes gradient flow/expressiveness, but it is not a direct regulariser; <code>penalty</code> and width are.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-60. penalty↑ / hidden↓ (o taglia epochs). La slide-parametro precede il train.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="your-turn-the-same-explainer-now-on-the-mlp" class="slide level2">
+<h2>Your turn — the same explainer, now on the MLP</h2>
+<p>We have <code>mlp_fit</code>. Using the <strong>same explainer call</strong> as on the logistic anchor (just swap the model), make a waterfall for observation 1:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">kernelshap</span>(mlp_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun) <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href=""></a>  <span class="fu">shapviz</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href=""></a>  <span class="fu">sv_waterfall</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Run it: do the top features match what VIMP told us?</p>
+<aside class="notes">
+<p>Voce docente (IT): your-turn min-66 (Engage). Stessa riga del blocco 01, cambia solo il modello.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="my-turn-model-agnostic-unchanged" class="slide level2">
+<h2>My turn — model-agnostic, unchanged</h2>
+<p>The call runs <strong>unchanged</strong> — only the fitted model differs. <code>kernelshap</code> reaches the model <strong>only</strong> through <code>pred_fun</code>; it never looks inside. The waterfall still puts <code>ejection_fraction</code> and <code>serum_creatinine</code> near the top (consistent with VIMP), though magnitudes differ (SHAP is per-observation; VIMP is averaged).</p>
+<p>The point: the <strong>same three lines</strong> worked on logistic, RF (Step 01), and now the MLP — the explainer is truly model-agnostic.</p>
+<p><strong>Going further.</strong> Why? <code>kernelshap</code> needs only <code>pred_fun(object, X, ...)</code> mapping rows → probabilities. It treats the model as a black box (no coefficients, splits, or weights), evaluating it on feature coalitions and fitting a weighted regression to recover Shapley values. “Give me a prediction function” is the only assumption — so it spans the whole model zoo.</p>
+<aside class="notes">
+<p>Voce docente (IT): Reveal/my-turn min-66. Riuso intenzionale di SHAP (non nuovo carico): rinforza l’agnosticismo. Going further = ex-stretch.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="cnn-rnn-fused-written-not-trained" class="slide level2 smaller">
 <h2>CNN / RNN / fused — written, not trained</h2>
 <!-- NNMOD/CNN/RNN/FUSED nodes — Parsons reorder, min-80. -->
@@ -489,6 +860,54 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): min-80 (Parsons). Riordina il <code>forward()</code> della rete fusa: 3 rami → <code>torch_cat(list(t, c, r), dim = 2)</code> → head. Vincolo fisso: prima calcoli i rami, POI concat-e-head; la larghezza d’ingresso della head = somma delle larghezze dei 3 rami. Lo split scrivi-non-addestra collassa CNN+RNN+fused in UN solo schema (“modulo cablato dal forward”) → da 9 a ~5 chunk effettivi. Nessun training: solo <code>[5,2]</code>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="your-turn-reorder-the-fused-forward" class="slide level2">
+<h2>Your turn — reorder the fused <code>forward()</code></h2>
+<p>The <code>forward()</code> of the fused network is scrambled. Put these six lines in execution order:</p>
+<pre><code>(a)  self$head(torch_cat(list(t, c, r), dim = 2))
+(b)  t &lt;- self$tab(x_tab)
+(c)  r &lt;- self$rnn(x_seq)
+(d)  torch_cat(list(t, c, r), dim = 2)
+(e)  c &lt;- self$cnn(x_sig)
+(f)  forward = function(x_tab, x_sig, x_seq) {</code></pre>
+<p>Then: (1) branch widths are 16, <code>sig_ch</code>, <code>hidden</code> — what must the <strong>head’s input dim</strong> equal? (2) The head emits 2 logits — what’s the output <strong>shape</strong> for a batch of <span class="math inline">\(B = 5\)</span>?</p>
+<aside class="notes">
+<p>Voce docente (IT): Parsons min-80 (Engage). (d) è il distrattore (concat senza head). Errori comuni: concat prima dei tre rami, o head prima del concat → shape error a runtime.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-branches-first-then-concat-head" class="slide level2">
+<h2>The answer — branches first, then concat + head</h2>
+<p><strong>Order:</strong> f → b → e → c → a (build <code>t</code>, <code>c</code>, <code>r</code> in any order, then concat + head in one call):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>forward <span class="ot">=</span> <span class="cf">function</span>(x_tab, x_sig, x_seq) {</span>
+<span id="cb3-2"><a href=""></a>  t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)   <span class="co"># [B, 16]</span></span>
+<span id="cb3-3"><a href=""></a>  c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_sig)   <span class="co"># [B, sig_ch]</span></span>
+<span id="cb3-4"><a href=""></a>  r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)   <span class="co"># [B, hidden]</span></span>
+<span id="cb3-5"><a href=""></a>  self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))</span>
+<span id="cb3-6"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Head input dim:</strong> <code>16 + sig_ch + hidden</code> — <code>torch_cat(dim = 2)</code> concatenates along the feature axis; any mismatch errors at the first forward pass. <strong>Output shape:</strong> <code>[5, 2]</code> — one row per observation, two logits per row (batch is always <code>dim = 1</code>).</p>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-80. Riga (d) scartata. torch segnala lo shape mismatch subito → scrivere il forward + un batch fittizio è il modo più rapido di validare un’architettura.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -544,6 +963,52 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
+<section id="your-turn-does-the-loss-curve-break-the-honesty-rule" class="slide level2">
+<h2>Your turn — does the loss curve break the honesty rule?</h2>
+<p>We showed the fused network’s loss curve and said <em>“I trained this earlier on GPU.”</em> How does this fit the workshop’s honesty rule?</p>
+<ul>
+<li><strong>A.</strong> It’s the <strong>single labeled exception</strong> — announced as pre-trained, shown as a <em>didactic object</em>, not a live result. The killed CPU epoch <strong>was</strong> live (a real performance gap). Everything else is computed in real time.</li>
+<li><strong>B.</strong> <strong>Nothing is ever cached</strong> — the honesty rule means everything runs live, including this curve.</li>
+<li><strong>C.</strong> <strong>All DL outputs</strong> can be pre-trained and shown <strong>without a label</strong> — training time justifies skipping live-coding.</li>
+<li><strong>D.</strong> A labeled pre-trained result is <strong>identical to the <code>targets</code> “skip”</strong> — both pre-computed, same rule.</li>
+</ul>
+<p><em>Pick one — then we reveal it.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): MCQ min-92 (Engage). Distinzione chiave da far atterrare prima del capstone.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-one-labeled-exception" class="slide level2">
+<h2>The answer — A: one labeled exception</h2>
+<p><strong>✓ A.</strong> Labeled, announced, shown as a didactic object; the killed CPU epoch was genuinely live.</p>
+<ul>
+<li><strong>✗ B</strong> — <em>nothing is ever cached.</em> The rule is “don’t show pre-cooked <strong>as if live</strong>”; a clearly labeled artifact is allowed.</li>
+<li><strong>✗ C</strong> — <em>pre-train without a label.</em> Strips the rule of its key condition — undisclosed pre-training is exactly what’s prohibited.</li>
+<li><strong>✗ D</strong> — <em>same as <code>targets</code> skip.</em> Different: <code>targets</code> “skip” is <strong>re-derivable</strong> from unchanged inputs (reproducibility); the loss curve is a one-off GPU artifact that can’t be reproduced live.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-92. La riproducibilità hash-checked di targets è un’altra cosa dal pre-cotto etichettato.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="gpu-payoff-where-the-accelerator-actually-pays" class="slide level2 smaller">
 <h2>GPU payoff — where the accelerator actually pays</h2>
 <p>The accelerator is <strong>not</strong> a magic speed button. Match it to the workload.</p>
@@ -566,12 +1031,34 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="go-to-code-steps02-deep-learning" class="slide level2 center">
+<h2>Go to code — <code>steps/02-deep-learning/</code></h2>
+<p>Open <code>steps/02-deep-learning/</code>: train the MLP live, explain it with the same SHAP line, write (don’t train) CNN/RNN/fused, run the GPU-vs-CPU demo.</p>
+<ul>
+<li>The MLP’s <code>roc_auc</code> is single-split — <strong>not</strong> comparable to Basic’s CV ~0.79 (apples to oranges).</li>
+<li>One labeled exception (the loss curve); everything else live.</li>
+<li><strong>Behind?</strong> Copy <code>steps/03-ellmer/</code> and you are back in sync.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 02 (l’hotspot). Break dopo questo step (uscita dall’hotspot). Non vendere l’MLP come vincitore della foresta.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="sec-03-ellmer" class="title-slide slide level1 center">
 <h1>Step 03 · LLM as typed ETL</h1>
 <!-- Step 03 (hands-on, 36 min): type_object schema; ONE live extraction; batch map written-not-run; temperature 0. -->
-<p><strong>Objectives.</strong> Turn an LLM into a reproducible ETL, not a chat.</p>
+<p><strong>Why this step.</strong> A chat returns prose you must re-parse; an <strong>ETL returns a record</strong>. With a typed schema and <code>temperature = 0</code>, the LLM becomes a reproducible extractor — the same note always yields the same validated row.</p>
 <ul>
 <li>A <strong>typed schema</strong> (<code>type_object()</code>) is the <strong>contract</strong>: declare fields + R types <span class="math inline">\(\to\)</span> every note comes back as the same validated record.</li>
 <li><strong>One</strong> live structured extraction (first note); the batch <code>purrr::map</code> is <strong>written, not run</strong>.</li>
@@ -623,12 +1110,125 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
+</section>
+<section id="your-turn-predict-the-typed-record" class="slide level2">
+<h2>Your turn — predict the typed record</h2>
+<p>This <code>type_object()</code> schema extracts from clinical notes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>schema <span class="ot">&lt;-</span> <span class="fu">type_object</span>(</span>
+<span id="cb4-2"><a href=""></a>  <span class="at">age               =</span> <span class="fu">type_integer</span>(<span class="st">"patient age in years"</span>),</span>
+<span id="cb4-3"><a href=""></a>  <span class="at">ejection_fraction =</span> <span class="fu">type_number</span>(<span class="st">"ejection fraction %; NA if not stated"</span>),</span>
+<span id="cb4-4"><a href=""></a>  <span class="at">on_betablocker    =</span> <span class="fu">type_boolean</span>(<span class="st">"TRUE if a beta-blocker is given/continued"</span>),</span>
+<span id="cb4-5"><a href=""></a>  <span class="at">primary_dx        =</span> <span class="fu">type_enum</span>(<span class="fu">c</span>(<span class="st">"ischemic"</span>, <span class="st">"hypertensive"</span>, <span class="st">"valvular"</span>, <span class="st">"other"</span>), <span class="st">"primary cardiac diagnosis"</span>)</span>
+<span id="cb4-6"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ol type="1">
+<li>How many <strong>fields</strong>, and their <strong>R types</strong> after parsing? (2) A note says <em>“60-year-old male, EF 30%, no medications listed.”</em> — <code>primary_dx</code> is <strong>absent</strong>. What does <code>ellmer</code> return for it?</li>
+</ol>
+<aside class="notes">
+<p>Voce docente (IT): predict-output min-112 (Engage). Modello reale: gpt-5.4-nano.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-reveal-four-fields-graceful-absence" class="slide level2">
+<h2>The reveal — four fields, graceful absence</h2>
+<p><strong>Fields / R types:</strong> <code>age</code> → <code>integer</code>; <code>ejection_fraction</code> → declared <code>type_number</code>, but <strong>arrives as <code>integer</code></strong> for a whole-number JSON value (e.g.&nbsp;30) or <code>double</code> if decimal; <code>on_betablocker</code> → <code>logical</code>; <code>primary_dx</code> → <code>character</code> (one enum value, or <code>NA</code>/<code>NULL</code> if absent). <strong>Four fields.</strong></p>
+<p><strong>Integer vs double subtlety:</strong> JSON has no integer/float distinction for whole numbers; <code>EF = 30</code> parses to R <strong>integer</strong>. <code>stopifnot(is.double(rec$ejection_fraction))</code> would <strong>fail</strong> — coerce with <code>as.double(...)</code> when needed.</p>
+<p><strong>Absent enum:</strong> <code>ellmer</code> returns <code>NULL</code> (or <code>NA</code>), <strong>no error</strong> — the schema says what to look for, not that it must be present. That graceful handling is what makes it robust on messy notes.</p>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-112. La sottigliezza integer-vs-double sorprende: type_number non garantisce double; conta la rappresentazione JSON.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="your-turn-temperature-0-map-together" class="slide level2">
+<h2>Your turn — temperature 0 + <code>map()</code>, together?</h2>
+<p>We set <code>temperature = 0</code> and wrap the extraction in <code>purrr::map()</code>. What do these two achieve together?</p>
+<ul>
+<li><strong>A.</strong> <code>temperature = 0</code> = <strong>determinism</strong> (same input → same record → a reproducible ETL, not a chat); <code>purrr::map()</code> applies the extraction <strong>element-by-element</strong>, one record per note.</li>
+<li><strong>B.</strong> A <strong>lower temperature improves quality</strong> — the LLM is more accurate at 0, always the right choice.</li>
+<li><strong>C.</strong> <strong>High temperature + <code>map()</code> runs on the GPU</strong> — <code>map()</code> parallelises across cores, high temp enables GPU sampling.</li>
+<li><strong>D.</strong> <strong>Temperature is irrelevant</strong> with a <code>type_object()</code> schema — valid JSON regardless.</li>
+</ul>
+<p><em>Pick one — then we reveal it.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): MCQ min-124 (Engage). Distrattori: B = temp = qualità; C = temp + map = GPU; D = temp irrilevante con schema.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-determinism-element-wise-iteration" class="slide level2">
+<h2>The answer — A: determinism + element-wise iteration</h2>
+<p><strong>✓ A.</strong> <code>temperature = 0</code> makes the ETL reproducible; <code>map()</code> iterates note-by-note into one record each.</p>
+<ul>
+<li><strong>✗ B</strong> — <em>temperature = quality.</em> It controls randomness, not capability; for extraction we want <strong>zero</strong> randomness.</li>
+<li><strong>✗ C</strong> — <em>high temp + map = GPU.</em> Invented: <code>map()</code> iterates (sequentially, or parallel via <code>furrr</code>); neither it nor temperature touches the GPU.</li>
+<li><strong>✗ D</strong> — <em>temperature irrelevant with a schema.</em> Even typed, at <code>temperature &gt; 0</code> two calls can differ; <code>0</code> = greedy, deterministic.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-124. La cache etichettata (senza API key) è la stessa dottrina dell’opzione-B: un record vero salvato prima, mostrato con etichetta, mai finto.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="go-to-code-steps03-ellmer" class="slide level2 center">
+<h2>Go to code — <code>steps/03-ellmer/</code></h2>
+<p>Open <code>steps/03-ellmer/</code>: define the typed schema, run <strong>one</strong> live extraction, read the batch <code>map</code> (written, not run).</p>
+<ul>
+<li><code>temperature = 0</code> → deterministic ETL; the typed record is the contract.</li>
+<li>No API key? A labeled cached result from an earlier live run — never a faked record.</li>
+<li><strong>Behind?</strong> Copy <code>steps/04-targets/</code> and you are back in sync.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 03. Una sola estrazione live; il batch map è write-only.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section></section>
 <section>
 <section id="sec-04-targets" class="title-slide slide level1 center">
 <h1>Step 04 · Reproducibility capstone</h1>
 <!-- Step 04 (demo, 20 min): read the targets DAG (tar_visnetwork); first build runs; re-run all-skip; pipeline renders the report. -->
-<p><strong>Objectives.</strong> Make the whole story reproducible by construction — <em>and auditable</em>.</p>
+<p><strong>Why this step.</strong> A pipeline a colleague cannot re-run is not reproducible. <code>targets</code> makes the whole explain→deep→LLM story re-derivable by construction: inspectable intermediate targets, a report the pipeline compiles itself, and an all-skip re-run that proves nothing drifted.</p>
 <ul>
 <li>Read the <code>targets</code> <strong>DAG</strong> (<code>tar_visnetwork()</code>): every analysis is an <strong>explicit, inspectable intermediate target</strong> you can <code>tar_read()</code> on its own — <code>cohort</code>, <code>model</code>, <code>explanation</code>.</li>
 <li>The pipeline <strong>compiles the report itself</strong>: a final <code>report</code> target renders the Quarto doc <em>from</em> those intermediates, so the document and its inputs can never disagree.</li>
@@ -670,12 +1270,76 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
+<section id="your-turn-predict-the-second-tar_make" class="slide level2">
+<h2>Your turn — predict the second <code>tar_make()</code></h2>
+<p>We ran <code>tar_make()</code> and watched the pipeline build. Now we run <code>tar_make()</code> <strong>again, unchanged</strong>.</p>
+<ol type="1">
+<li><strong>Predict:</strong> what status does every target report, and why?</li>
+<li>We changed nothing — so is the second run just “using a cache”? What’s the conceptual difference?</li>
+</ol>
+<aside class="notes">
+<p>Voce docente (IT): predict-output min-138 (capstone check, Engage). Faccio predire PRIMA di eseguire.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-reveal-all-skip-is-reproducibility-not-a-cache" class="slide level2">
+<h2>The reveal — all-skip is reproducibility, not a cache</h2>
+<p><strong>Every target reports <code>skip</code>.</strong></p>
+<p>The reason is <strong>input-hash checking</strong>: <code>targets</code> hashes each target’s inputs (function source, upstream target objects, file dependencies). Nothing changed → hashes match → re-running would reproduce the same result → it skips. That’s <strong>reproducibility</strong> (re-derivable from unchanged inputs), not a stored value.</p>
+<p>Difference from a cache: change <em>any</em> input (data, code, a parameter) and the affected target + everything downstream go <strong>stale</strong> and rebuild. A cache returns a stored value regardless; <code>targets</code> re-derives or skips by content hash.</p>
+<p><strong>Going further.</strong> Swap <code>model/final_fit.rds</code> (a <code>format = "file"</code> target) → <code>model_file</code> re-hashes → <code>model</code> → the <code>explanation</code> bridge rebuild; <code>cohort</code> stays <code>skip</code>. Edit the VIMP knobs inside <code>explain_model()</code> → only <code>explanation</code> rebuilds. And the <strong>GPU device</strong> is an <em>ambient</em> input (<code>cuda_is_available()</code> inside the function body) — invisible to the DAG unless promoted to a <code>tar_target(device, ...)</code>.</p>
+<aside class="notes">
+<p>Voce docente (IT): Reveal min-138. Provo col valore di ritorno, non col messaggio: <code>tar_outdated()</code> == character(0). Il bridge <code>explanation</code> ricalcola DAVVERO la VIMP. Going further = ex-stretch (stale propagation + device cieco).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="go-to-code-steps04-targets" class="slide level2 center">
+<h2>Go to code — <code>steps/04-targets/</code></h2>
+<p><strong>Follow along.</strong> Open <code>steps/04-targets/</code>: read the DAG (<code>tar_visnetwork()</code>), <code>tar_make()</code>, then re-run → all-skip.</p>
+<ul>
+<li>Each analysis is a named, inspectable target (<code>cohort</code>, <code>model</code>, <code>explanation</code>); the pipeline compiles the report itself.</li>
+<li>The loop closes: Basic validated the model, Advanced re-derives its explanation, deterministically.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura Step 04 (demo → “follow along”). Chiude il loop Basic↔︎Advanced.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="sec-concept-map-h" class="slide level2 smaller">
 <h2>Concept map — the whole workshop</h2>
 <style>
-/* Mermaid sizes boxes from its own themeVariables.fontSize (set in the .mmd); we only
-   scale the finished SVG to fit. No font !important override — it desyncs text from the
-   dagre-computed box width and makes labels spill out of their rectangles. */
+/* Mermaid sizes the boxes using its init fontFamily (now a system font — see the .mmd).
+   Force the rendered labels to the SAME system font so an unloaded webfont can never desync
+   the text from its box in embedded webviews (e.g. the Positron viewer). Then scale the SVG. */
+#sec-concept-map .nodeLabel, #sec-concept-map .nodeLabel *,
+#sec-concept-map .edgeLabel, #sec-concept-map .edgeLabel * { font-family: Arial, Helvetica, sans-serif !important; }
 #sec-concept-map svg {
   max-height: 1000px !important;
   width: auto !important;
@@ -691,7 +1355,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <div>
 <p></p><figure class=""><p></p>
 <div>
-<pre class="mermaid mermaid-js">%%{init: {'themeVariables': {'fontSize': '21px'}, 'flowchart': {'nodeSpacing': 44, 'rankSpacing': 46, 'padding': 12}}}%%
+<pre class="mermaid mermaid-js">%%{init: {'fontFamily': 'Arial, Helvetica, sans-serif', 'themeVariables': {'fontSize': '21px'}, 'flowchart': {'nodeSpacing': 44, 'rankSpacing': 46, 'padding': 12}}}%%
 flowchart TD
   BASIC[Basic's validated&lt;br/&gt;tidymodels workflow]
   PRED[1-row predict on&lt;br/&gt;finalized model]
