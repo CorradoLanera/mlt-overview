@@ -602,17 +602,14 @@ step 03 (supervised). Il folder 02-eda è comprimibile se sono in ritardo.
 
 <!-- Step 03 (hands-on, 38 min): object-map rsample -> recipes -> parsnip -> workflows -> yardstick; glm baseline. -->
 
-**Objectives.** Lay the tidymodels spine with a `glm` baseline.
+**Why this step.** Four algorithms are coming — and we do *not* want four bespoke pipelines. We lay **one reusable spine** now, on a model we can read (`glm`), so Step 04 changes only **one line**.
 
-- Walk the **object-map** `rsample` $\to$ `recipes` $\to$ `parsnip` $\to$ `workflows` $\to$ `yardstick`.
-- Fit a plain `glm` baseline and score it with `yardstick` — **AUC-ROC and AUC-PR**.
+- Walk the object-map `rsample` $\to$ `recipes` $\to$ `parsnip` $\to$ `workflows` $\to$ `yardstick`.
+- Fit a plain `glm` baseline; score it with `yardstick` — **AUC-ROC and AUC-PR**.
 
 ::: {.notes}
-Voce docente (IT): hands-on (~38 min). Zona di rischio per profondità: la mappa di
-oggetti nuovi. Mitigazione: ancorare la mappa a `glm` (riconoscimento, non nuova
-astrazione) e insegnarla come UNA mappa. "Your turn" min 72: `glm` vs workflow danno la
-stessa AUC. Tolto il bullet ridondante "frame as supervised" (già nella slide
-paradigmi). Break subito dopo.
+Voce docente (IT): hands-on (~38 min), picco di profondità (la object-map). Apro col PERCHÉ:
+una spina riusabile + glm come ancora di riconoscimento, non nuova astrazione. Break dopo lo step.
 :::
 
 ## tidymodels — one spine, five packages
@@ -696,6 +693,75 @@ the tuning around it.
 Voce docente (IT): risponde alla richiesta esplicita — i 5 pacchetti E le funzioni che
 useremo davvero, in una tabella di riferimento, più la striscia di 4 card Images2.0
 (rsample/recipes/workflows/yardstick). Tabella a font pieno per leggibilità da fondo aula.
+:::
+
+## Your turn — do the two routes agree?
+
+You fit a plain `glm` logistic two ways: (a) a bare `glm`-engine `logistic_reg()`, and (b) the same model wrapped in a `workflow()` (recipe + spec). Score both on the test set with **both** metrics:
+
+```r
+hf_metrics <- metric_set(roc_auc, pr_auc)
+... |> augment(new_data = test) |> hf_metrics(truth = outcome, .pred_died)
+```
+
+(No `event_level` needed — `died` is the first level.) **Do the two routes give the same AUC-ROC and AUC-PR? Why, in one sentence?**
+
+::: {.notes}
+Voce docente (IT): your-turn min-72 (Engage). Lo studente lo prova al prompt; ~2-3 min.
+:::
+
+## My turn — same model, more scaffolding
+
+**Yes — identical** across both routes. The `workflow` does not change the statistical model; it only **bundles** the recipe and the spec so the *same* logistic regression is fit on the *same* preprocessed data. The estimator is identical $\to$ the numbers match.
+
+**Going further.** What does recipe + workflow *buy* you over a bare `glm`? It makes preprocessing **part of the model** (dummy-coding, normalization, zero-variance removal travel with the fit), re-applied identically at prediction time — no leakage, no "I forgot to scale the test set" — and the whole thing becomes one swappable, tunable object: exactly what lets Step 04 swap engines and tune four models at once.
+
+::: {.notes}
+Voce docente (IT): Reveal/my-turn min-72. "Same model, more scaffolding". Going further =
+ex-stretch: cosa compra recipe+workflow vs glm nudo.
+:::
+
+## Your turn — logistic → random forest, minimal change?
+
+You built a logistic-regression workflow. To turn it into a **random forest** workflow on the *same* data, what is the **minimal** change?
+
+- **A.** Change *only the model spec* — swap `logistic_reg() |> set_engine("glm")` for `rand_forest() |> set_engine("ranger")`. Split, recipe, workflow scaffold stay identical.
+- **B.** Rewrite the recipe and the train/test split to suit the new algorithm.
+- **C.** Abandon the tidymodels scaffold and call `ranger::ranger()` directly with its own formula.
+- **D.** Keep `logistic_reg()` and just change `set_mode()` from `"classification"` to `"regression"`.
+
+*Pick one — then we reveal it.*
+
+::: {.notes}
+Voce docente (IT): MCQ min-88 (Engage), pre-break. Distrattori: B = riscrivi recipe/split per
+algoritmo; C = torni a funzioni package-specifiche; D = confonde MODE con ENGINE.
+:::
+
+## The answer — A: change only the spec
+
+**✓ A.** One line — the `parsnip` spec. The split, recipe and workflow are model-agnostic.
+
+- **✗ B** — *rewrite recipe/split per algorithm.* Preprocessing and split are shared; bespoke pipelines defeat the engine-swap idiom.
+- **✗ C** — *back to package-specific functions.* `parsnip` is the unified front-end; calling `ranger()` directly loses the one-line swap.
+- **✗ D** — *confuses MODE with ENGINE.* Mode = classification vs regression; it does not turn logistic into a forest.
+
+::: {.notes}
+Voce docente (IT): Reveal min-88. L'idiom engine-swap: "1 cosa, 4 manopole", non 4 pipeline.
+Prepara lo step 04.
+:::
+
+## Go to code — `steps/03-logistic/` {.center}
+
+Open `steps/03-logistic/`: lay the spine and fit the `glm` baseline.
+
+- Build the object-map once — Step 04 only swaps the `parsnip` line.
+- **Behind?** Copy `steps/04-zoo/` and you are back in sync.
+
+*Break next — then the zoo.*
+
+::: {.notes}
+Voce docente (IT): chiusura Step 03 + annuncio del break. Dopo il break entro nello step 04
+(picco di ampiezza) con la teoria già "compilata".
 :::
 
 # Hyperparameters, one algorithm at a time {.center}
