@@ -1039,27 +1039,21 @@ Voce docente (IT): chiusura Step 04. Il parallelo `future` è opzionale (a N=299
 
 <!-- Step 05 (demo, 13 min): render the report that RUNS the whole analysis; renv::snapshot; pre-hook to Advanced. -->
 
-**Objectives.** Ship the deliverable — reproducible *because* it runs the analysis.
+**Why this step.** A result a colleague cannot re-run is not a result. We ship the deliverable as a report that is reproducible **because it runs the analysis** — every number produced by the same render that prints it.
 
-- The report `.qmd` **runs the whole pipeline in one render** — split $\to$ recipe $\to$ tune
-  $\to$ finalize $\to$ `last_fit` $\to$ tables & curves — so every number is produced by the
-  *same* run that prints it. Nothing cached by hand, nothing to drift.
-- Close with `renv::snapshot()`: pinned env + `here` + `set.seed` = a colleague re-runs it and
-  gets the same report.
+- The report `.qmd` runs the whole pipeline in one render: split $\to$ recipe $\to$ tune $\to$ finalize $\to$ `last_fit` $\to$ tables & curves.
+- Close with `renv::snapshot()`: pinned env + `here` + `set.seed` $\to$ a peer re-runs it and gets the same report.
 
 <p style="text-align:center; margin:0.7em 0 0 0;">
-<img src="../../../img/horststyle/reproducible-report.jpg" style="max-height:360px; border-radius:8px;"/>
+<img src="../../../img/horststyle/reproducible-report.jpg" style="max-height:300px; border-radius:8px;"/>
 <span style="display:block; font-size:0.5em; color:#888;">Code + data + environment + location → one true report — illustration generated with Images2.0 (numbers illustrative)</span>
 </p>
 
 ::: {.notes}
-Voce docente (IT): demo (~13 min). Immagine Images2.0 (reproducible-report.png): mostra
-code+data+renv+here → un solo report; i NUMERI nell'illustrazione sono di esempio, non i
-nostri. CAMBIO DI DESIGN (feedback #13): il report NON ricarica
-un `final_fit` cache-ato — FA tutte le analisi al render, così i numeri sono garantiti
-prodotti dallo stesso sistema che ha prodotto il report. A N=299 il tune è di ~secondi.
-La cache "fatta a mano" non è riproducibilità; quella vera (con audit) arriva con `targets`
-nell'Advanced.
+Voce docente (IT): demo (~13 min). Apro col PERCHÉ: riproducibile PERCHÉ gira (numeri ⇔ codice).
+Il report NON ricarica una cache: fa le analisi al render (a N=299 il tune è di ~secondi).
+Immagine Images2.0: i numeri sono illustrativi, non i nostri. La cache "a mano" non è
+riproducibilità; quella vera (con audit) arriva con `targets` nell'Advanced.
 :::
 
 ## Why "one render" *is* reproducibility
@@ -1082,6 +1076,47 @@ Voce docente (IT): il principio chiarito. Il qmd garantisce numeri ⇔ codice mo
 renv/here/set.seed per l'ambiente. Per analisi pesanti: NON cache a mano, ma `targets` —
 target intermedi esplorabili + report compilato dalla pipeline stessa (pre-hook all'Advanced,
 dove questo è il capstone).
+:::
+
+## Your turn — what makes it reproducible?
+
+A colleague should reproduce **every number and figure** on their own machine. What actually makes that possible?
+
+- **A.** The combination: a pinned environment (`renv` lockfile) + stable paths (`here::here()`) + a fixed seed (`set.seed`) + a report that **re-renders the analysis** deterministically. All together.
+- **B.** Just email the script — if they have the `.R`/`.qmd`, they can run it.
+- **C.** Just `set.seed(123)` — a fixed seed alone guarantees identical output on any machine.
+- **D.** Save the final number (the test AUC) in a text file.
+
+*Pick one — then we reveal it.*
+
+::: {.notes}
+Voce docente (IT): MCQ min-175 (Engage). Distrattori: B = basta lo script; C = basta il seed;
+D = salvare il numero = riproducibile.
+:::
+
+## The answer — A: the whole combination
+
+**✓ A.** Environment + paths + seed + an executable report, **together**.
+
+- **✗ B** — *emailing the script is enough.* Code depends on package versions, file paths and data that differ across machines.
+- **✗ C** — *`set.seed` alone.* A seed fixes the random stream, not the package versions; a different `glmnet`/`ranger` can still change the numbers.
+- **✗ D** — *saving the number = reproducible.* Recording a result is not being able to **re-derive** it.
+
+::: {.notes}
+Voce docente (IT): Reveal min-175. La riproducibilità è la combinazione; il singolo pezzo non
+basta. Pre-hook a `targets` (capstone Advanced) per analisi pesanti.
+:::
+
+## Go to code — `steps/05-report/` {.center}
+
+**Follow along.** Render `steps/05-report/` — the report that *runs* the analysis — then `renv::snapshot()`.
+
+- One render = the numbers and the code that made them are the same object.
+- This validated `final_fit` is exactly what **Advanced reopens** on day one.
+
+::: {.notes}
+Voce docente (IT): chiusura Step 05 (demo → "follow along"). Ponte all'Advanced: il workflow
+finalizzato di Basic è ciò che l'Advanced ricarica al giorno uno (pre-hook).
 :::
 
 ## Concept map — the whole afternoon
