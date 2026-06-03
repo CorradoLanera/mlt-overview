@@ -51,10 +51,15 @@ packages_through <- function(metas, n) {
 }
 
 packages_for_step <- function(metas, n) {
-  # Lock for step n = cumulative START (beats 0..n-1). EXCEPTION: a seeded step
-  # ships pre-populated given-code, so it needs ITS OWN packages already present.
+  # Lock for step n = cumulative START (beats 0..n-1). EXCEPTIONS that also pin the step's OWN
+  # packages, because no later step pins them and the step is restored-and-run as a whole:
+  #   - a seeded step (00-recap) ships pre-populated given-code that needs its own packages;
+  #   - a transform-terminal step (e.g. the targets capstone) is the LAST step and introduces
+  #     its own packages (targets/tarchetypes) that would otherwise be pinned nowhere.
   stopifnot(n >= 0, n < length(metas))
+  m    <- metas[[n + 1L]]
   base <- packages_through(metas, n)
-  if (isTRUE(metas[[n + 1L]]$seeded)) base <- unique(c(base, metas[[n + 1L]]$packages))
+  if (isTRUE(m$seeded) || identical(m$type, "transform-terminal"))
+    base <- unique(c(base, m$packages))
   base
 }

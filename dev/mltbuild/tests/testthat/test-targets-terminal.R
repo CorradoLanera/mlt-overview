@@ -23,3 +23,10 @@ test_that("engine:targets can render the SOLVED tree for the build (no blanks, n
   expect_false(any(grepl(">>>hole", tt)))
   expect_true(file.exists(file.path(td, "R", "pipeline-fns.R")))
 })
+
+test_that("a transform-terminal step pins its OWN packages in the lock set", {
+  wk    <- read_workshop(tarroot)
+  metas <- lapply(wk$steps, `[[`, "meta")
+  # 01-pipe is transform-terminal with packages: [targets] -> must appear in its lock set
+  expect_true("targets" %in% packages_for_step(metas, length(metas) - 1L))
+})
