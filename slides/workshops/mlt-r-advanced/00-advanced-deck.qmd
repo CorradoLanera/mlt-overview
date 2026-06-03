@@ -469,7 +469,7 @@ forward = function(x_tab, x_sig, x_seq) {
 }
 ```
 
-**Head input dim:** $16 + \text{sig\_ch} + \text{hidden}$ — `torch_cat(dim = 2)` concatenates along the feature axis; any mismatch errors at the first forward pass. **Output shape:** $[5, 2]$ — one row per observation, two logits per row (batch is always `dim = 1`).
+**Head input dim:** `16 + sig_ch + hidden` — `torch_cat(dim = 2)` concatenates along the feature axis; any mismatch errors at the first forward pass. **Output shape:** `[5, 2]` — one row per observation, two logits per row (batch is always `dim = 1`).
 
 ::: {.notes}
 Voce docente (IT): Reveal min-80. Riga (d) scartata. torch segnala lo shape mismatch subito →
