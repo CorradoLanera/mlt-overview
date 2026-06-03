@@ -31,10 +31,15 @@ read_workshop <- function(authoring_dir) {
   cand <- c(file.path(authoring_dir, "data-raw"),
             file.path(dirname(authoring_dir), "data-raw"))
   data_raw_dir <- cand[dir.exists(cand)][1]
+  # canonical renv/ (activate.R + settings.json) to seed per-step projects:
+  # under the authoring dir (fixtures) or at the workshop root (real layout).
+  renv_cand <- c(file.path(authoring_dir, "renv"),
+                 file.path(dirname(authoring_dir), "renv"))
+  renv_dir <- renv_cand[dir.exists(renv_cand)][1]
   list(
     slug = wk$slug, r_version = wk$r_version, ppm_snapshot = wk$ppm_snapshot,
     dataset = wk$dataset, authoring_dir = authoring_dir,
-    data_raw_dir = data_raw_dir,
+    data_raw_dir = data_raw_dir, renv_dir = renv_dir,
     steps = steps
   )
 }

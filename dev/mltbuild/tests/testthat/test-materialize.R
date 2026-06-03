@@ -58,3 +58,26 @@ test_that("materialize writes a substituted report.qmd for transform-terminal st
   # append steps still produce their .R:
   expect_true(file.exists(file.path(out, "steps", "02-eda", "02-eda.R")))
 })
+
+test_that("materialize scaffolds per-step R projects (00-setup bare, others renv)", {
+  out <- tempfile("wkout-")
+  wk  <- read_workshop(testthat::test_path("fixtures", "wkfix"))
+  materialize_workshop(wk, out)
+
+  # 00-setup: bare .Rproj only — renv NOT activated here (student runs renv::init())
+  expect_true(file.exists(file.path(out, "steps", "00-setup", "00-setup.Rproj")))
+  expect_false(file.exists(file.path(out, "steps", "00-setup", ".Rprofile")))
+  expect_false(dir.exists(file.path(out, "steps", "00-setup", "renv")))
+
+  # 02-eda has packages ("janitor") -> full renv project
+  s2 <- file.path(out, "steps", "02-eda")
+  expect_true(file.exists(file.path(s2, "02-eda.Rproj")))
+  expect_equal(readLines(file.path(s2, ".Rprofile")), 'source("renv/activate.R")')
+  expect_true(file.exists(file.path(s2, "renv", "activate.R")))
+  expect_true(file.exists(file.path(s2, "renv", "settings.json")))
+  expect_true(file.exists(file.path(s2, "renv", ".gitignore")))
+
+  # full/ -> full renv project
+  expect_true(file.exists(file.path(out, "full", "full.Rproj")))
+  expect_true(file.exists(file.path(out, "full", "renv", "activate.R")))
+})

@@ -38,14 +38,18 @@ materialize_workshop <- function(wk, out_dir) {
     } else {
       stop("unknown step type for '", slug, "': ", step$meta$type)
     }
-    .write_lines(packages_through(metas, n), file.path(sdir, "packages.txt"))
+    pk <- packages_through(metas, n)
+    .write_lines(pk, file.path(sdir, "packages.txt"))
     .write_lines(character(0), file.path(sdir, ".here"))
     .copy_data_raw(wk$data_raw_dir, sdir)
+    # 00-setup has no cumulative packages -> bare .Rproj; all others -> full renv project.
+    write_step_project(sdir, wk$renv_dir, with_renv = length(pk) > 0L)
   }
 
   full_dir <- file.path(out_dir, "full")
   .write_lines(assemble_full(append_beats), file.path(full_dir, "full.R"))
   .write_lines(character(0), file.path(full_dir, ".here"))
   .copy_data_raw(wk$data_raw_dir, full_dir)
+  write_step_project(full_dir, wk$renv_dir, with_renv = TRUE)
   invisible(out_dir)
 }

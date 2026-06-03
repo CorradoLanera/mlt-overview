@@ -23,3 +23,9 @@ test_that("read_workshop loads a transform-terminal template instead of beat.R",
   expect_true(length(rep_step$beat) == 0L)               # no append beat
   expect_true(any(grepl("\\{\\{frag:", rep_step$template)))  # template carries tokens
 })
+
+test_that("read_workshop resolves renv_dir (authoring dir first)", {
+  wk <- read_workshop(fixroot)
+  expect_true(!is.na(wk$renv_dir))
+  expect_true(file.exists(file.path(wk$renv_dir, "activate.R")))
+})
