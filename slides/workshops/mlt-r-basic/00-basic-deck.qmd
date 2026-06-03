@@ -764,18 +764,25 @@ Voce docente (IT): chiusura Step 03 + annuncio del break. Dopo il break entro ne
 (picco di ampiezza) con la teoria già "compilata".
 :::
 
-# Hyperparameters, one algorithm at a time {.center}
+# Step 04 · The model zoo, tuned & validated {#sec-04-zoo .center}
 
-A **hyperparameter** is a setting you fix *before* fitting — unlike the ordinary
-parameters (coefficients, split points) that the fit *learns* from the data. Same spine,
-**one hyperparameter at a time**: *what it is* $\to$ *what it controls* $\to$ *its effect on
-bias / variance / overfitting.*
+<!-- Step 04 (hands-on, 68 min): hyperparameters one at a time -> workflow_set + workflow_map; tune over vfold_cv; rank_results; finalize; last_fit. -->
+
+**Why this step.** Same spine, four families — penalized logistic, $k$-NN, RBF-SVM, random forest — brought together to compete **fairly, once**. First, the dials we will turn.
+
+A **hyperparameter** is a setting you fix *before* fitting — unlike the ordinary parameters (coefficients, split points) that the fit *learns* from the data. We take them **one algorithm at a time** — *what it is* $\to$ *what it controls* $\to$ *its effect on bias / variance / overfitting* — then tune all four together over one shared cross-validation.
+
+<p style="text-align:center; margin:0.8em 0 0 0;">
+<img src="../../../img/horststyle/workflowset.jpg" style="max-height:300px; border-radius:8px;"/>
+<span style="display:block; font-size:0.5em; color:#888;">The four families racing on one shared 5-fold CV — illustration generated with Images2.0</span>
+</p>
 
 ::: {.notes}
-Voce docente (IT): le 4 slide-iperparametro precedono il tuning. Definisco subito
-"iperparametro" (scelto prima del fit) vs "parametro" (appreso) — così rispondo al
-"perché non chiamarli iperparametri": ora li chiamiamo così. Una slide ~4 min ciascuna,
-non si tuna ancora nulla.
+Voce docente (IT): hands-on, il CUORE (~68 min, picco di ampiezza). L'intro FONDE l'ex-divider
+"Hyperparameters" (definizione iperparametro vs parametro) con il framing "zoo = 4 famiglie in
+gara". Le 4 slide-parametro che seguono introducono PARAM/BV un algoritmo per volta. Convenzione
+EVENT-FIRST → niente `event_level` nel codice. "Your turn" culminante al min 150. Parallelo
+`future` opzionale (a N=299 il tuning è di ~secondi).
 :::
 
 ## Penalized logistic — `penalty` / `mixture`
@@ -868,28 +875,33 @@ overfit né da tunare: è una quantità di CONVERGENZA. Costo lineare nei trees 
 se era sovradimensionato (stesso risultato); si rivede solo se cambia il problema.
 :::
 
-# Step 04 · The model zoo, tuned & validated {#sec-04-zoo}
+## Your turn — how does k shape bias & variance?
 
-<!-- Step 04 (hands-on, 68 min): workflow_set + workflow_map; tune over vfold_cv; rank_results; finalize; last_fit. -->
+For $k$-nearest-neighbours, how does the number of neighbours **`k`** affect bias and variance?
 
-The **zoo** = the four model families (penalized logistic, $k$-NN, RBF-SVM, random forest)
-brought together to compete — fairly, once.
+- **A.** Small `k` (1–3) $\to$ low bias, **high variance** (boundary follows local noise, overfits); large `k` $\to$ **high bias**, low variance (smoothed, may underfit). `k` is the bias–variance dial.
+- **B.** Larger `k` is always better — more neighbours = more information = higher accuracy.
+- **C.** `k` only controls computation speed; it does not change predictions or bias/variance.
+- **D.** Small `k` $\to$ high bias, low variance; large `k` $\to$ low bias, high variance (the reverse of A).
 
-- Bundle the four specs into **one** `workflow_set`; tune all with `workflow_map("tune_grid")`.
-- Tune over **one shared** `vfold_cv(v = 5)`; `rank_results()` / `autoplot()` to compare.
-- `finalize` the winner; `last_fit()` **once** on the untouched test set.
-
-<p style="text-align:center; margin:0.8em 0 0 0;">
-<img src="../../../img/horststyle/workflowset.jpg" style="max-height:360px; border-radius:8px;"/>
-<span style="display:block; font-size:0.5em; color:#888;">The four families racing on one shared 5-fold CV — illustration generated with Images2.0</span>
-</p>
+*Pick one — then we reveal it.*
 
 ::: {.notes}
-Voce docente (IT): hands-on, il CUORE (~68 min). "Zoo" = metafora delle quattro famiglie
-di modelli messe in gara insieme (glossato in slide, niente termine tecnico nascosto). Un
-solo oggetto `folds` riusato per tutti. "Your turn" culminante al min 150. Convenzione
-EVENT-FIRST (`died` primo) → niente `event_level` nel codice. Parallelo `future`
-OPZIONALE (a N=299 il tuning è di ~secondi).
+Voce docente (IT): MCQ min-118 (Engage), dopo le 4 slide-parametro. Distrattori: B = più k sempre
+meglio; C = k solo velocità; D = direzione bias-variance invertita.
+:::
+
+## The answer — A: k is the bias–variance dial
+
+**✓ A.** Small `k` overfits (low bias, high variance); large `k` over-smooths (high bias, low variance). The good `k` is **interior** $\to$ we tune it.
+
+- **✗ B** — *more k is always better.* Treats `k` as a score to maximize; very large `k` underfits.
+- **✗ C** — *k is only a speed setting.* It governs flexibility, hence the tradeoff.
+- **✗ D** — *direction inverted.* A flexible small-`k` model is high-variance, not high-bias.
+
+::: {.notes}
+Voce docente (IT): Reveal min-118. Atterra PARAM→BV un algoritmo per volta; il range di k è
+1..n_train, l'ottimo è interno → si tuna.
 :::
 
 ## Tuning machinery — `workflow_set`, `tune_grid`, CV
@@ -949,6 +961,78 @@ di test e diventerebbero falsi al render live) e tolti i fragment/incrementali. 
 ragionamento di merito: perché DUE metriche, perché la CV è il confronto onesto (un singolo
 split piccolo può lusingare un modello debole), e il pattern atteso (forest in testa in CV).
 I numeri si leggono dall'esecuzione live. L'aside simmetria/asimmetria resta concettuale.
+:::
+
+## Your turn — the culminating task
+
+From the `workflow_set` of the four algorithms (or `steps/04-zoo/` if behind):
+
+1. Tune all four in **one** call on the **same** resamples: `workflow_map("tune_grid", resamples = folds, grid = 8, metrics = metric_set(roc_auc, pr_auc))` over one `vfold_cv(v = 5)`.
+2. `rank_results()` / `autoplot()` $\to$ **name the winner** by CV AUC-ROC.
+3. `select_best("roc_auc")` $\to$ `finalize_workflow()` $\to$ **`last_fit()`** on the untouched test set (once), with `metric_set(roc_auc, pr_auc, accuracy)`.
+4. Report the CV AUC **and** the test AUC-ROC/AUC-PR; one sentence on why a single ~75-patient split is not trustworthy.
+
+*Your turn — compose the blocks you built in 03–04.*
+
+::: {.notes}
+Voce docente (IT): your-turn min-150 (Engage), il culminating task (§10.1). È COMPORRE blocchi
+già verificati, non scrivere da zero. Chi è indietro parte da `steps/04-zoo/`.
+:::
+
+## My turn — one fair race, one honest read
+
+- **One** `folds` object reused for all four workflows.
+- Name the winner (here: **random forest**, ranger); watch **both** metrics for the ~32% imbalance ("always survived" $\approx$ 68% accurate, useless; AUC-PR baseline = prevalence, not 0.5).
+- `last_fit()` **once**; read the AUC in **clinical** terms (discrimination of mortality risk).
+- **A single split is noisy:** a plain `glm` can score high on one test split, yet in 5-fold CV no linear model reaches the forest — so we trust the **CV ranking**, not one number on a small cohort.
+
+**Going further.** Add a *5th engine* with a one-line swap into the same `workflow_map`. And when does `rank_results` top-by-mean mislead? When CV intervals overlap $\to$ use the **one-standard-error rule** (the simplest model within 1 SE of the best). On this small cohort the SEs are wide — a perfect occasion to make the point.
+
+> **Numbers are read live.** Exact AUCs depend on the seed and the run; what is stable is the **pattern** — CV is the honest ranking, one number on a small cohort is luck.
+
+::: {.notes}
+Voce docente (IT): Reveal/my-turn min-150. Niente numeri hard-coded (li leggo dal vivo).
+"Going further" = ex-stretch: 5° engine + regola 1-SE quando le CV si sovrappongono.
+:::
+
+## Your turn — predict the order
+
+Three AUC-ROC values for the winning **random forest**:
+
+- **A** = resubstitution AUC (scored on the **training** data it was fit on)
+- **B** = cross-validated AUC (mean over the 5 folds)
+- **C** = test AUC (`last_fit()` on the **held-out** test set)
+
+**Which is clearly the largest? Can you be sure whether B > C or C > B?**
+
+::: {.notes}
+Voce docente (IT): predict-output min-165 (Engage). Faccio predire l'ordine PRIMA del reveal: se
+la sala dice A=B=C, l'optimism gap non è atterrato.
+:::
+
+## The reveal — A flatters; B vs C is noise
+
+$$\text{A (resubstitution)} \;\gg\; \{\text{B (CV)},\; \text{C (test)}\}$$
+
+**A is by far the largest** — a forest scored on its own rows nearly memorizes them (AUC $\approx 1$); **never quote it.** You **cannot** be sure of B vs C: both are honest-ish estimates, and on a small cohort their gap is mostly **noise** — here the single test split can land *above* the CV, the opposite of the textbook "test is lowest".
+
+That flip **is** the lesson: on ~75 test patients one number is unreliable $\to$ we select on **cross-validation**, and read `last_fit()` once *alongside* it, never instead of it.
+
+::: {.notes}
+Voce docente (IT): Reveal min-165. La sorpresa C>B è il momento didattico: il gap CV-vs-test è
+rumore di campionamento su N piccolo, non un ordine garantito.
+:::
+
+## Go to code — `steps/04-zoo/` {.center}
+
+Open `steps/04-zoo/`: tune the four, rank them, finalize, `last_fit()` **once**.
+
+- One `folds` object for all four; read the AUCs **live**.
+- **Behind?** Copy `steps/05-report/` and you are back in sync.
+
+::: {.notes}
+Voce docente (IT): chiusura Step 04. Il parallelo `future` è opzionale (a N=299 il tuning è di
+~secondi). I numeri li leggo dall'esecuzione live.
 :::
 
 # Step 05 · Reproducible report {#sec-05-report}
