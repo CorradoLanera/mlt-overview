@@ -1,0 +1,7 @@
+slug: 02-deep-learning
+title: "Step 02 — Deep learning, honestly"
+packages: [brulee, luz]
+carry: [R/nn-modules.R]
+check:
+  kw: [brulee, kernelshap, fused_net, torch_cat]
+  imgs: 2
