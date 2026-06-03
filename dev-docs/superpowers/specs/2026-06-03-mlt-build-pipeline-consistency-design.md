@@ -44,6 +44,11 @@ che renda il tooling Claude (command/hook) e la documentazione coerenti con essa
 - Change non correlati già nel working tree (`data/PubMed_*.csv` cancellato,
   `course/10-best-practices/narrative.html`): non toccati.
 
+**Eccezione di scope (engine).** W1 include UNA modifica bounded al motore `dev/mltbuild/` — lo
+scaffolding di progetto per-step (vedi §4.0) — perché il deliverable studente (Model C) la
+richiede. Fatta in TDD nel motore, con la sua review two-stage. Nessun'altra capacità nuova del
+motore (le altre stanno in W3).
+
 W1 è **indipendente dal contenuto** dei deck: la pipeline renderizza qualunque sorgente, in modo
 idempotente, così W2/W3 atterrano senza rework.
 
@@ -56,7 +61,7 @@ solo ordine e gate di freschezza, importando gli altri script come moduli e shel
 
 ```
 /mlt-build [slug]  →  scripts/build_all.py
-  1. Rscript dev/mltbuild/rebuild.R [slug]            # steps/ full/ _solved/ + lock per-step + parity (strutturale)
+  1. Rscript dev/mltbuild/rebuild.R [slug]            # steps/ full/ _solved/ + lock + scaffolding progetto per-step (§4.0) + parity
   2. Rscript dev/mltbuild/check-masking.R [slug]      # gate numerico hoist-safety (salvo --skip-masking)
   3. quarto render  slides/slides.qmd + slides/workshops/<slug>/   # deck theory + workshop
   4. ZIP studente + bundle docente DA DISCO          # scripts/build_workshop_zip.py (riscritto)
@@ -87,29 +92,40 @@ stesso stato. Nessuno stadio dipende da stato residuo non rigenerato.
   `git ls-files`. Così l'Advanced smette di essere stantio (deck fresco + ZIP dal sorgente
   tracciato) e si **auto-aggiorna** quando migrerà (W3), senza modifiche al packager.
 
-### 4.1 Contenuto ZIP studente `<slug>.zip` (decisione utente)
+### 4.0 Engine: scaffolding progetto per-step (Model C) — prerequisito
 
-Include (workshop fragment-built):
+Decisione utente: ogni step **deve potersi aprire come progetto R**, eccetto `00-setup` (dove renv
+non è ancora attivo: lì lo studente esegue `renv::init()` da zero, come insegnato). Il motore
+`dev/mltbuild/` va esteso (`materialize.R`) per emettere, per ogni step:
 
-- `steps/00-05/` — `<NN>.R` per gli step append + `05-report/report.qmd` (transform-terminal),
-  con `.here`, `data-raw/`, sottocartelle `R/ data/ output/` come prodotte dal motore.
-- `steps/01-05/renv.lock` — lock cumulativi per-step (step `00-setup` non ha lock, by design:
-  insegna `renv::init()`).
-- `00-setup` incluso così com'è.
-- `full/` — `full.R` + `full/renv.lock` + `.here` + `data-raw/` (riferimento all-solved).
-- Scaffolding R-project tracciato: `R/`, `.Rprofile`, `renv/activate.R`, `renv/settings.json`,
-  `renv/.gitignore`, `<slug>.Rproj`, `_manifest.yml`, `requirements.R`, `README.md`.
-- Deck renderizzato iniettato sotto `<slug>/slides/` (come oggi).
+- **`00-setup`**: solo un `.Rproj` nudo (nessun renv: nessun `.Rprofile`, nessun `renv/`, nessun
+  `renv.lock`). Apribile come progetto; lo studente fa `renv::init()`.
+- **`01-import` … `05-report` e `full/`**: `.Rproj` + `.Rprofile` (one-liner `source("renv/activate.R")`)
+  + `renv/activate.R` + `renv/settings.json` + `renv/.gitignore` + il `renv.lock` già prodotto.
+  Aprendo lo step, renv si auto-attiva; `renv::restore()` ripristina l'ambiente pinnato.
 
-Esclude: **`renv.lock` di root** (no — decisione), `_solved/`, `_solved.R` di root, `_authoring/`,
-`CLAUDE.md`, `renv/library/` e altri gitignored di runtime.
+Provenienza dei file renv: copiati dai canonici del workshop (`workshops/<slug>/renv/activate.R`,
+`renv/settings.json`) così la versione renv combacia; `.Rproj` da template generico. Fatto in
+**TDD** nel motore (test in `dev/mltbuild/tests/testthat/test-materialize.R`), con la review
+two-stage del motore. Blast radius: `materialize.R` + suoi test (hoist/masking/parity NON toccati:
+operano su `full/full.R` e `_solved/*.html`).
 
-> Nota implementazione: l'esclusione del root `renv.lock` va verificata contro il bootstrap renv
-> (`.Rprofile`→`renv/activate.R`). Il modello fragment usa lock per-step + `.here` per step; se
-> l'assenza del root lock rompe `renv::status()` all'apertura del progetto, valutare in fase di
-> piano se (a) lasciare comunque assente il root lock e documentare il flusso "apri lo step", o
-> (b) generare un root lock "neutro". La decisione di prodotto resta: **niente root lock nello
-> ZIP**; il piano risolve solo la meccanica renv.
+### 4.1 Contenuto ZIP studente `<slug>.zip` (Model C)
+
+Il container `<slug>/` **non è un progetto** (niente `.Rprofile`/`renv/`/`.Rproj`/`renv.lock` di
+root). È un bundle di snapshot, ognuno apribile come progetto (§4.0). Include (workshop
+fragment-built):
+
+- `steps/00-05/` — ogni step come da §4.0 (00-setup: `.Rproj` nudo; 01-05: progetto renv completo),
+  con `<NN>.R` / `05-report/report.qmd`, `.here`, `packages.txt`, `data-raw/`, `output/`.
+- `full/` — progetto renv completo (riferimento all-solved): `full.R` + `.here` + `renv.lock` +
+  scaffolding renv + `data-raw/`.
+- `data-raw/` a livello container (comodità), `README.md`, deck renderizzato sotto `<slug>/slides/`.
+
+Esclude: **qualsiasi progetto/renv/lock di root**, `_solved/`, `_solved.R` di root, `_authoring/`,
+`CLAUDE.md`, gli helper di authoring/maintainer di root (`R/seed-data.R`, `R/_dependencies.R`,
+`requirements.R`, `_manifest.yml`), `renv/library/` e runtime gitignored. Decisione utente:
+**niente lock di root**, **sì `full/`**, **sì `00-setup`**.
 
 ### 4.2 Bundle docente `<slug>-teacher.zip` (decisione: superset)
 
@@ -168,10 +184,10 @@ overview" dove il valore è il live-coding; documentato come scelta consapevole.
   dashboard agli ancoraggi del deck unico, o rimuovere i link rotti. La dashboard `portal.html`
   resta **author-only**; il sito pubblico `docs/` si rigenera via `/mlt-build` (build_site è
   pesante: non auto-lanciato a ogni edit).
-- `.claude/commands/mlt-dist.md`: aggiornato per delegare all'entrypoint unico, oppure ritirato in
-  favore di `/mlt-build` (decisione di piano: preferibile far sì che `/mlt-dist` esegua il
-  fragment-build prima di zippare, o rimandi a `/mlt-build`). In ogni caso `/mlt-dist` NON deve più
-  produrre uno ZIP non-fragment-aware.
+- `.claude/commands/mlt-dist.md`: **DECISO** — convertito in **wrapper deprecato** che delega
+  all'entrypoint unico per quel workshop (equivalente a `/mlt-build --workshop <slug>`), con nota
+  "deprecated → usa `/mlt-build`". Chi lo digita ottiene il comportamento fragment-aware corretto;
+  non produce più ZIP non-fragment-aware. La skill omonima `mlt-dist` segue la stessa sorte.
 - `.claude/commands/mlt-build.md`: **nuovo** command che invoca `scripts/build_all.py`.
 - `.claude/settings.json`: audit che nessun hook/permesso punti a comandi/percorsi rimossi o
   rinominati durante la migrazione.
@@ -181,8 +197,14 @@ overview" dove il valore è il live-coding; documentato come scelta consapevole.
 - **README root**: nuova sezione "pipeline unica + tre flussi (docente/studente/dev)"; documenta
   `/mlt-build`, l'entrypoint, e il modello di authoring `_authoring/` + `dev/mltbuild/` (oggi del
   tutto assente dal README — un nuovo autore costruirebbe e spedirebbe il vecchio ZIP).
+- **README studente** (`workshops/<slug>/README.md`): riscrivere "How to start" + "How the steps/
+  folders work" per **Model C** (§4.1): il container non è un progetto; si apre il `.Rproj` dello
+  step su cui si è; `00-setup` parte senza renv (`renv::init()` da zero), da `01-import` in poi
+  aprire lo step auto-attiva renv → `renv::restore()`; se si resta indietro, aprire lo step
+  successivo. Rimuove il modello "open `mlt-r-basic.Rproj` → restore dal lock di root".
 - **`dev/mltbuild/README.md`**: "Known gaps / next" → marca **CHIUSO** il gap release-pipeline,
-  punta a `/mlt-build`; aggiorna il "manual workaround" con il nuovo flusso.
+  punta a `/mlt-build`; aggiorna il "manual workaround" con il nuovo flusso; documenta lo
+  scaffolding progetto per-step (§4.0).
 - **Vault** (`progetti/mlt-overview/`): aggiorna il tracking con la pipeline unica e i tre flussi.
 
 ## 9. Igiene prerequisito (commit separati, niente push)
@@ -225,11 +247,13 @@ matematica resa), tile workshop col 4° pulsante, un deck renderizzato. Gate dei
 | `build_workshop_zip.py` | workshop_dir, deck_dir, mode | `dist/<slug>.zip`, `dist/<slug>-teacher.zip` | albero su disco / git ls-files |
 | `build_release.py` | dist/*.zip + slide src | `dev/release-assets/*` (+ asserzione freschezza) | build_workshop_zip, quarto |
 | `build_site.py` | site/ + `_solved/` | `docs/` + pagina Coding solutions | quarto, _solved/ |
-| `rebuild.R` / `check-masking.R` | `_authoring/` | alberi generati + gate | motore mltbuild |
+| `rebuild.R` / `materialize.R` / `check-masking.R` | `_authoring/` | alberi generati + scaffolding progetto per-step (§4.0) + gate | motore mltbuild |
 
 ## 12. Rischi
 
-- **renv senza root lock** (§4.1 nota): da risolvere a livello di meccanica nel piano.
+- **Scaffolding progetto per-step** (§4.0, modifica al motore): verificare che `00-setup` resti
+  senza renv (init da zero) e che 01-05/`full/` si aprano e facciano `renv::restore()` puliti;
+  provenienza di `renv/activate.R` allineata alla versione renv del workshop. TDD nel motore.
 - **`_solved/*.html` → pagina unica**: gli `_solved` sono HTML standalone; combinarli in una pagina
   a tab può richiedere estrazione del body o iframe. Verifica visiva obbligatoria.
 - **check-masking.R hardcoded su Basic**: per W1 gira solo su Basic; il gate per Advanced è W3.
