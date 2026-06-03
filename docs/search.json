@@ -46,7 +46,7 @@
     "href": "basic.html",
     "title": "Practice — Basic (R)",
     "section": "",
-    "text": "Open the deck ↗ Download deck Download workshop ZIP"
+    "text": "Open the deck ↗ Download deck Download workshop ZIP Coding solutions ↗"
   },
   {
     "objectID": "basic.html#what-you-will-build",
@@ -81,7 +81,7 @@
     "href": "basic.html#how-to-get-run-it",
     "title": "Practice — Basic (R)",
     "section": "How to get & run it",
-    "text": "How to get & run it\nYou need R (≥ 4.5) and RStudio.\nusethis::use_course(\n  \"https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic.zip\"\n)\nOpen mlt-r-basic.Rproj (its renv activates), then renv::restore()."
+    "text": "How to get & run it\nYou need R (≥ 4.5) and RStudio.\nusethis::use_course(\n  \"https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic.zip\"\n)\nThe download is a bundle of per-step projects, not a single project. Open the step you are on — start with steps/00-setup/00-setup.Rproj. At 00-setup you run renv::init() from scratch (that is the first lesson); from 01-import on, opening a step’s .Rproj auto-activates its renv — then renv::restore() for the pinned packages."
   },
   {
     "objectID": "basic.html#syllabus",
@@ -140,6 +140,20 @@
     "text": "Syllabus\nSyllabus in preparation — it will appear here once finalised."
   },
   {
+    "objectID": "advanced-solutions.html",
+    "href": "advanced-solutions.html",
+    "title": "Coding solutions — Advanced (R)",
+    "section": "",
+    "text": "Worked, executed solutions for every step of the Advanced workshop (the teacher To fill / Solved tabs). Pick a step.\nCoding solutions will appear here once the workshop is built."
+  },
+  {
+    "objectID": "basic-solutions.html",
+    "href": "basic-solutions.html",
+    "title": "Coding solutions — Basic (R)",
+    "section": "",
+    "text": "Worked, executed solutions for every step of the Basic workshop (the teacher To fill / Solved tabs). Pick a step.\n\n00-setup01-import02-eda03-logistic04-zoo05-report"
+  },
+  {
     "objectID": "downloads.html",
     "href": "downloads.html",
     "title": "Downloads",
@@ -151,14 +165,14 @@
     "href": "downloads.html#latest-assets",
     "title": "Downloads",
     "section": "Latest assets",
-    "text": "Latest assets\n\nTheory deck (self-contained)\nBasic deck (self-contained)\nAdvanced deck (self-contained)\nBasic workshop project (ZIP)\nAdvanced workshop project (ZIP)"
+    "text": "Latest assets\n\nTheory deck (self-contained)\nBasic deck (self-contained)\nAdvanced deck (self-contained)\nBasic workshop project (ZIP)\nBasic teacher bundle (ZIP, incl. solutions)\nAdvanced workshop project (ZIP)"
   },
   {
     "objectID": "downloads.html#running-a-workshop",
     "href": "downloads.html#running-a-workshop",
     "title": "Downloads",
     "section": "Running a workshop",
-    "text": "Running a workshop\nYou need R (≥ 4.5) and RStudio. Fetch a workshop with usethis::use_course(&lt;zip-url&gt;), open its .Rproj, then renv::restore() to install the pinned packages."
+    "text": "Running a workshop\nYou need R (≥ 4.5) and RStudio. Fetch a workshop with usethis::use_course(&lt;zip-url&gt;), then open the .Rproj and renv::restore() — see the workshop’s own page for the exact flow (Basic ships a bundle of per-step projects; Advanced ships a single project)."
   },
   {
     "objectID": "downloads.html#per-cohort-model",
