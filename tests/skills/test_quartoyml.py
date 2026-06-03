@@ -32,4 +32,5 @@ def test_master_has_revealjs_header_and_theme():
     assert out.startswith("---")
     assert "format:" in out and "revealjs:" in out
     assert "theme:" in out and "theme.scss" in out
+    assert "../styles/_brand.scss" in out
     assert 'title: "MLT"' in out

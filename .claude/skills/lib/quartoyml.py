@@ -29,7 +29,7 @@ def build_slides_master(m: dict) -> str:
         f'pagetitle: "{title}"\n'
         "format:\n"
         "  revealjs:\n"
-        "    theme: [default, theme.scss]\n"
+        "    theme: [default, ../styles/_brand.scss, theme.scss]\n"
         "    slide-number: true\n"
         "    incremental: false\n"
         "    embed-resources: true\n"
