@@ -6,6 +6,7 @@ options(repos = c(CRAN = "https://packagemanager.posit.co/cran/2026-06-01"))
 pkgs_cran <- c(
   "here", "rio", "tidyverse", "janitor",
   "tidymodels", "workflowsets", "ranger",       # reload the Basic RF
+  "glmnet", "kernlab", "gtsummary",              # Basic pipeline deps (inlined via the 00-recap seed)
   "vip", "kernelshap", "shapviz",                # interpretability (all CRAN, pure R)
   "torch", "luz", "brulee", "coro",              # deep learning (no Python)
   "ellmer",                                       # LLM typed ETL
