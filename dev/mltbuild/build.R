@@ -27,7 +27,7 @@ setwd(workshop); source(file.path("renv", "activate.R"))
 metas <- lapply(wk$steps, `[[`, "meta")
 for (n in seq_along(wk$steps) - 1L) {
   slug <- wk$steps[[n + 1L]]$slug
-  pk   <- packages_through(metas, n)
+  pk   <- packages_for_step(metas, n)
   write_step_lock(file.path(workshop, "steps", slug, "renv.lock"), pk, ppm)
 }
 # full/ lock = all packages

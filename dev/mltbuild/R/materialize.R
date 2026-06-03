@@ -38,7 +38,7 @@ materialize_workshop <- function(wk, out_dir) {
     } else {
       stop("unknown step type for '", slug, "': ", step$meta$type)
     }
-    pk <- packages_through(metas, n)
+    pk <- packages_for_step(metas, n)
     .write_lines(pk, file.path(sdir, "packages.txt"))
     .write_lines(character(0), file.path(sdir, ".here"))
     .copy_data_raw(wk$data_raw_dir, sdir)

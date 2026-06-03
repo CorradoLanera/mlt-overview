@@ -2,9 +2,13 @@
 
 read_meta <- function(step_dir) {
   m <- yaml::read_yaml(file.path(step_dir, "meta.yml"))
-  m$packages <- as.character(m$packages %||% character(0))
-  m$type     <- m$type %||% "append"
-  m$template <- m$template %||% NULL
+  m$packages  <- as.character(m$packages %||% character(0))
+  m$type      <- m$type %||% "append"
+  m$template  <- m$template %||% NULL
+  m$carry     <- as.character(m$carry %||% character(0))
+  m$check     <- m$check %||% NULL
+  m$engine    <- m$engine %||% NULL
+  m$seed_from <- m$seed_from %||% NULL
   m
 }
 
@@ -16,10 +20,18 @@ read_workshop <- function(authoring_dir) {
     beat_file <- file.path(step_dir, "beat.R")
     is_xform  <- identical(meta$type, "transform-terminal")
     tmpl_file <- if (is_xform) file.path(step_dir, meta$template %||% "report.qmd") else NA_character_
+    raw_beat <- if (!is_xform && file.exists(beat_file)) readLines(beat_file) else character(0)
+    meta$seeded <- FALSE
+    if (!is.null(meta$seed_from)) {
+      sf <- sibling_full(authoring_dir, meta$seed_from)
+      raw_beat <- c(sf$lines, "", raw_beat)
+      meta$packages <- unique(c(sf$packages, meta$packages))
+      meta$seeded <- TRUE
+    }
     list(
       slug     = slug,
       meta     = meta,
-      beat     = if (!is_xform && file.exists(beat_file)) parse_beat(readLines(beat_file)) else list(),
+      beat     = if (!is_xform) parse_beat(raw_beat) else list(),
       template = if (is_xform) {
         if (!file.exists(tmpl_file))
           stop("transform-terminal step '", slug, "': template not found: ", tmpl_file)
@@ -41,5 +53,19 @@ read_workshop <- function(authoring_dir) {
     dataset = wk$dataset, authoring_dir = authoring_dir,
     data_raw_dir = data_raw_dir, renv_dir = renv_dir,
     steps = steps
+  )
+}
+
+# Assemble a sibling workshop's full.R (append beats, solved) from its _authoring.
+sibling_full <- function(authoring_dir, slug) {
+  sib <- file.path(dirname(dirname(authoring_dir)), slug, "_authoring")
+  if (!dir.exists(sib)) stop("seed_from: sibling workshop not found: ", sib)
+  swk    <- read_workshop(sib)
+  smetas <- lapply(swk$steps, `[[`, "meta")
+  sbeats <- lapply(swk$steps, `[[`, "beat")
+  ab     <- sbeats[vapply(smetas, function(m) identical(m$type, "append"), logical(1))]
+  list(
+    lines    = assemble_full(ab),
+    packages = unique(unlist(lapply(smetas, function(m) m$packages %||% character(0))))
   )
 }
