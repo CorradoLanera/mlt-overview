@@ -191,7 +191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><a href="slides/workshops/mlt-r-advanced/00-advanced-deck.html" class="btn-deck">Open the deck ↗</a> <a href="https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced-deck.html" class="btn-dl">Download deck</a> <a href="https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip" class="btn-dl">Download workshop ZIP</a></p>
+<p><a href="slides/workshops/mlt-r-advanced/00-advanced-deck.html" class="btn-deck">Open the deck ↗</a> <a href="https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced-deck.html" class="btn-dl">Download deck</a> <a href="https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip" class="btn-dl">Download workshop ZIP</a> <a href="advanced-solutions.html" class="btn-deck">Coding solutions ↗</a></p>
 <section id="what-you-will-build" class="level2">
 <h2 class="anchored" data-anchor-id="what-you-will-build">What you will build</h2>
 <p>Starting from the <strong>validated heart-failure random forest built in the Basic workshop</strong> (bundled in this project), we:</p>
@@ -230,7 +230,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">use_course</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip"</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Open <code>mlt-r-advanced.Rproj</code>, then <code>renv::restore()</code>. The LLM step (<code>ellmer</code>) needs an OpenAI API key (optional — it falls back to a cached extraction): copy <code>.Renviron.example</code> → <code>.Renviron</code> and set your key.</p>
+<p>The download is a <strong>bundle of per-step projects</strong>, not a single project. Open the step you are on — start with <code>steps/00-recap/00-recap.Rproj</code>; opening a step’s <code>.Rproj</code> auto-activates its <code>renv</code>, then <code>renv::restore()</code> for the pinned packages. Each step is a complete cumulative snapshot (the solution to step N is step N+1).</p>
+<p>The LLM step (<code>ellmer</code>) needs an OpenAI API key (optional — it falls back to a labeled cached extraction): copy <code>.Renviron.example</code> → <code>.Renviron</code> and set your key. The key is read from env only and is never committed.</p>
 </section>
 <section id="syllabus" class="level2">
 <h2 class="anchored" data-anchor-id="syllabus">Syllabus</h2>

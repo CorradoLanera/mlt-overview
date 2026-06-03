@@ -95,7 +95,7 @@
     "href": "advanced.html",
     "title": "Practice — Advanced (R)",
     "section": "",
-    "text": "Open the deck ↗ Download deck Download workshop ZIP"
+    "text": "Open the deck ↗ Download deck Download workshop ZIP Coding solutions ↗"
   },
   {
     "objectID": "advanced.html#what-you-will-build",
@@ -130,7 +130,7 @@
     "href": "advanced.html#how-to-get-run-it",
     "title": "Practice — Advanced (R)",
     "section": "How to get & run it",
-    "text": "How to get & run it\nYou need R (≥ 4.5) and RStudio.\nusethis::use_course(\n  \"https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip\"\n)\nOpen mlt-r-advanced.Rproj, then renv::restore(). The LLM step (ellmer) needs an OpenAI API key (optional — it falls back to a cached extraction): copy .Renviron.example → .Renviron and set your key."
+    "text": "How to get & run it\nYou need R (≥ 4.5) and RStudio.\nusethis::use_course(\n  \"https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip\"\n)\nThe download is a bundle of per-step projects, not a single project. Open the step you are on — start with steps/00-recap/00-recap.Rproj; opening a step’s .Rproj auto-activates its renv, then renv::restore() for the pinned packages. Each step is a complete cumulative snapshot (the solution to step N is step N+1).\nThe LLM step (ellmer) needs an OpenAI API key (optional — it falls back to a labeled cached extraction): copy .Renviron.example → .Renviron and set your key. The key is read from env only and is never committed."
   },
   {
     "objectID": "advanced.html#syllabus",
@@ -144,7 +144,7 @@
     "href": "advanced-solutions.html",
     "title": "Coding solutions — Advanced (R)",
     "section": "",
-    "text": "Worked, executed solutions for every step of the Advanced workshop (the teacher To fill / Solved tabs). Pick a step.\nCoding solutions will appear here once the workshop is built."
+    "text": "Worked, executed solutions for every step of the Advanced workshop (the teacher To fill / Solved tabs). Pick a step.\n\n00-recap01-interpret02-deep-learning03-ellmer04-targets"
   },
   {
     "objectID": "basic-solutions.html",
@@ -165,14 +165,14 @@
     "href": "downloads.html#latest-assets",
     "title": "Downloads",
     "section": "Latest assets",
-    "text": "Latest assets\n\nTheory deck (self-contained)\nBasic deck (self-contained)\nAdvanced deck (self-contained)\nBasic workshop project (ZIP)\nBasic teacher bundle (ZIP, incl. solutions)\nAdvanced workshop project (ZIP)"
+    "text": "Latest assets\n\nTheory deck (self-contained)\nBasic deck (self-contained)\nAdvanced deck (self-contained)\nBasic workshop project (ZIP)\nBasic teacher bundle (ZIP, incl. solutions)\nAdvanced workshop project (ZIP)\nAdvanced teacher bundle (ZIP, incl. solutions)"
   },
   {
     "objectID": "downloads.html#running-a-workshop",
     "href": "downloads.html#running-a-workshop",
     "title": "Downloads",
     "section": "Running a workshop",
-    "text": "Running a workshop\nYou need R (≥ 4.5) and RStudio. Fetch a workshop with usethis::use_course(&lt;zip-url&gt;), then open the .Rproj and renv::restore() — see the workshop’s own page for the exact flow (Basic ships a bundle of per-step projects; Advanced ships a single project)."
+    "text": "Running a workshop\nYou need R (≥ 4.5) and RStudio. Fetch a workshop with usethis::use_course(&lt;zip-url&gt;), then open the .Rproj and renv::restore() — see the workshop’s own page for the exact flow (both ship a bundle of per-step projects)."
   },
   {
     "objectID": "downloads.html#per-cohort-model",
