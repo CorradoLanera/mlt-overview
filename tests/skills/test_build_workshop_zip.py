@@ -168,7 +168,8 @@ def test_student_payload_fragment_from_disk(tmp_path):
     assert "steps/01-import/renv.lock" in rels
     assert "steps/01-import/renv/activate.R" in rels
     assert "full/full.R" in rels
-    assert "data-raw/heart_failure.csv" in rels
+    assert "data-raw/heart_failure.csv" not in rels             # redundant top-level dropped
+    assert "steps/00-setup/data-raw/heart_failure.csv" in rels  # per-step copy stays
     assert "README.md" in rels
     # excluded:
     assert not any(a.startswith("_solved/") for a in rels)        # teacher-only

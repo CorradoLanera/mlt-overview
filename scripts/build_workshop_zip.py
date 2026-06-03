@@ -70,7 +70,7 @@ def included_source(workshop_dir: Path) -> list[str]:
 
 # Student-shippable top-level entries of a fragment-built workshop.
 _FRAGMENT_TOP_FILES = ("README.md",)
-_FRAGMENT_TOP_DIRS = ("steps", "full", "data-raw")
+_FRAGMENT_TOP_DIRS = ("steps", "full")
 # Path segments / names / suffixes that must never ship from the on-disk tree.
 _DENY_SEGMENTS = (
     "renv/library", "renv/staging", "renv/local", "renv/cellar",
