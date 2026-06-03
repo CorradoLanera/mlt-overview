@@ -466,18 +466,14 @@ N+1) + bridge al prossimo. Per gli step demo diventa "follow along".
 
 <!-- Step 02 (hands-on, 22 min): tbl_summary(by = outcome); one ggplot; read imbalance -> metric choice. -->
 
-**Objectives.** Describe the cohort and read its shape.
+**Why this step.** Before modelling, *read the cohort* — a model is only as honest as your grasp of its data. The shape we find here, especially the **class imbalance**, drives the metric choice for the rest of the day.
 
 - `gtsummary::tbl_summary(by = outcome)` — a clinical Table 1.
-- One `ggplot` of a predictor against the outcome.
-- **Read the class imbalance** (~32% events) $\to$ it drives the **dual-metric** choice
-  (AUC-ROC **and** AUC-PR) later.
+- One `ggplot` of a predictor against the outcome; **read the ~32% imbalance** $\to$ the dual metric.
 
 ::: {.notes}
-Voce docente (IT): hands-on *elastico* (~22 min, comprimibile se in ritardo).
-L'imbalance ~32% visto in tabella è il seme del ragionamento "accuracy inganna →
-guardiamo DUE metriche". Boxplot di `ejection_fraction`: chi sopravvive ha frazione
-d'eiezione più alta.
+Voce docente (IT): hands-on elastico (~22 min, comprimibile). Apro col PERCHÉ: l'imbalance
+~32% visto qui è il seme del ragionamento "accuracy inganna → due metriche".
 :::
 
 ## `gtsummary` — a clinical Table 1
@@ -539,6 +535,35 @@ Voce docente (IT): ggplot = grammatica a layer. Dati nel `|>`, layer con `+`, po
 ECDC.
 :::
 
+## Your turn — why watch AUC-PR too?
+
+Death occurs in about **32%** of patients, and we score every model with **both** AUC-ROC **and** AUC-PR. Why watch **AUC-PR alongside** AUC-ROC, not AUC-ROC alone?
+
+- **A.** AUC-PR focuses on the *death* class; its no-skill baseline is the *prevalence* ($\approx 0.32$), not 0.5 — so it exposes poor performance on the patients we care about that a flattering AUC-ROC can hide.
+- **B.** AUC-ROC and AUC-PR always rank models the same way — AUC-PR is a redundant second opinion.
+- **C.** Like AUC-ROC, AUC-PR's no-skill baseline is always 0.5.
+- **D.** Under imbalance AUC-ROC cannot be computed; AUC-PR is its only valid replacement.
+
+*Pick one — then we reveal it.*
+
+::: {.notes}
+Voce docente (IT): MCQ min-50 (Engage). Distrattori: B = metriche intercambiabili; C = baseline
+PR = 0.5; D = imbalance "rompe" la ROC. Li faccio votare prima del reveal.
+:::
+
+## The answer — A: AUC-PR is anchored to prevalence
+
+**✓ A.** AUC-PR scores the positive (death) class; its no-skill line is the prevalence ($\approx 0.32$), so it stays meaningful as the event gets rarer.
+
+- **✗ B** — *interchangeable.* The two can and do disagree — that is the whole reason to watch both.
+- **✗ C** — *PR baseline is 0.5.* No: the AUC-PR no-skill line is the prevalence itself; a "0.6" at 32% is far less impressive than it looks.
+- **✗ D** — *imbalance breaks AUC-ROC.* AUC-ROC is perfectly computable under imbalance — it just does not, alone, speak about the minority class.
+
+::: {.notes}
+Voce docente (IT): Reveal min-50. La lezione: due metriche complementari; la PR è ancorata
+alla prevalenza. Atterra prima dello step 03/04 dove leggo ROC+PR.
+:::
+
 ## Where today's model fits — learning paradigms
 
 Today we do **supervised** learning: every patient carries a known label (`died` /
@@ -559,6 +584,18 @@ Voce docente (IT): ex-"supervised vs unsupervised" (slide 8), tolto il fragment 
 ESPANSO ai quattro paradigmi (supervised oggi, + unsupervised, reinforcement, active/
 online) come chiesto. Inquadra perché il nostro problema è supervised. Nessuna rivelazione
 incrementale.
+:::
+
+## Go to code — `steps/02-eda/` {.center}
+
+Open `steps/02-eda/`: build the Table 1 and one plot, and read the imbalance.
+
+- Keep it short — EDA is elastic; the metric lesson is the keeper.
+- **Behind?** Copy `steps/03-logistic/` and you are back in sync.
+
+::: {.notes}
+Voce docente (IT): chiusura Step 02. La slide "learning paradigms" resta come ponte verso lo
+step 03 (supervised). Il folder 02-eda è comprimibile se sono in ritardo.
 :::
 
 # Step 03 · Logistic spine {#sec-03-logistic .center}
