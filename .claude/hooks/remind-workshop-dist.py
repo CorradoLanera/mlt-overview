@@ -43,8 +43,8 @@ def main() -> int:
     path = extract_path(payload)
     if path and should_remind(path):
         print(
-            "[remind] workshop source changed -> regenerate the dist ZIP via /mlt-dist "
-            "before publishing a release.",
+            "[remind] workshop source changed -> rebuild & ship via /mlt-build "
+            "(it fragment-builds the tree before zipping) before publishing a release.",
             file=sys.stderr,
         )
     return 0
