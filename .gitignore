@@ -48,3 +48,6 @@ workshops/*/_solved/
 # Transient QA/audit screenshots + runtime locks under .claude/ (scratch, not deliverables)
 /.claude/*.png
 /.claude/*.lock
+
+# Pre-migration root solution script (replaced by the generated _solved/ tree)
+workshops/*/_solved.R
