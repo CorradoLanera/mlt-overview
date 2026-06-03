@@ -1,6 +1,8 @@
 type: append
 slug: 01-import
 title: "Step 01 — Import & wrangle"
+minutes: 35
+summary: "Import the heart-failure data and wrangle it tidily, dropping the leaky follow-up column."
 packages: [tidyverse, janitor]
 check:
   kw: [outcome, died, survived, glimpse]

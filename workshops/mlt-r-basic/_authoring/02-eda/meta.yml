@@ -1,6 +1,8 @@
 type: append
 slug: 02-eda
 title: "Step 02 — Clinical EDA"
+minutes: 30
+summary: "Explore the cohort with clinically meaningful summaries (`gtsummary`)."
 packages: [gtsummary]
 check:
   kw: [ejection_fraction, tbl_summary]

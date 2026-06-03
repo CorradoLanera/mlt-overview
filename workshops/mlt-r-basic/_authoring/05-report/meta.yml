@@ -1,6 +1,8 @@
 type: transform-terminal
 slug: 05-report
 title: "Step 05 — Reproducible report"
+minutes: 35
+summary: "Wrap the whole analysis in a reproducible Quarto report."
 template: report.qmd
 packages: []
 check:

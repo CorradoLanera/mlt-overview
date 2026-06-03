@@ -59,16 +59,37 @@ def _theory_chapters_md(root: Path) -> str:
     return "\n".join(out)
 
 
-def _timeline_md(root: Path, slug: str) -> str:
-    fdir = root / "slides" / "workshops" / slug / "formatives"
-    names = [p.name for p in fdir.glob("*.md")] if fdir.is_dir() else []
-    rows = sc.timeline_from_formatives(names)
-    if not rows:
+def _workshop_steps_md(root: Path, slug: str) -> str:
+    """Step-level workshop timeline mirroring _theory_chapters_md.
+
+    Reads workshops/<slug>/_authoring/workshop.yml (step order) + each step's
+    meta.yml (title/minutes/summary). Placeholder if no complete-metadata steps.
+    """
+    adir = root / "workshops" / slug / "_authoring"
+    wf = adir / "workshop.yml"
+    if not wf.is_file():
         return "_Timeline to be published._\n"
-    out = ["| Minute | Checkpoint |", "|---|---|"]
-    for r in rows:
-        out.append(f"| min {r['minute']} | {r['label']} |")
-    return "\n".join(out) + "\n"
+    wtext = wf.read_text(encoding="utf-8", errors="replace")
+    metas = {}
+    for step in sc.workshop_step_order(wtext):
+        mp = adir / step / "meta.yml"
+        if mp.is_file():
+            metas[step] = sc.parse_step_meta(mp.read_text(encoding="utf-8", errors="replace"))
+    steps = sc.workshop_steps(wtext, metas)
+    if not steps:
+        return "_Timeline to be published._\n"
+    out = ["## Steps", ""]
+    total = 0
+    for s in steps:
+        total += s["minutes"]
+        out.append(f"### {s['title']} · {s['minutes']} min")
+        out.append("")
+        if s["summary"]:
+            out.append(s["summary"])
+            out.append("")
+    out.append(f"**Total contact time: {total} min.**")
+    out.append("")
+    return "\n".join(out)
 
 
 def _overview_md(root: Path, slug: str) -> str:
@@ -120,12 +141,12 @@ def write_partials(root: Path, out_dir: Path) -> list[Path]:
     for i, (slug, key) in enumerate(WORKSHOPS, start=2):
         label = "Basic" if key == "basic" else "Advanced"
         sched += [f"## Module {i} · Practice — {label} (≈4h)", "",
-                  _timeline_md(root, slug), ""]
+                  _workshop_steps_md(root, slug), ""]
     _emit("schedule.md", "\n".join(sched))
 
     for slug, key in WORKSHOPS:
         _emit(f"{key}-overview.md", _overview_md(root, slug))
-        _emit(f"{key}-timeline.md", _timeline_md(root, slug))
+        _emit(f"{key}-timeline.md", _workshop_steps_md(root, slug))
         _emit(f"{key}-syllabus.md", _syllabus_partial(root, key))
         _emit(f"{key}-solutions.md", _solutions_md(root, slug))
 

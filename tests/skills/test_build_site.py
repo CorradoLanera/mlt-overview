@@ -16,23 +16,30 @@ def _mini_repo(tmp: Path) -> Path:
     (tmp / "course" / "01-introduction" / "objectives.md").write_text(
         "## Learning objectives\n\n1. **Frame** it.\n\n*Nota docente:* hidden.\n", encoding="utf-8"
     )
-    fm = tmp / "slides" / "workshops" / "mlt-r-basic" / "formatives"
-    fm.mkdir(parents=True)
-    (fm / "min-09-live-check.md").write_text("x", encoding="utf-8")
-    (fm / "min-30-yourturn-wrangle.md").write_text("x", encoding="utf-8")
-    (fm / "README.md").write_text("x", encoding="utf-8")
     (tmp / "workshops" / "mlt-r-basic").mkdir(parents=True)
     (tmp / "workshops" / "mlt-r-basic" / "README.md").write_text(
         "# Basic\n\n## What you will build\n\nA model.\n\n## Prerequisites\n\nSome R.\n",
         encoding="utf-8",
     )
-    fa = tmp / "slides" / "workshops" / "mlt-r-advanced" / "formatives"
-    fa.mkdir(parents=True)
-    (fa / "min-10-live-check.md").write_text("x", encoding="utf-8")
     (tmp / "workshops" / "mlt-r-advanced").mkdir(parents=True)
     (tmp / "workshops" / "mlt-r-advanced" / "README.md").write_text(
         "# Adv\n\n## What you will build\n\nInterpretability.\n", encoding="utf-8"
     )
+    ab = tmp / "workshops" / "mlt-r-basic" / "_authoring"
+    (ab / "00-setup").mkdir(parents=True)
+    (ab / "01-import").mkdir(parents=True)
+    (ab / "workshop.yml").write_text(
+        "slug: mlt-r-basic\nsteps: [00-setup, 01-import]\n", encoding="utf-8")
+    (ab / "00-setup" / "meta.yml").write_text(
+        'title: "Step 00 — Setup"\nminutes: 25\nsummary: "Init the project."\n', encoding="utf-8")
+    (ab / "01-import" / "meta.yml").write_text(
+        'title: "Step 01 — Import"\nminutes: 35\nsummary: "Import the data."\n', encoding="utf-8")
+    aa = tmp / "workshops" / "mlt-r-advanced" / "_authoring"
+    (aa / "00-recap").mkdir(parents=True)
+    (aa / "workshop.yml").write_text(
+        "slug: mlt-r-advanced\nsteps: [00-recap]\n", encoding="utf-8")
+    (aa / "00-recap" / "meta.yml").write_text(
+        'title: "Step 00 — Recap"\nminutes: 30\nsummary: "Reopen the model."\n', encoding="utf-8")
     return tmp
 
 
@@ -67,7 +74,9 @@ def test_basic_timeline_and_overview(tmp_path):
     out = tmp_path / "site" / "_generated"
     bs.write_partials(root, out)
     tl = (out / "basic-timeline.md").read_text(encoding="utf-8")
-    assert "min 9" in tl and "min 30" in tl
+    assert "Step 00 — Setup" in tl and "25 min" in tl
+    assert "Init the project." in tl
+    assert "**Total contact time: 60 min.**" in tl
     ov = (out / "basic-overview.md").read_text(encoding="utf-8")
     assert "A model." in ov and "Some R." in ov
 

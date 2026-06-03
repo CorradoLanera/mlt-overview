@@ -15,7 +15,10 @@ _CHAPTER_RE = re.compile(
     r"\s*minutes:\s*(\d+)",
 )
 
-_FORMATIVE_RE = re.compile(r"min-(\d+)-(.+)\.md$")
+_STEPS_RE = re.compile(r"^\s*steps:\s*\[([^\]]*)\]", re.MULTILINE)
+_META_TITLE_RE = re.compile(r'^\s*title:\s*"([^"]*)"', re.MULTILINE)
+_META_MINUTES_RE = re.compile(r"^\s*minutes:\s*(\d+)\s*$", re.MULTILINE)
+_META_SUMMARY_RE = re.compile(r'^\s*summary:\s*"([^"]*)"', re.MULTILINE)
 
 
 def chapters_from_manifest(text: str) -> list[dict]:
@@ -56,17 +59,44 @@ def extract_objectives(md_text: str) -> str:
     return "\n".join(body).strip()
 
 
-def timeline_from_formatives(names: list[str]) -> list[dict]:
-    """Map `min-NN-<slug>.md` filenames -> [{minute, label}] sorted by minute."""
-    rows = []
-    for n in names:
-        base = n.replace("\\", "/").split("/")[-1]
-        m = _FORMATIVE_RE.search(base)
-        if not m:
+def workshop_step_order(workshop_yml: str) -> list[str]:
+    """Slugs in `steps: [a, b, c]` order from a workshop.yml. [] if absent."""
+    m = _STEPS_RE.search(workshop_yml)
+    if not m:
+        return []
+    return [s.strip() for s in m.group(1).split(",") if s.strip()]
+
+
+def parse_step_meta(meta_text: str) -> dict:
+    """title/minutes/summary from a step meta.yml (stdlib only, no yaml dep)."""
+    t = _META_TITLE_RE.search(meta_text)
+    mins = _META_MINUTES_RE.search(meta_text)
+    s = _META_SUMMARY_RE.search(meta_text)
+    return {
+        "title": t.group(1) if t else None,
+        "minutes": int(mins.group(1)) if mins else None,
+        "summary": s.group(1) if s else None,
+    }
+
+
+def workshop_steps(workshop_yml: str, metas: dict) -> list[dict]:
+    """Ordered [{slug,title,minutes,summary}] for a workshop timeline.
+
+    `metas`: {slug: parse_step_meta(...)}. Steps missing a title OR minutes are
+    skipped (incomplete metadata -> not shown). Order from workshop.yml.
+    """
+    out = []
+    for slug in workshop_step_order(workshop_yml):
+        m = metas.get(slug)
+        if not m or not m.get("title") or m.get("minutes") is None:
             continue
-        rows.append({"minute": int(m.group(1)), "label": m.group(2).replace("-", " ")})
-    rows.sort(key=lambda r: r["minute"])
-    return rows
+        out.append({
+            "slug": slug,
+            "title": m["title"],
+            "minutes": m["minutes"],
+            "summary": m.get("summary") or "",
+        })
+    return out
 
 
 def readme_section(md_text: str, heading: str) -> str:

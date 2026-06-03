@@ -1,5 +1,7 @@
 slug: 02-deep-learning
 title: "Step 02 — Deep learning, honestly"
+minutes: 70
+summary: "Train a small MLP live with `torch`/`luz`, then write and shape-check CNN, RNN and fused nets."
 packages: [brulee, luz]
 carry: [R/nn-modules.R]
 check:

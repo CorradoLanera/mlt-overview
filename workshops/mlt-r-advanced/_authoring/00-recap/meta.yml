@@ -1,5 +1,7 @@
 slug: 00-recap
 title: "Step 00 — Recap & setup"
+minutes: 30
+summary: "Reopen the validated Basic random forest and warm up the `torch` backend."
 seed_from: mlt-r-basic
 packages: [torch]
 check:

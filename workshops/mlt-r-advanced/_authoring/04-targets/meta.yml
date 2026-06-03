@@ -2,6 +2,8 @@ type: transform-terminal
 engine: targets
 slug: 04-targets
 title: "Step 04 — Reproducibility capstone"
+minutes: 50
+summary: "Seal the full arc in a `targets` DAG reproducible with a single `tar_make()`."
 packages: [targets, tarchetypes, ranger]
 check:
   kw: [Permutation VIMP, Importance, ejection_fraction]
