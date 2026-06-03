@@ -24,7 +24,7 @@ ZIP_ASSETS = [
     "mlt-r-advanced.zip", "mlt-r-advanced-teacher.zip",
 ]
 _DECK_SRC = {
-    "theory":   "slides/slides.qmd",
+    "theory":   "slides/course.qmd",
     "basic":    "slides/workshops/mlt-r-basic",
     "advanced": "slides/workshops/mlt-r-advanced",
 }
@@ -37,7 +37,7 @@ def _run(cmd: list[str], cwd: Path) -> None:
 def _rendered_html(root: Path, key: str) -> Path:
     src = _DECK_SRC[key]
     if key == "theory":
-        return root / "slides" / "slides.html"
+        return root / "slides" / "course.html"
     html_files = list((root / src).glob("*.html"))
     if not html_files:
         raise FileNotFoundError(

@@ -2,7 +2,7 @@
 title: "Theory Overview"
 ---
 
-[Open the slides ↗](slides/slides.html){.btn-deck}
+[Open the slides ↗](slides/course.html){.btn-deck}
 [Download self-contained deck](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-overview-theory-deck.html){.btn-dl}
 
 Ten chapters, storyboard-narrated, ≈225 minutes of contact time.

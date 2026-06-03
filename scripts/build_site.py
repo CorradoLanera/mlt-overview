@@ -182,18 +182,18 @@ def _run(cmd: list[str], cwd: Path | None = None) -> None:
 
 
 def render_theory_deck(root: Path) -> None:
-    """Render slides/slides.qmd non-embed; copy html + _files into docs/slides/."""
+    """Render slides/course.qmd non-embed; copy html + _files into docs/slides/."""
     with _nonembed_metadata() as meta:
-        _run(["quarto", "render", "slides/slides.qmd", "--metadata-file", str(meta)], cwd=root)
+        _run(["quarto", "render", "slides/course.qmd", "--metadata-file", str(meta)], cwd=root)
     docs_slides = root / DOCS / "slides"
     docs_slides.mkdir(parents=True, exist_ok=True)
-    src = root / "slides" / "slides.html"
+    src = root / "slides" / "course.html"
     if not src.exists():
         raise FileNotFoundError(f"Expected rendered deck not found: {src}")
-    shutil.copy2(src, docs_slides / "slides.html")
-    files = root / "slides" / "slides_files"
+    shutil.copy2(src, docs_slides / "course.html")
+    files = root / "slides" / "course_files"
     if files.is_dir():
-        shutil.copytree(files, docs_slides / "slides_files", dirs_exist_ok=True)
+        shutil.copytree(files, docs_slides / "course_files", dirs_exist_ok=True)
 
 
 def render_workshop_deck(root: Path, slug: str) -> None:

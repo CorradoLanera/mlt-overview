@@ -21,8 +21,8 @@ def test_enabled_slugs_order_and_filter():
 
 def test_master_includes_only_enabled_in_order():
     out = quartoyml.build_slides_master(M)
-    assert "{{< include chapters/01-a.qmd >}}" in out
-    assert "{{< include chapters/03-c.qmd >}}" in out
+    assert "{{< include course/01-a.qmd >}}" in out
+    assert "{{< include course/03-c.qmd >}}" in out
     assert "02-b" not in out
     assert out.index("01-a.qmd") < out.index("03-c.qmd")
 

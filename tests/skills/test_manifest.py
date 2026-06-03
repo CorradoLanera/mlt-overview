@@ -70,7 +70,7 @@ def test_artifact_status_reads_filesystem(tmp_path):
 
 def test_artifact_status_detects_slides_qmd(tmp_path):
     m = manifest.load(_write(tmp_path))
-    slides_chapters = tmp_path / "slides_dir" / "chapters"
+    slides_chapters = tmp_path / "slides_dir" / "course"
     slides_chapters.mkdir(parents=True)
     (slides_chapters / "03-c.qmd").write_text("x", encoding="utf-8")
     st = manifest.artifact_status(m, root=tmp_path, slides_root=tmp_path / "slides_dir")

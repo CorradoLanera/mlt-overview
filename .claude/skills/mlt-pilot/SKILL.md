@@ -18,7 +18,7 @@ each enabled chapter (manifest order) × {objectives, narrative, subunits(opt), 
 ## Completion model
 
 - A chapter is **content-complete** when objectives + narrative + storyboard + items all exist (subunits optional).
-- A chapter is **production-complete** when, on top, **slides** (`slides/chapters/<slug>.qmd`) exist.
+- A chapter is **production-complete** when, on top, **slides** (`slides/course/<slug>.qmd`) exist.
 - Course-level: the narrative **spine** (once) and the **syllabus** (after the chapters).
 - Natural phase order: spine → per chapter [objectives → narrative → (subunits, optional) → storyboard → items → **slides**] → syllabus → student review.
 - The slides phase comes **right after items** for the same chapter — propose it before moving to the next chapter.
@@ -51,7 +51,7 @@ assume. If the teacher gave an explicit phase/chapter (e.g. via /mlt arguments),
 - **slides** → invoke the `mlt-quarto-build` skill for the chapter: storyboard-driven beat expansion (each of
   the 6 beats becomes 1-N slides), anchor image per beat from `img/storyboard/sb-<NN>_<FF>.png`, supporting
   figures pulled from `img/`, formulas/text reused from `_archive/legacy-xaringan/index.Rmd`/`_archive/legacy-xaringan/index-full.Rmd`; refreshes
-  `slides/slides.qmd` (manifest-driven master) and renders revealjs. Mandatory visual QA (chrome-devtools).
+  `slides/course.qmd` (manifest-driven master) and renders revealjs. Mandatory visual QA (chrome-devtools).
 - **syllabus** → invoke `syllabus-2p` (writes `course/_global/syllabus.md`), then the `studente-confuso`
   sub-agent for the POV review (`course/_global/syllabus-revisione-studenti.md`).
 

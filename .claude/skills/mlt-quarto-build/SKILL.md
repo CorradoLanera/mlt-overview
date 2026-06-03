@@ -23,7 +23,7 @@ Student-facing text in **English**; speaker notes (Voce docente) in **Italian**.
   3. **`_archive/legacy-xaringan/index.Rmd` / `_archive/legacy-xaringan/index-full.Rmd`** — content source for reusable formulas (already in `$...$`), historical
      wording, and the teacher's previous figure↔concept pairings (helps choose from (2)).
 
-## Produce `slides/chapters/<slug>.qmd`
+## Produce `slides/course/<slug>.qmd`
 
 The flow follows the storyboard's six **beats** (narrative functions: *Hook visivo · Contesto · Sfida/Dati ·
 Nodo/Impatto · Metodo/Soluzione · Payoff/Domanda finale*). Each beat expands into **1 to N slides** (typically
@@ -53,18 +53,18 @@ alongside the deck.
 
 ## Regenerate the modular master + render
 
-1. Write/refresh `slides/slides.qmd`:
-   `python -c "import sys;sys.path.insert(0,'.claude/skills/lib');import manifest,quartoyml;open('slides/slides.qmd','w',encoding='utf-8').write(quartoyml.build_slides_master(manifest.load()))"`
-2. Render: `quarto render slides/slides.qmd --to revealjs`.
+1. Write/refresh `slides/course.qmd`:
+   `python -c "import sys;sys.path.insert(0,'.claude/skills/lib');import manifest,quartoyml;open('slides/course.qmd','w',encoding='utf-8').write(quartoyml.build_slides_master(manifest.load()))"`
+2. Render: `quarto render slides/course.qmd --to revealjs`.
 3. **Visual QA** (mandatory): open the rendered chapter with chrome-devtools at 1920×1080 and at a narrow
    viewport; check overflow, cut-off images, contrast, math rendering. Fix and re-render until clean.
 
 ## Incremental rendering tip
 
-If only some chapters have `slides/chapters/<slug>.qmd` built, toggle the not-yet-built chapters to
+If only some chapters have `slides/course/<slug>.qmd` built, toggle the not-yet-built chapters to
 `include: false` in `course/_manifest.yml` before rendering — the manifest-driven master will then include
 only the chapters whose `.qmd` exists, so `quarto render` won't fail on missing includes.
 
 ## Output
 
-`slides/chapters/<slug>.qmd` + refreshed `slides/slides.qmd`. Report and stop at the gate.
+`slides/course/<slug>.qmd` + refreshed `slides/course.qmd`. Report and stop at the gate.

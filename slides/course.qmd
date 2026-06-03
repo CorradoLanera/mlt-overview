@@ -1,0 +1,23 @@
+---
+pagetitle: "Machine Learning — An Applied Overview"
+format:
+  revealjs:
+    theme: [default, ../styles/_brand.scss, theme.scss]
+    slide-number: true
+    incremental: false
+    embed-resources: true
+    html-math-method: mathjax
+---
+
+{{< include course/_opening.qmd >}}
+{{< include course/01-introduction.qmd >}}
+{{< include course/02-classifiers.qmd >}}
+{{< include course/03-algorithm-examples.qmd >}}
+{{< include course/04-model-selection.qmd >}}
+{{< include course/05-deep-learning.qmd >}}
+{{< include course/06-unstructured-data.qmd >}}
+{{< include course/07-llm-transformers.qmd >}}
+{{< include course/08-chatgpt-usage.qmd >}}
+{{< include course/09-agents.qmd >}}
+{{< include course/10-best-practices.qmd >}}
+{{< include course/_closing.qmd >}}

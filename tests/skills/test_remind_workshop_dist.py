@@ -30,4 +30,4 @@ def test_ignores_cache_rendered_zip_and_unrelated():
     assert rwd.should_remind("workshops/mlt-r-basic/slides/00-basic-deck_files/x.js") is False
     assert rwd.should_remind("dist/mlt-r-basic.zip") is False
     assert rwd.should_remind("course/01-introduction/narrative.md") is False
-    assert rwd.should_remind("slides/slides.qmd") is False
+    assert rwd.should_remind("slides/course.qmd") is False

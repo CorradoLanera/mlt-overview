@@ -10,7 +10,7 @@ One course, **three modules**, taught in sequence.
 ### Theory Overview
 10 storyboard-narrated chapters (≈225 min).
 
-[Open slides](slides/slides.html){.btn-deck} [Details](theory.qmd){.btn-dl}
+[Open slides](slides/course.html){.btn-deck} [Details](theory.qmd){.btn-dl}
 :::
 ::: {.module-card}
 ### Practice — Basic

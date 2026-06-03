@@ -15,11 +15,11 @@ docs/_*.tmp*
 /_book/
 /.quarto/
 # Self-contained MLT deck output (~16 MB; rebuilt by `quarto render`)
-slides/slides.html
+slides/course.html
 slides/*_files/
 # Per-chapter Quarto previews (rebuilt by `quarto render` on each .qmd)
-slides/chapters/*.html
-slides/chapters/*_files/
+slides/course/*.html
+slides/course/*_files/
 # Headless-browser QA screenshots used while authoring the deck
 slides/qa-shots/
 .qa-screenshots/
