@@ -22,11 +22,11 @@
   Expected: completes without error; writes `slides/workshops/mlt-r-basic/00-basic-deck.html`.
   (Do **not** `quarto render slides/workshops/mlt-r-basic` during step tasks — it would also re-render the still-present standalone formatives. Whole-project render returns only in Task 8 / `/mlt-build`.)
 - **Visual verify (per-task):** with chrome-devtools MCP — `new_page` → `navigate_page` to the `file://` URL of `00-basic-deck.html` → `resize_page` to 1648×1080 → use `?print-pdf` or arrow-key navigation (`press_key`) to reach the new/changed slides → `take_screenshot` → inspect for overflow (text past the right edge), overlaps, low contrast, math not rendering, code blocks clipped. Also spot-check a narrow viewport (~1100px wide) per the project's universal visual gate. Fix and re-render until clean.
-- **Language:** slide text in **English**; `::: {.notes}` speaker notes in **Italian** (project rule). Empty line before every markdown list. All math in `$...$`.
+- **Language:** slide text in **English**; `::: {.notes}` speaker notes in **Italian**, in the instructor's (Corrado) first-person voice — personalize naturally ("apro…", "mostro…", "io"). Empty line before every markdown list. All math in `$...$`.
 - **Formative slide convention (frozen in Task 1, the exemplar):**
   - **Engage** slide heading starts with `## Your turn — …` (MCQ/your-turn/predict) or `## Live check — …` (live-check); ends inviting a commitment ("Pick one — then we reveal it." / "Your turn — type it at the R prompt." / a `predict` prompt).
   - **Reveal** slide heading names the takeaway (`## The answer — A: …` for MCQ, `## My turn — …` for your-turn, `## The reveal — …` for predict, `## GREEN — …` for live-check). MCQ reveals mark `**✓ A.**` then `**✗ B/C/D**` each with the one-line *why-the-distractor-is-wrong*. Optional de-personalized `**Going further.**` paragraph at the end (the ex-`Stretch (Davide)`, no persona name).
-  - Each formative slide gets `{data-menu-title="min-NN · <tag>"}` so the reveal-menu/search stays navigable.
+  - **Presenter-only scaffolding:** the formative identity (`min-NN`) and any timing/countdown guidance live **only** in the `::: {.notes}` — never on the projected slide. Do **not** add `data-menu-title` (it would leak the `min-NN` tag into the deck menu/search, visible to students). Formative headings are plain (`## Your turn — …`, no attributes).
 - **Commits:** one logical change per commit; commit after each task passes render + visual verify. **Never `git push`** (the user pushes).
 - **Do NOT touch:** the opening slides (title, find-me, credits, `# Build and validate…` day-overview, "The clinical question", "The variables"), the closing slides (concept map, "Next: open the model — Advanced", further reading, thank-you), `_quarto.yml`, `theme.scss`, `concept-graph.mmd`, any `scripts/`/hooks. Existing theory slides keep their current body unless a step task says otherwise.
 
@@ -107,7 +107,7 @@ teoria che seguono coprono i concetti che poi le formative verificano.
 Immediately after the `## The native pipe \`|>\`` slide's closing `:::` (its notes block), insert:
 
 ````markdown
-## Your turn — what does this pipeline do? {data-menu-title="min-31 · pipe semantics"}
+## Your turn — what does this pipeline do?
 
 ```r
 hf_raw |> clean_names() |> select(ejection_fraction, age) |> filter(age > 60)
@@ -128,7 +128,7 @@ B = modello mentale in-place/Stata; C = NSE non capita; D = il pipe inoltra l'ul
 Far votare PRIMA di scoprire la risposta (presenza: alzata di mano; remoto: poll).
 :::
 
-## The answer — A: functional, returns a new tibble {data-menu-title="min-31 · reveal"}
+## The answer — A: functional, returns a new tibble
 
 **✓ A.** The left-hand value enters the *first argument*; every verb returns a **new** tibble. `hf_raw` is untouched until you assign with `<-`.
 
@@ -147,7 +147,7 @@ sceglie B è il misconcetto Stata da ri-spiegare prima del your-turn wrangle.
 Immediately after the `## Tidy data — and the leakage trap` slide's closing `:::`, insert:
 
 ````markdown
-## Your turn — build the analysis cohort {data-menu-title="min-30 · wrangle"}
+## Your turn — build the analysis cohort
 
 From the imported `hf_raw`, build `hf` with a **single `|>` chain**:
 
@@ -157,7 +157,7 @@ From the imported `hf_raw`, build `hf` with a **single `|>` chain**:
 4. Make the 0/1 flags (`anaemia, diabetes, high_blood_pressure, sex, smoking`) factors.
 5. `glimpse()` — confirm **12 columns** and the factor.
 
-*Your turn — type it at the R prompt.* (take ~3 minutes)
+*Your turn — type it at the R prompt.*
 
 ::: {.notes}
 Voce docente (IT): your-turn min-30 (Engage), il task integrativo dello step. Lo studente lo
@@ -165,7 +165,7 @@ scrive AL PROMPT R sul proprio laptop (o apre `steps/01-import/` se è rimasto i
 ~3 min. "Type it" = la doctrine live: si scrive, non si incolla. Poi il my-turn lo risolve.
 :::
 
-## My turn — the wrangle, one chain {data-menu-title="min-30 · reveal"}
+## My turn — the wrangle, one chain
 
 ```r
 hf <- hf_raw |>
@@ -261,7 +261,7 @@ tutto. `renv` è già in restore in background dall'opening. Live-check al minut
 - [ ] **Step 2: Insert min-09 Engage→Reveal after `## A reproducible project — renv, here, rio`**
 
 ````markdown
-## Live check — is your project healthy? {data-menu-title="min-09 · live-check"}
+## Live check — is your project healthy?
 
 Run three checks. Signal **GREEN** if all pass, **RED** if any fails:
 
@@ -273,7 +273,7 @@ Run three checks. Signal **GREEN** if all pass, **RED** if any fails:
 Voce docente (IT): live-check min-09 (Engage). Presenza: alzata di mano GREEN/RED; remoto: poll.
 :::
 
-## GREEN — a healthy environment {data-menu-title="min-09 · reveal"}
+## GREEN — a healthy environment
 
 All three pass:
 
@@ -344,7 +344,7 @@ Voce docente (IT): hands-on elastico (~22 min, comprimibile). Intro col PERCHÉ:
 - [ ] **Step 2: Insert min-50 Engage→Reveal after `## ggplot2 — the grammar of graphics`**
 
 ````markdown
-## Your turn — why watch AUC-PR too? {data-menu-title="min-50 · metric"}
+## Your turn — why watch AUC-PR too?
 
 Death occurs in about **32%** of patients, and we score every model with **both** AUC-ROC **and** AUC-PR. Why watch **AUC-PR alongside** AUC-ROC, not AUC-ROC alone?
 
@@ -360,7 +360,7 @@ Voce docente (IT): MCQ min-50 (Engage). Distrattori: B = metriche intercambiabil
 PR = 0.5; D = imbalance "rompe" la ROC. Si vota prima del reveal.
 :::
 
-## The answer — A: AUC-PR is anchored to prevalence {data-menu-title="min-50 · reveal"}
+## The answer — A: AUC-PR is anchored to prevalence
 
 **✓ A.** AUC-PR scores the positive (death) class; its no-skill line is the prevalence ($\approx 0.32$), so it stays meaningful as the event gets rarer.
 
@@ -430,7 +430,7 @@ una spina riusabile + glm come ancora di riconoscimento, non nuova astrazione. B
 - [ ] **Step 2: Insert min-72 Engage→Reveal after `## The five packages — and the functions we use`**
 
 ````markdown
-## Your turn — do the two routes agree? {data-menu-title="min-72 · glm = workflow"}
+## Your turn — do the two routes agree?
 
 You fit a plain `glm` logistic two ways: (a) a bare `glm`-engine `logistic_reg()`, and (b) the same model wrapped in a `workflow()` (recipe + spec). Score both on the test set with **both** metrics:
 
@@ -445,7 +445,7 @@ hf_metrics <- metric_set(roc_auc, pr_auc)
 Voce docente (IT): your-turn min-72 (Engage). Lo studente lo prova al prompt; ~2-3 min.
 :::
 
-## My turn — same model, more scaffolding {data-menu-title="min-72 · reveal"}
+## My turn — same model, more scaffolding
 
 **Yes — identical** across both routes. The `workflow` does not change the statistical model; it only **bundles** the recipe and the spec so the *same* logistic regression is fit on the *same* preprocessed data. The estimator is identical $\to$ the numbers match.
 
@@ -460,7 +460,7 @@ ex-stretch: cosa compra recipe+workflow vs glm nudo.
 - [ ] **Step 3: Insert min-88 Engage→Reveal right after the min-72 Reveal**
 
 ````markdown
-## Your turn — logistic → random forest, minimal change? {data-menu-title="min-88 · engine-swap"}
+## Your turn — logistic → random forest, minimal change?
 
 You built a logistic-regression workflow. To turn it into a **random forest** workflow on the *same* data, what is the **minimal** change?
 
@@ -476,7 +476,7 @@ Voce docente (IT): MCQ min-88 (Engage), pre-break. Distrattori: B = riscrivi rec
 algoritmo; C = torni a funzioni package-specifiche; D = confonde MODE con ENGINE.
 :::
 
-## The answer — A: change only the spec {data-menu-title="min-88 · reveal"}
+## The answer — A: change only the spec
 
 **✓ A.** One line — the `parsnip` spec. The split, recipe and workflow are model-agnostic.
 
@@ -578,7 +578,7 @@ EVENT-FIRST → niente `event_level` nel codice.
 - [ ] **Step 3: Insert min-118 Engage→Reveal after the `## Random forest — \`mtry\` / \`min_n\` / \`trees\`` slide** (end of the four param slides)
 
 ````markdown
-## Your turn — how does k shape bias & variance? {data-menu-title="min-118 · kNN"}
+## Your turn — how does k shape bias & variance?
 
 For $k$-nearest-neighbours, how does the number of neighbours **`k`** affect bias and variance?
 
@@ -594,7 +594,7 @@ Voce docente (IT): MCQ min-118 (Engage), dopo le 4 slide-parametro. Distrattori:
 meglio; C = k solo velocità; D = direzione bias-variance invertita.
 :::
 
-## The answer — A: k is the bias–variance dial {data-menu-title="min-118 · reveal"}
+## The answer — A: k is the bias–variance dial
 
 **✓ A.** Small `k` overfits (low bias, high variance); large `k` over-smooths (high bias, low variance). The good `k` is **interior** $\to$ we tune it.
 
@@ -611,7 +611,7 @@ Voce docente (IT): Reveal min-118. Atterra PARAM→BV un algoritmo per volta; il
 - [ ] **Step 4: Insert min-150 Engage→Reveal after the `## Two metrics — and why a single split lies` slide**
 
 ````markdown
-## Your turn — the culminating task {data-menu-title="min-150 · culminating"}
+## Your turn — the culminating task
 
 From the `workflow_set` of the four algorithms (or `steps/04-zoo/` if behind):
 
@@ -627,7 +627,7 @@ Voce docente (IT): your-turn min-150 (Engage), il culminating task (§10.1). È 
 già verificati, non scrivere da zero. Chi è indietro parte da `steps/04-zoo/`.
 :::
 
-## My turn — one fair race, one honest read {data-menu-title="min-150 · reveal"}
+## My turn — one fair race, one honest read
 
 - **One** `folds` object reused for all four workflows.
 - Name the winner (here: **random forest**, ranger); watch **both** metrics for the ~32% imbalance ("always survived" $\approx$ 68% accurate, useless; AUC-PR baseline = prevalence, not 0.5).
@@ -647,7 +647,7 @@ Voce docente (IT): Reveal/my-turn min-150. Niente numeri hard-coded (si leggono 
 - [ ] **Step 5: Insert min-165 Engage→Reveal right after the min-150 Reveal**
 
 ````markdown
-## Your turn — predict the order {data-menu-title="min-165 · predict"}
+## Your turn — predict the order
 
 Three AUC-ROC values for the winning **random forest**:
 
@@ -662,7 +662,7 @@ Voce docente (IT): predict-output min-165 (Engage). Far predire l'ordine PRIMA d
 sala dice A=B=C, l'optimism gap non è atterrato.
 :::
 
-## The reveal — A flatters; B vs C is noise {data-menu-title="min-165 · reveal"}
+## The reveal — A flatters; B vs C is noise
 
 $$\text{A (resubstitution)} \;\gg\; \{\text{B (CV)},\; \text{C (test)}\}$$
 
@@ -732,7 +732,7 @@ Il report NON ricarica una cache: fa le analisi al render (a N=299 il tune è di
 - [ ] **Step 2: Insert min-175 Engage→Reveal after `## Why "one render" *is* reproducibility`**
 
 ````markdown
-## Your turn — what makes it reproducible? {data-menu-title="min-175 · repro"}
+## Your turn — what makes it reproducible?
 
 A colleague should reproduce **every number and figure** on their own machine. What actually makes that possible?
 
@@ -748,7 +748,7 @@ Voce docente (IT): MCQ min-175 (Engage). Distrattori: B = basta lo script; C = b
 D = salvare il numero = riproducibile.
 :::
 
-## The answer — A: the whole combination {data-menu-title="min-175 · reveal"}
+## The answer — A: the whole combination
 
 **✓ A.** Environment + paths + seed + an executable report, **together**.
 
@@ -881,7 +881,7 @@ Basic deck is the **reference pattern** complete. Next: Plan 2 (Advanced) applie
 **1. Spec coverage:**
 
 - §3 per-step arc (intro WHY + interleaved theory/formative + go-to-code) → Tasks 1–6 (every step).
-- §4 Engage→Reveal anatomy (commitment beat; ✓/✗ with why; Going further; `data-menu-title`; EN slide / IT notes) → frozen in Task 1, applied in 2–6.
+- §4 Engage→Reveal anatomy (commitment beat; ✓/✗ with why; Going further; EN slide / IT notes; `min-NN` + timing presenter-only) → frozen in Task 1, applied in 2–6.
 - §5 retire standalone HTML + strip personas → Task 7 (deletes) + Tasks 1/3/5 (`Going further` replaces `Stretch (Davide)`; no persona names authored anywhere).
 - §6 preserve module-level + README map + doctrine → "Do NOT touch" convention + Task 7 Step 2.
 - §7 Basic map incl. interleave placements + Hyperparameters dissolution → Tasks 1–6 target-order blocks; Task 5 Steps 1–2.
@@ -889,7 +889,7 @@ Basic deck is the **reference pattern** complete. Next: Plan 2 (Advanced) applie
 
 **2. Placeholder scan:** every NEW slide's exact markdown (heading, body, math, code, notes) is reproduced inline; no "TBD"/"similar to"/"add notes". Kept theory slides are named exactly and left as-is.
 
-**3. Type/name consistency:** headings referenced in "target order" match the authored `##` headings; `data-menu-title` tags consistent (`min-NN · tag`); `{#sec-…}` ids preserved on dividers (`#sec-00-setup`, `#sec-01-import`, `#sec-02-eda`, `#sec-03-logistic`, `#sec-04-zoo`, `#sec-05-report`); commit messages all use the `slides(basic):` prefix.
+**3. Type/name consistency:** headings referenced in "target order" match the authored `##` headings (plain headings — no `data-menu-title`/timing on any slide, presenter notes only); `{#sec-…}` ids preserved on dividers (`#sec-00-setup`, `#sec-01-import`, `#sec-02-eda`, `#sec-03-logistic`, `#sec-04-zoo`, `#sec-05-report`); commit messages all use the `slides(basic):` prefix.
 
 ---
 
