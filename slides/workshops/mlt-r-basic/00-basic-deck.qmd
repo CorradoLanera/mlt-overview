@@ -164,16 +164,15 @@ colonne dopo il wrangle.
 
 <!-- Step 00 (demo, 10 min): open `.Rproj`, `renv::restore`, load with `here` + `rio`. -->
 
-**Objective.** Start from a healthy, reproducible project.
+**Why first.** Every number we produce today is only as trustworthy as the project that produced it. So we start from a **healthy, reproducible environment** — before touching the data.
 
 - Open the `.Rproj`; let `renv::restore()` rebuild the pinned library.
 - Load data through `here::here()` (stable paths) and `rio::import()`.
 
 ::: {.notes}
-Voce docente (IT): demo (~10 min). Ambiente sano = precondizione di tutto. `renv` è già
-in restore in background dall'opening. Mostro `renv::status()` in sync e `here::here()`
-che punta alla root del progetto. Live-check al minuto 9: GREEN/RED. (De-braced: `rio`,
-non `{rio}`.)
+Voce docente (IT): demo (~10 min). Apro col PERCHÉ: l'ambiente sano è la precondizione di
+tutto. `renv` è già in restore in background dall'opening. Mostro `renv::status()` in sync e
+`here::here()` alla root. Live-check al minuto 9: GREEN/RED.
 :::
 
 ## A reproducible project — `renv`, `here`, `rio`
@@ -205,6 +204,44 @@ Voce docente (IT): teoria dei tre pilastri base (richiesti dall'utente: spiegare
 comando non banale). renv = riproducibilità dell'ambiente; here = path stabili (no
 setwd); rio = un import() per tutti i formati. Immagini: renv/rio dal mio corso ECDC,
 here di Horst.
+:::
+
+## Live check — is your project healthy?
+
+Run three checks. Signal **GREEN** if all pass, **RED** if any fails:
+
+1. Is your **`.Rproj`** open (the project, not a loose script)?
+2. Does **`renv::status()`** report the library **in sync** with the lockfile?
+3. Does **`here::here()`** point to the **project root**?
+
+::: {.notes}
+Voce docente (IT): live-check min-09 (Engage). Presenza: alzata di mano GREEN/RED; remoto: poll.
+:::
+
+## GREEN — a healthy environment
+
+All three pass:
+
+- the `.Rproj` is open → the working directory is anchored to the project;
+- `renv::status()` says *"The project is already synchronized with the lockfile"*;
+- `here::here()` returns the project-root path (where `.Rproj` / `.here` lives).
+
+**RED on any?** Fix it now — re-open the `.Rproj`, run `renv::restore()`, or check the `.here` sentinel — before the hands-on starts.
+
+::: {.notes}
+Voce docente (IT): Reveal min-09. Un ambiente sano è la precondizione: se RED, lo risolvo ora.
+:::
+
+## Go to code — `steps/00-setup/` {.center}
+
+**Follow along.** Open `steps/00-setup/`, run `renv::restore()`, load the data with `here` + `rio`.
+
+- Live check at minute 9: GREEN / RED.
+- The folder is your snapshot — fall behind anywhere today and copy the next one.
+
+::: {.notes}
+Voce docente (IT): chiusura Step 00 (demo → "follow along"). Mentre parlo, `renv::restore()`
+ha già scaldato in background.
 :::
 
 # Step 01 · Import & wrangle {#sec-01-import .center}
