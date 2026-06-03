@@ -13,12 +13,13 @@ cohort, e.g. tag `coorte-2026`).
 - [Basic workshop project (ZIP)](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic.zip)
 - [Basic teacher bundle (ZIP, incl. solutions)](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-basic-teacher.zip)
 - [Advanced workshop project (ZIP)](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip)
+- [Advanced teacher bundle (ZIP, incl. solutions)](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced-teacher.zip)
 
 ## Running a workshop
 
 You need R (≥ 4.5) and RStudio. Fetch a workshop with `usethis::use_course(<zip-url>)`, then open
-the `.Rproj` and `renv::restore()` — see the workshop's own page for the exact flow (Basic ships a
-bundle of per-step projects; Advanced ships a single project).
+the `.Rproj` and `renv::restore()` — see the workshop's own page for the exact flow (both ship a
+bundle of per-step projects).
 
 ## Per-cohort model
 

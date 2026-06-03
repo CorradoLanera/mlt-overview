@@ -5,6 +5,7 @@ title: "Practice — Advanced (R)"
 [Open the deck ↗](slides/workshops/mlt-r-advanced/00-advanced-deck.html){.btn-deck}
 [Download deck](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced-deck.html){.btn-dl}
 [Download workshop ZIP](https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip){.btn-dl}
+[Coding solutions ↗](advanced-solutions.html){.btn-deck}
 
 {{< include _generated/advanced-overview.md >}}
 
@@ -22,9 +23,14 @@ usethis::use_course(
 )
 ```
 
-Open `mlt-r-advanced.Rproj`, then `renv::restore()`. The LLM step (`ellmer`) needs an OpenAI
-API key (optional — it falls back to a cached extraction): copy `.Renviron.example` → `.Renviron`
-and set your key.
+The download is a **bundle of per-step projects**, not a single project. Open the step you are
+on — start with `steps/00-recap/00-recap.Rproj`; opening a step's `.Rproj` auto-activates its
+`renv`, then `renv::restore()` for the pinned packages. Each step is a complete cumulative
+snapshot (the solution to step N is step N+1).
+
+The LLM step (`ellmer`) needs an OpenAI API key (optional — it falls back to a labeled cached
+extraction): copy `.Renviron.example` → `.Renviron` and set your key. The key is read from env
+only and is never committed.
 
 ## Syllabus
 
