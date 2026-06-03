@@ -1,7 +1,7 @@
 # requirements.R — install the Advanced workshop package set, then snapshot.
 # Agnostic SHAP via kernelshap (CRAN, pure R) + shapviz — replaces the archived fastshap.
 # Run from the workshop root with renv active (do NOT use --vanilla).
-options(repos = c(CRAN = "https://cloud.r-project.org"))
+options(repos = c(CRAN = "https://packagemanager.posit.co/cran/2026-06-01"))
 
 pkgs_cran <- c(
   "here", "rio", "tidyverse", "janitor",
