@@ -10,7 +10,7 @@ Live site (slides, schedule, downloads): <https://corradolanera.github.io/mlt-ov
 |---|--------|-----------|-------|---------------|
 | 1 | **Theory Overview** | Storyboard-narrated reveal.js lectures (10 chapters) | `course/` + `slides/` | Published slides (GitHub Pages / PDF) |
 | 2 | **Practice — Basic** | Live-coded R: build & validate a clinical ML model | `workshops/mlt-r-basic/` | `use_course()` — see its README |
-| 3 | **Practice — Advanced** | Live-coded R: interpretability + deep learning | `workshops/mlt-r-advanced/` *(coming)* | `use_course()` — see its README |
+| 3 | **Practice — Advanced** | Live-coded R: interpretability + deep learning | `workshops/mlt-r-advanced/` | `use_course()` — see its README |
 
 ## Learning path
 
@@ -44,7 +44,7 @@ After content changes, run `python scripts/build_site.py` (or `/mlt-build`) and 
 ## Repository map
 
 - `course/` — overview chapter content (`_manifest.yml` is the source of truth).
-- `slides/` — the rendered overview deck.
+- `slides/` — the overview deck **and** the workshop deck sources (`slides/workshops/<slug>/`). Each workshop deck is a single hand-authored reveal.js file whose per-step arc is *WHY intro → interleaved theory/formative → "go to code"*, with the formatives embedded inline as **Engage → Reveal** slide pairs (no standalone formative HTMLs). Design: [`dev-docs/superpowers/specs/2026-06-03-workshop-deck-content-redesign-design.md`](dev-docs/superpowers/specs/2026-06-03-workshop-deck-content-redesign-design.md).
 - `site/` — the public Quarto website sources (built into `docs/`).
 - `docs/` — the published site served by GitHub Pages (`main` `/docs`).
 - `styles/_brand.scss` — shared palette + fonts used by every deck.
