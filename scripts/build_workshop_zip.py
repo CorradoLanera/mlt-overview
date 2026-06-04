@@ -108,7 +108,7 @@ def _walk_shippable(base: Path, *, skip_renders=True):
 def student_payload(workshop_dir):
     """[(abs_src, rel_arc)] for the student ZIP.
 
-    Fragment-built: the GENERATED on-disk tree (steps/ full/ data-raw/ + README),
+    Fragment-built: the GENERATED on-disk tree (steps/ full/ + README),
     NOT git ls-files (the tree is gitignored). Non-migrated: git-tracked source.
     """
     workshop_dir = Path(workshop_dir)
