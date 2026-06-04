@@ -30,9 +30,16 @@ architettura unificata `dev-docs/superpowers/specs/2026-05-31-unified-course-arc
 
 ## Stato build
 
-- Tutte le fasi completate e mergiate in `main` (2026-06-03): overview deck Quarto (10 cap.), item
+- Tutte le fasi completate e mergiate in `main`: overview deck Quarto (10 cap.), item
   valutativi per capitolo, due workshop R (Basic+Advanced) fragment-built, sito Quarto in `docs/`,
   dist ZIP + release assets. Build idempotente via `python scripts/build_all.py` (`/mlt-build`).
+- Riordino strutturale (2026-06-04, HEAD `2681c11`, **pushato**): `slides/chapters/`→`slides/course/`,
+  `slides/slides.qmd`→`slides/course.qmd` (sorgente==pubblicato `course.html`, **mai** rigenerare
+  `slides.html`), `doc/` ritirata, `data-raw/` top-level tolta dagli ZIP fragment. Tutti e 7 gli asset
+  `coorte-2026` ricaricati freschi.
+- **Gotcha build:** i workshop richiedono **R 4.6.0**; col `Rscript` di default (R 4.5.2) `rebuild.R`
+  fallisce con `no package called 'quarto'`. Prima di `build_all.py --release`:
+  `$env:MLT_RSCRIPT="C:\Program Files\R\R-4.6.0\bin\Rscript.exe"`.
 
 ## Architettura (3 moduli)
 
