@@ -3,7 +3,7 @@ workshop:
   slug: mlt-r-advanced
   language: en
   total_minutes_gross: 240
-  dataset: "heart_failure clinical records (reloaded Basic model) + synthetic notes"
+  dataset: "heart_failure clinical records + synthetic notes"
 summative: "reproducible explain -> deep -> LLM pipeline, demonstrated via a targets DAG"
 steps:
   - { slug: 00-recap,         title: "Recap & setup",            mode: demo,          minutes: 12, include: true }

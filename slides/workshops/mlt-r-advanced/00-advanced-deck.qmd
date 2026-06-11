@@ -11,7 +11,7 @@ pagetitle: "Practical Artificial Intelligence for Medical Data Analyses with R �
 </p>
 
 <p style="text-align:center; font-size:1.55em; font-weight:700; line-height:1.15; margin:0.2em 0;">
-<span style="color:#E8741E;">Advanced</span> — Open the validated model: interpret it, go deep, reach an LLM, seal it
+<span style="color:#E8741E;">Advanced</span> · Rebuild Basic's validated model, then go further: interpret it, go deep, reach an LLM, seal it
 </p>
 
 <p style="text-align:center; font-size:0.92em; color:#444; margin:1.4em 0 0.2em 0;">
@@ -78,19 +78,19 @@ cap. 07-08 dell'overview. Tolto "revealjs" (dettaglio tecnico inutile); aggiunta
 riga illustrazioni come nel Basic.
 :::
 
-# Open the model you validated in Basic {.center}
+# Rebuild the model you validated in Basic {.center}
 
 ::: {.notes}
-Voce docente (IT): apertura. L'arco RIAPRE il modello validato in Basic — non si
-ricostruisce nulla. Quattro tappe: interpretare (VIMP/SHAP) → deep learning (torch/
+Voce docente (IT): apertura. L'arco RICOSTRUISCE dal vivo il modello validato in Basic
+(replay completo della selezione di Basic), non lo ricarica. Quattro tappe: interpretare (VIMP/SHAP) → deep learning (torch/
 luz/brulee) → `ellmer` come ETL tipizzato → capstone `targets`. torch è pre-riscaldato
 nello step 00 (`torch_tensor(1)`), così il primo tensore non paga l'init. Numeri
 reali da ricordare: l'RF di Basic sta a CV AUC-ROC ~0.79; VIMP mette in cima
 ejection_fraction / serum_creatinine. NON vendere l'MLP come vincitore della foresta.
 :::
 
-The model you built in Basic is not the end — it is the **subject**. We **open** the
-random forest you built and validated in Basic, then push past it.
+The model you built in Basic is the **subject** of today. We **rebuild** that validated
+random forest live, then push past it.
 
 - **Interpret it** — permutation VIMP and agnostic SHAP, anchored on a logistic regression.
 - **Go deep** — a live `brulee` MLP (`torch` / `luz` / `brulee`), then CNN/RNN/fused nets written (not trained).
@@ -101,42 +101,43 @@ Everything live-coded; nothing pre-baked is shown as live (one labeled exception
 
 # Step 00 · Recap & setup {#sec-00-recap .center}
 
-<!-- Step 00 (demo, 12 min): reload Basic's finalized workflow; predict 1 row; pre-warm torch. -->
+<!-- Step 00 (~30 min): rebuild Basic's full selection live to final_fit; predict 1 row; pre-warm torch. -->
 
-**Why first.** Advanced doesn't rebuild anything — it **reopens** the model you validated in Basic. Day one reloads that exact `final_fit`, so a clean, warm session is the precondition for everything that follows.
+**Why first.** Advanced starts by **rebuilding** the model you validated in Basic, live: day one re-runs that exact selection to land `final_fit` again, so a clean, warm session is the precondition for everything that follows.
 
-- Reload Basic's finalized random forest: `extract_workflow(readRDS("final_fit.rds"))`.
-- `predict()` on **one** patient row — a probability, not yet an explanation.
+- Rebuild Basic's selection live, then `extract_workflow(final_fit)` on the finalized random forest.
+- `predict()` on **one** patient row: a probability, not yet an explanation.
 - **Pre-warm torch** so the first tensor later does not pay the init cost.
 
 ::: {.notes}
-Voce docente (IT): demo (~12 min). Si RICARICA, non si riaddestra. Live-check al
-min 10: reload + `predict` su 1 riga + `torch_tensor(1)` SENZA download (torch caldo).
-GREEN/RED. Su questa macchina di build `cuda_is_available()` è FALSE; in aula, sulla
-NVIDIA, è TRUE. Il punto: una probabilità non è una spiegazione → apre lo step 01.
+Voce docente (IT): demo (~30 min, replay completo della selezione di Basic dal vivo).
+Si RICOSTRUISCE, non si ricarica. Live-check al min 10: `predict` su 1 riga sul workflow
+appena fittato + `torch_tensor(1)` SENZA download (torch caldo). GREEN/RED. Su questa
+macchina di build `cuda_is_available()` è FALSE; in aula, sulla NVIDIA, è TRUE. Il punto:
+una probabilità non è una spiegazione → apre lo step 01.
 :::
 
-## Live check — did the model reload, is torch warm?
+## Live check: is the model rebuilt, is torch warm?
 
 Run three checks. Signal **GREEN** if all pass, **RED** if any fails:
 
-1. Does `predict(fitted_wf, hf_tbl[1, ], type = "prob")` return a **1-row tibble** (no error, no retrain)?
-2. Does **`torch_tensor(1)`** run **without a download** — backend loads instantly (torch pre-warmed)?
-3. Is the loaded object the **finalized workflow from Basic** (the one that passed `last_fit()`)?
+1. Does `predict(fitted_wf, hf_tbl[1, ], type = "prob")` return a **1-row tibble** from the workflow we just fitted?
+2. Does **`torch_tensor(1)`** run **without a download** (backend loads instantly, torch pre-warmed)?
+3. Is `final_fit` the **finalized workflow** from the live selection (the one that passed `last_fit()`)?
 
 ::: {.notes}
 Voce docente (IT): live-check min-10 (Engage). Presenza: alzata di mano GREEN/RED; remoto: poll.
 :::
 
-## GREEN — Basic's model, reopened (not retrained)
+## GREEN: Basic's model, rebuilt live
 
 All three pass:
 
-- `predict()` on the extracted `fitted_wf` returns immediately — the model is baked in, no `fit()`;
-- `torch_tensor(1)` runs without downloading libtorch — the session was pre-warmed at setup;
-- the object is Basic's finalized `last_fit` workflow (`model/final_fit.rds` → `readRDS()` → `extract_workflow()`).
+- `predict()` on the extracted `fitted_wf` returns a probability; `final_fit` came from the live selection we just ran;
+- `torch_tensor(1)` runs without downloading libtorch (the session was pre-warmed at setup);
+- the object is the finalized `last_fit` workflow from the selection (`extract_workflow(final_fit)`), the random forest that won on `roc_auc`.
 
-**RED on torch?** Run `library(torch)` now and wait for backend init — normal once per session, never mid-workshop. **RED on the model?** Reload from the checkpoint before continuing — all of Step 01 depends on it.
+**RED on torch?** Run `library(torch)` now and wait for backend init (normal once per session, never mid-workshop). **RED on the model?** Re-run the selection block before continuing; all of Step 01 depends on `final_fit`.
 
 ::: {.notes}
 Voce docente (IT): Reveal min-10. Su questa macchina `cuda_is_available()` è FALSE; in aula
@@ -145,10 +146,10 @@ sulla NVIDIA è TRUE. Una probabilità non è una spiegazione → apre lo step 0
 
 ## Go to code — `steps/00-recap/` {.center}
 
-**Follow along.** Open `steps/00-recap/`: reload Basic's `final_fit`, `predict()` one row, pre-warm torch.
+**Follow along.** Open `steps/00-recap/`: rebuild Basic's selection live to `final_fit`, `predict()` one row, pre-warm torch.
 
 - Live check at minute 10: GREEN / RED.
-- We never retrain — Advanced opens the model Basic validated.
+- We rebuild it live: Advanced re-derives the model Basic validated.
 
 ::: {.notes}
 Voce docente (IT): chiusura Step 00 (demo → "follow along"). Il workflow finalizzato di Basic
@@ -796,15 +797,15 @@ The capstone payoff: this **reproducible explain $\to$ deep $\to$ LLM** pipeline
 
 - A peer can clone the folder, run `tar_make()`, and re-derive the **same** explanation of
   the Basic model — deterministically, hash-checked.
-- Basic **promised** that Advanced would reload its validated model. **We delivered:** day one
-  reopened that exact `final_fit`, and we never retrained it.
+- Basic **built** the validated model; Advanced **re-derived it live** on day one and pushed
+  past it.
 
-The loop is closed — from a validated model to a reproducible pipeline a colleague can re-run.
+The loop is closed: from a validated model to a reproducible pipeline a colleague can re-run.
 
 ::: {.notes}
 Voce docente (IT): chiusura. Chiude il loop Basic↔Advanced: Basic prometteva che Advanced
-RICARICA il modello (pre-hook), e l'abbiamo mantenuto — step 00 ha riaperto `final_fit`
-senza retrain. Il payoff finale è la consegnabilità: la pipeline spiegata-deep-LLM è
+RICOSTRUISCE dal vivo il modello (pre-hook), e l'abbiamo mantenuto: step 00 ha ri-derivato
+`final_fit` dal vivo. Il payoff finale è la consegnabilità: la pipeline spiegata-deep-LLM è
 riproducibile da un terzo via `targets`. Niente riferimenti temporali, niente nomi oltre
 Corrado Lanera (UBEP).
 :::

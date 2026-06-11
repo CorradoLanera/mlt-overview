@@ -1,4 +1,4 @@
-# Sanity-check the reloaded Basic model — one-row probability prediction (no retraining) ----
+# Sanity-check the model we just rebuilt: one-row probability prediction ----
 fitted_wf <- extract_workflow(final_fit)
 predict(fitted_wf, hf[1, ], type = "prob")
 

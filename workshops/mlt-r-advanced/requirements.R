@@ -1,11 +1,11 @@
-# requirements.R — install the Advanced workshop package set, then snapshot.
-# Agnostic SHAP via kernelshap (CRAN, pure R) + shapviz — replaces the archived fastshap.
+# requirements.R: install the Advanced workshop package set, then snapshot.
+# Agnostic SHAP via kernelshap (CRAN, pure R) + shapviz: replaces the archived fastshap.
 # Run from the workshop root with renv active (do NOT use --vanilla).
 options(repos = c(CRAN = "https://packagemanager.posit.co/cran/2026-06-01"))
 
 pkgs_cran <- c(
   "here", "rio", "tidyverse", "janitor",
-  "tidymodels", "workflowsets", "ranger",       # reload the Basic RF
+  "tidymodels", "workflowsets", "ranger",       # rebuild the Basic RF live
   "glmnet", "kernlab", "gtsummary",              # Basic pipeline deps (inlined via the 00-recap seed)
   "vip", "kernelshap", "shapviz",                # interpretability (all CRAN, pure R)
   "torch", "luz", "brulee", "coro",              # deep learning (no Python)
@@ -35,5 +35,5 @@ if (length(failed) > 0) {
 }
 
 # type = "all": pin every package in the (isolated) renv library + transitive deps,
-# because no workshop code references them yet — an implicit snapshot would pin nothing.
+# because no workshop code references them yet; an implicit snapshot would pin nothing.
 renv::snapshot(type = "all", prompt = FALSE)
