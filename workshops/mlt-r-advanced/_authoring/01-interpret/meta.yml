@@ -1,5 +1,5 @@
 slug: 01-interpret
-title: "Step 01 — Open the black box"
+title: "Step 01: Open the black box"
 minutes: 45
 summary: "Open the black box with permutation importance and agnostic SHAP (`kernelshap` + `shapviz`)."
 packages: [vip, kernelshap, shapviz]
