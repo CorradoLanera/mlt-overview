@@ -242,7 +242,7 @@
     "href": "advanced.html#steps",
     "title": "Practice — Advanced (R)",
     "section": "Steps",
-    "text": "Steps\n\nStep 00: Recap & setup · 30 min\nRebuild Basic’s validated random forest live and warm up the torch backend.\n\n\nStep 01 — Open the black box · 45 min\nOpen the black box with permutation importance and agnostic SHAP (kernelshap + shapviz).\n\n\nStep 02 — Deep learning, honestly · 70 min\nTrain a small MLP live with torch/luz, then write and shape-check CNN, RNN and fused nets.\n\n\nStep 03 — An LLM as a typed, reproducible ETL · 45 min\nUse an LLM as a typed, reproducible ETL to extract structured fields from clinical notes (ellmer).\n\n\nStep 04 — Reproducibility capstone · 50 min\nSeal the full arc in a targets DAG reproducible with a single tar_make().\nTotal contact time: 240 min."
+    "text": "Steps\n\nStep 00: Recap & setup · 30 min\nRebuild Basic’s validated random forest live and warm up the torch backend.\n\n\nStep 01: Open the black box · 45 min\nOpen the black box with permutation importance and agnostic SHAP (kernelshap + shapviz).\n\n\nStep 02 — Deep learning, honestly · 70 min\nTrain a small MLP live with torch/luz, then write and shape-check CNN, RNN and fused nets.\n\n\nStep 03 — An LLM as a typed, reproducible ETL · 45 min\nUse an LLM as a typed, reproducible ETL to extract structured fields from clinical notes (ellmer).\n\n\nStep 04 — Reproducibility capstone · 50 min\nSeal the full arc in a targets DAG reproducible with a single tar_make().\nTotal contact time: 240 min."
   },
   {
     "objectID": "advanced.html#how-to-get-run-it",
@@ -403,6 +403,6 @@
     "href": "schedule.html#steps-1",
     "title": "Schedule & Planning",
     "section": "Steps",
-    "text": "Steps\n\nStep 00: Recap & setup · 30 min\nRebuild Basic’s validated random forest live and warm up the torch backend.\n\n\nStep 01 — Open the black box · 45 min\nOpen the black box with permutation importance and agnostic SHAP (kernelshap + shapviz).\n\n\nStep 02 — Deep learning, honestly · 70 min\nTrain a small MLP live with torch/luz, then write and shape-check CNN, RNN and fused nets.\n\n\nStep 03 — An LLM as a typed, reproducible ETL · 45 min\nUse an LLM as a typed, reproducible ETL to extract structured fields from clinical notes (ellmer).\n\n\nStep 04 — Reproducibility capstone · 50 min\nSeal the full arc in a targets DAG reproducible with a single tar_make().\nTotal contact time: 240 min."
+    "text": "Steps\n\nStep 00: Recap & setup · 30 min\nRebuild Basic’s validated random forest live and warm up the torch backend.\n\n\nStep 01: Open the black box · 45 min\nOpen the black box with permutation importance and agnostic SHAP (kernelshap + shapviz).\n\n\nStep 02 — Deep learning, honestly · 70 min\nTrain a small MLP live with torch/luz, then write and shape-check CNN, RNN and fused nets.\n\n\nStep 03 — An LLM as a typed, reproducible ETL · 45 min\nUse an LLM as a typed, reproducible ETL to extract structured fields from clinical notes (ellmer).\n\n\nStep 04 — Reproducibility capstone · 50 min\nSeal the full arc in a targets DAG reproducible with a single tar_make().\nTotal contact time: 240 min."
   }
 ]

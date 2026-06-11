@@ -401,11 +401,11 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <section id="sec-01-interpret" class="title-slide slide level1 center">
 <h1>Step 01 · Interpretability</h1>
 <!-- Step 01 (hands-on, 48 min): permutation VIMP (logistic+RF); agnostic SHAP (anchor + 1 RF row); logistic as sanity. -->
-<p><strong>Why this step.</strong> A probability is not an explanation. We open the black box with two model-agnostic tools — permutation VIMP and SHAP — anchored on a logistic model we <em>can</em> read, so we can trust them on the forest we cannot.</p>
+<p><strong>Why this step.</strong> A probability is not an explanation. We open the black box with two model-agnostic tools (permutation VIMP and SHAP), anchored on a logistic model we <em>can</em> read, so we can trust them on the forest we cannot.</p>
 <ul>
 <li><strong>Permutation VIMP</strong> (<code>{vip}</code>): shuffle a predictor <span class="math inline">\(\to\)</span> how far AUC-ROC drops = how much the model <strong>relies</strong> on it. Reliance, <strong>not</strong> causation.</li>
 <li><strong>Agnostic SHAP</strong> via <strong><code>kernelshap</code> + <code>shapviz</code></strong>: attribute one prediction across features.</li>
-<li>The <strong>same explainer line</strong> runs on logistic <span class="math inline">\(\to\)</span> RF <span class="math inline">\(\to\)</span> MLP — only the model object changes.</li>
+<li>The <strong>same agnostic idea</strong> runs on logistic <span class="math inline">\(\to\)</span> RF <span class="math inline">\(\to\)</span> MLP: <code>permshap</code> for the linear anchor, <code>kernelshap</code> for the rest; the model and the function change, not the interpretation.</li>
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): hands-on (~48 min), zona di rischio per profondità. Min-24 (MCQ): VIMP = reliance, NON causazione / coefficiente con segno / p-value. Numero reale di build: la VIMP a permutazione mette in cima ejection_fraction e serum_creatinine (con age) — i predittori clinicamente sensati, con effetti soglia/non-monotoni. Sono le feature che la foresta ha imparato a USARE, non un’affermazione causale né di direzione.</p>
@@ -421,16 +421,59 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
+<section id="what-we-hand-the-explainers-extract_workflow" class="slide level2 smaller">
+<h2>What we hand the explainers: <code>extract_workflow()</code></h2>
+<p><code>vip()</code> and <code>kernelshap()</code> both need a fitted object that <strong>predicts</strong>. From the recap we have <code>final_fit</code>: a <code>last_fit</code> <strong>result</strong> (metrics, predictions, and the fitted workflow), not a model you can call directly.</p>
+<ul>
+<li><code>extract_workflow(final_fit)</code> pulls out the <strong>trained workflow</strong>: the recipe (the same preprocessing) <strong>plus</strong> the fitted model, as one object.</li>
+<li>That object is what we pass to <code>vip</code> and to <code>kernelshap</code>’s <code>pred_fun</code>, so every explanation runs through the exact preprocessing and model you validated.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): plumbing, min-~20. <code>final_fit</code> è un risultato <code>last_fit</code>, non un modello chiamabile. <code>extract_workflow()</code> ne estrae il workflow allenato (recipe + modello). È ciò che diamo a vip e a kernelshap: spiegano esattamente pre-processing+modello validati.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="how-permutation-vimp-works-a-recall-from-ch.-4" class="slide level2 smaller">
+<h2>How permutation VIMP works: a recall from ch.&nbsp;4</h2>
+<p>From the theory (ch.&nbsp;4): importance is how much the model <strong>leans on</strong> a feature.</p>
+<ul>
+<li>Take the validated model and its score (AUC-ROC). <strong>Shuffle one feature’s column</strong> across patients: its signal is gone, everything else intact. Re-score.</li>
+<li>The <strong>drop</strong> is that feature’s importance, <span class="math inline">\(\text{imp}(X_j) = \text{AUC} - \text{AUC}_{\text{shuffled } j}\)</span>. Repeat <code>nsim</code> times and <strong>average</strong> (one shuffle is noisy).</li>
+<li>A big average drop means the model <strong>relies</strong> on <span class="math inline">\(X_j\)</span>. Reliance, <strong>not</strong> causation, and <strong>unsigned</strong> (a forest permutation score has no direction).</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): richiamo cap.4, min-~22, prima dell’MCQ. Permuta una colonna, misura il calo di AUC-ROC, media su nsim. Build reale: in cima ejection_fraction e serum_creatinine (con age). Prepara i distrattori B (causazione) e C (segno): la VIMP a permutazione non ha segno.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="your-turn-what-does-permutation-vimp-measure" class="slide level2">
-<h2>Your turn — what does permutation VIMP measure?</h2>
+<h2>Your turn: what does permutation VIMP measure?</h2>
 <p>The permutation-importance plot for the random forest puts <strong><code>ejection_fraction</code></strong> and <strong><code>serum_creatinine</code></strong> on top. What does that score actually measure?</p>
 <ul>
-<li><strong>A.</strong> Permuting a predictor breaks its link to the outcome; the <strong>drop in AUC-ROC</strong> measures how much the model <strong>relies on</strong> it. High = the model can’t do without it — <em>not</em> that it causes the outcome.</li>
+<li><strong>A.</strong> Permuting a predictor breaks its link to the outcome; the <strong>drop in AUC-ROC</strong> measures how much the model <strong>relies on</strong> it. High = the model can’t do without it, <em>not</em> that it causes the outcome.</li>
 <li><strong>B.</strong> A high score means <code>ejection_fraction</code> <strong>causes</strong> heart-failure death.</li>
 <li><strong>C.</strong> Importance is a <strong>signed coefficient</strong>: positive = raises predicted risk, negative = lowers it.</li>
 <li><strong>D.</strong> Importance is a <strong>p-value</strong>: above a threshold = statistically significant.</li>
 </ul>
-<p><em>Pick one — then we reveal it.</em></p>
+<p><em>Pick one; then we reveal it.</em></p>
 <aside class="notes">
 <p>Voce docente (IT): MCQ min-24 (Engage). Distrattori: B = importanza = causazione; C = coefficiente con segno; D = p-value.</p>
 <style type="text/css">
@@ -446,12 +489,12 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="the-answer-a-reliance-not-causation" class="slide level2">
-<h2>The answer — A: reliance, not causation</h2>
+<h2>The answer: A: reliance, not causation</h2>
 <p><strong>✓ A.</strong> The AUC-ROC drop on permutation = how much the model <strong>relies</strong> on the predictor to discriminate.</p>
 <ul>
-<li><strong>✗ B</strong> — <em>importance = causation.</em> It quantifies the model’s dependence, says nothing about the data-generating mechanism.</li>
-<li><strong>✗ C</strong> — <em>importance = signed coefficient.</em> A permutation score on a tree ensemble has <strong>no sign</strong> and no additive reading.</li>
-<li><strong>✗ D</strong> — <em>importance = p-value.</em> It’s a performance measure, not a test statistic from a null hypothesis.</li>
+<li><strong>✗ B</strong>: <em>importance = causation.</em> It quantifies the model’s dependence, says nothing about the data-generating mechanism.</li>
+<li><strong>✗ C</strong>: <em>importance = signed coefficient.</em> A permutation score on a tree ensemble has <strong>no sign</strong> and no additive reading.</li>
+<li><strong>✗ D</strong>: <em>importance = p-value.</em> It’s a performance measure, not a test statistic from a null hypothesis.</li>
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): Reveal min-24. Numero reale: la VIMP mette in cima ejection_fraction e serum_creatinine (con age) — feature che la foresta USA, non un’affermazione causale.</p>
@@ -467,15 +510,39 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
+<section id="how-agnostic-shap-works-recall-ch.-4-and-how-its-computed" class="slide level2 smaller">
+<h2>How agnostic SHAP works: recall ch.&nbsp;4, and how it’s computed</h2>
+<p>From the theory (ch.&nbsp;4): a <strong>Shapley value</strong> <span class="math inline">\(\phi_j\)</span> is feature <span class="math inline">\(j\)</span>’s <strong>fair share</strong> of <em>this</em> prediction’s gap from the average. Additive: <span class="math inline">\(\sum_j \phi_j = f(x) - \mathbb{E}[f]\)</span>.</p>
+<p>How an <strong>agnostic</strong> explainer computes it (model-blind, predictions only):</p>
+<ul>
+<li>a feature’s <strong>marginal contribution</strong> as it joins <strong>coalitions</strong> of the others;</li>
+<li>the “average” is taken over a <strong>background</strong> set <code>bg_X</code> (reference patients): the baseline the attribution is measured against;</li>
+<li><strong><code>permshap()</code></strong> enumerates exactly (small feature counts, the linear anchor); <strong><code>kernelshap()</code></strong> <strong>samples</strong> coalitions (it scales to the forest).</li>
+</ul>
+<p>So the only settings are <strong>which patient</strong> (<code>X</code>), <strong>the background</strong> (<code>bg_X</code>), and <strong>how hard you sample</strong>. They trade variance for cost; none makes the answer more correct.</p>
+<aside class="notes">
+<p>Voce docente (IT): richiamo cap.4 + strato computazionale, min-~36, prima dell’ancora. Shapley = quota equa additiva. Agnostico: contributo marginale su coalizioni, media sul background bg_X. permshap esatto sul lineare, kernelshap campionato sull’RF. Sole leve: X, bg_X, sforzo di campionamento. Setup per la slide varianza-vs-costo.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="the-logistic-anchor-shap-must-recover-what-we-already-know" class="slide level2 smaller">
-<h2>The logistic anchor — SHAP must recover what we already know</h2>
-<p>Before pointing SHAP at the opaque forest, we <strong>anchor</strong> it on a logistic regression — a model we <em>can</em> read off its coefficients.</p>
+<h2>The logistic anchor: SHAP must recover what we already know</h2>
+<p>Before pointing SHAP at the opaque forest, we <strong>anchor</strong> it on a logistic regression: a model we <em>can</em> read off its coefficients.</p>
 <ul>
 <li>Run SHAP on the <strong>linear anchor</strong> with <code>permshap()</code> (near-<strong>exact</strong> Shapley values).</li>
-<li>The SHAP attributions must <strong>echo the fitted coefficients</strong> — same leading features, consistent signs. If they did not, we would not trust SHAP on the forest.</li>
+<li>The SHAP attributions must <strong>echo the fitted coefficients</strong>: same leading features, consistent signs. If they did not, we would not trust SHAP on the forest.</li>
 <li>Build reality: <strong>ejection_fraction</strong>, <strong>age</strong>, <strong>serum_creatinine</strong> lead <em>both</em> the waterfall and the largest-magnitude coefficients.</li>
 </ul>
-<p>Then the agnosticism payoff: the <strong>same</strong> call points at the random forest (no coefficients at all) — <code>kernelshap()</code> for the forest, <code>permshap()</code> reserved for the linear anchor.</p>
+<p>Then the agnosticism payoff: the <strong>same</strong> call points at the random forest (no coefficients at all): <code>kernelshap()</code> for the forest, <code>permshap()</code> reserved for the linear anchor.</p>
 <aside class="notes">
 <p>Voce docente (IT): predict-output al min-38 — che forma ha lo SHAP rispetto ai coefficienti logistici? Perché rassicura PRIMA di puntare l’RF: l’agnostico deve <em>recuperare</em> il noto. permshap() = esatto sul lineare (il sanity-check più pulito); kernelshap() = ibrido sull’RF (11 feature, scelta pratica). “Your turn” min-66: la stessa riga del blocco 01 puntata sull’RF — cambia solo l’oggetto-modello.</p>
 <style type="text/css">
@@ -491,10 +558,10 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="your-turn-predict-the-shap-shape-on-the-anchor" class="slide level2">
-<h2>Your turn — predict the SHAP shape on the anchor</h2>
+<h2>Your turn: predict the SHAP shape on the anchor</h2>
 <p>We ran <code>kernelshap</code> on the <strong>logistic regression</strong> (the anchor) and called <code>sv_waterfall()</code>. Before we look:</p>
 <ol type="1">
-<li>What <strong>shape</strong> do the waterfall bars take vs the model’s raw <code>coef()</code> — same sign, same order, or something else?</li>
+<li>What <strong>shape</strong> do the waterfall bars take vs the model’s raw <code>coef()</code>: same sign, same order, or something else?</li>
 <li>Why run SHAP on the <strong>logistic</strong> model <em>first</em>, before pointing it at the random forest?</li>
 </ol>
 <aside class="notes">
@@ -512,10 +579,10 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="the-reveal-shap-must-recover-the-known" class="slide level2">
-<h2>The reveal — SHAP must recover the known</h2>
+<h2>The reveal: SHAP must recover the known</h2>
 <p><strong>Shape:</strong> the predictors that dominate the coefficient table dominate the waterfall, and <strong>directions agree</strong> (a negative coefficient → a negative/blue SHAP bar where the feature pushes the prediction down). Signs match; relative magnitudes mostly mirror the weighted contributions.</p>
-<p>It is a <strong>directional sanity check, not an exact identity</strong> — we explain in probability space and <code>permshap</code> samples at this feature count, so it is not exactly <span class="math inline">\(\beta_j (x_j - \bar{x}_j)\)</span>.</p>
-<p><strong>Why first:</strong> the anchor is a sanity check <strong>for the method</strong>. We know the ground truth (the coefficients); if the agnostic explainer recovers them, we can trust it on the random forest — whose logic we cannot read directly. Run it on the black box first and we’d have no way to know the explanation is real.</p>
+<p>It is a <strong>directional sanity check, not an exact identity</strong>; we explain in probability space and <code>permshap</code> samples at this feature count, so it is not exactly <span class="math inline">\(\beta_j (x_j - \bar{x}_j)\)</span>.</p>
+<p><strong>Why first:</strong> the anchor is a sanity check <strong>for the method</strong>. We know the ground truth (the coefficients); if the agnostic explainer recovers them, we can trust it on the random forest (whose logic we cannot read directly). Run it on the black box first and we’d have no way to know the explanation is real.</p>
 <aside class="notes">
 <p>Voce docente (IT): Reveal min-38. permshap() esatto sul lineare (sanity-check più pulito); kernelshap() ibrido sull’RF. “Model-agnostic” = l’approssimazione è il punto.</p>
 <style type="text/css">
@@ -530,9 +597,31 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
+<section id="background-size-shown-full-vs.-reduced" class="slide level2 smaller">
+<h2>Background size, shown: full vs.&nbsp;reduced</h2>
+<p>We run the <strong>same</strong> <code>permshap</code> on the logistic anchor twice:</p>
+<ul>
+<li><code>bg_X = bg</code> (the full training set, ~224 rows): lower-variance attributions, slower;</li>
+<li><code>bg_X = bg_small</code> (40 sampled rows): the waterfall <strong>barely moves</strong> (same leading features, slightly noisier tails) and runs in a blink.</li>
+</ul>
+<p>Concrete lesson: a smaller background is <strong>cheaper and noisier</strong>, not more accurate. From here we <strong>fix <code>bg_small</code></strong> and reuse it for <strong>every</strong> model (logistic <span class="math inline">\(\to\)</span> forest <span class="math inline">\(\to\)</span> MLP), so the comparisons are apples-to-apples.</p>
+<aside class="notes">
+<p>Voce docente (IT): mostrato, non solo detto, min-~40. Due waterfall: full vs 40 righe. Il ridotto si muove appena → “più economico e più rumoroso, non più accurato”. Da qui bg_small fisso per tutti i modelli (anche l’MLP in 02): confronti omogenei.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="shap-settings-variance-vs.-cost" class="slide level2 smaller">
-<h2>SHAP settings — variance vs.&nbsp;cost</h2>
-<!-- PARAMS_I node — replaces the old "nsim" framing; we use kernelshap now. -->
+<h2>SHAP settings: variance vs.&nbsp;cost</h2>
+<!-- PARAMS_I node: replaces the old "nsim" framing; we use kernelshap now. -->
 <p>Three settings govern an agnostic SHAP run. None of them is a quality dial.</p>
 <table class="caption-top">
 <colgroup>
@@ -566,7 +655,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 </tbody>
 </table>
 <ul>
-<li>Smaller background is <strong>not</strong> “more accurate” — it is <strong>cheaper and noisier</strong>.</li>
+<li>Smaller background is <strong>not</strong> “more accurate”; it is <strong>cheaper and noisier</strong>.</li>
 <li>With 11 features the exact enumeration gets expensive <span class="math inline">\(\to\)</span> the forest uses the hybrid <code>kernelshap()</code>.</li>
 </ul>
 <aside class="notes">
@@ -583,16 +672,16 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
-<section id="your-turn-the-shap-variance-vs-cost-knobs" class="slide level2">
-<h2>Your turn — the SHAP variance-vs-cost knobs</h2>
-<p>In <code>kernelshap</code>, which <strong>two</strong> knobs govern the variance-vs-cost trade-off of the estimates?</p>
+<section id="your-turn-the-shap-variance-vs-cost-settings" class="slide level2">
+<h2>Your turn: the SHAP variance-vs-cost settings</h2>
+<p>In <code>kernelshap</code>, which <strong>two</strong> settings govern the variance-vs-cost trade-off of the estimates?</p>
 <ul>
 <li><strong>A.</strong> The <strong>size of <code>bg_X</code></strong> (background) and the <strong>sampling effort</strong> (coalitions per row): larger + more sampling → lower variance, higher cost. A tiny background (30–50 rows) for the live demo trades precision for speed.</li>
-<li><strong>B.</strong> A <strong>smaller background is more accurate</strong> — fewer, more representative rows reduce noise.</li>
-<li><strong>C.</strong> The <strong>number of sampling iterations equals the number of features</strong> — fixed by the data.</li>
-<li><strong>D.</strong> The <strong>background only matters for tree models</strong> — logistic/NN ignore <code>bg_X</code>.</li>
+<li><strong>B.</strong> A <strong>smaller background is more accurate</strong>: fewer, more representative rows reduce noise.</li>
+<li><strong>C.</strong> The <strong>number of sampling iterations equals the number of features</strong>: fixed by the data.</li>
+<li><strong>D.</strong> The <strong>background only matters for tree models</strong>: logistic/NN ignore <code>bg_X</code>.</li>
 </ul>
-<p><em>Pick one — then we reveal it.</em></p>
+<p><em>Pick one; then we reveal it.</em></p>
 <aside class="notes">
 <p>Voce docente (IT): MCQ min-46 (Engage). Distrattori: B = meno background = più accurato (NO); C = iterazioni fisse (NO); D = solo per alberi (NO, è agnostico).</p>
 <style type="text/css">
@@ -608,12 +697,12 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="the-answer-a-background-size-sampling-effort" class="slide level2">
-<h2>The answer — A: background size + sampling effort</h2>
+<h2>The answer: A: background size + sampling effort</h2>
 <p><strong>✓ A.</strong> Larger <code>bg_X</code> + more coalitions → lower-variance attributions at higher cost; the tiny live background is a deliberate speed trade.</p>
 <ul>
-<li><strong>✗ B</strong> — <em>smaller background = more accurate.</em> Inverts it: fewer reference points <strong>increase</strong> variance.</li>
-<li><strong>✗ C</strong> — <em>iterations fixed by the data.</em> The coalition count is a user knob (a heuristic default), not a property of the feature set.</li>
-<li><strong>✗ D</strong> — <em>background only for trees.</em> That’s TreeSHAP; <strong>kernel</strong> SHAP uses the background as a universal baseline for <strong>every</strong> model family.</li>
+<li><strong>✗ B</strong>: <em>smaller background = more accurate.</em> Inverts it: fewer reference points <strong>increase</strong> variance.</li>
+<li><strong>✗ C</strong>: <em>iterations fixed by the data.</em> The coalition count is a user setting (a heuristic default), not a property of the feature set.</li>
+<li><strong>✗ D</strong>: <em>background only for trees.</em> That’s TreeSHAP; <strong>kernel</strong> SHAP uses the background as a universal baseline for <strong>every</strong> model family.</li>
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): Reveal min-46. permshap esatto sull’ancora lineare, kernelshap ibrido come p cresce. Background piccolo = più economico e più rumoroso.</p>
@@ -630,7 +719,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="go-to-code-steps01-interpret" class="slide level2 center">
-<h2>Go to code — <code>steps/01-interpret/</code></h2>
+<h2>Go to code: <code>steps/01-interpret/</code></h2>
 <p>Open <code>steps/01-interpret/</code>: permutation VIMP, then the <strong>same</strong> agnostic SHAP line on the logistic anchor and the RF.</p>
 <ul>
 <li>The anchor first: SHAP must recover the coefficients before we trust it on the forest.</li>
