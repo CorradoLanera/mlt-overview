@@ -165,7 +165,7 @@ Voce docente (IT): chiusura Step 00 (demo → "follow along"). Il workflow final
 - **Permutation VIMP** (`{vip}`): shuffle a predictor $\to$ how far AUC-ROC drops = how much
   the model **relies** on it. Reliance, **not** causation.
 - **Agnostic SHAP** via **`kernelshap` + `shapviz`**: attribute one prediction across features.
-- The **same explainer line** runs on logistic $\to$ RF $\to$ MLP — only the model object changes.
+- The **same agnostic idea** runs on logistic $\to$ RF $\to$ MLP: `permshap` for the linear anchor, `kernelshap` for the rest; the model and the function change, not the interpretation.
 
 ::: {.notes}
 Voce docente (IT): hands-on (~48 min), zona di rischio per profondità. Min-24 (MCQ):
@@ -173,6 +173,29 @@ VIMP = reliance, NON causazione / coefficiente con segno / p-value. Numero reale
 build: la VIMP a permutazione mette in cima ejection_fraction e serum_creatinine (con
 age) — i predittori clinicamente sensati, con effetti soglia/non-monotoni. Sono le
 feature che la foresta ha imparato a USARE, non un'affermazione causale né di direzione.
+:::
+
+## What we hand the explainers: `extract_workflow()` {.smaller}
+
+`vip()` and `kernelshap()` both need a fitted object that **predicts**. From the recap we have `final_fit`: a `last_fit` **result** (metrics, predictions, and the fitted workflow), not a model you can call directly.
+
+- `extract_workflow(final_fit)` pulls out the **trained workflow**: the recipe (the same preprocessing) **plus** the fitted model, as one object.
+- That object is what we pass to `vip` and to `kernelshap`'s `pred_fun`, so every explanation runs through the exact preprocessing and model you validated.
+
+::: {.notes}
+Voce docente (IT): plumbing, min-~20. `final_fit` è un risultato `last_fit`, non un modello chiamabile. `extract_workflow()` ne estrae il workflow allenato (recipe + modello). È ciò che diamo a vip e a kernelshap: spiegano esattamente pre-processing+modello validati.
+:::
+
+## How permutation VIMP works: a recall from ch. 4 {.smaller}
+
+From the theory (ch. 4): importance is how much the model **leans on** a feature.
+
+- Take the validated model and its score (AUC-ROC). **Shuffle one feature's column** across patients: its signal is gone, everything else intact. Re-score.
+- The **drop** is that feature's importance, $\text{imp}(X_j) = \text{AUC} - \text{AUC}_{\text{shuffled } j}$. Repeat `nsim` times and **average** (one shuffle is noisy).
+- A big average drop means the model **relies** on $X_j$. Reliance, **not** causation, and **unsigned** (a forest permutation score has no direction).
+
+::: {.notes}
+Voce docente (IT): richiamo cap.4, min-~22, prima dell'MCQ. Permuta una colonna, misura il calo di AUC-ROC, media su nsim. Build reale: in cima ejection_fraction e serum_creatinine (con age). Prepara i distrattori B (causazione) e C (segno): la VIMP a permutazione non ha segno.
 :::
 
 ## Your turn — what does permutation VIMP measure?
@@ -202,6 +225,22 @@ con segno; D = p-value.
 ::: {.notes}
 Voce docente (IT): Reveal min-24. Numero reale: la VIMP mette in cima ejection_fraction e
 serum_creatinine (con age) — feature che la foresta USA, non un'affermazione causale.
+:::
+
+## How agnostic SHAP works: recall ch. 4, and how it's computed {.smaller}
+
+From the theory (ch. 4): a **Shapley value** $\phi_j$ is feature $j$'s **fair share** of *this* prediction's gap from the average. Additive: $\sum_j \phi_j = f(x) - \mathbb{E}[f]$.
+
+How an **agnostic** explainer computes it (model-blind, predictions only):
+
+- a feature's **marginal contribution** as it joins **coalitions** of the others;
+- the "average" is taken over a **background** set `bg_X` (reference patients): the baseline the attribution is measured against;
+- **`permshap()`** enumerates exactly (small feature counts, the linear anchor); **`kernelshap()`** **samples** coalitions (it scales to the forest).
+
+So the only settings are **which patient** (`X`), **the background** (`bg_X`), and **how hard you sample**. They trade variance for cost; none makes the answer more correct.
+
+::: {.notes}
+Voce docente (IT): richiamo cap.4 + strato computazionale, min-~36, prima dell'ancora. Shapley = quota equa additiva. Agnostico: contributo marginale su coalizioni, media sul background bg_X. permshap esatto sul lineare, kernelshap campionato sull'RF. Sole leve: X, bg_X, sforzo di campionamento. Setup per la slide varianza-vs-costo.
 :::
 
 ## The logistic anchor — SHAP must recover what we already know {.smaller}
@@ -248,6 +287,19 @@ It is a **directional sanity check, not an exact identity** — we explain in pr
 ::: {.notes}
 Voce docente (IT): Reveal min-38. permshap() esatto sul lineare (sanity-check più pulito);
 kernelshap() ibrido sull'RF. "Model-agnostic" = l'approssimazione è il punto.
+:::
+
+## Background size, shown: full vs. reduced {.smaller}
+
+We run the **same** `permshap` on the logistic anchor twice:
+
+- `bg_X = bg` (the full training set, ~224 rows): lower-variance attributions, slower;
+- `bg_X = bg_small` (40 sampled rows): the waterfall **barely moves** (same leading features, slightly noisier tails) and runs in a blink.
+
+Concrete lesson: a smaller background is **cheaper and noisier**, not more accurate. From here we **fix `bg_small`** and reuse it for **every** model (logistic $\to$ forest $\to$ MLP), so the comparisons are apples-to-apples.
+
+::: {.notes}
+Voce docente (IT): mostrato, non solo detto, min-~40. Due waterfall: full vs 40 righe. Il ridotto si muove appena → "più economico e più rumoroso, non più accurato". Da qui bg_small fisso per tutti i modelli (anche l'MLP in 02): confronti omogenei.
 :::
 
 ## SHAP settings — variance vs. cost {.smaller}
