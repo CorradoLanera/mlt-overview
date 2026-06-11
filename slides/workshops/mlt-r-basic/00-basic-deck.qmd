@@ -1117,11 +1117,11 @@ basta. Pre-hook a `targets` (capstone Advanced) per analisi pesanti.
 **Follow along.** Render `steps/05-report/` — the report that *runs* the analysis — then `renv::snapshot()`.
 
 - One render = the numbers and the code that made them are the same object.
-- This validated `final_fit` is exactly what **Advanced reopens** on day one.
+- This validated `final_fit` is exactly what **Advanced rebuilds live** on day one.
 
 ::: {.notes}
 Voce docente (IT): chiusura Step 05 (demo → "follow along"). Ponte all'Advanced: il workflow
-finalizzato di Basic è ciò che l'Advanced ricarica al giorno uno (pre-hook).
+finalizzato di Basic è ciò che l'Advanced ricostruisce dal vivo al giorno uno (pre-hook).
 :::
 
 ## Concept map — the whole afternoon
@@ -1157,19 +1157,19 @@ non all'inizio come programma. Font ingrandito (init nel .mmd + regola CSS .node
 20px) e altezza alzata a 980px per leggibilità da fondo aula (mai sotto ~18pt).
 :::
 
-## Next: open the model — Advanced {.center}
+## Next: rebuild the model — Advanced {.center}
 
-You built and validated a model. **Advanced opens this very model:**
+You built and validated a model. **Advanced rebuilds this very model, then extends it:**
 
 - **Interpret it** — permutation VIMP and SHAP, with the logistic as a sanity anchor.
 - **Go beyond** — deep learning (`torch` / `luz` / `brulee`), and `ellmer` as a typed,
   reproducible LLM-as-ETL.
 
-The validated `final_fit` you just produced is exactly what Advanced **reloads** on day one.
+The validated `final_fit` you just produced is exactly what Advanced **rebuilds live** on day one.
 
 ::: {.notes}
-Voce docente (IT): pre-hook ad Advanced (spec §11). L'Advanced apre RICARICANDO il workflow
-finalizzato di Basic e fa `predict` su una riga — niente retrain. Poi: interpretability
+Voce docente (IT): pre-hook ad Advanced (spec §11). L'Advanced RICOSTRUISCE dal vivo il workflow
+finalizzato di Basic e fa `predict` su una riga. Poi: interpretability
 (VIMP/SHAP), DL spectrum, `ellmer`, capstone `targets`. Il payoff dei pre-hook promessi
 nell'overview.
 :::
