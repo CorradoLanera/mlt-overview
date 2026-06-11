@@ -92,10 +92,10 @@ ejection_fraction / serum_creatinine. NON vendere l'MLP come vincitore della for
 The model you built in Basic is the **subject** of today. We **rebuild** that validated
 random forest live, then push past it.
 
-- **Interpret it** — permutation VIMP and agnostic SHAP, anchored on a logistic regression.
-- **Go deep** — a live `brulee` MLP (`torch` / `luz` / `brulee`), then CNN/RNN/fused nets written (not trained).
-- **Reach an LLM** — `ellmer` as a typed, reproducible LLM-as-ETL.
-- **Seal it** — a `targets` pipeline that re-derives the explanation, all-skip on re-run.
+- **Interpret it:** permutation VIMP and agnostic SHAP, anchored on a logistic regression.
+- **Go deep:** a live `brulee` MLP (`torch` / `luz` / `brulee`), then CNN/RNN/fused nets written (not trained).
+- **Reach an LLM:** `ellmer` as a typed, reproducible LLM-as-ETL.
+- **Seal it:** a `targets` pipeline that re-derives the explanation, all-skip on re-run.
 
 Everything live-coded; nothing pre-baked is shown as live (one labeled exception).
 
@@ -144,7 +144,7 @@ Voce docente (IT): Reveal min-10. Su questa macchina `cuda_is_available()` è FA
 sulla NVIDIA è TRUE. Una probabilità non è una spiegazione → apre lo step 01.
 :::
 
-## Go to code — `steps/00-recap/` {.center}
+## Go to code: `steps/00-recap/` {.center}
 
 **Follow along.** Open `steps/00-recap/`: rebuild Basic's selection live to `final_fit`, `predict()` one row, pre-warm torch.
 
