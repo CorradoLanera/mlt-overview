@@ -25,6 +25,7 @@ EMDASH = "—"
 REGISTER_WORDS = [
     "honestly", "truly", "clearly", "obviously", "genuinely",
     "sincerely", "of course", "the punchline", "killer",
+    "knob", "knobs",  # jargon the teacher does not use; prefer "setting"
 ]
 _REGISTER_RE = re.compile(r"(?i)\b(" + "|".join(re.escape(w) for w in REGISTER_WORDS) + r")\b")
 
