@@ -1740,10 +1740,10 @@ rsample · recipes · workflows · yardstick — illustrations generated with Im
 <p><strong>Follow along.</strong> Render <code>steps/05-report/</code> — the report that <em>runs</em> the analysis — then <code>renv::snapshot()</code>.</p>
 <ul>
 <li>One render = the numbers and the code that made them are the same object.</li>
-<li>This validated <code>final_fit</code> is exactly what <strong>Advanced reopens</strong> on day one.</li>
+<li>This validated <code>final_fit</code> is exactly what <strong>Advanced rebuilds live</strong> on day one.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): chiusura Step 05 (demo → “follow along”). Ponte all’Advanced: il workflow finalizzato di Basic è ciò che l’Advanced ricarica al giorno uno (pre-hook).</p>
+<p>Voce docente (IT): chiusura Step 05 (demo → “follow along”). Ponte all’Advanced: il workflow finalizzato di Basic è ciò che l’Advanced ricostruisce dal vivo al giorno uno (pre-hook).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1857,16 +1857,16 @@ flowchart TD
           display:block!important;
       }</style></aside>
 </section>
-<section id="next-open-the-model-advanced" class="slide level2 center">
-<h2>Next: open the model — Advanced</h2>
-<p>You built and validated a model. <strong>Advanced opens this very model:</strong></p>
+<section id="next-rebuild-the-model-advanced" class="slide level2 center">
+<h2>Next: rebuild the model — Advanced</h2>
+<p>You built and validated a model. <strong>Advanced rebuilds this very model, then extends it:</strong></p>
 <ul>
 <li><strong>Interpret it</strong> — permutation VIMP and SHAP, with the logistic as a sanity anchor.</li>
 <li><strong>Go beyond</strong> — deep learning (<code>torch</code> / <code>luz</code> / <code>brulee</code>), and <code>ellmer</code> as a typed, reproducible LLM-as-ETL.</li>
 </ul>
-<p>The validated <code>final_fit</code> you just produced is exactly what Advanced <strong>reloads</strong> on day one.</p>
+<p>The validated <code>final_fit</code> you just produced is exactly what Advanced <strong>rebuilds live</strong> on day one.</p>
 <aside class="notes">
-<p>Voce docente (IT): pre-hook ad Advanced (spec §11). L’Advanced apre RICARICANDO il workflow finalizzato di Basic e fa <code>predict</code> su una riga — niente retrain. Poi: interpretability (VIMP/SHAP), DL spectrum, <code>ellmer</code>, capstone <code>targets</code>. Il payoff dei pre-hook promessi nell’overview.</p>
+<p>Voce docente (IT): pre-hook ad Advanced (spec §11). L’Advanced RICOSTRUISCE dal vivo il workflow finalizzato di Basic e fa <code>predict</code> su una riga. Poi: interpretability (VIMP/SHAP), DL spectrum, <code>ellmer</code>, capstone <code>targets</code>. Il payoff dei pre-hook promessi nell’overview.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

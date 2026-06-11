@@ -2373,7 +2373,7 @@ vertical-align: -.125em;
 <span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>preds <span class="sc">|&gt;</span> <span class="fu">roc_curve</span>(outcome, .pred_died) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span>
 <span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>preds <span class="sc">|&gt;</span> <span class="fu">pr_curve</span>(outcome, .pred_died) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span>
 <span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the reloaded Basic model — one-row probability prediction (no retraining) ----</span></span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the model we just rebuilt: one-row probability prediction ----</span></span>
 <span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>fitted_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
 <span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fitted_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span>
 <span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a></span>
@@ -2547,20 +2547,20 @@ $ outcome                  &lt;fct&gt; died, died, died, died, died, died, died,
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="lubvessjwi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#lubvessjwi table {
+<div id="csaindcoyd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#csaindcoyd table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#lubvessjwi thead, #lubvessjwi tbody, #lubvessjwi tfoot, #lubvessjwi tr, #lubvessjwi td, #lubvessjwi th {
+#csaindcoyd thead, #csaindcoyd tbody, #csaindcoyd tfoot, #csaindcoyd tr, #csaindcoyd td, #csaindcoyd th {
 border-style: none;
 }
-#lubvessjwi p {
+#csaindcoyd p {
 margin: 0;
 padding: 0;
 }
-#lubvessjwi .gt_table {
+#csaindcoyd .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2585,11 +2585,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#lubvessjwi .gt_caption {
+#csaindcoyd .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#lubvessjwi .gt_title {
+#csaindcoyd .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2600,7 +2600,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#lubvessjwi .gt_subtitle {
+#csaindcoyd .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2611,7 +2611,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#lubvessjwi .gt_heading {
+#csaindcoyd .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2622,12 +2622,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#lubvessjwi .gt_bottom_border {
+#csaindcoyd .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#lubvessjwi .gt_col_headings {
+#csaindcoyd .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2641,7 +2641,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#lubvessjwi .gt_col_heading {
+#csaindcoyd .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2660,7 +2660,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#lubvessjwi .gt_column_spanner_outer {
+#csaindcoyd .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2671,13 +2671,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#lubvessjwi .gt_column_spanner_outer:first-child {
+#csaindcoyd .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#lubvessjwi .gt_column_spanner_outer:last-child {
+#csaindcoyd .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#lubvessjwi .gt_column_spanner {
+#csaindcoyd .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2688,10 +2688,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#lubvessjwi .gt_spanner_row {
+#csaindcoyd .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#lubvessjwi .gt_group_heading {
+#csaindcoyd .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2716,7 +2716,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#lubvessjwi .gt_empty_group_heading {
+#csaindcoyd .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2730,13 +2730,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#lubvessjwi .gt_from_md > :first-child {
+#csaindcoyd .gt_from_md > :first-child {
 margin-top: 0;
 }
-#lubvessjwi .gt_from_md > :last-child {
+#csaindcoyd .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#lubvessjwi .gt_row {
+#csaindcoyd .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2754,7 +2754,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#lubvessjwi .gt_stub {
+#csaindcoyd .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2766,7 +2766,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#lubvessjwi .gt_stub_row_group {
+#csaindcoyd .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2779,13 +2779,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#lubvessjwi .gt_row_group_first td {
+#csaindcoyd .gt_row_group_first td {
 border-top-width: 2px;
 }
-#lubvessjwi .gt_row_group_first th {
+#csaindcoyd .gt_row_group_first th {
 border-top-width: 2px;
 }
-#lubvessjwi .gt_summary_row {
+#csaindcoyd .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2794,14 +2794,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#lubvessjwi .gt_first_summary_row {
+#csaindcoyd .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#lubvessjwi .gt_first_summary_row.thick {
+#csaindcoyd .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#lubvessjwi .gt_last_summary_row {
+#csaindcoyd .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2810,7 +2810,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#lubvessjwi .gt_grand_summary_row {
+#csaindcoyd .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2819,7 +2819,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#lubvessjwi .gt_first_grand_summary_row {
+#csaindcoyd .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2828,7 +2828,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#lubvessjwi .gt_last_grand_summary_row_top {
+#csaindcoyd .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2837,10 +2837,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#lubvessjwi .gt_striped {
+#csaindcoyd .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#lubvessjwi .gt_table_body {
+#csaindcoyd .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2848,7 +2848,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#lubvessjwi .gt_footnotes {
+#csaindcoyd .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2861,7 +2861,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#lubvessjwi .gt_footnote {
+#csaindcoyd .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -2869,7 +2869,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#lubvessjwi .gt_sourcenotes {
+#csaindcoyd .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2882,64 +2882,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#lubvessjwi .gt_sourcenote {
+#csaindcoyd .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#lubvessjwi .gt_left {
+#csaindcoyd .gt_left {
 text-align: left;
 }
-#lubvessjwi .gt_center {
+#csaindcoyd .gt_center {
 text-align: center;
 }
-#lubvessjwi .gt_right {
+#csaindcoyd .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#lubvessjwi .gt_font_normal {
+#csaindcoyd .gt_font_normal {
 font-weight: normal;
 }
-#lubvessjwi .gt_font_bold {
+#csaindcoyd .gt_font_bold {
 font-weight: bold;
 }
-#lubvessjwi .gt_font_italic {
+#csaindcoyd .gt_font_italic {
 font-style: italic;
 }
-#lubvessjwi .gt_super {
+#csaindcoyd .gt_super {
 font-size: 65%;
 }
-#lubvessjwi .gt_footnote_marks {
+#csaindcoyd .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#lubvessjwi .gt_asterisk {
+#csaindcoyd .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#lubvessjwi .gt_indent_1 {
+#csaindcoyd .gt_indent_1 {
 text-indent: 5px;
 }
-#lubvessjwi .gt_indent_2 {
+#csaindcoyd .gt_indent_2 {
 text-indent: 10px;
 }
-#lubvessjwi .gt_indent_3 {
+#csaindcoyd .gt_indent_3 {
 text-indent: 15px;
 }
-#lubvessjwi .gt_indent_4 {
+#csaindcoyd .gt_indent_4 {
 text-indent: 20px;
 }
-#lubvessjwi .gt_indent_5 {
+#csaindcoyd .gt_indent_5 {
 text-indent: 25px;
 }
-#lubvessjwi .katex-display {
+#csaindcoyd .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#lubvessjwi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#csaindcoyd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -3260,7 +3260,7 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the reloaded Basic model — one-row probability prediction (no retraining) ----</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the model we just rebuilt: one-row probability prediction ----</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>fitted_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fitted_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">

@@ -2374,7 +2374,7 @@ vertical-align: -.125em;
 <span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>preds <span class="sc">|&gt;</span> <span class="fu">roc_curve</span>(outcome, .pred_died) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span>
 <span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>preds <span class="sc">|&gt;</span> <span class="fu">pr_curve</span>(outcome, .pred_died) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span>
 <span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the reloaded Basic model — one-row probability prediction (no retraining) ----</span></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the model we just rebuilt: one-row probability prediction ----</span></span>
 <span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>fitted_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
 <span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fitted_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span>
 <span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a></span>
@@ -2590,20 +2590,20 @@ $ outcome                  &lt;fct&gt; died, died, died, died, died, died, died,
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="rgvsckuunc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#rgvsckuunc table {
+<div id="qyogcumqtq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qyogcumqtq table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#rgvsckuunc thead, #rgvsckuunc tbody, #rgvsckuunc tfoot, #rgvsckuunc tr, #rgvsckuunc td, #rgvsckuunc th {
+#qyogcumqtq thead, #qyogcumqtq tbody, #qyogcumqtq tfoot, #qyogcumqtq tr, #qyogcumqtq td, #qyogcumqtq th {
 border-style: none;
 }
-#rgvsckuunc p {
+#qyogcumqtq p {
 margin: 0;
 padding: 0;
 }
-#rgvsckuunc .gt_table {
+#qyogcumqtq .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2628,11 +2628,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#rgvsckuunc .gt_caption {
+#qyogcumqtq .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#rgvsckuunc .gt_title {
+#qyogcumqtq .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2643,7 +2643,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#rgvsckuunc .gt_subtitle {
+#qyogcumqtq .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2654,7 +2654,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#rgvsckuunc .gt_heading {
+#qyogcumqtq .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2665,12 +2665,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#rgvsckuunc .gt_bottom_border {
+#qyogcumqtq .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#rgvsckuunc .gt_col_headings {
+#qyogcumqtq .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2684,7 +2684,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#rgvsckuunc .gt_col_heading {
+#qyogcumqtq .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2703,7 +2703,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#rgvsckuunc .gt_column_spanner_outer {
+#qyogcumqtq .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2714,13 +2714,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#rgvsckuunc .gt_column_spanner_outer:first-child {
+#qyogcumqtq .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#rgvsckuunc .gt_column_spanner_outer:last-child {
+#qyogcumqtq .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#rgvsckuunc .gt_column_spanner {
+#qyogcumqtq .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2731,10 +2731,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#rgvsckuunc .gt_spanner_row {
+#qyogcumqtq .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#rgvsckuunc .gt_group_heading {
+#qyogcumqtq .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2759,7 +2759,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#rgvsckuunc .gt_empty_group_heading {
+#qyogcumqtq .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2773,13 +2773,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#rgvsckuunc .gt_from_md > :first-child {
+#qyogcumqtq .gt_from_md > :first-child {
 margin-top: 0;
 }
-#rgvsckuunc .gt_from_md > :last-child {
+#qyogcumqtq .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#rgvsckuunc .gt_row {
+#qyogcumqtq .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2797,7 +2797,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#rgvsckuunc .gt_stub {
+#qyogcumqtq .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2809,7 +2809,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#rgvsckuunc .gt_stub_row_group {
+#qyogcumqtq .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2822,13 +2822,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#rgvsckuunc .gt_row_group_first td {
+#qyogcumqtq .gt_row_group_first td {
 border-top-width: 2px;
 }
-#rgvsckuunc .gt_row_group_first th {
+#qyogcumqtq .gt_row_group_first th {
 border-top-width: 2px;
 }
-#rgvsckuunc .gt_summary_row {
+#qyogcumqtq .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2837,14 +2837,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#rgvsckuunc .gt_first_summary_row {
+#qyogcumqtq .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#rgvsckuunc .gt_first_summary_row.thick {
+#qyogcumqtq .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#rgvsckuunc .gt_last_summary_row {
+#qyogcumqtq .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2853,7 +2853,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#rgvsckuunc .gt_grand_summary_row {
+#qyogcumqtq .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2862,7 +2862,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#rgvsckuunc .gt_first_grand_summary_row {
+#qyogcumqtq .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2871,7 +2871,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#rgvsckuunc .gt_last_grand_summary_row_top {
+#qyogcumqtq .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2880,10 +2880,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#rgvsckuunc .gt_striped {
+#qyogcumqtq .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#rgvsckuunc .gt_table_body {
+#qyogcumqtq .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2891,7 +2891,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#rgvsckuunc .gt_footnotes {
+#qyogcumqtq .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2904,7 +2904,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#rgvsckuunc .gt_footnote {
+#qyogcumqtq .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -2912,7 +2912,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#rgvsckuunc .gt_sourcenotes {
+#qyogcumqtq .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2925,64 +2925,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#rgvsckuunc .gt_sourcenote {
+#qyogcumqtq .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#rgvsckuunc .gt_left {
+#qyogcumqtq .gt_left {
 text-align: left;
 }
-#rgvsckuunc .gt_center {
+#qyogcumqtq .gt_center {
 text-align: center;
 }
-#rgvsckuunc .gt_right {
+#qyogcumqtq .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#rgvsckuunc .gt_font_normal {
+#qyogcumqtq .gt_font_normal {
 font-weight: normal;
 }
-#rgvsckuunc .gt_font_bold {
+#qyogcumqtq .gt_font_bold {
 font-weight: bold;
 }
-#rgvsckuunc .gt_font_italic {
+#qyogcumqtq .gt_font_italic {
 font-style: italic;
 }
-#rgvsckuunc .gt_super {
+#qyogcumqtq .gt_super {
 font-size: 65%;
 }
-#rgvsckuunc .gt_footnote_marks {
+#qyogcumqtq .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#rgvsckuunc .gt_asterisk {
+#qyogcumqtq .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#rgvsckuunc .gt_indent_1 {
+#qyogcumqtq .gt_indent_1 {
 text-indent: 5px;
 }
-#rgvsckuunc .gt_indent_2 {
+#qyogcumqtq .gt_indent_2 {
 text-indent: 10px;
 }
-#rgvsckuunc .gt_indent_3 {
+#qyogcumqtq .gt_indent_3 {
 text-indent: 15px;
 }
-#rgvsckuunc .gt_indent_4 {
+#qyogcumqtq .gt_indent_4 {
 text-indent: 20px;
 }
-#rgvsckuunc .gt_indent_5 {
+#qyogcumqtq .gt_indent_5 {
 text-indent: 25px;
 }
-#rgvsckuunc .katex-display {
+#qyogcumqtq .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#rgvsckuunc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#qyogcumqtq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -3303,7 +3303,7 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the reloaded Basic model — one-row probability prediction (no retraining) ----</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the model we just rebuilt: one-row probability prediction ----</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>fitted_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fitted_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">

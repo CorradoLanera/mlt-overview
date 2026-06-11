@@ -204,7 +204,7 @@
 <img src="../../../img/DSCTV.png" style="height:60px; margin:0 18px;"> <img src="../../../img/UBEP.png" style="height:60px; margin:0 18px;"> <img src="../../../img/LAIMS.png" style="height:60px; margin:0 18px;">
 </p>
 <p style="text-align:center; font-size:1.55em; font-weight:700; line-height:1.15; margin:0.2em 0;">
-<span style="color:#E8741E;">Advanced</span> — Open the validated model: interpret it, go deep, reach an LLM, seal it
+<span style="color:#E8741E;">Advanced</span> · Rebuild Basic’s validated model, then go further: interpret it, go deep, reach an LLM, seal it
 </p>
 <p style="text-align:center; font-size:0.92em; color:#444; margin:1.4em 0 0.2em 0;">
 The hands-on companion to <em>Machine Learning — An Applied Overview</em>
@@ -282,10 +282,10 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
-<section id="open-the-model-you-validated-in-basic" class="title-slide slide level1 center">
-<h1>Open the model you validated in Basic</h1>
+<section id="rebuild-the-model-you-validated-in-basic" class="title-slide slide level1 center">
+<h1>Rebuild the model you validated in Basic</h1>
 <aside class="notes">
-<p>Voce docente (IT): apertura. L’arco RIAPRE il modello validato in Basic — non si ricostruisce nulla. Quattro tappe: interpretare (VIMP/SHAP) → deep learning (torch/ luz/brulee) → <code>ellmer</code> come ETL tipizzato → capstone <code>targets</code>. torch è pre-riscaldato nello step 00 (<code>torch_tensor(1)</code>), così il primo tensore non paga l’init. Numeri reali da ricordare: l’RF di Basic sta a CV AUC-ROC ~0.79; VIMP mette in cima ejection_fraction / serum_creatinine. NON vendere l’MLP come vincitore della foresta.</p>
+<p>Voce docente (IT): apertura. L’arco RICOSTRUISCE dal vivo il modello validato in Basic (replay completo della selezione di Basic), non lo ricarica. Quattro tappe: interpretare (VIMP/SHAP) → deep learning (torch/ luz/brulee) → <code>ellmer</code> come ETL tipizzato → capstone <code>targets</code>. torch è pre-riscaldato nello step 00 (<code>torch_tensor(1)</code>), così il primo tensore non paga l’init. Numeri reali da ricordare: l’RF di Basic sta a CV AUC-ROC ~0.79; VIMP mette in cima ejection_fraction / serum_creatinine. NON vendere l’MLP come vincitore della foresta.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -297,12 +297,12 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-<p>The model you built in Basic is not the end — it is the <strong>subject</strong>. We <strong>open</strong> the random forest you built and validated in Basic, then push past it.</p>
+<p>The model you built in Basic is the <strong>subject</strong> of today. We <strong>rebuild</strong> that validated random forest live, then push past it.</p>
 <ul>
-<li><strong>Interpret it</strong> — permutation VIMP and agnostic SHAP, anchored on a logistic regression.</li>
-<li><strong>Go deep</strong> — a live <code>brulee</code> MLP (<code>torch</code> / <code>luz</code> / <code>brulee</code>), then CNN/RNN/fused nets written (not trained).</li>
-<li><strong>Reach an LLM</strong> — <code>ellmer</code> as a typed, reproducible LLM-as-ETL.</li>
-<li><strong>Seal it</strong> — a <code>targets</code> pipeline that re-derives the explanation, all-skip on re-run.</li>
+<li><strong>Interpret it:</strong> permutation VIMP and agnostic SHAP, anchored on a logistic regression.</li>
+<li><strong>Go deep:</strong> a live <code>brulee</code> MLP (<code>torch</code> / <code>luz</code> / <code>brulee</code>), then CNN/RNN/fused nets written (not trained).</li>
+<li><strong>Reach an LLM:</strong> <code>ellmer</code> as a typed, reproducible LLM-as-ETL.</li>
+<li><strong>Seal it:</strong> a <code>targets</code> pipeline that re-derives the explanation, all-skip on re-run.</li>
 </ul>
 <p>Everything live-coded; nothing pre-baked is shown as live (one labeled exception).</p>
 </section>
@@ -310,15 +310,15 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <section>
 <section id="sec-00-recap" class="title-slide slide level1 center">
 <h1>Step 00 · Recap &amp; setup</h1>
-<!-- Step 00 (demo, 12 min): reload Basic's finalized workflow; predict 1 row; pre-warm torch. -->
-<p><strong>Why first.</strong> Advanced doesn’t rebuild anything — it <strong>reopens</strong> the model you validated in Basic. Day one reloads that exact <code>final_fit</code>, so a clean, warm session is the precondition for everything that follows.</p>
+<!-- Step 00 (~30 min): rebuild Basic's full selection live to final_fit; predict 1 row; pre-warm torch. -->
+<p><strong>Why first.</strong> Advanced starts by <strong>rebuilding</strong> the model you validated in Basic, live: day one re-runs that exact selection to land <code>final_fit</code> again, so a clean, warm session is the precondition for everything that follows.</p>
 <ul>
-<li>Reload Basic’s finalized random forest: <code>extract_workflow(readRDS("final_fit.rds"))</code>.</li>
-<li><code>predict()</code> on <strong>one</strong> patient row — a probability, not yet an explanation.</li>
+<li>Rebuild Basic’s selection live, then <code>extract_workflow(final_fit)</code> on the finalized random forest.</li>
+<li><code>predict()</code> on <strong>one</strong> patient row: a probability, not yet an explanation.</li>
 <li><strong>Pre-warm torch</strong> so the first tensor later does not pay the init cost.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): demo (~12 min). Si RICARICA, non si riaddestra. Live-check al min 10: reload + <code>predict</code> su 1 riga + <code>torch_tensor(1)</code> SENZA download (torch caldo). GREEN/RED. Su questa macchina di build <code>cuda_is_available()</code> è FALSE; in aula, sulla NVIDIA, è TRUE. Il punto: una probabilità non è una spiegazione → apre lo step 01.</p>
+<p>Voce docente (IT): demo (~30 min, replay completo della selezione di Basic dal vivo). Si RICOSTRUISCE, non si ricarica. Live-check al min 10: <code>predict</code> su 1 riga sul workflow appena fittato + <code>torch_tensor(1)</code> SENZA download (torch caldo). GREEN/RED. Su questa macchina di build <code>cuda_is_available()</code> è FALSE; in aula, sulla NVIDIA, è TRUE. Il punto: una probabilità non è una spiegazione → apre lo step 01.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -331,13 +331,13 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
-<section id="live-check-did-the-model-reload-is-torch-warm" class="slide level2">
-<h2>Live check — did the model reload, is torch warm?</h2>
+<section id="live-check-is-the-model-rebuilt-is-torch-warm" class="slide level2">
+<h2>Live check: is the model rebuilt, is torch warm?</h2>
 <p>Run three checks. Signal <strong>GREEN</strong> if all pass, <strong>RED</strong> if any fails:</p>
 <ol type="1">
-<li>Does <code>predict(fitted_wf, hf_tbl[1, ], type = "prob")</code> return a <strong>1-row tibble</strong> (no error, no retrain)?</li>
-<li>Does <strong><code>torch_tensor(1)</code></strong> run <strong>without a download</strong> — backend loads instantly (torch pre-warmed)?</li>
-<li>Is the loaded object the <strong>finalized workflow from Basic</strong> (the one that passed <code>last_fit()</code>)?</li>
+<li>Does <code>predict(fitted_wf, hf_tbl[1, ], type = "prob")</code> return a <strong>1-row tibble</strong> from the workflow we just fitted?</li>
+<li>Does <strong><code>torch_tensor(1)</code></strong> run <strong>without a download</strong> (backend loads instantly, torch pre-warmed)?</li>
+<li>Is <code>final_fit</code> the <strong>finalized workflow</strong> from the live selection (the one that passed <code>last_fit()</code>)?</li>
 </ol>
 <aside class="notes">
 <p>Voce docente (IT): live-check min-10 (Engage). Presenza: alzata di mano GREEN/RED; remoto: poll.</p>
@@ -353,15 +353,15 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
-<section id="green-basics-model-reopened-not-retrained" class="slide level2">
-<h2>GREEN — Basic’s model, reopened (not retrained)</h2>
+<section id="green-basics-model-rebuilt-live" class="slide level2">
+<h2>GREEN: Basic’s model, rebuilt live</h2>
 <p>All three pass:</p>
 <ul>
-<li><code>predict()</code> on the extracted <code>fitted_wf</code> returns immediately — the model is baked in, no <code>fit()</code>;</li>
-<li><code>torch_tensor(1)</code> runs without downloading libtorch — the session was pre-warmed at setup;</li>
-<li>the object is Basic’s finalized <code>last_fit</code> workflow (<code>model/final_fit.rds</code> → <code>readRDS()</code> → <code>extract_workflow()</code>).</li>
+<li><code>predict()</code> on the extracted <code>fitted_wf</code> returns a probability; <code>final_fit</code> came from the live selection we just ran;</li>
+<li><code>torch_tensor(1)</code> runs without downloading libtorch (the session was pre-warmed at setup);</li>
+<li>the object is the finalized <code>last_fit</code> workflow from the selection (<code>extract_workflow(final_fit)</code>), the random forest that won on <code>roc_auc</code>.</li>
 </ul>
-<p><strong>RED on torch?</strong> Run <code>library(torch)</code> now and wait for backend init — normal once per session, never mid-workshop. <strong>RED on the model?</strong> Reload from the checkpoint before continuing — all of Step 01 depends on it.</p>
+<p><strong>RED on torch?</strong> Run <code>library(torch)</code> now and wait for backend init (normal once per session, never mid-workshop). <strong>RED on the model?</strong> Re-run the selection block before continuing; all of Step 01 depends on <code>final_fit</code>.</p>
 <aside class="notes">
 <p>Voce docente (IT): Reveal min-10. Su questa macchina <code>cuda_is_available()</code> è FALSE; in aula sulla NVIDIA è TRUE. Una probabilità non è una spiegazione → apre lo step 01.</p>
 <style type="text/css">
@@ -377,11 +377,11 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="go-to-code-steps00-recap" class="slide level2 center">
-<h2>Go to code — <code>steps/00-recap/</code></h2>
-<p><strong>Follow along.</strong> Open <code>steps/00-recap/</code>: reload Basic’s <code>final_fit</code>, <code>predict()</code> one row, pre-warm torch.</p>
+<h2>Go to code: <code>steps/00-recap/</code></h2>
+<p><strong>Follow along.</strong> Open <code>steps/00-recap/</code>: rebuild Basic’s selection live to <code>final_fit</code>, <code>predict()</code> one row, pre-warm torch.</p>
 <ul>
 <li>Live check at minute 10: GREEN / RED.</li>
-<li>We never retrain — Advanced opens the model Basic validated.</li>
+<li>We rebuild it live: Advanced re-derives the model Basic validated.</li>
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): chiusura Step 00 (demo → “follow along”). Il workflow finalizzato di Basic è il soggetto di tutta la giornata.</p>
@@ -1456,11 +1456,11 @@ flowchart TD
 <p>The capstone payoff: this <strong>reproducible explain <span class="math inline">\(\to\)</span> deep <span class="math inline">\(\to\)</span> LLM</strong> pipeline is sealed.</p>
 <ul>
 <li>A peer can clone the folder, run <code>tar_make()</code>, and re-derive the <strong>same</strong> explanation of the Basic model — deterministically, hash-checked.</li>
-<li>Basic <strong>promised</strong> that Advanced would reload its validated model. <strong>We delivered:</strong> day one reopened that exact <code>final_fit</code>, and we never retrained it.</li>
+<li>Basic <strong>built</strong> the validated model; Advanced <strong>re-derived it live</strong> on day one and pushed past it.</li>
 </ul>
-<p>The loop is closed — from a validated model to a reproducible pipeline a colleague can re-run.</p>
+<p>The loop is closed: from a validated model to a reproducible pipeline a colleague can re-run.</p>
 <aside class="notes">
-<p>Voce docente (IT): chiusura. Chiude il loop Basic↔︎Advanced: Basic prometteva che Advanced RICARICA il modello (pre-hook), e l’abbiamo mantenuto — step 00 ha riaperto <code>final_fit</code> senza retrain. Il payoff finale è la consegnabilità: la pipeline spiegata-deep-LLM è riproducibile da un terzo via <code>targets</code>. Niente riferimenti temporali, niente nomi oltre Corrado Lanera (UBEP).</p>
+<p>Voce docente (IT): chiusura. Chiude il loop Basic↔︎Advanced: Basic prometteva che Advanced RICOSTRUISCE dal vivo il modello (pre-hook), e l’abbiamo mantenuto: step 00 ha ri-derivato <code>final_fit</code> dal vivo. Il payoff finale è la consegnabilità: la pipeline spiegata-deep-LLM è riproducibile da un terzo via <code>targets</code>. Niente riferimenti temporali, niente nomi oltre Corrado Lanera (UBEP).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

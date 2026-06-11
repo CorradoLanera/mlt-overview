@@ -194,29 +194,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><a href="slides/workshops/mlt-r-advanced/00-advanced-deck.html" class="btn-deck">Open the deck ↗</a> <a href="https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced-deck.html" class="btn-dl">Download deck</a> <a href="https://github.com/CorradoLanera/mlt-overview/releases/latest/download/mlt-r-advanced.zip" class="btn-dl">Download workshop ZIP</a> <a href="advanced-solutions.html" class="btn-deck">Coding solutions ↗</a></p>
 <section id="what-you-will-build" class="level2">
 <h2 class="anchored" data-anchor-id="what-you-will-build">What you will build</h2>
-<p>Starting from the <strong>validated heart-failure random forest built in the Basic workshop</strong> (bundled in this project), we:</p>
+<p>We rebuild live the <strong>validated heart-failure random forest from the Basic workshop</strong> (from the bundled data), then we:</p>
 <ol type="1">
-<li><strong>Interpret</strong> the model — permutation variable importance, then agnostic SHAP via <code>kernelshap</code>
+<li><strong>Interpret</strong> the model: permutation variable importance, then agnostic SHAP via <code>kernelshap</code>
 <ul>
 <li><code>shapviz</code>, with a logistic regression as a sanity-check anchor (<code>permshap()</code>);</li>
 </ul></li>
 <li><strong>Go deeper</strong> with deep learning (<code>torch</code> / <code>luz</code> / <code>brulee</code>): train a small MLP live, then write and shape-check CNN, RNN, and fused architectures (written-not-trained, so class stays on schedule);</li>
 <li><strong>Use an LLM as a typed, reproducible ETL</strong> (<code>ellmer</code>): extract structured fields from synthetic clinical notes (<code>hf_notes.csv</code>) with a single live call, then wrap the batch in a <code>purrr::map</code> pipeline (written-not-run);</li>
-<li><strong>Seal everything</strong> in a <code>targets</code> pipeline — the final DAG demonstrates that the full arc from raw data to interpreted predictions is reproducible with a single <code>tar_make()</code>.</li>
+<li><strong>Seal everything</strong> in a <code>targets</code> pipeline: the final DAG demonstrates that the full arc from raw data to interpreted predictions is reproducible with a single <code>tar_make()</code>.</li>
 </ol>
 </section>
 <section id="dataset" class="level2">
 <h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
-<p>This workshop reloads the <strong>heart-failure clinical records</strong> (Chicco &amp; Jurman 2020; 299 patients, ~32% event rate) from <code>data-raw/heart_failure.csv</code> (bundled) and the already-fitted random forest from <code>model/final_fit.rds</code> (bundled). It also adds ~12 synthetic, de-identified clinical notes in <code>data-raw/hf_notes.csv</code> for the LLM extraction step. No PHI is present in any bundled file.</p>
+<p>This workshop loads the <strong>heart-failure clinical records</strong> (Chicco &amp; Jurman 2020; 299 patients, ~32% event rate) from <code>data-raw/heart_failure.csv</code> (bundled) and <strong>rebuilds the random forest live</strong> from that data: nothing is pre-fitted on disk. It also adds ~12 synthetic, de-identified clinical notes in <code>data-raw/hf_notes.csv</code> for the LLM extraction step. No PHI is present in any bundled file.</p>
 </section>
 <section id="prerequisites" class="level2">
 <h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
-<p>You must have completed the <strong>Basic workshop</strong> (Module 2). You should understand the validated heart-failure model this workshop reopens: a tuned random forest, outcome <code>died</code> / <code>survived</code>, validated with <code>last_fit</code> on held-out data, scored on AUC-ROC and AUC-PR. You do <strong>not</strong> need to have it on disk: this project <strong>bundles</strong> it (<code>model/final_fit.rds</code>).</p>
+<p>You must have completed the <strong>Basic workshop</strong> (Module 2). You should understand the validated heart-failure model this workshop rebuilds: a tuned random forest, outcome <code>died</code> / <code>survived</code>, validated with <code>last_fit</code> on held-out data, scored on AUC-ROC and AUC-PR. You do <strong>not</strong> need the fitted model on disk: this project <strong>bundles the data</strong> (<code>data-raw/heart_failure.csv</code>) and rebuilds the model live.</p>
 <p>From the <strong>Theory Overview</strong> (Module 1), the relevant background is:</p>
 <ul>
 <li>what <strong>model interpretability</strong> is and why black-box predictions are not enough (ch.&nbsp;4, revisited ch.&nbsp;10);</li>
 <li>the basic idea of a <strong>neural network</strong> and how it differs from a linear model (ch.&nbsp;5);</li>
-<li>the architectures for <strong>unstructured data</strong> — CNNs and RNNs (ch.&nbsp;6);</li>
+<li>the architectures for <strong>unstructured data</strong>: CNNs and RNNs (ch.&nbsp;6);</li>
 <li>what an <strong>LLM</strong> is and why it can serve as a structured-extraction tool (ch.&nbsp;7).</li>
 </ul>
 </section>
@@ -226,8 +226,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="steps" class="level2">
 <h2 class="anchored" data-anchor-id="steps">Steps</h2>
 <section id="step-00-recap-setup-30-min" class="level3">
-<h3 class="anchored" data-anchor-id="step-00-recap-setup-30-min">Step 00 — Recap &amp; setup · 30 min</h3>
-<p>Reopen the validated Basic random forest and warm up the <code>torch</code> backend.</p>
+<h3 class="anchored" data-anchor-id="step-00-recap-setup-30-min">Step 00: Recap &amp; setup · 30 min</h3>
+<p>Rebuild Basic’s validated random forest live and warm up the <code>torch</code> backend.</p>
 </section>
 <section id="step-01-open-the-black-box-45-min" class="level3">
 <h3 class="anchored" data-anchor-id="step-01-open-the-black-box-45-min">Step 01 — Open the black box · 45 min</h3>
@@ -269,11 +269,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td><strong>Denomination</strong></td>
-<td>Practical Artificial Intelligence for Medical Data Analyses with R — Advanced</td>
+<td>Practical Artificial Intelligence for Medical Data Analyses with R: Advanced</td>
 </tr>
 <tr class="even">
 <td><strong>SSD</strong></td>
-<td>MEDS-24/A — Statistica medica</td>
+<td>MEDS-24/A: Statistica medica</td>
 </tr>
 <tr class="odd">
 <td><strong>Instructors</strong></td>
@@ -305,14 +305,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><strong>Prerequisites</strong></td>
-<td>Basic R and ML — completion of the <em>Basic</em> workshop required</td>
+<td>Basic R and ML: completion of the <em>Basic</em> workshop required</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="course-description" class="level2">
 <h2 class="anchored" data-anchor-id="course-description">Course description</h2>
-<p>A ~4-hour, live-coded workshop in which we reopen a validated clinical ML model and push it further. Starting from the <strong>validated heart-failure random forest built in the Basic workshop</strong> (bundled in the project), we: interpret it with permutation variable importance and agnostic SHAP; go deeper with neural networks; use a large language model as a typed, reproducible ETL over clinical notes; and seal the whole pipeline in a reproducible <code>targets</code> DAG. We work hands-on in RStudio, type every line together, and end with a pipeline we can explain, extend, and re-run.</p>
+<p>A ~4-hour, live-coded workshop in which we rebuild a validated clinical ML model live and push it further. We re-run the <strong>heart-failure random forest selection from the Basic workshop</strong> live, then we: interpret it with permutation variable importance and agnostic SHAP; go deeper with neural networks; use a large language model as a typed, reproducible ETL over clinical notes; and seal the whole pipeline in a reproducible <code>targets</code> DAG. We work hands-on in RStudio, type every line together, and end with a pipeline we can explain, extend, and re-run.</p>
 </section>
 <section id="intended-learning-outcomes" class="level2">
 <h2 class="anchored" data-anchor-id="intended-learning-outcomes">Intended learning outcomes</h2>
@@ -321,7 +321,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Interpret</strong> a fitted model with permutation variable importance and agnostic SHAP (<code>kernelshap</code> + <code>shapviz</code>), anchored by a logistic <code>permshap()</code> sanity-check.</li>
 <li><strong>Train</strong> a small MLP with <code>torch</code> / <code>luz</code>, and <strong>read and shape-check</strong> CNN, RNN, and fused architectures (written-not-trained, so class stays on schedule).</li>
 <li><strong>Use</strong> an LLM (<code>ellmer</code>) as a typed, reproducible ETL to extract structured fields from synthetic clinical notes.</li>
-<li><strong>Assemble</strong> a reproducible <code>targets</code> pipeline that re-runs the full arc — raw data to interpreted predictions — with a single <code>tar_make()</code>.</li>
+<li><strong>Assemble</strong> a reproducible <code>targets</code> pipeline that re-runs the full arc (raw data to interpreted predictions) with a single <code>tar_make()</code>.</li>
 <li><strong>Weigh</strong> the interpretability / performance trade-off in a clinical-deployment context.</li>
 </ol>
 </section>
@@ -329,30 +329,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="steps-schedule">Steps &amp; schedule</h2>
 <p>The five steps and their contact time are on the <a href="./schedule.html">Schedule</a> page:</p>
 <ul>
-<li>Step 00 · Recap &amp; setup — 30 min</li>
-<li>Step 01 · Open the black box — 45 min</li>
-<li>Step 02 · Deep learning, honestly — 70 min</li>
-<li>Step 03 · An LLM as a typed, reproducible ETL — 45 min</li>
-<li>Step 04 · Reproducibility capstone — 50 min</li>
+<li>Step 00 · Recap &amp; setup: 30 min</li>
+<li>Step 01 · Open the black box: 45 min</li>
+<li>Step 02 · Deep learning: 70 min</li>
+<li>Step 03 · An LLM as a typed, reproducible ETL: 45 min</li>
+<li>Step 04 · Reproducibility capstone: 50 min</li>
 </ul>
 <p>Total ≈ 240 min, within the 10 officially allocated hours.</p>
 </section>
 <section id="dataset-1" class="level2">
 <h2 class="anchored" data-anchor-id="dataset-1">Dataset</h2>
-<p>The workshop reloads the <strong>heart-failure clinical records</strong> (Chicco &amp; Jurman 2020; 299 patients, ~32% event rate) from <code>data-raw/heart_failure.csv</code> (bundled) and the already-fitted random forest from <code>model/final_fit.rds</code> (bundled). It adds ~12 synthetic, de-identified clinical notes in <code>data-raw/hf_notes.csv</code> for the LLM extraction step. <strong>No PHI</strong> is present in any bundled file.</p>
+<p>The workshop loads the <strong>heart-failure clinical records</strong> (Chicco &amp; Jurman 2020; 299 patients, ~32% event rate) from <code>data-raw/heart_failure.csv</code> (bundled) and <strong>rebuilds the random forest live</strong> from that data: nothing is pre-fitted on disk. It adds ~12 synthetic, de-identified clinical notes in <code>data-raw/hf_notes.csv</code> for the LLM extraction step. <strong>No PHI</strong> is present in any bundled file.</p>
 </section>
 <section id="assessment" class="level2">
 <h2 class="anchored" data-anchor-id="assessment">Assessment</h2>
-<p>As for the Basic workshop, the official exam method is not yet fixed in the Offerta Formativa. The working model is <strong>in-class formative assessment</strong> — dual-mode checkpoints throughout — plus a hands-on <strong>reproducibility capstone</strong> (the <code>targets</code> DAG) as the culminating task.</p>
+<p>As for the Basic workshop, the official exam method is not yet fixed in the Offerta Formativa. The working model is <strong>in-class formative assessment</strong> (dual-mode checkpoints throughout) plus a hands-on <strong>reproducibility capstone</strong> (the <code>targets</code> DAG) as the culminating task.</p>
 </section>
 <section id="prerequisites-learning-path" class="level2">
 <h2 class="anchored" data-anchor-id="prerequisites-learning-path">Prerequisites &amp; learning path</h2>
-<p>You must have <strong>completed the Basic workshop</strong> (Module 2): the validated random forest it produces is the starting point here (bundled, so you do not need it on disk). From the <strong>Theory Overview</strong> the relevant background is model interpretability (ch.&nbsp;4, revisited ch.&nbsp;10), the neural network (ch.&nbsp;5), CNN/RNN architectures (ch.&nbsp;6), and what an LLM is (ch.&nbsp;7). This is <strong>Module 3</strong>, the final module.</p>
+<p>You must have <strong>completed the Basic workshop</strong> (Module 2): the validated random forest it produces is the starting point here (rebuilt live from the bundled data, so you do not need the model on disk). From the <strong>Theory Overview</strong> the relevant background is model interpretability (ch.&nbsp;4, revisited ch.&nbsp;10), the neural network (ch.&nbsp;5), CNN/RNN architectures (ch.&nbsp;6), and what an LLM is (ch.&nbsp;7). This is <strong>Module 3</strong>, the final module.</p>
 </section>
 <section id="tools-materials" class="level2">
 <h2 class="anchored" data-anchor-id="tools-materials">Tools &amp; materials</h2>
-<p>R (≥ 4.5) and RStudio; <code>tidymodels</code>, <code>vip</code>, <code>kernelshap</code>, <code>shapviz</code>, <code>torch</code>, <code>luz</code>, <code>brulee</code>, <code>ellmer</code>, <code>targets</code>, and <code>tarchetypes</code>. The LLM step optionally uses an <code>OPENAI_API_KEY</code> (set locally in <code>.Renviron</code>, never committed); without a key it falls back to a labeled cached extraction so the workshop can continue. Lecturer materials and package documentation complete the set. Materials are distributed as a per-cohort GitHub Release — see <a href="./downloads.html">Downloads</a>.</p>
-<p><em>Nota docente:</em> il blurb ufficiale dell’Offerta (random forest / gradient boosting / unsupervised / feature engineering) è ormai datato rispetto all’arco erogato — interpretabilità con SHAP, deep learning con <code>torch</code>, ETL con LLM (<code>ellmer</code>), pipeline <code>targets</code>. Il contenuto erogato è quello corrente e intenzionale; l’header riporta i dati amministrativi ufficiali.</p>
+<p>R (≥ 4.5) and RStudio; <code>tidymodels</code>, <code>vip</code>, <code>kernelshap</code>, <code>shapviz</code>, <code>torch</code>, <code>luz</code>, <code>brulee</code>, <code>ellmer</code>, <code>targets</code>, and <code>tarchetypes</code>. The LLM step optionally uses an <code>OPENAI_API_KEY</code> (set locally in <code>.Renviron</code>, never committed); without a key it falls back to a labeled cached extraction so the workshop can continue. Lecturer materials and package documentation complete the set. Materials are distributed as a per-cohort GitHub Release; see <a href="./downloads.html">Downloads</a>.</p>
+<p><em>Nota docente:</em> il blurb ufficiale dell’Offerta (random forest / gradient boosting / unsupervised / feature engineering) è ormai datato rispetto all’arco erogato: interpretabilità con SHAP, deep learning con <code>torch</code>, ETL con LLM (<code>ellmer</code>), pipeline <code>targets</code>. Il contenuto erogato è quello corrente e intenzionale; l’header riporta i dati amministrativi ufficiali.</p>
 
 
 </section>
