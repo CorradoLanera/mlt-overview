@@ -742,8 +742,8 @@ A chat returns prose you must re-parse; an **ETL returns a record**. The schema 
 - `temperature = 0` keeps each record **deterministic** — the same note always yields the same row (scaling it to every note comes next).
 
 ::: {.callout-note appearance="simple"}
-**Honesty (carried forward).** With no API key, we show a **labeled cached** result from an
-earlier live run — never a faked record. The key lives only in a gitignored `.Renviron`.
+**Labeled fallback, never faked.** With no API key, we show a clearly **labeled** example from an
+earlier live run — never a record passed off as live. The key lives only in a gitignored `.Renviron`.
 :::
 
 ::: {.notes}
@@ -900,7 +900,7 @@ guarantee that the numbers came from *this* run). You reach for a **pipeline**.
 - **The pipeline compiles the report.** A `report` target (`tarchetypes::tar_quarto()`) renders
   the document *from* the upstream targets, so what the report shows is exactly what the pipeline
   produced — auditable end to end.
-- **Caching that stays honest.** A re-run rebuilds **only** what changed (hash-checked) and skips
+- **Caching by content hash.** A re-run rebuilds **only** what changed (hash-checked) and skips
   the rest. That is caching *with* reproducibility — the opposite of a stale hand-made `.rds`.
 
 ::: {.notes}

@@ -34,7 +34,7 @@ Live-coded R workshop. Conventions:
   engine:targets solution renders THREE tabs (student `_targets.R` / solved / report); `report.qmd` carries
   `<!--MLT-REPORT-START/END-->` markers the build slices into tab 3. The build surfaces `OPENAI_API_KEY`
   (workshop-root `.Renviron`) so the ellmer target is live.
-- HONESTY (delivery doctrine §8): nothing pre-baked is shown as live — nets, SHAP, ellmer, and the targets
-  DAG all run live in the build. The only labeled non-live path is the ellmer fallback when no API key is
-  set (a clearly-labeled example, never faked as live). `targets` re-showing a cached "skip" is
+- LIVE, NOT BAKED (delivery doctrine §8): nothing pre-baked is shown as live — nets, SHAP, ellmer, and the
+  targets DAG all run live in the build. The only labeled non-live path is the ellmer fallback when no API
+  key is set (a clearly-labeled example, never faked as live). `targets` re-showing a cached "skip" is
   reproducibility, not fakery.

@@ -15,25 +15,22 @@ flowchart TD
   MLP[Tiny MLP via brulee/luz]
   PARAMS_DL[MLP hyperparameters:<br/>epochs / learn_rate /<br/>hidden_units / batch /<br/>activation / penalty]
   BV[Bias-variance tradeoff]
-  NNMOD[nn_module architectures<br/>written not trained]
+  NNMOD[nn_module architectures<br/>trained live in torch/luz]
   CNN[1D-CNN:<br/>kernel / stride / channels]
   RNN[RNN: hidden /<br/>sequence / LSTM-GRU]
-  FUSED[Fused 3-branch net:<br/>single forward /<br/>shape-check]
+  FUSED[Fused 3-branch net:<br/>one forward /<br/>trained on noise]
   GPU[Hardware matters:<br/>GPU payoff]
-  OPTB[OPTION B:<br/>pre-trained loss<br/>curve labeled]
 
   TRANS[Transformer to<br/>ellmer bridge]
   ELLMER[LLM as typed<br/>reproducible ETL]
   SCHEMA[type_object<br/>typed schema]
   LLMPAR[LLM params:<br/>model / temperature /<br/>typing]
-  BATCH[purrr::map batch<br/>written not run]
+  BATCH[parallel + batch:<br/>one function apart]
 
   TARGETS[targets =<br/>reproducibility signature]
   DAG[tar_visnetwork DAG:<br/>inspectable<br/>intermediate targets]
   SKIP[tar_make then<br/>re-run all-skip]
   REPORT[Report compiled BY<br/>the pipeline:<br/>tar_quarto from targets]
-
-  HONESTY[Honesty rule:<br/>nothing pre-baked<br/>shown as live]
 
   BASIC -->|enables| PRED
   PRED -->|sets up| INTERP
@@ -58,8 +55,6 @@ flowchart TD
   CNN -->|composes-into| FUSED
   RNN -->|composes-into| FUSED
   FUSED -->|motivates| GPU
-  GPU -->|justifies| OPTB
-  OPTB -->|excepted-by| HONESTY
   DL -->|bridges-to| TRANS
   TRANS -->|leads-to| ELLMER
   ELLMER -->|requires| SCHEMA
@@ -70,6 +65,3 @@ flowchart TD
   TARGETS -->|demonstrated-by| SKIP
   TARGETS -->|compiles| REPORT
   DAG -->|feeds| REPORT
-  HONESTY -->|constrains| MLP
-  HONESTY -->|constrains| ELLMER
-  HONESTY -->|constrains| SKIP

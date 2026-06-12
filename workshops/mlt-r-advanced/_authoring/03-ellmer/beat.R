@@ -24,7 +24,7 @@ note_type <- type_object(
 renviron_path <- here("..", "..", ".Renviron")
 if (file.exists(renviron_path)) readRenviron(renviron_path)
 
-# ONE live extraction; labeled INLINE fallback when no key (honesty doctrine, no shipped cache) ----
+# ONE live extraction; a labeled INLINE fallback when no key: no shipped cache, never faked as live ----
 if (nzchar(Sys.getenv("OPENAI_API_KEY"))) {
   chat <- chat_openai(model = "gpt-5.4-nano", echo = "none")
   record <- chat$chat_structured(notes$text[[1]], type = note_type)
