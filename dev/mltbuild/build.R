@@ -57,6 +57,10 @@ for (n in seq_along(wk$steps) - 1L) {
       .emit_targets_step(file.path(authoring, slug), tdir, mode = "solved")
       .copy_data_raw(wk$data_raw_dir, tdir)
       old2 <- getwd(); setwd(tdir)
+      # The ellmer target runs live: surface OPENAI_API_KEY from the workshop-root .Renviron
+      # (gitignored) into this process so the tar_make() callr subprocess inherits it. Missing
+      # key -> the pipeline falls back to a labeled example (no fakery shipped as live).
+      if (file.exists(file.path(workshop, ".Renviron"))) readRenviron(file.path(workshop, ".Renviron"))
       # Default callr_function: targets runs the DAG analysis + pipeline in a fresh callr
       # subprocess that inherits R_LIBS (set above) -> finds the workshop library. A cold
       # in-process run (callr_function = NULL) hits a spurious is_dag() cycle in targets'
@@ -65,7 +69,19 @@ for (n in seq_along(wk$steps) - 1L) {
       setwd(old2)
       produced <- file.path(tdir, "report.html")
       if (!file.exists(produced)) stop("targets pipeline produced no report.html: ", produced)
-      file.copy(produced, file.path(solved_dir, paste0(slug, ".html")), overwrite = TRUE)
+      # Solution = three tabs: the student `_targets.R`, the solved one, and the pipeline-compiled
+      # report. We lift the report body out of its rendered chrome and inject it as raw HTML so the
+      # solution stays one self-contained file (and the parity gate sees the plots/keywords here),
+      # while report.qmd itself stays a pristine, DAG-wired, student-safe document.
+      report_html <- paste(readLines(produced, warn = FALSE), collapse = "\n")
+      body <- .extract_between(report_html, "<!--MLT-REPORT-START-->", "<!--MLT-REPORT-END-->")
+      if (is.na(body)) stop("report body markers not found in: ", produced)
+      auth_targets <- file.path(authoring, slug, "_targets.R")
+      blank  <- .render_authored_file(auth_targets, "blank")
+      solved <- .render_authored_file(auth_targets, "solved")
+      tq <- file.path(tdir, paste0("_teacher-", slug, ".qmd"))
+      writeLines(build_targets_teacher_qmd(step$meta$title, blank, solved, body), tq)
+      render_one(tq, file.path(solved_dir, paste0(slug, ".html")))
       unlink(tdir, recursive = TRUE)
     } else {
       render_one(file.path(sdir, "report.qmd"), file.path(solved_dir, paste0(slug, ".html")))

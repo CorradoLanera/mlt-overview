@@ -1,6 +1,6 @@
 ---
-title: "Explanation report — compiled by the `targets` pipeline"
-subtitle: "Permutation VIMP of the reloaded Basic random forest"
+title: "Capstone report — compiled by the `targets` pipeline"
+subtitle: "The whole workshop arc, reproduced live and read straight from the DAG"
 format:
   html:
     embed-resources: true
@@ -11,45 +11,138 @@ execute:
   message: false
 ---
 
+```{=html}
+<!--MLT-REPORT-START-->
+```
+
 <!--
-Nota docente (IT): questo e' il REPORT COMPILATO DALLA PIPELINE (feedback #13). NON
-ri-esegue l'analisi inline: legge i TARGET INTERMEDI con tar_read(). tar_quarto() in
-_targets.R rileva tar_read(explanation) e crea la dipendenza, cosi' il report e' un
-target a valle, riproducibile e auditabile. Cambia un input a monte -> il report si
-invalida e si ricompila; altrimenti e' skip.
+Nota docente (IT): questo e' il REPORT COMPILATO DALLA PIPELINE. NON ri-esegue l'analisi
+inline: legge i TARGET INTERMEDI con tar_read(). tar_quarto() in _targets.R rileva ogni
+tar_read() e crea le dipendenze, cosi' il report e' un target a valle, riproducibile e
+auditabile. Cambia un input a monte -> si invalidano e ricompilano SOLO i target a valle;
+altrimenti e' skip. In aula: tar_visnetwork(FALSE) mostra il grafo; tocca un input e fai
+vedere che ricomputa solo quel ramo.
 -->
 
 This report is **compiled by the `targets` pipeline itself** (`tarchetypes::tar_quarto()`).
-It does **not** re-run the analysis inline — it **reads the intermediate targets**
-(`tar_read(explanation)`), so what you see here is, by construction, exactly what the
-pipeline produced upstream. Change an input and the report is rebuilt; change nothing and
-it is skipped.
+It does **not** re-run the analysis inline — it **reads the intermediate targets** with
+`tar_read()`, so what you see is, by construction, exactly what the pipeline produced upstream.
+The whole workshop arc — explore, compare the base techniques, the forest's importance and SHAP,
+a deep-net learning curve, and the typed LLM extraction — is **one `tar_make()`** away. Change one
+input and only its downstream targets rebuild; change nothing and the whole thing skips.
 
-```{r read-target}
+```{r setup}
 library(targets)
 library(ggplot2)
-
-# Read the upstream intermediate target — NOT a re-computation ----
-explanation <- tar_read(explanation)
-explanation
+library(dplyr)
+library(shapviz)
 ```
 
-## Permutation VIMP — read straight from the target
+## 1 · Exploration — who is in the cohort
 
-```{r plot-target}
-explanation |>
-  dplyr::mutate(Variable = stats::reorder(Variable, Importance)) |>
-  ggplot(aes(x = Importance, y = Variable)) +
-  geom_col() +
+```{r explore}
+eda <- tar_read(eda)
+eda$balance
+```
+
+```{r explore-plot}
+ggplot(eda$separation, aes(x = mean_z, y = reorder(variable, mean_z), fill = outcome)) +
+  geom_col(position = "dodge") +
   labs(
-    title = "Permutation VIMP of the reloaded Basic random forest",
-    subtitle = "Value of the `explanation` target — compiled by the pipeline",
-    x = "Drop in AUC-ROC when permuted",
-    y = NULL,
+    title = "How each numeric predictor separates the two outcomes",
+    subtitle = "Standardised group means (z) — read from the `eda` target",
+    x = "Mean (standardised)", y = NULL, fill = NULL,
   )
 ```
 
-`ejection_fraction`, `serum_creatinine`, and `age` lead — the reliance ordering the Basic
-forest learned, re-derived once by the pipeline and presented here without any retraining.
+The classes are imbalanced (more survivors), and `ejection_fraction`, `serum_creatinine`, and `age`
+already pull the two groups apart before any model is fit.
+
+## 2 · Base techniques — the four Basic learners, compared
+
+```{r base-compare}
+base_compare <- tar_read(base_compare)
+base_compare
+```
+
+```{r base-plot}
+ggplot(base_compare, aes(x = roc_auc, y = reorder(model, roc_auc))) +
+  geom_col() +
+  geom_errorbarh(aes(xmin = roc_auc - std_err, xmax = roc_auc + std_err), height = 0.2) +
+  labs(
+    title = "5-fold CV ROC-AUC of the base techniques",
+    subtitle = "penalised logistic, kNN, SVM, random forest — read from `base_compare`",
+    x = "ROC-AUC (mean ± std. error)", y = NULL,
+  )
+```
+
+The random forest is the robust winner — the model the rest of the pipeline keeps.
+
+## 3 · Permutation VIMP — what the forest relies on
+
+```{r vimp}
+vimp <- tar_read(vimp)
+vimp
+```
+
+```{r vimp-plot}
+vimp |>
+  mutate(Variable = stats::reorder(Variable, Importance)) |>
+  ggplot(aes(x = Importance, y = Variable)) +
+  geom_col() +
+  labs(
+    title = "Permutation VIMP of the random forest",
+    subtitle = "Value of the `vimp` target — compiled by the pipeline",
+    x = "Drop in ROC-AUC when permuted", y = NULL,
+  )
+```
+
+`ejection_fraction`, `serum_creatinine`, and `age` lead — the reliance ordering the forest learned.
+
+## 4 · Agnostic SHAP — the same forest, model-agnostic
+
+```{r shap-plot}
+shap <- tar_read(shap)
+sv_importance(shap, kind = "beeswarm")
+```
+
+Kernel SHAP, treating the forest as a black box, recovers the same drivers — agreement between two
+independent explainers, both read from the DAG.
+
+## 5 · A deep-net learning curve
+
+```{r curve-plot}
+mlp_curve <- tar_read(mlp_curve)
+ggplot(mlp_curve, aes(x = epoch, y = valid_loss)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "An MLP learning the cohort: validation loss per epoch",
+    subtitle = "Value of the `mlp_curve` target — a live brulee/torch fit",
+    x = "Epoch", y = "Validation loss",
+  )
+```
+
+Validation loss falls to a minimum, then creeps back up as the net starts to overfit; early stopping
+halts training a few epochs later — the U and the early-stopping rule from §02, now on the tabular
+cohort and re-run by the pipeline.
+
+## 6 · Typed LLM extraction — the ETL, one row per note
+
+```{r records}
+records <- tar_read(records)
+records
+```
+
+Each clinical note is reduced to a validated, typed record — the `ellmer` ETL, re-run by the
+pipeline alongside everything else.
+
+---
+
 Because this document is a downstream **target**, re-rendering it is governed by input hashes:
-identical inputs ⇒ an all-skip rebuild, the signature of reproducibility.
+identical inputs ⇒ an all-skip rebuild, the signature of reproducibility. Touch one upstream input
+and `tar_visnetwork()` shows exactly which branch — and only that branch — goes stale.
+
+```{=html}
+<!--MLT-REPORT-END-->
+```

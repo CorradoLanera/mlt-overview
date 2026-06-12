@@ -869,10 +869,10 @@ schema con un campo (serum_creatinine).
 
 <!-- Step 04 (demo, 20 min): read the targets DAG (tar_visnetwork); first build runs; re-run all-skip; pipeline renders the report. -->
 
-**Why this step.** A pipeline a colleague cannot re-run is not reproducible. `targets` makes the whole explain→deep→LLM story re-derivable by construction: inspectable intermediate targets, a report the pipeline compiles itself, and an all-skip re-run that proves nothing drifted.
+**Why this step.** A pipeline a colleague cannot re-run is not reproducible. `targets` makes the whole explore→compare→explain→deep→LLM story re-derivable by construction: inspectable intermediate targets, a report the pipeline compiles itself, and an all-skip re-run that proves nothing drifted.
 
 - Read the `targets` **DAG** (`tar_visnetwork()`): every analysis is an **explicit, inspectable
-  intermediate target** you can `tar_read()` on its own — `cohort`, `model`, `explanation`.
+  intermediate target** you can `tar_read()` on its own — `cohort`, `base_compare`, `vimp`, `shap`, `records`.
 - The pipeline **compiles the report itself**: a final `report` target renders the Quarto doc
   *from* those intermediates, so the document and its inputs can never disagree.
 - A **second** `tar_make()` is **all-skip** — input hashes unchanged ⇒ reproducibility, not fakery.
@@ -884,8 +884,9 @@ ispezionabile con `tar_read()` uno per uno (audit per-step); (2) la PIPELINE COM
 (`tar_quarto`/`tar_render`), che legge i target — così documento e input non possono divergere;
 (3) il 2° `tar_make()` è all-skip per hash invariati = riproducibilità, non finzione. PROVA col
 valore di ritorno, non col messaggio: `tar_outdated()` == character(0) e `tar_progress()` tutti
-"skipped". Il bridge `explanation` ricalcola DAVVERO la VIMP → ejection_fraction / serum_creatinine
-/ age. Stretch Davide: il device GPU è un input CIECO se non è un target.
+"skipped". I target `vimp`/`shap` ricalcolano DAVVERO l'importanza (ejection_fraction /
+serum_creatinine / age); `records` è l'estrazione ellmer LIVE. Stretch Davide: il device GPU è un
+input CIECO se non è un target.
 :::
 
 ## Why a pipeline, not a hand-made cache {.smaller}
@@ -894,7 +895,7 @@ In Basic, the report **ran the whole analysis on render** — perfect at N=299. 
 heavy, you do **not** start hand-saving `.rds` files and reloading them (that breaks the
 guarantee that the numbers came from *this* run). You reach for a **pipeline**.
 
-- **Inspectable intermediates.** Each step is a named target — `cohort`, `model`, `explanation` —
+- **Inspectable intermediates.** Each step is a named target — `cohort`, `base_compare`, `vimp`, `shap` —
   that you can `tar_read()` and audit *in isolation*, without re-running the rest.
 - **The pipeline compiles the report.** A `report` target (`tarchetypes::tar_quarto()`) renders
   the document *from* the upstream targets, so what the report shows is exactly what the pipeline
@@ -928,20 +929,20 @@ The reason is **input-hash checking**: `targets` hashes each target's inputs (fu
 
 Difference from a cache: change *any* input (data, code, a parameter) and the affected target + everything downstream go **stale** and rebuild. A cache returns a stored value regardless; `targets` re-derives or skips by content hash.
 
-**Going further.** Swap `model/final_fit.rds` (a `format = "file"` target) → `model_file` re-hashes → `model` → the `explanation` bridge rebuild; `cohort` stays `skip`. Edit the VIMP knobs inside `explain_model()` → only `explanation` rebuilds. And the **GPU device** is an *ambient* input (`cuda_is_available()` inside the function body) — invisible to the DAG unless promoted to a `tar_target(device, ...)`.
+**Going further.** Edit the data behind `cohort_file` (a `format = "file"` target) → it re-hashes → `cohort` and everything downstream rebuild. Change one function — a setting inside `compare_models()` → only `base_compare` and the `report` rebuild; `vimp`, `shap`, and `records` stay `skip`. And an **ambient** input like the GPU device (`cuda_is_available()` read inside a function body) is **invisible** to the DAG unless you promote it to a `tar_target(device, ...)`.
 
 ::: {.notes}
 Voce docente (IT): Reveal min-138. Provo col valore di ritorno, non col messaggio:
-`tar_outdated()` == character(0). Il bridge `explanation` ricalcola DAVVERO la VIMP. Going
-further = ex-stretch (stale propagation + device cieco).
+`tar_outdated()` == character(0). Going further: tocca `cohort_file` → ricostruisce tutto a valle;
+cambia `compare_models()` → solo `base_compare` + report (stale propagation + device cieco).
 :::
 
 ## Go to code — `steps/04-targets/` {.center}
 
 **Follow along.** Open `steps/04-targets/`: read the DAG (`tar_visnetwork()`), `tar_make()`, then re-run → all-skip.
 
-- Each analysis is a named, inspectable target (`cohort`, `model`, `explanation`); the pipeline compiles the report itself.
-- The loop closes: Basic validated the model, Advanced re-derives its explanation, deterministically.
+- Each analysis is a named, inspectable target (`cohort`, `base_compare`, `vimp`, `shap`, `records`); the pipeline compiles the report itself.
+- The loop closes: Basic validated the model, Advanced re-derives the whole arc (explore → compare → explain → deep → LLM), deterministically.
 
 ::: {.notes}
 Voce docente (IT): chiusura Step 04 (demo → "follow along"). Chiude il loop Basic↔Advanced.

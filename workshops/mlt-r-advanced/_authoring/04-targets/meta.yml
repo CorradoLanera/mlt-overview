@@ -4,7 +4,7 @@ slug: 04-targets
 title: "Step 04 — Reproducibility capstone"
 minutes: 50
 summary: "Seal the full arc in a `targets` DAG reproducible with a single `tar_make()`."
-packages: [targets, tarchetypes, ranger]
+packages: [targets, tarchetypes, tidymodels, ranger, glmnet, kknn, kernlab, workflowsets, yardstick, vip, kernelshap, shapviz, brulee, ellmer, rio, janitor, dplyr, tidyr, tibble]
 check:
   kw: [Permutation VIMP, Importance, ejection_fraction]
-  imgs: 1
+  imgs: 4
