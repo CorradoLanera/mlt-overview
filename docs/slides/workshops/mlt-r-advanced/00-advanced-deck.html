@@ -975,6 +975,28 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
+<section id="the-data-real-public-already-prepared" class="slide level2 smaller">
+<h2>The data: real, public, already prepared</h2>
+<p>Two real medical datasets, downloaded once and shipped with the workshop as ready-to-load arrays in each <code>data-raw/</code> folder, so nothing downloads in class:</p>
+<ul>
+<li><strong>Chest X-rays</strong>: PneumoniaMNIST, <span class="math inline">\(28 \times 28\)</span> grayscale, normal vs.&nbsp;pneumonia (Zenodo record 10519652).</li>
+<li><strong>ECG traces</strong>: ECG5000, 140 time steps per beat, normal vs.&nbsp;abnormal (UCR, via the TensorFlow mirror).</li>
+</ul>
+<p>We subset to a balanced 400 per class, normalise each (X-rays to <span class="math inline">\([0, 1]\)</span>, ECG z-scored), and save plain R arrays (<code>pneumoniamnist.rds</code>, <code>ecg.rds</code>). The full, runnable provenance is <code>prep-dl-data.R</code> in the workshop folder.</p>
+<aside class="notes">
+<p>Voce docente (IT): i dati arrivano gia pronti in data-raw/, niente download in aula. Reali e pubblici; chi vuole vederli o rigenerarli ha <code>prep-dl-data.R</code> nella cartella del workshop (base R per i dati reali, torch/torchvision solo nel fallback MNIST). Subset bilanciato 400/400, salvati come array R perche i tensori torch non fanno round-trip con saveRDS.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="cnn-a-filter-sliding-over-an-image" class="slide level2 smaller">
 <h2>CNN: a filter sliding over an image</h2>
 <!-- CNN node: recall ch.6 + the live 2D train + topology graph. -->

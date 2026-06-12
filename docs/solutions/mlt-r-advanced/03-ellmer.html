@@ -2447,7 +2447,7 @@ vertical-align: -.125em;
 <span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a><span class="co"># the torch default dtype as double; pin it to float32 so the nets match the inputs ----</span></span>
 <span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_set_default_dtype</span>(<span class="fu">torch_float</span>())</span>
 <span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a><span class="co"># How the committed tensors were fetched (shown, not run; full script in dev/prep-dl-data.R) ----</span></span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a><span class="co"># How the committed tensors were fetched (shown, not run; full script in prep-dl-data.R (in the workshop folder)) ----</span></span>
 <span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="cn">FALSE</span>) {</span>
 <span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>  utils<span class="sc">::</span><span class="fu">download.file</span>(</span>
 <span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;https://zenodo.org/records/10519652/files/pneumoniamnist.npz?download=1&quot;</span>,</span>
@@ -2458,7 +2458,7 @@ vertical-align: -.125em;
 <span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;http://storage.googleapis.com/download.tensorflow.org/data/ecg.csv&quot;</span>,</span>
 <span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;ecg.csv&quot;</span>,</span>
 <span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the .npz is read with a tiny pure-R .npy reader (no Python); see dev/prep-dl-data.R</span></span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the .npz is read with a tiny pure-R .npy reader (no Python); see prep-dl-data.R (in the workshop folder)</span></span>
 <span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a><span class="co"># A real 2D-CNN on chest X-rays (PneumoniaMNIST) ----</span></span>
@@ -2773,20 +2773,20 @@ $ outcome                  &lt;fct&gt; died, died, died, died, died, died, died,
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="qdpcdxqqld" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#qdpcdxqqld table {
+<div id="duydmpsadr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#duydmpsadr table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#qdpcdxqqld thead, #qdpcdxqqld tbody, #qdpcdxqqld tfoot, #qdpcdxqqld tr, #qdpcdxqqld td, #qdpcdxqqld th {
+#duydmpsadr thead, #duydmpsadr tbody, #duydmpsadr tfoot, #duydmpsadr tr, #duydmpsadr td, #duydmpsadr th {
 border-style: none;
 }
-#qdpcdxqqld p {
+#duydmpsadr p {
 margin: 0;
 padding: 0;
 }
-#qdpcdxqqld .gt_table {
+#duydmpsadr .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2811,11 +2811,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_caption {
+#duydmpsadr .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#qdpcdxqqld .gt_title {
+#duydmpsadr .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2826,7 +2826,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#qdpcdxqqld .gt_subtitle {
+#duydmpsadr .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2837,7 +2837,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#qdpcdxqqld .gt_heading {
+#duydmpsadr .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2848,12 +2848,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_bottom_border {
+#duydmpsadr .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_col_headings {
+#duydmpsadr .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2867,7 +2867,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_col_heading {
+#duydmpsadr .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2886,7 +2886,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#qdpcdxqqld .gt_column_spanner_outer {
+#duydmpsadr .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2897,13 +2897,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#qdpcdxqqld .gt_column_spanner_outer:first-child {
+#duydmpsadr .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#qdpcdxqqld .gt_column_spanner_outer:last-child {
+#duydmpsadr .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#qdpcdxqqld .gt_column_spanner {
+#duydmpsadr .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2914,10 +2914,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#qdpcdxqqld .gt_spanner_row {
+#duydmpsadr .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#qdpcdxqqld .gt_group_heading {
+#duydmpsadr .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2942,7 +2942,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#qdpcdxqqld .gt_empty_group_heading {
+#duydmpsadr .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2956,13 +2956,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#qdpcdxqqld .gt_from_md > :first-child {
+#duydmpsadr .gt_from_md > :first-child {
 margin-top: 0;
 }
-#qdpcdxqqld .gt_from_md > :last-child {
+#duydmpsadr .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#qdpcdxqqld .gt_row {
+#duydmpsadr .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2980,7 +2980,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#qdpcdxqqld .gt_stub {
+#duydmpsadr .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2992,7 +2992,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#qdpcdxqqld .gt_stub_row_group {
+#duydmpsadr .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3005,13 +3005,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#qdpcdxqqld .gt_row_group_first td {
+#duydmpsadr .gt_row_group_first td {
 border-top-width: 2px;
 }
-#qdpcdxqqld .gt_row_group_first th {
+#duydmpsadr .gt_row_group_first th {
 border-top-width: 2px;
 }
-#qdpcdxqqld .gt_summary_row {
+#duydmpsadr .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3020,14 +3020,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#qdpcdxqqld .gt_first_summary_row {
+#duydmpsadr .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_first_summary_row.thick {
+#duydmpsadr .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#qdpcdxqqld .gt_last_summary_row {
+#duydmpsadr .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3036,7 +3036,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_grand_summary_row {
+#duydmpsadr .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3045,7 +3045,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#qdpcdxqqld .gt_first_grand_summary_row {
+#duydmpsadr .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3054,7 +3054,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_last_grand_summary_row_top {
+#duydmpsadr .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3063,10 +3063,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_striped {
+#duydmpsadr .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#qdpcdxqqld .gt_table_body {
+#duydmpsadr .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3074,7 +3074,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_footnotes {
+#duydmpsadr .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3087,7 +3087,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_footnote {
+#duydmpsadr .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3095,7 +3095,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#qdpcdxqqld .gt_sourcenotes {
+#duydmpsadr .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3108,64 +3108,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#qdpcdxqqld .gt_sourcenote {
+#duydmpsadr .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#qdpcdxqqld .gt_left {
+#duydmpsadr .gt_left {
 text-align: left;
 }
-#qdpcdxqqld .gt_center {
+#duydmpsadr .gt_center {
 text-align: center;
 }
-#qdpcdxqqld .gt_right {
+#duydmpsadr .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#qdpcdxqqld .gt_font_normal {
+#duydmpsadr .gt_font_normal {
 font-weight: normal;
 }
-#qdpcdxqqld .gt_font_bold {
+#duydmpsadr .gt_font_bold {
 font-weight: bold;
 }
-#qdpcdxqqld .gt_font_italic {
+#duydmpsadr .gt_font_italic {
 font-style: italic;
 }
-#qdpcdxqqld .gt_super {
+#duydmpsadr .gt_super {
 font-size: 65%;
 }
-#qdpcdxqqld .gt_footnote_marks {
+#duydmpsadr .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#qdpcdxqqld .gt_asterisk {
+#duydmpsadr .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#qdpcdxqqld .gt_indent_1 {
+#duydmpsadr .gt_indent_1 {
 text-indent: 5px;
 }
-#qdpcdxqqld .gt_indent_2 {
+#duydmpsadr .gt_indent_2 {
 text-indent: 10px;
 }
-#qdpcdxqqld .gt_indent_3 {
+#duydmpsadr .gt_indent_3 {
 text-indent: 15px;
 }
-#qdpcdxqqld .gt_indent_4 {
+#duydmpsadr .gt_indent_4 {
 text-indent: 20px;
 }
-#qdpcdxqqld .gt_indent_5 {
+#duydmpsadr .gt_indent_5 {
 text-indent: 25px;
 }
-#qdpcdxqqld .katex-display {
+#duydmpsadr .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#qdpcdxqqld div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#duydmpsadr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -3621,7 +3621,7 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the torch default dtype as double; pin it to float32 so the nets match the inputs ----</span></span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_set_default_dtype</span>(<span class="fu">torch_float</span>())</span>
 <span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co"># How the committed tensors were fetched (shown, not run; full script in dev/prep-dl-data.R) ----</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co"># How the committed tensors were fetched (shown, not run; full script in prep-dl-data.R (in the workshop folder)) ----</span></span>
 <span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="cn">FALSE</span>) {</span>
 <span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  utils<span class="sc">::</span><span class="fu">download.file</span>(</span>
 <span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;https://zenodo.org/records/10519652/files/pneumoniamnist.npz?download=1&quot;</span>,</span>
@@ -3632,7 +3632,7 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 <span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;http://storage.googleapis.com/download.tensorflow.org/data/ecg.csv&quot;</span>,</span>
 <span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;ecg.csv&quot;</span>,</span>
 <span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the .npz is read with a tiny pure-R .npy reader (no Python); see dev/prep-dl-data.R</span></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the .npz is read with a tiny pure-R .npy reader (no Python); see prep-dl-data.R (in the workshop folder)</span></span>
 <span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a><span class="co"># A real 2D-CNN on chest X-rays (PneumoniaMNIST) ----</span></span>
