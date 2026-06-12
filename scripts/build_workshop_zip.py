@@ -78,6 +78,8 @@ _DENY_SEGMENTS = (
 )
 _DENY_NAMES = {".Rhistory", ".RData", ".Ruserdata"}
 _DENY_SUFFIXES = (".html", ".rds")   # stray renders / model blobs inside steps/full
+# ...but data-raw/ holds committed INPUT data (e.g. .rds tensors) that MUST ship.
+_DATA_DIR_SEG = "data-raw/"
 
 
 def is_fragment_workshop(workshop_dir) -> bool:
@@ -101,7 +103,9 @@ def _walk_shippable(base: Path, *, skip_renders=True):
         if p.name in _DENY_NAMES:
             continue
         if skip_renders and any(rel.endswith(suf) for suf in _DENY_SUFFIXES):
-            continue
+            # Exempt committed input data: a .rds under data-raw/ is a dataset, not a blob.
+            if not (rel.endswith(".rds") and _DATA_DIR_SEG in rel):
+                continue
         yield p, rel
 
 
