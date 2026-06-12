@@ -507,6 +507,22 @@ Voce docente (IT): il confine è il cuore della sezione. Dentro: confronto grati
 train+eval a mano, ma stesso metro (yardstick sulle predizioni).
 :::
 
+## The data: real, public, already prepared {.smaller}
+
+Two real medical datasets, downloaded once and shipped with the workshop as ready-to-load arrays in each `data-raw/` folder, so nothing downloads in class:
+
+- **Chest X-rays**: PneumoniaMNIST, $28 \times 28$ grayscale, normal vs. pneumonia (Zenodo record 10519652).
+- **ECG traces**: ECG5000, 140 time steps per beat, normal vs. abnormal (UCR, via the TensorFlow mirror).
+
+We subset to a balanced 400 per class, normalise each (X-rays to $[0, 1]$, ECG z-scored), and save plain R arrays (`pneumoniamnist.rds`, `ecg.rds`). The full, runnable provenance is `prep-dl-data.R` in the workshop folder.
+
+::: {.notes}
+Voce docente (IT): i dati arrivano gia pronti in data-raw/, niente download in aula. Reali e pubblici;
+chi vuole vederli o rigenerarli ha `prep-dl-data.R` nella cartella del workshop (base R per i dati reali,
+torch/torchvision solo nel fallback MNIST). Subset bilanciato 400/400, salvati come array R perche i
+tensori torch non fanno round-trip con saveRDS.
+:::
+
 ## CNN: a filter sliding over an image {.smaller}
 
 <!-- CNN node: recall ch.6 + the live 2D train + topology graph. -->

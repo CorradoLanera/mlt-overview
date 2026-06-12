@@ -1,9 +1,13 @@
-# dev/prep-dl-data.R — authoring-time data prep for the Advanced step 02 (run ONCE, NOT in the build).
-# Downloads real datasets and writes committed tensors to workshops/mlt-r-advanced/data-raw/:
-#   pneumoniamnist.rds : list(x = [N,1,28,28] float in [0,1], y = [N] long {1,2})  — real chest X-rays
-#   ecg.rds            : list(x = [N,140,1] float, y = [N] long {1,2})             — real ECG5000 traces
-# The student NEVER runs this; the workshop loads the committed .rds. Run from the repo root with
-# torch + torchvision on the libpath (e.g. the full/ renv library).
+# prep-dl-data.R : provenance of the datasets used in step 02 (run ONCE, NOT part of the build).
+# You do NOT need to run this. The workshop already ships the prepared data in each data-raw/ folder.
+# It is here so you can see exactly where the data comes from and regenerate it if you want.
+# It downloads two real, public medical datasets and writes plain R arrays:
+#   pneumoniamnist.rds : list(x = [N,1,28,28] float in [0,1], y = [N] in {1,2})  real chest X-rays
+#   ecg.rds            : list(x = [N,140,1] float,            y = [N] in {1,2})  real ECG5000 traces
+# Sources: PneumoniaMNIST (Zenodo record 10519652); ECG5000 (UCR, via the TensorFlow CSV mirror).
+# The real-data path is base R only (download + a tiny .npy reader). torch/torchvision are used
+# ONLY by the optional MNIST fallback, reached if Zenodo is unreachable. To regenerate into a
+# folder of your choice, set MLT_OUT to that path and run this script with R.
 suppressMessages({
   library(torch)
 })
@@ -12,7 +16,7 @@ set.seed(123)
 out_dir <- Sys.getenv("MLT_OUT", "workshops/mlt-r-advanced/data-raw")
 per_class <- 400L
 
-# --- minimal .npy / .npz reader (C-order, little-endian) — avoids reticulate/numpy --------------
+# --- minimal .npy / .npz reader (C-order, little-endian): avoids reticulate/numpy --------------
 read_npy <- function(path) {
   con <- file(path, "rb"); on.exit(close(con))
   invisible(readBin(con, "raw", 6))                                   # magic \x93NUMPY
@@ -61,7 +65,7 @@ idx <- {
   c1 <- which(img$y == 1L); c2 <- which(img$y == 2L)
   c(sample(c1, min(per_class, length(c1))), sample(c2, min(per_class, length(c2))))
 }
-# Save PLAIN R arrays (torch tensors do not round-trip through saveRDS — external pointer);
+# Save PLAIN R arrays (torch tensors do not round-trip through saveRDS, an external pointer);
 # the workshop rebuilds the tensors with torch_tensor() at load time.
 x_img <- array(img$x[idx, , ], dim = c(length(idx), 1L, 28L, 28L)) / 255   # [N,1,28,28] in [0,1]
 y_img <- as.integer(img$y[idx])                                            # [N] in {1,2}

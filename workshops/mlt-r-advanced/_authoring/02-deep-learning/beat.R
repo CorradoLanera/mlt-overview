@@ -19,7 +19,7 @@ shapviz(ks_mlp) |> sv_waterfall()
 # the torch default dtype as double; pin it to float32 so the nets match the inputs ----
 torch_set_default_dtype(torch_float())
 
-# How the committed tensors were fetched (shown, not run; full script in dev/prep-dl-data.R) ----
+# How the committed tensors were fetched (shown, not run; full script in prep-dl-data.R (in the workshop folder)) ----
 if (FALSE) {
   utils::download.file(
     "https://zenodo.org/records/10519652/files/pneumoniamnist.npz?download=1",
@@ -30,7 +30,7 @@ if (FALSE) {
     "http://storage.googleapis.com/download.tensorflow.org/data/ecg.csv",
     "ecg.csv",
   )
-  # the .npz is read with a tiny pure-R .npy reader (no Python); see dev/prep-dl-data.R
+  # the .npz is read with a tiny pure-R .npy reader (no Python); see prep-dl-data.R (in the workshop folder)
 }
 
 # A real 2D-CNN on chest X-rays (PneumoniaMNIST) ----

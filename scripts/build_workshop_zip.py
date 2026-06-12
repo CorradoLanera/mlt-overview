@@ -69,7 +69,8 @@ def included_source(workshop_dir: Path) -> list[str]:
 # --- fragment-aware payload (Model C) --------------------------------------
 
 # Student-shippable top-level entries of a fragment-built workshop.
-_FRAGMENT_TOP_FILES = ("README.md",)
+# prep-dl-data.R ships when present: provenance of any committed data-raw/ tensors.
+_FRAGMENT_TOP_FILES = ("README.md", "prep-dl-data.R")
 _FRAGMENT_TOP_DIRS = ("steps", "full")
 # Path segments / names / suffixes that must never ship from the on-disk tree.
 _DENY_SEGMENTS = (
