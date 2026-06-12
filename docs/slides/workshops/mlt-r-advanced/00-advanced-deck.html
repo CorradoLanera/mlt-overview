@@ -300,7 +300,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <p>The model you built in Basic is the <strong>subject</strong> of today. We <strong>rebuild</strong> that validated random forest live, then push past it.</p>
 <ul>
 <li><strong>Interpret it:</strong> permutation VIMP and agnostic SHAP, anchored on a logistic regression.</li>
-<li><strong>Go deep:</strong> a live <code>brulee</code> MLP (<code>torch</code> / <code>luz</code> / <code>brulee</code>), then CNN/RNN/fused nets written (not trained).</li>
+<li><strong>Go deep:</strong> a live <code>brulee</code> MLP (<code>torch</code> / <code>luz</code> / <code>brulee</code>), then real CNN and RNN nets trained live, and a fused net trained on invented labels.</li>
 <li><strong>Reach an LLM:</strong> <code>ellmer</code> as a typed, reproducible LLM-as-ETL.</li>
 <li><strong>Seal it:</strong> a <code>targets</code> pipeline that re-derives the explanation, all-skip on re-run.</li>
 </ul>
@@ -743,15 +743,15 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <section id="sec-02-deep-learning" class="title-slide slide level1 center">
 <h1>Step 02 · Deep learning</h1>
 <!-- Step 02 (hands-on, ~110 min): MLP + SHAP -> loss-vs-metrics + training loop -> tidymodels/torch boundary -> 2D-CNN live -> RNN live -> fused demo -> XAI note -> GPU note. -->
-<p><strong>Why this step.</strong> Interpretability is model-agnostic, so the same explainer follows us into deep learning. We train an MLP inside tidymodels, then step outside it to build and <strong>train real</strong> CNN and RNN nets with genuine train/val curves, and wire a fused net. Everything runs live.</p>
+<p><strong>Why this step.</strong> Interpretability is model-agnostic, so the same explainer follows us into deep learning. We train an MLP inside tidymodels, then step outside it to build and <strong>train real</strong> CNN and RNN nets with genuine train/val curves, and a fused net we train on <strong>invented</strong> labels to run the loop end-to-end. Everything runs live.</p>
 <ul>
 <li><strong>Settings first</strong>, then train a small <code>brulee</code> <strong>MLP live</strong> (≤30 epochs) and explain it with the <strong>same agnostic SHAP line</strong>.</li>
 <li>Cross the boundary: <code>brulee</code>/tidymodels ends, <code>torch</code>/<code>luz</code> begins; <code>yardstick</code> still scores both sides.</li>
 <li>Train a <strong>2D-CNN</strong> (X-rays) and an <strong>RNN</strong> (ECG) <strong>live</strong>, and read the <strong>train/val U</strong>.</li>
-<li><strong>Build</strong> a fused net (one forward pass); a real multimodal model needs one shared cohort.</li>
+<li><strong>Build and train</strong> a fused net on <strong>invented</strong> labels (the loop runs, the net learns nothing): a real multimodal model needs one shared cohort.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): hands-on (~110 min), il pezzo centrale. Le slide-parametro precedono il train. MLP addestrato dal vivo (roc_auc single-split, NON confrontabile con la CV ~0.79 della foresta). CNN e RNN addestrate DAVVERO (curve vere). Fused = demo (coorti diverse). Niente pre-cotto.</p>
+<p>Voce docente (IT): hands-on (~110 min), il pezzo centrale. Le slide-parametro precedono il train. MLP addestrato dal vivo (roc_auc single-split, NON confrontabile con la CV ~0.79 della foresta). CNN e RNN addestrate DAVVERO (curve vere). Fused = allenata su label inventate per far girare il loop, ma non generalizza (coorti diverse, AUC ~0.5). Niente pre-cotto.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -958,7 +958,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <h2>Where tidymodels ends and torch begins</h2>
 <p><code>brulee</code> let the MLP live <strong>inside</strong> tidymodels: same <code>fit</code>/<code>predict</code>, same <code>workflow_set</code>, same metrics. That bridge covers a few standard architectures and stops there.</p>
 <ul>
-<li>A bespoke <strong>CNN / RNN / fused</strong> net is <strong>not</strong> a parsnip model: no <code>workflow_set</code>, no <code>tune</code>. You write the <code>nn_module</code>, train it with <code>luz</code>, predict yourself.</li>
+<li>A bespoke <strong>CNN / RNN / fused</strong> net is <strong>not</strong> a parsnip model: no <code>workflow_set</code>, no <code>tune</code>. You write the <code>nn_module</code>, train it yourself (<code>luz</code>, or a hand-written loop), predict yourself.</li>
 <li><code>yardstick</code> still scores it: it works on <strong>predictions</strong>, not on the model object, so the same <code>roc_auc()</code> measures <strong>both</strong> sides of the line.</li>
 </ul>
 <aside class="notes">
@@ -1119,10 +1119,10 @@ flowchart LR
 </table>
 <ul>
 <li>The branch widths must <strong>sum</strong> to the head input; <code>torch_cat(dim = 2)</code> joins along the feature axis into a two-logit head.</li>
-<li>We <strong>build it and run one forward pass</strong> (into <code>[1, 2]</code>), but we do <strong>not</strong> train it: the three datasets are <strong>different cohorts</strong> with no shared patient. A real fused model needs one cohort measured in all three modalities.</li>
+<li>We <strong>build it, run one forward pass</strong> (into <code>[1, 2]</code>), then <strong>train it on invented labels</strong> to drive the loop: the three datasets are <strong>different cohorts</strong> with no shared patient, so it only memorises noise (test AUC stays at chance). A real fused model needs one cohort measured in all three modalities.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): il fused è una DIMOSTRAZIONE: costruibile e gira, ma non allenato perché i tre dataset non condividono pazienti. La testa si potrebbe allargare a più outcome (non lo facciamo). Il forward è il Parsons che segue.</p>
+<p>Voce docente (IT): il fused è una DIMOSTRAZIONE: costruibile, gira, e lo alleniamo su label inventate per far vedere il loop, ma non generalizza (i tre dataset non condividono pazienti, AUC ~0.5). Il forward è il Parsons che segue; il training arriva subito dopo il reveal.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1183,6 +1183,28 @@ flowchart LR
           display:block!important;
       }</style></aside>
 </section>
+<section id="train-it-anyway-the-loop-runs-the-net-learns-noise" class="slide level2 smaller">
+<h2>Train it anyway: the loop runs, the net learns noise</h2>
+<p>No shared cohort, so we line up rows arbitrarily and draw <strong>invented</strong> labels. Nothing can generalise; the point is to watch the <strong>same train / validation / test machinery</strong> run on a bespoke multi-input net.</p>
+<ul>
+<li>We write the <strong>training loop by hand</strong> (<code>optim_adam</code>; <code>zero_grad</code>, forward, <code>backward</code>, <code>step</code>): the very loop <code>luz</code> hid for the CNN and RNN.</li>
+<li>Training loss <strong>falls</strong> (the net memorises the random labels) while validation loss <strong>turns up</strong>: the overfit <strong>U</strong>, here on pure noise.</li>
+<li>The same <code>roc_auc()</code> on the held-out <strong>test</strong> set sits at <strong>chance (~0.5)</strong>: a complete end-to-end run that has learned <strong>nothing</strong>, exactly as it must.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): chiusura del fused. Allenarlo su label inventate mostra il loop scritto a mano (quello che luz nasconde) e la U dell’overfit sul rumore. La AUC sul test ~0.5 è la prova che senza coorte condivisa non si impara nulla: meccanica completa, risultato casuale (com’è giusto).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="xai-beyond-tabular-a-note" class="slide level2 smaller">
 <h2>XAI beyond tabular: a note</h2>
 <p>SHAP rode along onto the tabular MLP because <code>kernelshap</code> needs only a prediction function. On an image it does not help: thousands of pixels, no readable attribution.</p>
@@ -1229,7 +1251,7 @@ flowchart LR
 </section>
 <section id="go-to-code-steps02-deep-learning" class="slide level2 center">
 <h2>Go to code: <code>steps/02-deep-learning/</code></h2>
-<p>Open <code>steps/02-deep-learning/</code>: train the MLP and explain it with the same SHAP line, then train a 2D-CNN and an RNN live and read their train/val curves, and wire the fused net.</p>
+<p>Open <code>steps/02-deep-learning/</code>: train the MLP and explain it with the same SHAP line, then train a 2D-CNN and an RNN live and read their train/val curves, and train the fused net on invented labels to watch the loop run end-to-end.</p>
 <ul>
 <li>The nets’ single-split <code>roc_auc</code> is <strong>not</strong> comparable to Basic’s CV ~0.79 (apples to oranges), nor to each other (different cohorts).</li>
 <li>Everything runs live; nothing is pre-baked.</li>

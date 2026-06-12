@@ -2605,59 +2605,107 @@ vertical-align: -.125em;
 <span id="cb1-373"><a href="#cb1-373" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">truth =</span> <span class="fu">factor</span>(ecg<span class="sc">$</span>y[e_te], <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)), <span class="at">.pred =</span> ecg_prob[ , <span class="dv">2</span>]) <span class="sc">|&gt;</span></span>
 <span id="cb1-374"><a href="#cb1-374" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(truth, .pred, <span class="at">event_level =</span> <span class="st">&quot;second&quot;</span>)</span>
 <span id="cb1-375"><a href="#cb1-375" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-376"><a href="#cb1-376" aria-hidden="true" tabindex="-1"></a><span class="co"># Fused net: constructible, NOT trained, three modalities from three unrelated cohorts ----</span></span>
-<span id="cb1-377"><a href="#cb1-377" aria-hidden="true" tabindex="-1"></a><span class="co"># Head-less branches, one per modality, concatenated into a shared head.</span></span>
-<span id="cb1-378"><a href="#cb1-378" aria-hidden="true" tabindex="-1"></a>cnn2d_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb1-379"><a href="#cb1-379" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;cnn2d_branch&quot;</span>,</span>
-<span id="cb1-380"><a href="#cb1-380" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(<span class="at">ch =</span> <span class="dv">8</span>) {</span>
-<span id="cb1-381"><a href="#cb1-381" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>conv <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(<span class="dv">1</span>, ch, <span class="at">kernel_size =</span> <span class="dv">3</span>, <span class="at">padding =</span> <span class="dv">1</span>)</span>
-<span id="cb1-382"><a href="#cb1-382" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>pool <span class="ot">&lt;-</span> <span class="fu">nn_adaptive_avg_pool2d</span>(<span class="dv">1</span>)</span>
-<span id="cb1-383"><a href="#cb1-383" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-384"><a href="#cb1-384" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) self<span class="sc">$</span><span class="fu">pool</span>(<span class="fu">nnf_relu</span>(self<span class="sc">$</span><span class="fu">conv</span>(x)))<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">4</span>)<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">3</span>),   <span class="co"># [B, ch]</span></span>
-<span id="cb1-385"><a href="#cb1-385" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-386"><a href="#cb1-386" aria-hidden="true" tabindex="-1"></a>rnn_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb1-387"><a href="#cb1-387" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rnn_branch&quot;</span>,</span>
-<span id="cb1-388"><a href="#cb1-388" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(in_size, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
-<span id="cb1-389"><a href="#cb1-389" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>lstm <span class="ot">&lt;-</span> <span class="fu">nn_lstm</span>(in_size, hidden, <span class="at">batch_first =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-390"><a href="#cb1-390" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-391"><a href="#cb1-391" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
-<span id="cb1-392"><a href="#cb1-392" aria-hidden="true" tabindex="-1"></a>    out <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">lstm</span>(x)</span>
-<span id="cb1-393"><a href="#cb1-393" aria-hidden="true" tabindex="-1"></a>    out[[<span class="dv">1</span>]][ , <span class="fu">dim</span>(out[[<span class="dv">1</span>]])[<span class="dv">2</span>], ]</span>
-<span id="cb1-394"><a href="#cb1-394" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-395"><a href="#cb1-395" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-396"><a href="#cb1-396" aria-hidden="true" tabindex="-1"></a>fused_net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb1-397"><a href="#cb1-397" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fused_net&quot;</span>,</span>
-<span id="cb1-398"><a href="#cb1-398" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(n_tab, <span class="at">img_ch =</span> <span class="dv">8</span>, seq_in, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
-<span id="cb1-399"><a href="#cb1-399" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>tab  <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(n_tab, <span class="dv">16</span>)</span>
-<span id="cb1-400"><a href="#cb1-400" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>cnn  <span class="ot">&lt;-</span> <span class="fu">cnn2d_branch</span>(img_ch)</span>
-<span id="cb1-401"><a href="#cb1-401" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>rnn  <span class="ot">&lt;-</span> <span class="fu">rnn_branch</span>(seq_in, hidden)</span>
-<span id="cb1-402"><a href="#cb1-402" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>head <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(<span class="dv">16</span> <span class="sc">+</span> img_ch <span class="sc">+</span> hidden, <span class="dv">2</span>)</span>
-<span id="cb1-403"><a href="#cb1-403" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-404"><a href="#cb1-404" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x_tab, x_img, x_seq) {</span>
-<span id="cb1-405"><a href="#cb1-405" aria-hidden="true" tabindex="-1"></a>    t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)   <span class="co"># [B, 16]</span></span>
-<span id="cb1-406"><a href="#cb1-406" aria-hidden="true" tabindex="-1"></a>    c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)   <span class="co"># [B, img_ch]</span></span>
-<span id="cb1-407"><a href="#cb1-407" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)   <span class="co"># [B, hidden]</span></span>
-<span id="cb1-408"><a href="#cb1-408" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))   <span class="co"># -&gt; [B, 2]</span></span>
-<span id="cb1-409"><a href="#cb1-409" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-410"><a href="#cb1-410" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-411"><a href="#cb1-411" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-412"><a href="#cb1-412" aria-hidden="true" tabindex="-1"></a><span class="co"># One example per modality (a heart_failure row, one X-ray, one ECG) only proves the wiring.</span></span>
-<span id="cb1-413"><a href="#cb1-413" aria-hidden="true" tabindex="-1"></a>x_tab_all <span class="ot">&lt;-</span> <span class="fu">bake</span>(<span class="fu">prep</span>(base_rec), <span class="at">new_data =</span> train) <span class="sc">|&gt;</span></span>
-<span id="cb1-414"><a href="#cb1-414" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>outcome) <span class="sc">|&gt;</span></span>
-<span id="cb1-415"><a href="#cb1-415" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb1-416"><a href="#cb1-416" aria-hidden="true" tabindex="-1"></a>x_tab1 <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(x_tab_all[<span class="dv">1</span>, , <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="at">dtype =</span> <span class="fu">torch_float</span>())</span>
-<span id="cb1-417"><a href="#cb1-417" aria-hidden="true" tabindex="-1"></a>x_img1 <span class="ot">&lt;-</span> x_img[<span class="dv">1</span>, , , , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb1-418"><a href="#cb1-418" aria-hidden="true" tabindex="-1"></a>x_ecg1 <span class="ot">&lt;-</span> x_ecg[<span class="dv">1</span>, , , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb1-419"><a href="#cb1-419" aria-hidden="true" tabindex="-1"></a>fused  <span class="ot">&lt;-</span> <span class="fu">fused_net</span>(<span class="at">n_tab =</span> <span class="fu">ncol</span>(x_tab_all), <span class="at">img_ch =</span> <span class="dv">8</span>, <span class="at">seq_in =</span> <span class="fu">dim</span>(x_ecg)[<span class="dv">3</span>], <span class="at">hidden =</span> <span class="dv">16</span>)</span>
-<span id="cb1-420"><a href="#cb1-420" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-421"><a href="#cb1-421" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder the lines to: run the three branches, concat along dim=2, then the head</span></span>
-<span id="cb1-422"><a href="#cb1-422" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span>
-<span id="cb1-423"><a href="#cb1-423" aria-hidden="true" tabindex="-1"></a>  self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))</span>
-<span id="cb1-424"><a href="#cb1-424" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)</span>
-<span id="cb1-425"><a href="#cb1-425" aria-hidden="true" tabindex="-1"></a>  c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)</span>
-<span id="cb1-426"><a href="#cb1-426" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)</span>
-<span id="cb1-427"><a href="#cb1-427" aria-hidden="true" tabindex="-1"></a>fused_forward <span class="ot">&lt;-</span> <span class="cf">function</span>(self, x_tab, x_img, x_seq) {</span>
-<span id="cb1-428"><a href="#cb1-428" aria-hidden="true" tabindex="-1"></a><span class="fu">fused</span>(x_tab1, x_img1, x_ecg1)<span class="sc">$</span>shape   <span class="co"># expect [1, 2]: wiring proven, nothing trained</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-376"><a href="#cb1-376" aria-hidden="true" tabindex="-1"></a><span class="co"># Fused net: three modalities, one head ----</span></span>
+<span id="cb1-377"><a href="#cb1-377" aria-hidden="true" tabindex="-1"></a><span class="co"># We build it, run one forward pass, then train it on INVENTED labels just to drive the loop</span></span>
+<span id="cb1-378"><a href="#cb1-378" aria-hidden="true" tabindex="-1"></a><span class="co"># end-to-end. The three cohorts share no patient, so nothing here can generalise. One head-less</span></span>
+<span id="cb1-379"><a href="#cb1-379" aria-hidden="true" tabindex="-1"></a><span class="co"># branch per modality, concatenated into a shared head.</span></span>
+<span id="cb1-380"><a href="#cb1-380" aria-hidden="true" tabindex="-1"></a>cnn2d_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb1-381"><a href="#cb1-381" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;cnn2d_branch&quot;</span>,</span>
+<span id="cb1-382"><a href="#cb1-382" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(<span class="at">ch =</span> <span class="dv">8</span>) {</span>
+<span id="cb1-383"><a href="#cb1-383" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>conv <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(<span class="dv">1</span>, ch, <span class="at">kernel_size =</span> <span class="dv">3</span>, <span class="at">padding =</span> <span class="dv">1</span>)</span>
+<span id="cb1-384"><a href="#cb1-384" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>pool <span class="ot">&lt;-</span> <span class="fu">nn_adaptive_avg_pool2d</span>(<span class="dv">1</span>)</span>
+<span id="cb1-385"><a href="#cb1-385" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-386"><a href="#cb1-386" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) self<span class="sc">$</span><span class="fu">pool</span>(<span class="fu">nnf_relu</span>(self<span class="sc">$</span><span class="fu">conv</span>(x)))<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">4</span>)<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">3</span>),   <span class="co"># [B, ch]</span></span>
+<span id="cb1-387"><a href="#cb1-387" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-388"><a href="#cb1-388" aria-hidden="true" tabindex="-1"></a>rnn_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb1-389"><a href="#cb1-389" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rnn_branch&quot;</span>,</span>
+<span id="cb1-390"><a href="#cb1-390" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(in_size, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
+<span id="cb1-391"><a href="#cb1-391" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>lstm <span class="ot">&lt;-</span> <span class="fu">nn_lstm</span>(in_size, hidden, <span class="at">batch_first =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-392"><a href="#cb1-392" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-393"><a href="#cb1-393" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-394"><a href="#cb1-394" aria-hidden="true" tabindex="-1"></a>    out <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">lstm</span>(x)</span>
+<span id="cb1-395"><a href="#cb1-395" aria-hidden="true" tabindex="-1"></a>    out[[<span class="dv">1</span>]][ , <span class="fu">dim</span>(out[[<span class="dv">1</span>]])[<span class="dv">2</span>], ]</span>
+<span id="cb1-396"><a href="#cb1-396" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-397"><a href="#cb1-397" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-398"><a href="#cb1-398" aria-hidden="true" tabindex="-1"></a>fused_net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb1-399"><a href="#cb1-399" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fused_net&quot;</span>,</span>
+<span id="cb1-400"><a href="#cb1-400" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(n_tab, <span class="at">img_ch =</span> <span class="dv">8</span>, seq_in, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
+<span id="cb1-401"><a href="#cb1-401" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>tab  <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(n_tab, <span class="dv">16</span>)</span>
+<span id="cb1-402"><a href="#cb1-402" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>cnn  <span class="ot">&lt;-</span> <span class="fu">cnn2d_branch</span>(img_ch)</span>
+<span id="cb1-403"><a href="#cb1-403" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>rnn  <span class="ot">&lt;-</span> <span class="fu">rnn_branch</span>(seq_in, hidden)</span>
+<span id="cb1-404"><a href="#cb1-404" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>head <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(<span class="dv">16</span> <span class="sc">+</span> img_ch <span class="sc">+</span> hidden, <span class="dv">2</span>)</span>
+<span id="cb1-405"><a href="#cb1-405" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-406"><a href="#cb1-406" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x_tab, x_img, x_seq) {</span>
+<span id="cb1-407"><a href="#cb1-407" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder the lines to: run the three branches, concat along dim=2, then the head</span></span>
+<span id="cb1-408"><a href="#cb1-408" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))</span>
+<span id="cb1-409"><a href="#cb1-409" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)</span>
+<span id="cb1-410"><a href="#cb1-410" aria-hidden="true" tabindex="-1"></a>    c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)</span>
+<span id="cb1-411"><a href="#cb1-411" aria-hidden="true" tabindex="-1"></a>    t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)</span>
+<span id="cb1-412"><a href="#cb1-412" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-413"><a href="#cb1-413" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-414"><a href="#cb1-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-415"><a href="#cb1-415" aria-hidden="true" tabindex="-1"></a><span class="co"># Wiring check: one example per modality (a heart_failure row, one X-ray, one ECG) returns [1, 2] ----</span></span>
+<span id="cb1-416"><a href="#cb1-416" aria-hidden="true" tabindex="-1"></a>x_tab_all <span class="ot">&lt;-</span> <span class="fu">bake</span>(<span class="fu">prep</span>(base_rec), <span class="at">new_data =</span> train) <span class="sc">|&gt;</span></span>
+<span id="cb1-417"><a href="#cb1-417" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>outcome) <span class="sc">|&gt;</span></span>
+<span id="cb1-418"><a href="#cb1-418" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb1-419"><a href="#cb1-419" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-420"><a href="#cb1-420" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_manual_seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-421"><a href="#cb1-421" aria-hidden="true" tabindex="-1"></a>fused <span class="ot">&lt;-</span> <span class="fu">fused_net</span>(<span class="at">n_tab =</span> <span class="fu">ncol</span>(x_tab_all), <span class="at">img_ch =</span> <span class="dv">8</span>, <span class="at">seq_in =</span> <span class="fu">dim</span>(x_ecg)[<span class="dv">3</span>], <span class="at">hidden =</span> <span class="dv">16</span>)</span>
+<span id="cb1-422"><a href="#cb1-422" aria-hidden="true" tabindex="-1"></a><span class="fu">fused</span>(</span>
+<span id="cb1-423"><a href="#cb1-423" aria-hidden="true" tabindex="-1"></a>  <span class="fu">torch_tensor</span>(x_tab_all[<span class="dv">1</span>, , <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="at">dtype =</span> <span class="fu">torch_float</span>()),</span>
+<span id="cb1-424"><a href="#cb1-424" aria-hidden="true" tabindex="-1"></a>  x_img[<span class="dv">1</span>, , , , <span class="at">drop =</span> <span class="cn">FALSE</span>],</span>
+<span id="cb1-425"><a href="#cb1-425" aria-hidden="true" tabindex="-1"></a>  x_ecg[<span class="dv">1</span>, , , <span class="at">drop =</span> <span class="cn">FALSE</span>]</span>
+<span id="cb1-426"><a href="#cb1-426" aria-hidden="true" tabindex="-1"></a>)<span class="sc">$</span>shape   <span class="co"># expect [1, 2]: the forward is wired correctly</span></span>
+<span id="cb1-427"><a href="#cb1-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-428"><a href="#cb1-428" aria-hidden="true" tabindex="-1"></a><span class="co"># Line up the three cohorts arbitrarily and draw INVENTED labels (pure noise) ----</span></span>
+<span id="cb1-429"><a href="#cb1-429" aria-hidden="true" tabindex="-1"></a><span class="co"># No patient is shared, so any pairing is arbitrary and the labels carry no signal: the net can</span></span>
+<span id="cb1-430"><a href="#cb1-430" aria-hidden="true" tabindex="-1"></a><span class="co"># only memorise. The point is to SEE the same machinery run on a bespoke multi-input model.</span></span>
+<span id="cb1-431"><a href="#cb1-431" aria-hidden="true" tabindex="-1"></a>n_fuse <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="fu">nrow</span>(x_tab_all), <span class="fu">dim</span>(x_img)[<span class="dv">1</span>], <span class="fu">dim</span>(x_ecg)[<span class="dv">1</span>])</span>
+<span id="cb1-432"><a href="#cb1-432" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-433"><a href="#cb1-433" aria-hidden="true" tabindex="-1"></a>xtab_f <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(x_tab_all[<span class="fu">sample</span>(<span class="fu">nrow</span>(x_tab_all), n_fuse), ], <span class="at">dtype =</span> <span class="fu">torch_float</span>())</span>
+<span id="cb1-434"><a href="#cb1-434" aria-hidden="true" tabindex="-1"></a>ximg_f <span class="ot">&lt;-</span> x_img[<span class="fu">sample</span>(<span class="fu">dim</span>(x_img)[<span class="dv">1</span>], n_fuse), , , ]</span>
+<span id="cb1-435"><a href="#cb1-435" aria-hidden="true" tabindex="-1"></a>xseq_f <span class="ot">&lt;-</span> x_ecg[<span class="fu">sample</span>(<span class="fu">dim</span>(x_ecg)[<span class="dv">1</span>], n_fuse), , ]</span>
+<span id="cb1-436"><a href="#cb1-436" aria-hidden="true" tabindex="-1"></a>y_fuse <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">1</span>L, <span class="dv">2</span>L), n_fuse, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-437"><a href="#cb1-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-438"><a href="#cb1-438" aria-hidden="true" tabindex="-1"></a><span class="co"># Same rsample split as the CNN and RNN: train / validation / test, stratified ----</span></span>
+<span id="cb1-439"><a href="#cb1-439" aria-hidden="true" tabindex="-1"></a>f_ids   <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">row =</span> <span class="fu">seq_len</span>(n_fuse), <span class="at">class =</span> <span class="fu">factor</span>(y_fuse))</span>
+<span id="cb1-440"><a href="#cb1-440" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-441"><a href="#cb1-441" aria-hidden="true" tabindex="-1"></a>f_split <span class="ot">&lt;-</span> <span class="fu">initial_validation_split</span>(f_ids, <span class="at">prop =</span> <span class="fu">c</span>(<span class="fl">0.125</span>, <span class="fl">0.25</span>), <span class="at">strata =</span> class)</span>
+<span id="cb1-442"><a href="#cb1-442" aria-hidden="true" tabindex="-1"></a>f_tr <span class="ot">&lt;-</span> <span class="fu">training</span>(f_split)<span class="sc">$</span>row</span>
+<span id="cb1-443"><a href="#cb1-443" aria-hidden="true" tabindex="-1"></a>f_va <span class="ot">&lt;-</span> <span class="fu">validation</span>(f_split)<span class="sc">$</span>row</span>
+<span id="cb1-444"><a href="#cb1-444" aria-hidden="true" tabindex="-1"></a>f_te <span class="ot">&lt;-</span> <span class="fu">testing</span>(f_split)<span class="sc">$</span>row</span>
+<span id="cb1-445"><a href="#cb1-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-446"><a href="#cb1-446" aria-hidden="true" tabindex="-1"></a><span class="co"># The training loop the section described, written out by hand (luz hides it for the CNN/RNN) ----</span></span>
+<span id="cb1-447"><a href="#cb1-447" aria-hidden="true" tabindex="-1"></a>opt     <span class="ot">&lt;-</span> <span class="fu">optim_adam</span>(fused<span class="sc">$</span>parameters, <span class="at">lr =</span> <span class="fl">1e-3</span>)</span>
+<span id="cb1-448"><a href="#cb1-448" aria-hidden="true" tabindex="-1"></a>loss_fn <span class="ot">&lt;-</span> <span class="fu">nn_cross_entropy_loss</span>()</span>
+<span id="cb1-449"><a href="#cb1-449" aria-hidden="true" tabindex="-1"></a>y_tr <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(y_fuse[f_tr], <span class="at">dtype =</span> <span class="fu">torch_long</span>())</span>
+<span id="cb1-450"><a href="#cb1-450" aria-hidden="true" tabindex="-1"></a>y_va <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(y_fuse[f_va], <span class="at">dtype =</span> <span class="fu">torch_long</span>())</span>
+<span id="cb1-451"><a href="#cb1-451" aria-hidden="true" tabindex="-1"></a>hist <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">epoch =</span> <span class="fu">integer</span>(<span class="dv">0</span>), <span class="at">train =</span> <span class="fu">double</span>(<span class="dv">0</span>), <span class="at">valid =</span> <span class="fu">double</span>(<span class="dv">0</span>))</span>
+<span id="cb1-452"><a href="#cb1-452" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (epoch <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="dv">120</span>)) {</span>
+<span id="cb1-453"><a href="#cb1-453" aria-hidden="true" tabindex="-1"></a>  fused<span class="sc">$</span><span class="fu">train</span>()</span>
+<span id="cb1-454"><a href="#cb1-454" aria-hidden="true" tabindex="-1"></a>  opt<span class="sc">$</span><span class="fu">zero_grad</span>()</span>
+<span id="cb1-455"><a href="#cb1-455" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">&lt;-</span> <span class="fu">loss_fn</span>(<span class="fu">fused</span>(xtab_f[f_tr, ], ximg_f[f_tr, , , ], xseq_f[f_tr, , ]), y_tr)</span>
+<span id="cb1-456"><a href="#cb1-456" aria-hidden="true" tabindex="-1"></a>  loss<span class="sc">$</span><span class="fu">backward</span>()</span>
+<span id="cb1-457"><a href="#cb1-457" aria-hidden="true" tabindex="-1"></a>  opt<span class="sc">$</span><span class="fu">step</span>()</span>
+<span id="cb1-458"><a href="#cb1-458" aria-hidden="true" tabindex="-1"></a>  fused<span class="sc">$</span><span class="fu">eval</span>()</span>
+<span id="cb1-459"><a href="#cb1-459" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> <span class="fu">with_no_grad</span>(<span class="fu">loss_fn</span>(<span class="fu">fused</span>(xtab_f[f_va, ], ximg_f[f_va, , , ], xseq_f[f_va, , ]), y_va))</span>
+<span id="cb1-460"><a href="#cb1-460" aria-hidden="true" tabindex="-1"></a>  hist <span class="ot">&lt;-</span> <span class="fu">rbind</span>(hist, <span class="fu">data.frame</span>(<span class="at">epoch =</span> epoch, <span class="at">train =</span> loss<span class="sc">$</span><span class="fu">item</span>(), <span class="at">valid =</span> v<span class="sc">$</span><span class="fu">item</span>()))</span>
+<span id="cb1-461"><a href="#cb1-461" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-462"><a href="#cb1-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-463"><a href="#cb1-463" aria-hidden="true" tabindex="-1"></a><span class="co"># The same train/val U as the CNN and RNN, drawn by hand: training loss falls, validation turns up ----</span></span>
+<span id="cb1-464"><a href="#cb1-464" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb1-465"><a href="#cb1-465" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(hist, <span class="fu">c</span>(train, valid), <span class="at">names_to =</span> <span class="st">&quot;set&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;loss&quot;</span>),</span>
+<span id="cb1-466"><a href="#cb1-466" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(epoch, loss, <span class="at">colour =</span> set)</span>
+<span id="cb1-467"><a href="#cb1-467" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb1-468"><a href="#cb1-468" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb1-469"><a href="#cb1-469" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb1-470"><a href="#cb1-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-471"><a href="#cb1-471" aria-hidden="true" tabindex="-1"></a><span class="co"># Score on the held-out </span><span class="al">TEST</span><span class="co"> set: the net memorised noise, so AUC sits at chance (~0.5) ----</span></span>
+<span id="cb1-472"><a href="#cb1-472" aria-hidden="true" tabindex="-1"></a>fused<span class="sc">$</span><span class="fu">eval</span>()</span>
+<span id="cb1-473"><a href="#cb1-473" aria-hidden="true" tabindex="-1"></a>f_prob <span class="ot">&lt;-</span> <span class="fu">with_no_grad</span>(<span class="fu">nnf_softmax</span>(<span class="fu">fused</span>(xtab_f[f_te, ], ximg_f[f_te, , , ], xseq_f[f_te, , ]), <span class="at">dim =</span> <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-474"><a href="#cb1-474" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.array</span>()</span>
+<span id="cb1-475"><a href="#cb1-475" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">truth =</span> <span class="fu">factor</span>(y_fuse[f_te], <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)), <span class="at">.pred =</span> f_prob[, <span class="dv">2</span>]) <span class="sc">|&gt;</span></span>
+<span id="cb1-476"><a href="#cb1-476" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(truth, .pred, <span class="at">event_level =</span> <span class="st">&quot;second&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
@@ -2741,20 +2789,20 @@ $ outcome                  &lt;fct&gt; died, died, died, died, died, died, died,
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="zoixqvaskv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#zoixqvaskv table {
+<div id="chxrarltjh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#chxrarltjh table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#zoixqvaskv thead, #zoixqvaskv tbody, #zoixqvaskv tfoot, #zoixqvaskv tr, #zoixqvaskv td, #zoixqvaskv th {
+#chxrarltjh thead, #chxrarltjh tbody, #chxrarltjh tfoot, #chxrarltjh tr, #chxrarltjh td, #chxrarltjh th {
 border-style: none;
 }
-#zoixqvaskv p {
+#chxrarltjh p {
 margin: 0;
 padding: 0;
 }
-#zoixqvaskv .gt_table {
+#chxrarltjh .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2779,11 +2827,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#zoixqvaskv .gt_caption {
+#chxrarltjh .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#zoixqvaskv .gt_title {
+#chxrarltjh .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2794,7 +2842,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#zoixqvaskv .gt_subtitle {
+#chxrarltjh .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2805,7 +2853,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#zoixqvaskv .gt_heading {
+#chxrarltjh .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2816,12 +2864,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#zoixqvaskv .gt_bottom_border {
+#chxrarltjh .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#zoixqvaskv .gt_col_headings {
+#chxrarltjh .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2835,7 +2883,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#zoixqvaskv .gt_col_heading {
+#chxrarltjh .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2854,7 +2902,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#zoixqvaskv .gt_column_spanner_outer {
+#chxrarltjh .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2865,13 +2913,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#zoixqvaskv .gt_column_spanner_outer:first-child {
+#chxrarltjh .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#zoixqvaskv .gt_column_spanner_outer:last-child {
+#chxrarltjh .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#zoixqvaskv .gt_column_spanner {
+#chxrarltjh .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2882,10 +2930,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#zoixqvaskv .gt_spanner_row {
+#chxrarltjh .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#zoixqvaskv .gt_group_heading {
+#chxrarltjh .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2910,7 +2958,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#zoixqvaskv .gt_empty_group_heading {
+#chxrarltjh .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2924,13 +2972,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#zoixqvaskv .gt_from_md > :first-child {
+#chxrarltjh .gt_from_md > :first-child {
 margin-top: 0;
 }
-#zoixqvaskv .gt_from_md > :last-child {
+#chxrarltjh .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#zoixqvaskv .gt_row {
+#chxrarltjh .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2948,7 +2996,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#zoixqvaskv .gt_stub {
+#chxrarltjh .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2960,7 +3008,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#zoixqvaskv .gt_stub_row_group {
+#chxrarltjh .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2973,13 +3021,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#zoixqvaskv .gt_row_group_first td {
+#chxrarltjh .gt_row_group_first td {
 border-top-width: 2px;
 }
-#zoixqvaskv .gt_row_group_first th {
+#chxrarltjh .gt_row_group_first th {
 border-top-width: 2px;
 }
-#zoixqvaskv .gt_summary_row {
+#chxrarltjh .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2988,14 +3036,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#zoixqvaskv .gt_first_summary_row {
+#chxrarltjh .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#zoixqvaskv .gt_first_summary_row.thick {
+#chxrarltjh .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#zoixqvaskv .gt_last_summary_row {
+#chxrarltjh .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3004,7 +3052,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#zoixqvaskv .gt_grand_summary_row {
+#chxrarltjh .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3013,7 +3061,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#zoixqvaskv .gt_first_grand_summary_row {
+#chxrarltjh .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3022,7 +3070,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#zoixqvaskv .gt_last_grand_summary_row_top {
+#chxrarltjh .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3031,10 +3079,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#zoixqvaskv .gt_striped {
+#chxrarltjh .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#zoixqvaskv .gt_table_body {
+#chxrarltjh .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3042,7 +3090,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#zoixqvaskv .gt_footnotes {
+#chxrarltjh .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3055,7 +3103,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#zoixqvaskv .gt_footnote {
+#chxrarltjh .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3063,7 +3111,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#zoixqvaskv .gt_sourcenotes {
+#chxrarltjh .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3076,64 +3124,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#zoixqvaskv .gt_sourcenote {
+#chxrarltjh .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#zoixqvaskv .gt_left {
+#chxrarltjh .gt_left {
 text-align: left;
 }
-#zoixqvaskv .gt_center {
+#chxrarltjh .gt_center {
 text-align: center;
 }
-#zoixqvaskv .gt_right {
+#chxrarltjh .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#zoixqvaskv .gt_font_normal {
+#chxrarltjh .gt_font_normal {
 font-weight: normal;
 }
-#zoixqvaskv .gt_font_bold {
+#chxrarltjh .gt_font_bold {
 font-weight: bold;
 }
-#zoixqvaskv .gt_font_italic {
+#chxrarltjh .gt_font_italic {
 font-style: italic;
 }
-#zoixqvaskv .gt_super {
+#chxrarltjh .gt_super {
 font-size: 65%;
 }
-#zoixqvaskv .gt_footnote_marks {
+#chxrarltjh .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#zoixqvaskv .gt_asterisk {
+#chxrarltjh .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#zoixqvaskv .gt_indent_1 {
+#chxrarltjh .gt_indent_1 {
 text-indent: 5px;
 }
-#zoixqvaskv .gt_indent_2 {
+#chxrarltjh .gt_indent_2 {
 text-indent: 10px;
 }
-#zoixqvaskv .gt_indent_3 {
+#chxrarltjh .gt_indent_3 {
 text-indent: 15px;
 }
-#zoixqvaskv .gt_indent_4 {
+#chxrarltjh .gt_indent_4 {
 text-indent: 20px;
 }
-#zoixqvaskv .gt_indent_5 {
+#chxrarltjh .gt_indent_5 {
 text-indent: 25px;
 }
-#zoixqvaskv .katex-display {
+#chxrarltjh .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#zoixqvaskv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#chxrarltjh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -3804,60 +3852,119 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
 1 roc_auc binary         0.997</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fused net: constructible, NOT trained, three modalities from three unrelated cohorts ----</span></span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Head-less branches, one per modality, concatenated into a shared head.</span></span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>cnn2d_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;cnn2d_branch&quot;</span>,</span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(<span class="at">ch =</span> <span class="dv">8</span>) {</span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>conv <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(<span class="dv">1</span>, ch, <span class="at">kernel_size =</span> <span class="dv">3</span>, <span class="at">padding =</span> <span class="dv">1</span>)</span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>pool <span class="ot">&lt;-</span> <span class="fu">nn_adaptive_avg_pool2d</span>(<span class="dv">1</span>)</span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) self<span class="sc">$</span><span class="fu">pool</span>(<span class="fu">nnf_relu</span>(self<span class="sc">$</span><span class="fu">conv</span>(x)))<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">4</span>)<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">3</span>),   <span class="co"># [B, ch]</span></span>
-<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>rnn_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rnn_branch&quot;</span>,</span>
-<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(in_size, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
-<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>lstm <span class="ot">&lt;-</span> <span class="fu">nn_lstm</span>(in_size, hidden, <span class="at">batch_first =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
-<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>    out <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">lstm</span>(x)</span>
-<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>    out[[<span class="dv">1</span>]][ , <span class="fu">dim</span>(out[[<span class="dv">1</span>]])[<span class="dv">2</span>], ]</span>
-<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a>fused_net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fused_net&quot;</span>,</span>
-<span id="cb60-23"><a href="#cb60-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(n_tab, <span class="at">img_ch =</span> <span class="dv">8</span>, seq_in, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
-<span id="cb60-24"><a href="#cb60-24" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>tab  <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(n_tab, <span class="dv">16</span>)</span>
-<span id="cb60-25"><a href="#cb60-25" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>cnn  <span class="ot">&lt;-</span> <span class="fu">cnn2d_branch</span>(img_ch)</span>
-<span id="cb60-26"><a href="#cb60-26" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>rnn  <span class="ot">&lt;-</span> <span class="fu">rnn_branch</span>(seq_in, hidden)</span>
-<span id="cb60-27"><a href="#cb60-27" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>head <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(<span class="dv">16</span> <span class="sc">+</span> img_ch <span class="sc">+</span> hidden, <span class="dv">2</span>)</span>
-<span id="cb60-28"><a href="#cb60-28" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb60-29"><a href="#cb60-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x_tab, x_img, x_seq) {</span>
-<span id="cb60-30"><a href="#cb60-30" aria-hidden="true" tabindex="-1"></a>    t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)   <span class="co"># [B, 16]</span></span>
-<span id="cb60-31"><a href="#cb60-31" aria-hidden="true" tabindex="-1"></a>    c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)   <span class="co"># [B, img_ch]</span></span>
-<span id="cb60-32"><a href="#cb60-32" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)   <span class="co"># [B, hidden]</span></span>
-<span id="cb60-33"><a href="#cb60-33" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))   <span class="co"># -&gt; [B, 2]</span></span>
-<span id="cb60-34"><a href="#cb60-34" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb60-35"><a href="#cb60-35" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb60-36"><a href="#cb60-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-37"><a href="#cb60-37" aria-hidden="true" tabindex="-1"></a><span class="co"># One example per modality (a heart_failure row, one X-ray, one ECG) only proves the wiring.</span></span>
-<span id="cb60-38"><a href="#cb60-38" aria-hidden="true" tabindex="-1"></a>x_tab_all <span class="ot">&lt;-</span> <span class="fu">bake</span>(<span class="fu">prep</span>(base_rec), <span class="at">new_data =</span> train) <span class="sc">|&gt;</span></span>
-<span id="cb60-39"><a href="#cb60-39" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>outcome) <span class="sc">|&gt;</span></span>
-<span id="cb60-40"><a href="#cb60-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb60-41"><a href="#cb60-41" aria-hidden="true" tabindex="-1"></a>x_tab1 <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(x_tab_all[<span class="dv">1</span>, , <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="at">dtype =</span> <span class="fu">torch_float</span>())</span>
-<span id="cb60-42"><a href="#cb60-42" aria-hidden="true" tabindex="-1"></a>x_img1 <span class="ot">&lt;-</span> x_img[<span class="dv">1</span>, , , , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb60-43"><a href="#cb60-43" aria-hidden="true" tabindex="-1"></a>x_ecg1 <span class="ot">&lt;-</span> x_ecg[<span class="dv">1</span>, , , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb60-44"><a href="#cb60-44" aria-hidden="true" tabindex="-1"></a>fused  <span class="ot">&lt;-</span> <span class="fu">fused_net</span>(<span class="at">n_tab =</span> <span class="fu">ncol</span>(x_tab_all), <span class="at">img_ch =</span> <span class="dv">8</span>, <span class="at">seq_in =</span> <span class="fu">dim</span>(x_ecg)[<span class="dv">3</span>], <span class="at">hidden =</span> <span class="dv">16</span>)</span>
-<span id="cb60-45"><a href="#cb60-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb60-46"><a href="#cb60-46" aria-hidden="true" tabindex="-1"></a>fused_forward <span class="ot">&lt;-</span> <span class="cf">function</span>(self, x_tab, x_img, x_seq) {</span>
-<span id="cb60-47"><a href="#cb60-47" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)</span>
-<span id="cb60-48"><a href="#cb60-48" aria-hidden="true" tabindex="-1"></a>  c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)</span>
-<span id="cb60-49"><a href="#cb60-49" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)</span>
-<span id="cb60-50"><a href="#cb60-50" aria-hidden="true" tabindex="-1"></a>  self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))</span>
-<span id="cb60-51"><a href="#cb60-51" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb60-52"><a href="#cb60-52" aria-hidden="true" tabindex="-1"></a><span class="fu">fused</span>(x_tab1, x_img1, x_ecg1)<span class="sc">$</span>shape   <span class="co"># expect [1, 2]: wiring proven, nothing trained</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fused net: three modalities, one head ----</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We build it, run one forward pass, then train it on INVENTED labels just to drive the loop</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="co"># end-to-end. The three cohorts share no patient, so nothing here can generalise. One head-less</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="co"># branch per modality, concatenated into a shared head.</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>cnn2d_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;cnn2d_branch&quot;</span>,</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(<span class="at">ch =</span> <span class="dv">8</span>) {</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>conv <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(<span class="dv">1</span>, ch, <span class="at">kernel_size =</span> <span class="dv">3</span>, <span class="at">padding =</span> <span class="dv">1</span>)</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>pool <span class="ot">&lt;-</span> <span class="fu">nn_adaptive_avg_pool2d</span>(<span class="dv">1</span>)</span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) self<span class="sc">$</span><span class="fu">pool</span>(<span class="fu">nnf_relu</span>(self<span class="sc">$</span><span class="fu">conv</span>(x)))<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">4</span>)<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">3</span>),   <span class="co"># [B, ch]</span></span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>rnn_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rnn_branch&quot;</span>,</span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(in_size, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>lstm <span class="ot">&lt;-</span> <span class="fu">nn_lstm</span>(in_size, hidden, <span class="at">batch_first =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>    out <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">lstm</span>(x)</span>
+<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a>    out[[<span class="dv">1</span>]][ , <span class="fu">dim</span>(out[[<span class="dv">1</span>]])[<span class="dv">2</span>], ]</span>
+<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-23"><a href="#cb60-23" aria-hidden="true" tabindex="-1"></a>fused_net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb60-24"><a href="#cb60-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fused_net&quot;</span>,</span>
+<span id="cb60-25"><a href="#cb60-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(n_tab, <span class="at">img_ch =</span> <span class="dv">8</span>, seq_in, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
+<span id="cb60-26"><a href="#cb60-26" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>tab  <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(n_tab, <span class="dv">16</span>)</span>
+<span id="cb60-27"><a href="#cb60-27" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>cnn  <span class="ot">&lt;-</span> <span class="fu">cnn2d_branch</span>(img_ch)</span>
+<span id="cb60-28"><a href="#cb60-28" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>rnn  <span class="ot">&lt;-</span> <span class="fu">rnn_branch</span>(seq_in, hidden)</span>
+<span id="cb60-29"><a href="#cb60-29" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>head <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(<span class="dv">16</span> <span class="sc">+</span> img_ch <span class="sc">+</span> hidden, <span class="dv">2</span>)</span>
+<span id="cb60-30"><a href="#cb60-30" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb60-31"><a href="#cb60-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x_tab, x_img, x_seq) {</span>
+<span id="cb60-32"><a href="#cb60-32" aria-hidden="true" tabindex="-1"></a>    t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)</span>
+<span id="cb60-33"><a href="#cb60-33" aria-hidden="true" tabindex="-1"></a>    c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)</span>
+<span id="cb60-34"><a href="#cb60-34" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)</span>
+<span id="cb60-35"><a href="#cb60-35" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))</span>
+<span id="cb60-36"><a href="#cb60-36" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb60-37"><a href="#cb60-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-38"><a href="#cb60-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-39"><a href="#cb60-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Wiring check: one example per modality (a heart_failure row, one X-ray, one ECG) returns [1, 2] ----</span></span>
+<span id="cb60-40"><a href="#cb60-40" aria-hidden="true" tabindex="-1"></a>x_tab_all <span class="ot">&lt;-</span> <span class="fu">bake</span>(<span class="fu">prep</span>(base_rec), <span class="at">new_data =</span> train) <span class="sc">|&gt;</span></span>
+<span id="cb60-41"><a href="#cb60-41" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>outcome) <span class="sc">|&gt;</span></span>
+<span id="cb60-42"><a href="#cb60-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb60-43"><a href="#cb60-43" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb60-44"><a href="#cb60-44" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_manual_seed</span>(<span class="dv">123</span>)</span>
+<span id="cb60-45"><a href="#cb60-45" aria-hidden="true" tabindex="-1"></a>fused <span class="ot">&lt;-</span> <span class="fu">fused_net</span>(<span class="at">n_tab =</span> <span class="fu">ncol</span>(x_tab_all), <span class="at">img_ch =</span> <span class="dv">8</span>, <span class="at">seq_in =</span> <span class="fu">dim</span>(x_ecg)[<span class="dv">3</span>], <span class="at">hidden =</span> <span class="dv">16</span>)</span>
+<span id="cb60-46"><a href="#cb60-46" aria-hidden="true" tabindex="-1"></a><span class="fu">fused</span>(</span>
+<span id="cb60-47"><a href="#cb60-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">torch_tensor</span>(x_tab_all[<span class="dv">1</span>, , <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="at">dtype =</span> <span class="fu">torch_float</span>()),</span>
+<span id="cb60-48"><a href="#cb60-48" aria-hidden="true" tabindex="-1"></a>  x_img[<span class="dv">1</span>, , , , <span class="at">drop =</span> <span class="cn">FALSE</span>],</span>
+<span id="cb60-49"><a href="#cb60-49" aria-hidden="true" tabindex="-1"></a>  x_ecg[<span class="dv">1</span>, , , <span class="at">drop =</span> <span class="cn">FALSE</span>]</span>
+<span id="cb60-50"><a href="#cb60-50" aria-hidden="true" tabindex="-1"></a>)<span class="sc">$</span>shape   <span class="co"># expect [1, 2]: the forward is wired correctly</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1 2</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Line up the three cohorts arbitrarily and draw INVENTED labels (pure noise) ----</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="co"># No patient is shared, so any pairing is arbitrary and the labels carry no signal: the net can</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="co"># only memorise. The point is to SEE the same machinery run on a bespoke multi-input model.</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>n_fuse <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="fu">nrow</span>(x_tab_all), <span class="fu">dim</span>(x_img)[<span class="dv">1</span>], <span class="fu">dim</span>(x_ecg)[<span class="dv">1</span>])</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>xtab_f <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(x_tab_all[<span class="fu">sample</span>(<span class="fu">nrow</span>(x_tab_all), n_fuse), ], <span class="at">dtype =</span> <span class="fu">torch_float</span>())</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>ximg_f <span class="ot">&lt;-</span> x_img[<span class="fu">sample</span>(<span class="fu">dim</span>(x_img)[<span class="dv">1</span>], n_fuse), , , ]</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>xseq_f <span class="ot">&lt;-</span> x_ecg[<span class="fu">sample</span>(<span class="fu">dim</span>(x_ecg)[<span class="dv">1</span>], n_fuse), , ]</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>y_fuse <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">1</span>L, <span class="dv">2</span>L), n_fuse, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Same rsample split as the CNN and RNN: train / validation / test, stratified ----</span></span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>f_ids   <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">row =</span> <span class="fu">seq_len</span>(n_fuse), <span class="at">class =</span> <span class="fu">factor</span>(y_fuse))</span>
+<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>f_split <span class="ot">&lt;-</span> <span class="fu">initial_validation_split</span>(f_ids, <span class="at">prop =</span> <span class="fu">c</span>(<span class="fl">0.125</span>, <span class="fl">0.25</span>), <span class="at">strata =</span> class)</span>
+<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a>f_tr <span class="ot">&lt;-</span> <span class="fu">training</span>(f_split)<span class="sc">$</span>row</span>
+<span id="cb62-16"><a href="#cb62-16" aria-hidden="true" tabindex="-1"></a>f_va <span class="ot">&lt;-</span> <span class="fu">validation</span>(f_split)<span class="sc">$</span>row</span>
+<span id="cb62-17"><a href="#cb62-17" aria-hidden="true" tabindex="-1"></a>f_te <span class="ot">&lt;-</span> <span class="fu">testing</span>(f_split)<span class="sc">$</span>row</span>
+<span id="cb62-18"><a href="#cb62-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-19"><a href="#cb62-19" aria-hidden="true" tabindex="-1"></a><span class="co"># The training loop the section described, written out by hand (luz hides it for the CNN/RNN) ----</span></span>
+<span id="cb62-20"><a href="#cb62-20" aria-hidden="true" tabindex="-1"></a>opt     <span class="ot">&lt;-</span> <span class="fu">optim_adam</span>(fused<span class="sc">$</span>parameters, <span class="at">lr =</span> <span class="fl">1e-3</span>)</span>
+<span id="cb62-21"><a href="#cb62-21" aria-hidden="true" tabindex="-1"></a>loss_fn <span class="ot">&lt;-</span> <span class="fu">nn_cross_entropy_loss</span>()</span>
+<span id="cb62-22"><a href="#cb62-22" aria-hidden="true" tabindex="-1"></a>y_tr <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(y_fuse[f_tr], <span class="at">dtype =</span> <span class="fu">torch_long</span>())</span>
+<span id="cb62-23"><a href="#cb62-23" aria-hidden="true" tabindex="-1"></a>y_va <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(y_fuse[f_va], <span class="at">dtype =</span> <span class="fu">torch_long</span>())</span>
+<span id="cb62-24"><a href="#cb62-24" aria-hidden="true" tabindex="-1"></a>hist <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">epoch =</span> <span class="fu">integer</span>(<span class="dv">0</span>), <span class="at">train =</span> <span class="fu">double</span>(<span class="dv">0</span>), <span class="at">valid =</span> <span class="fu">double</span>(<span class="dv">0</span>))</span>
+<span id="cb62-25"><a href="#cb62-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (epoch <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="dv">120</span>)) {</span>
+<span id="cb62-26"><a href="#cb62-26" aria-hidden="true" tabindex="-1"></a>  fused<span class="sc">$</span><span class="fu">train</span>()</span>
+<span id="cb62-27"><a href="#cb62-27" aria-hidden="true" tabindex="-1"></a>  opt<span class="sc">$</span><span class="fu">zero_grad</span>()</span>
+<span id="cb62-28"><a href="#cb62-28" aria-hidden="true" tabindex="-1"></a>  loss <span class="ot">&lt;-</span> <span class="fu">loss_fn</span>(<span class="fu">fused</span>(xtab_f[f_tr, ], ximg_f[f_tr, , , ], xseq_f[f_tr, , ]), y_tr)</span>
+<span id="cb62-29"><a href="#cb62-29" aria-hidden="true" tabindex="-1"></a>  loss<span class="sc">$</span><span class="fu">backward</span>()</span>
+<span id="cb62-30"><a href="#cb62-30" aria-hidden="true" tabindex="-1"></a>  opt<span class="sc">$</span><span class="fu">step</span>()</span>
+<span id="cb62-31"><a href="#cb62-31" aria-hidden="true" tabindex="-1"></a>  fused<span class="sc">$</span><span class="fu">eval</span>()</span>
+<span id="cb62-32"><a href="#cb62-32" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> <span class="fu">with_no_grad</span>(<span class="fu">loss_fn</span>(<span class="fu">fused</span>(xtab_f[f_va, ], ximg_f[f_va, , , ], xseq_f[f_va, , ]), y_va))</span>
+<span id="cb62-33"><a href="#cb62-33" aria-hidden="true" tabindex="-1"></a>  hist <span class="ot">&lt;-</span> <span class="fu">rbind</span>(hist, <span class="fu">data.frame</span>(<span class="at">epoch =</span> epoch, <span class="at">train =</span> loss<span class="sc">$</span><span class="fu">item</span>(), <span class="at">valid =</span> v<span class="sc">$</span><span class="fu">item</span>()))</span>
+<span id="cb62-34"><a href="#cb62-34" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-35"><a href="#cb62-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-36"><a href="#cb62-36" aria-hidden="true" tabindex="-1"></a><span class="co"># The same train/val U as the CNN and RNN, drawn by hand: training loss falls, validation turns up ----</span></span>
+<span id="cb62-37"><a href="#cb62-37" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb62-38"><a href="#cb62-38" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(hist, <span class="fu">c</span>(train, valid), <span class="at">names_to =</span> <span class="st">&quot;set&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;loss&quot;</span>),</span>
+<span id="cb62-39"><a href="#cb62-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(epoch, loss, <span class="at">colour =</span> set)</span>
+<span id="cb62-40"><a href="#cb62-40" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb62-41"><a href="#cb62-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb62-42"><a href="#cb62-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img role="img" src="data:image/png;base64,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" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Score on the held-out </span><span class="al">TEST</span><span class="co"> set: the net memorised noise, so AUC sits at chance (~0.5) ----</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>fused<span class="sc">$</span><span class="fu">eval</span>()</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>f_prob <span class="ot">&lt;-</span> <span class="fu">with_no_grad</span>(<span class="fu">nnf_softmax</span>(<span class="fu">fused</span>(xtab_f[f_te, ], ximg_f[f_te, , , ], xseq_f[f_te, , ]), <span class="at">dim =</span> <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.array</span>()</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">truth =</span> <span class="fu">factor</span>(y_fuse[f_te], <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)), <span class="at">.pred =</span> f_prob[, <span class="dv">2</span>]) <span class="sc">|&gt;</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(truth, .pred, <span class="at">event_level =</span> <span class="st">&quot;second&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 roc_auc binary         0.502</code></pre>
 </div>
 </div>
 </div>
