@@ -1274,11 +1274,11 @@ flowchart LR
 <section>
 <section id="sec-03-ellmer" class="title-slide slide level1 center">
 <h1>Step 03 · LLM as typed ETL</h1>
-<!-- Step 03 (hands-on, 36 min): type_object schema; ONE live extraction; batch map written-not-run; temperature 0. -->
+<!-- Step 03 (hands-on, 36 min): type_object schema; one live extraction; all notes via parallel_chat_structured (live); batch_chat_structured shown as a comment; temperature 0. -->
 <p><strong>Why this step.</strong> A chat returns prose you must re-parse; an <strong>ETL returns a record</strong>. With a typed schema and <code>temperature = 0</code>, the LLM becomes a reproducible extractor — the same note always yields the same validated row.</p>
 <ul>
 <li>A <strong>typed schema</strong> (<code>type_object()</code>) is the <strong>contract</strong>: declare fields + R types <span class="math inline">\(\to\)</span> every note comes back as the same validated record.</li>
-<li><strong>One</strong> live structured extraction (first note); the batch <code>purrr::map</code> is <strong>written, not run</strong>.</li>
+<li><strong>One</strong> live extraction (first note), then <strong>all</strong> notes at once with <code>parallel_chat_structured()</code> (concurrent, live); the cheaper async <code>batch_chat_structured()</code> is shown as a comment.</li>
 <li><code>temperature = 0</code> = <strong>deterministic</strong> ETL (same input <span class="math inline">\(\to\)</span> same record).</li>
 </ul>
 <aside class="notes">
@@ -1302,7 +1302,7 @@ flowchart LR
 <li><code>type_object()</code> declares each field + its R type — e.g.&nbsp;<code>age = type_integer("patient age in years")</code>.</li>
 <li>An <strong>enum</strong> (<code>type_enum</code>) is a guard rail: <code>primary_dx</code> can only be one of a closed list, never <code>"probably cardiomyopathy"</code>.</li>
 <li>Optional fields (EF not stated, beta-blocker not mentioned) come back as <strong><code>NA</code></strong> — the record stays valid.</li>
-<li>The batch is <strong>written, not run</strong>: <code>map()</code> iterates note-by-note into a tidy tibble; <code>temperature = 0</code> keeps it deterministic.</li>
+<li>The same schema scales to <strong>every</strong> note with <code>parallel_chat_structured()</code> (requests fire concurrently, a tidy tibble comes back now); <code>temperature = 0</code> keeps each record deterministic.</li>
 </ul>
 <div class="callout callout-note callout-style-simple">
 <div class="callout-body">
@@ -1315,7 +1315,7 @@ flowchart LR
 </div>
 </div>
 <aside class="notes">
-<p>Voce docente (IT): min-124 (MCQ). temperature bassa + <code>map</code>: ✓ determinismo (ETL) + iterazione elemento-per-elemento. Distrattori: “temp = qualità” (NO), “temp alta + map su GPU” (NO), “temp irrilevante per extraction” (NO). La cache etichettata è la stessa dottrina dell’opzione-B: un vero record salvato prima, mostrato con etichetta, mai finto.</p>
+<p>Voce docente (IT): qui parte la teoria parallel-vs-batch + l’MCQ. La cache etichettata (senza API key) è la stessa dottrina dell’opzione-B: un vero record salvato prima, mostrato con etichetta, mai finto. Il punto: stesso codice, due trasporti (parallel ora, batch più economico).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1373,18 +1373,45 @@ flowchart LR
           display:block!important;
       }</style></aside>
 </section>
-<section id="your-turn-temperature-0-map-together" class="slide level2">
-<h2>Your turn — temperature 0 + <code>map()</code>, together?</h2>
-<p>We set <code>temperature = 0</code> and wrap the extraction in <code>purrr::map()</code>. What do these two achieve together?</p>
+<section id="scaling-the-etl-parallel-vs-batch" class="slide level2 smaller">
+<h2>Scaling the ETL: parallel vs batch</h2>
+<p>One note proves the contract; real data has many. <code>ellmer</code> runs the schema over <strong>all</strong> of them two ways, the <strong>same signature</strong>, one word changed:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>runner</th>
+<th>how it works</th>
+<th>cost</th>
+<th>latency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>parallel_chat_structured()</code></td>
+<td>fires every request <strong>concurrently</strong> (capped by <code>max_active</code> / <code>rpm</code>), waits for the slowest</td>
+<td>full</td>
+<td><strong>seconds</strong>: answer now</td>
+</tr>
+<tr class="even">
+<td><code>batch_chat_structured()</code></td>
+<td>submits all prompts as <strong>one job</strong> to the provider’s <strong>Batch API</strong>, polled until done (resume via <code>path</code>)</td>
+<td><strong>~50% less</strong></td>
+<td>minutes to <strong>24 h</strong></td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li><strong>A.</strong> <code>temperature = 0</code> = <strong>determinism</strong> (same input → same record → a reproducible ETL, not a chat); <code>purrr::map()</code> applies the extraction <strong>element-by-element</strong>, one record per note.</li>
-<li><strong>B.</strong> A <strong>lower temperature improves quality</strong> — the LLM is more accurate at 0, always the right choice.</li>
-<li><strong>C.</strong> <strong>High temperature + <code>map()</code> runs on the GPU</strong> — <code>map()</code> parallelises across cores, high temp enables GPU sampling.</li>
-<li><strong>D.</strong> <strong>Temperature is irrelevant</strong> with a <code>type_object()</code> schema — valid JSON regardless.</li>
+<li>Both return the <strong>same typed tibble</strong>, one validated row per note; <code>temperature = 0</code> keeps each record deterministic either way.</li>
+<li>Live in class we use <strong>parallel</strong> (results now); a large overnight extraction is where <strong>batch</strong> pays off.</li>
 </ul>
-<p><em>Pick one — then we reveal it.</em></p>
 <aside class="notes">
-<p>Voce docente (IT): MCQ min-124 (Engage). Distrattori: B = temp = qualità; C = temp + map = GPU; D = temp irrilevante con schema.</p>
+<p>Voce docente (IT): la teoria del “come scala”. parallel = N richieste concorrenti in volo insieme (cap max_active/rpm), blocchi fino alla più lenta, prezzo pieno, secondi. batch = un solo job alla Batch API del provider, asincrono, ~50% costo, minuti→24h, ripreso via <code>path</code>. Stessa firma, cambia SOLO la funzione (+ path per batch). In aula: parallel; lavori grossi offline: batch.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1397,16 +1424,42 @@ flowchart LR
           display:block!important;
       }</style></aside>
 </section>
-<section id="the-answer-a-determinism-element-wise-iteration" class="slide level2">
-<h2>The answer — A: determinism + element-wise iteration</h2>
-<p><strong>✓ A.</strong> <code>temperature = 0</code> makes the ETL reproducible; <code>map()</code> iterates note-by-note into one record each.</p>
+<section id="your-turn-which-runner-answers-now" class="slide level2 smaller">
+<h2>Your turn: which runner answers now?</h2>
+<p>You have 12 notes and want the validated rows <strong>live in class</strong>; you also have a nightly job over 50k notes where <strong>cost</strong> matters. Match the runner:</p>
 <ul>
-<li><strong>✗ B</strong> — <em>temperature = quality.</em> It controls randomness, not capability; for extraction we want <strong>zero</strong> randomness.</li>
-<li><strong>✗ C</strong> — <em>high temp + map = GPU.</em> Invented: <code>map()</code> iterates (sequentially, or parallel via <code>furrr</code>); neither it nor temperature touches the GPU.</li>
-<li><strong>✗ D</strong> — <em>temperature irrelevant with a schema.</em> Even typed, at <code>temperature &gt; 0</code> two calls can differ; <code>0</code> = greedy, deterministic.</li>
+<li><strong>A.</strong> Live now uses <code>parallel_chat_structured()</code>; the nightly cheap job uses <code>batch_chat_structured()</code>. Same call, one word (and a <code>path</code>) changed.</li>
+<li><strong>B.</strong> Always <code>batch_chat_structured()</code>: batching is strictly faster.</li>
+<li><strong>C.</strong> <code>parallel_chat_structured()</code> for both; batch is a deprecated alias.</li>
+<li><strong>D.</strong> Neither scales; loop the notes with <code>purrr::map()</code>, one HTTP call at a time.</li>
+</ul>
+<p><em>Pick one, then we reveal it.</em></p>
+<aside class="notes">
+<p>Voce docente (IT): MCQ parallel vs batch (Engage). A giusto. Distrattori: B batch più veloce (NO: più economico, asincrono); C batch deprecato (NO, è corrente); D map seriale (è il vecchio approccio che parallel/batch sostituiscono).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-answer-a-same-call-two-transports" class="slide level2 smaller">
+<h2>The answer: A, same call, two transports</h2>
+<p><strong>✓ A.</strong> <code>parallel_chat_structured(chat, notes, type)</code> and <code>batch_chat_structured(chat, notes, path, type)</code> take the <strong>same</strong> chat, prompts, and schema. Swap the function (batch adds a <code>path</code> to resume the job); nothing else changes.</p>
+<ul>
+<li><strong>parallel</strong> keeps the requests <strong>in flight together</strong> and returns in <strong>seconds</strong>: right for a live class, full per-call price.</li>
+<li><strong>batch</strong> hands the whole set to the provider’s <strong>Batch API</strong>, about <strong>50% cheaper</strong>, back in <strong>minutes to 24 h</strong>: right for large offline jobs.</li>
+<li><strong>✗ B</strong> <em>(batch is faster)</em>: batch trades <strong>latency for cost</strong>, not the other way round.</li>
+<li><strong>✗ C</strong> <em>(batch deprecated)</em>: both are current, different transports, not aliases.</li>
+<li><strong>✗ D</strong> <em>(loop with <code>map</code>)</em>: that is the slow, serial path these two runners replace.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): Reveal min-124. La cache etichettata (senza API key) è la stessa dottrina dell’opzione-B: un record vero salvato prima, mostrato con etichetta, mai finto.</p>
+<p>Voce docente (IT): Reveal. Il punto: stesso codice, due trasporti. parallel = concorrente, subito, prezzo pieno; batch = Batch API, ~50% costo, asincrono. D (map seriale) è il vecchio approccio sostituito. temperature=0 resta ortogonale (determinismo del record).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1421,14 +1474,15 @@ flowchart LR
 </section>
 <section id="go-to-code-steps03-ellmer" class="slide level2 center">
 <h2>Go to code — <code>steps/03-ellmer/</code></h2>
-<p>Open <code>steps/03-ellmer/</code>: define the typed schema, run <strong>one</strong> live extraction, read the batch <code>map</code> (written, not run).</p>
+<p>Open <code>steps/03-ellmer/</code>: define the typed schema, run one live extraction, then <strong>all</strong> notes with <code>parallel_chat_structured()</code> (live); the <code>batch_chat_structured()</code> variant sits beside it as a comment, the same call one word apart.</p>
 <ul>
 <li><code>temperature = 0</code> → deterministic ETL; the typed record is the contract.</li>
+<li><strong>Your turn:</strong> add a <code>serum_creatinine</code> field to the schema and watch it appear in every extracted record.</li>
 <li>No API key? A labeled cached result from an earlier live run — never a faked record.</li>
 <li><strong>Behind?</strong> Copy <code>steps/04-targets/</code> and you are back in sync.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): chiusura Step 03. Una sola estrazione live; il batch map è write-only.</p>
+<p>Voce docente (IT): chiusura Step 03. Una estrazione singola + tutte le note in parallelo (live); batch_chat_structured come commento (stessa firma, ~50% costo, asincrono). Esercizio: estendere lo schema con un campo (serum_creatinine).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

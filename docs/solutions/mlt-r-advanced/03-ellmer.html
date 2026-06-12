@@ -2719,35 +2719,46 @@ vertical-align: -.125em;
 <span id="cb1-487"><a href="#cb1-487" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;ischemic&quot;</span>, <span class="st">&quot;hypertensive&quot;</span>, <span class="st">&quot;valvular&quot;</span>, <span class="st">&quot;other&quot;</span>),</span>
 <span id="cb1-488"><a href="#cb1-488" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;primary cardiac diagnosis&quot;</span>,</span>
 <span id="cb1-489"><a href="#cb1-489" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb1-490"><a href="#cb1-490" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-491"><a href="#cb1-491" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-492"><a href="#cb1-492" aria-hidden="true" tabindex="-1"></a><span class="co"># Key from the workshop-root .Renviron (gitignored), env only — .here anchors here() to THIS step ----</span></span>
-<span id="cb1-493"><a href="#cb1-493" aria-hidden="true" tabindex="-1"></a>renviron_path <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;..&quot;</span>, <span class="st">&quot;..&quot;</span>, <span class="st">&quot;.Renviron&quot;</span>)</span>
-<span id="cb1-494"><a href="#cb1-494" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(renviron_path)) <span class="fu">readRenviron</span>(renviron_path)</span>
-<span id="cb1-495"><a href="#cb1-495" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-496"><a href="#cb1-496" aria-hidden="true" tabindex="-1"></a><span class="co"># ONE live extraction; labeled INLINE fallback when no key (honesty doctrine, no shipped cache) ----</span></span>
-<span id="cb1-497"><a href="#cb1-497" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nzchar</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;OPENAI_API_KEY&quot;</span>))) {</span>
-<span id="cb1-498"><a href="#cb1-498" aria-hidden="true" tabindex="-1"></a>  chat <span class="ot">&lt;-</span> <span class="fu">chat_openai</span>(<span class="at">model =</span> <span class="st">&quot;gpt-5.4-nano&quot;</span>, <span class="at">echo =</span> <span class="st">&quot;none&quot;</span>)</span>
-<span id="cb1-499"><a href="#cb1-499" aria-hidden="true" tabindex="-1"></a>  chat<span class="sc">$</span><span class="fu">chat_structured</span>(notes<span class="sc">$</span>text[[<span class="dv">1</span>]], <span class="at">type =</span> note_type)</span>
-<span id="cb1-500"><a href="#cb1-500" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb1-501"><a href="#cb1-501" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;[No API key set — showing a LABELED example of an earlier live extraction.]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
-<span id="cb1-502"><a href="#cb1-502" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">age =</span> <span class="dv">78</span>L, <span class="at">ejection_fraction =</span> <span class="dv">30</span>, <span class="at">on_betablocker =</span> <span class="cn">TRUE</span>, <span class="at">primary_dx =</span> <span class="st">&quot;ischemic&quot;</span>)</span>
-<span id="cb1-503"><a href="#cb1-503" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-504"><a href="#cb1-504" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-505"><a href="#cb1-505" aria-hidden="true" tabindex="-1"></a><span class="co"># The batch — WRITTEN, NOT RUN (it would call the API once per note) ----</span></span>
-<span id="cb1-506"><a href="#cb1-506" aria-hidden="true" tabindex="-1"></a><span class="co"># Low temperature =&gt; deterministic ETL; map iterates note-by-note into a typed tibble.</span></span>
-<span id="cb1-507"><a href="#cb1-507" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="cn">FALSE</span>) {</span>
-<span id="cb1-508"><a href="#cb1-508" aria-hidden="true" tabindex="-1"></a>  extract_one <span class="ot">&lt;-</span> <span class="cf">function</span>(txt) {</span>
-<span id="cb1-509"><a href="#cb1-509" aria-hidden="true" tabindex="-1"></a>    <span class="fu">chat_openai</span>(<span class="at">model =</span> <span class="st">&quot;gpt-5.4-nano&quot;</span>, <span class="at">params =</span> <span class="fu">params</span>(<span class="at">temperature =</span> <span class="dv">0</span>))<span class="sc">$</span><span class="fu">chat_structured</span>(txt, <span class="at">type =</span> note_type)</span>
-<span id="cb1-510"><a href="#cb1-510" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb1-511"><a href="#cb1-511" aria-hidden="true" tabindex="-1"></a>  notes <span class="sc">|&gt;</span></span>
-<span id="cb1-512"><a href="#cb1-512" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">parsed =</span> purrr<span class="sc">::</span><span class="fu">map</span>(text, extract_one)) <span class="sc">|&gt;</span></span>
-<span id="cb1-513"><a href="#cb1-513" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(parsed)</span>
-<span id="cb1-514"><a href="#cb1-514" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-515"><a href="#cb1-515" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-516"><a href="#cb1-516" aria-hidden="true" tabindex="-1"></a><span class="co"># Your turn — extend the schema ----</span></span>
-<span id="cb1-517"><a href="#cb1-517" aria-hidden="true" tabindex="-1"></a>serum_creatinine <span class="ot">&lt;-</span> <span class="fu">type_number</span>(___)</span>
-<span id="cb1-518"><a href="#cb1-518" aria-hidden="true" tabindex="-1"></a>serum_creatinine</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-490"><a href="#cb1-490" aria-hidden="true" tabindex="-1"></a>  <span class="at">serum_creatinine  =</span> <span class="fu">type_number</span>(___),</span>
+<span id="cb1-491"><a href="#cb1-491" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-492"><a href="#cb1-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-493"><a href="#cb1-493" aria-hidden="true" tabindex="-1"></a><span class="co"># Key from the workshop-root .Renviron (gitignored), env only — .here anchors here() to THIS step ----</span></span>
+<span id="cb1-494"><a href="#cb1-494" aria-hidden="true" tabindex="-1"></a>renviron_path <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;..&quot;</span>, <span class="st">&quot;..&quot;</span>, <span class="st">&quot;.Renviron&quot;</span>)</span>
+<span id="cb1-495"><a href="#cb1-495" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(renviron_path)) <span class="fu">readRenviron</span>(renviron_path)</span>
+<span id="cb1-496"><a href="#cb1-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-497"><a href="#cb1-497" aria-hidden="true" tabindex="-1"></a><span class="co"># ONE live extraction; labeled INLINE fallback when no key (honesty doctrine, no shipped cache) ----</span></span>
+<span id="cb1-498"><a href="#cb1-498" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nzchar</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;OPENAI_API_KEY&quot;</span>))) {</span>
+<span id="cb1-499"><a href="#cb1-499" aria-hidden="true" tabindex="-1"></a>  chat <span class="ot">&lt;-</span> <span class="fu">chat_openai</span>(<span class="at">model =</span> <span class="st">&quot;gpt-5.4-nano&quot;</span>, <span class="at">echo =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb1-500"><a href="#cb1-500" aria-hidden="true" tabindex="-1"></a>  record <span class="ot">&lt;-</span> chat<span class="sc">$</span><span class="fu">chat_structured</span>(notes<span class="sc">$</span>text[[<span class="dv">1</span>]], <span class="at">type =</span> note_type)</span>
+<span id="cb1-501"><a href="#cb1-501" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-502"><a href="#cb1-502" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;[No API key set: showing a LABELED example of an earlier live extraction.]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb1-503"><a href="#cb1-503" aria-hidden="true" tabindex="-1"></a>  record <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="dv">78</span>L, <span class="at">ejection_fraction =</span> <span class="dv">30</span>, <span class="at">on_betablocker =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-504"><a href="#cb1-504" aria-hidden="true" tabindex="-1"></a>                 <span class="at">primary_dx =</span> <span class="st">&quot;ischemic&quot;</span>, <span class="at">serum_creatinine =</span> <span class="fl">1.8</span>)</span>
+<span id="cb1-505"><a href="#cb1-505" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-506"><a href="#cb1-506" aria-hidden="true" tabindex="-1"></a>record   <span class="co"># name the object to print it: ellmer&#39;s structured calls return invisibly</span></span>
+<span id="cb1-507"><a href="#cb1-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-508"><a href="#cb1-508" aria-hidden="true" tabindex="-1"></a><span class="co"># Scale to EVERY note at once: parallel_chat_structured fires the requests concurrently and returns</span></span>
+<span id="cb1-509"><a href="#cb1-509" aria-hidden="true" tabindex="-1"></a><span class="co"># a typed tibble, one row per note, so the answer comes back now. Same chat, same schema. ----</span></span>
+<span id="cb1-510"><a href="#cb1-510" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nzchar</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;OPENAI_API_KEY&quot;</span>))) {</span>
+<span id="cb1-511"><a href="#cb1-511" aria-hidden="true" tabindex="-1"></a>  chat <span class="ot">&lt;-</span> <span class="fu">chat_openai</span>(<span class="at">model =</span> <span class="st">&quot;gpt-5.4-nano&quot;</span>, <span class="at">params =</span> <span class="fu">params</span>(<span class="at">temperature =</span> <span class="dv">0</span>), <span class="at">echo =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb1-512"><a href="#cb1-512" aria-hidden="true" tabindex="-1"></a>  records <span class="ot">&lt;-</span> <span class="fu">parallel_chat_structured</span>(chat, <span class="fu">as.list</span>(notes<span class="sc">$</span>text), <span class="at">type =</span> note_type)</span>
+<span id="cb1-513"><a href="#cb1-513" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-514"><a href="#cb1-514" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;[No API key set: showing a LABELED example of an earlier parallel extraction.]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb1-515"><a href="#cb1-515" aria-hidden="true" tabindex="-1"></a>  records <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb1-516"><a href="#cb1-516" aria-hidden="true" tabindex="-1"></a>    <span class="at">age               =</span> <span class="fu">c</span>(<span class="dv">78</span>L, <span class="dv">65</span>L, <span class="dv">60</span>L),</span>
+<span id="cb1-517"><a href="#cb1-517" aria-hidden="true" tabindex="-1"></a>    <span class="at">ejection_fraction =</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">45</span>, <span class="dv">30</span>),</span>
+<span id="cb1-518"><a href="#cb1-518" aria-hidden="true" tabindex="-1"></a>    <span class="at">on_betablocker    =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>),</span>
+<span id="cb1-519"><a href="#cb1-519" aria-hidden="true" tabindex="-1"></a>    <span class="at">primary_dx        =</span> <span class="fu">c</span>(<span class="st">&quot;ischemic&quot;</span>, <span class="st">&quot;hypertensive&quot;</span>, <span class="st">&quot;ischemic&quot;</span>),</span>
+<span id="cb1-520"><a href="#cb1-520" aria-hidden="true" tabindex="-1"></a>    <span class="at">serum_creatinine  =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">1.2</span>, <span class="fl">2.1</span>),</span>
+<span id="cb1-521"><a href="#cb1-521" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-522"><a href="#cb1-522" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-523"><a href="#cb1-523" aria-hidden="true" tabindex="-1"></a>records   <span class="co"># likewise named, so the tibble prints: one validated row per note</span></span>
+<span id="cb1-524"><a href="#cb1-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-525"><a href="#cb1-525" aria-hidden="true" tabindex="-1"></a><span class="co"># The provider&#39;s cheaper Batch API is the SAME call with one word changed: batch_chat_structured in</span></span>
+<span id="cb1-526"><a href="#cb1-526" aria-hidden="true" tabindex="-1"></a><span class="co"># place of parallel_chat_structured (plus a path to resume the job). It trades immediacy for ~50%</span></span>
+<span id="cb1-527"><a href="#cb1-527" aria-hidden="true" tabindex="-1"></a><span class="co"># lower cost, polling until the whole batch returns: right for large offline jobs, not a live class. ----</span></span>
+<span id="cb1-528"><a href="#cb1-528" aria-hidden="true" tabindex="-1"></a><span class="co"># chat &lt;- chat_openai(model = &quot;gpt-5.4-nano&quot;, params = params(temperature = 0), echo = &quot;none&quot;)</span></span>
+<span id="cb1-529"><a href="#cb1-529" aria-hidden="true" tabindex="-1"></a><span class="co"># batch_chat_structured(chat, as.list(notes$text), path = here(&quot;hf_notes_batch.json&quot;), type = note_type)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
@@ -2832,20 +2843,20 @@ $ outcome                  &lt;fct&gt; died, died, died, died, died, died, died,
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="cbpjubjuuk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#cbpjubjuuk table {
+<div id="sjobnfpwwf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sjobnfpwwf table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#cbpjubjuuk thead, #cbpjubjuuk tbody, #cbpjubjuuk tfoot, #cbpjubjuuk tr, #cbpjubjuuk td, #cbpjubjuuk th {
+#sjobnfpwwf thead, #sjobnfpwwf tbody, #sjobnfpwwf tfoot, #sjobnfpwwf tr, #sjobnfpwwf td, #sjobnfpwwf th {
 border-style: none;
 }
-#cbpjubjuuk p {
+#sjobnfpwwf p {
 margin: 0;
 padding: 0;
 }
-#cbpjubjuuk .gt_table {
+#sjobnfpwwf .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2870,11 +2881,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_caption {
+#sjobnfpwwf .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#cbpjubjuuk .gt_title {
+#sjobnfpwwf .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2885,7 +2896,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#cbpjubjuuk .gt_subtitle {
+#sjobnfpwwf .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2896,7 +2907,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#cbpjubjuuk .gt_heading {
+#sjobnfpwwf .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2907,12 +2918,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_bottom_border {
+#sjobnfpwwf .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_col_headings {
+#sjobnfpwwf .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2926,7 +2937,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_col_heading {
+#sjobnfpwwf .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2945,7 +2956,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#cbpjubjuuk .gt_column_spanner_outer {
+#sjobnfpwwf .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2956,13 +2967,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#cbpjubjuuk .gt_column_spanner_outer:first-child {
+#sjobnfpwwf .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#cbpjubjuuk .gt_column_spanner_outer:last-child {
+#sjobnfpwwf .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#cbpjubjuuk .gt_column_spanner {
+#sjobnfpwwf .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2973,10 +2984,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#cbpjubjuuk .gt_spanner_row {
+#sjobnfpwwf .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#cbpjubjuuk .gt_group_heading {
+#sjobnfpwwf .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3001,7 +3012,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#cbpjubjuuk .gt_empty_group_heading {
+#sjobnfpwwf .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -3015,13 +3026,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#cbpjubjuuk .gt_from_md > :first-child {
+#sjobnfpwwf .gt_from_md > :first-child {
 margin-top: 0;
 }
-#cbpjubjuuk .gt_from_md > :last-child {
+#sjobnfpwwf .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#cbpjubjuuk .gt_row {
+#sjobnfpwwf .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3039,7 +3050,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#cbpjubjuuk .gt_stub {
+#sjobnfpwwf .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3051,7 +3062,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#cbpjubjuuk .gt_stub_row_group {
+#sjobnfpwwf .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3064,13 +3075,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#cbpjubjuuk .gt_row_group_first td {
+#sjobnfpwwf .gt_row_group_first td {
 border-top-width: 2px;
 }
-#cbpjubjuuk .gt_row_group_first th {
+#sjobnfpwwf .gt_row_group_first th {
 border-top-width: 2px;
 }
-#cbpjubjuuk .gt_summary_row {
+#sjobnfpwwf .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3079,14 +3090,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#cbpjubjuuk .gt_first_summary_row {
+#sjobnfpwwf .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_first_summary_row.thick {
+#sjobnfpwwf .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#cbpjubjuuk .gt_last_summary_row {
+#sjobnfpwwf .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3095,7 +3106,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_grand_summary_row {
+#sjobnfpwwf .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3104,7 +3115,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#cbpjubjuuk .gt_first_grand_summary_row {
+#sjobnfpwwf .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3113,7 +3124,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_last_grand_summary_row_top {
+#sjobnfpwwf .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3122,10 +3133,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_striped {
+#sjobnfpwwf .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#cbpjubjuuk .gt_table_body {
+#sjobnfpwwf .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3133,7 +3144,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_footnotes {
+#sjobnfpwwf .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3146,7 +3157,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_footnote {
+#sjobnfpwwf .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3154,7 +3165,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#cbpjubjuuk .gt_sourcenotes {
+#sjobnfpwwf .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3167,64 +3178,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#cbpjubjuuk .gt_sourcenote {
+#sjobnfpwwf .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#cbpjubjuuk .gt_left {
+#sjobnfpwwf .gt_left {
 text-align: left;
 }
-#cbpjubjuuk .gt_center {
+#sjobnfpwwf .gt_center {
 text-align: center;
 }
-#cbpjubjuuk .gt_right {
+#sjobnfpwwf .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#cbpjubjuuk .gt_font_normal {
+#sjobnfpwwf .gt_font_normal {
 font-weight: normal;
 }
-#cbpjubjuuk .gt_font_bold {
+#sjobnfpwwf .gt_font_bold {
 font-weight: bold;
 }
-#cbpjubjuuk .gt_font_italic {
+#sjobnfpwwf .gt_font_italic {
 font-style: italic;
 }
-#cbpjubjuuk .gt_super {
+#sjobnfpwwf .gt_super {
 font-size: 65%;
 }
-#cbpjubjuuk .gt_footnote_marks {
+#sjobnfpwwf .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#cbpjubjuuk .gt_asterisk {
+#sjobnfpwwf .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#cbpjubjuuk .gt_indent_1 {
+#sjobnfpwwf .gt_indent_1 {
 text-indent: 5px;
 }
-#cbpjubjuuk .gt_indent_2 {
+#sjobnfpwwf .gt_indent_2 {
 text-indent: 10px;
 }
-#cbpjubjuuk .gt_indent_3 {
+#sjobnfpwwf .gt_indent_3 {
 text-indent: 15px;
 }
-#cbpjubjuuk .gt_indent_4 {
+#sjobnfpwwf .gt_indent_4 {
 text-indent: 20px;
 }
-#cbpjubjuuk .gt_indent_5 {
+#sjobnfpwwf .gt_indent_5 {
 text-indent: 25px;
 }
-#cbpjubjuuk .katex-display {
+#sjobnfpwwf .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#cbpjubjuuk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#sjobnfpwwf div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -4021,20 +4032,23 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 <span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;ischemic&quot;</span>, <span class="st">&quot;hypertensive&quot;</span>, <span class="st">&quot;valvular&quot;</span>, <span class="st">&quot;other&quot;</span>),</span>
 <span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;primary cardiac diagnosis&quot;</span>,</span>
 <span id="cb65-12"><a href="#cb65-12" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Key from the workshop-root .Renviron (gitignored), env only — .here anchors here() to THIS step ----</span></span>
-<span id="cb65-16"><a href="#cb65-16" aria-hidden="true" tabindex="-1"></a>renviron_path <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;..&quot;</span>, <span class="st">&quot;..&quot;</span>, <span class="st">&quot;.Renviron&quot;</span>)</span>
-<span id="cb65-17"><a href="#cb65-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(renviron_path)) <span class="fu">readRenviron</span>(renviron_path)</span>
-<span id="cb65-18"><a href="#cb65-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb65-19"><a href="#cb65-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ONE live extraction; labeled INLINE fallback when no key (honesty doctrine, no shipped cache) ----</span></span>
-<span id="cb65-20"><a href="#cb65-20" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nzchar</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;OPENAI_API_KEY&quot;</span>))) {</span>
-<span id="cb65-21"><a href="#cb65-21" aria-hidden="true" tabindex="-1"></a>  chat <span class="ot">&lt;-</span> <span class="fu">chat_openai</span>(<span class="at">model =</span> <span class="st">&quot;gpt-5.4-nano&quot;</span>, <span class="at">echo =</span> <span class="st">&quot;none&quot;</span>)</span>
-<span id="cb65-22"><a href="#cb65-22" aria-hidden="true" tabindex="-1"></a>  chat<span class="sc">$</span><span class="fu">chat_structured</span>(notes<span class="sc">$</span>text[[<span class="dv">1</span>]], <span class="at">type =</span> note_type)</span>
-<span id="cb65-23"><a href="#cb65-23" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb65-24"><a href="#cb65-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;[No API key set — showing a LABELED example of an earlier live extraction.]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
-<span id="cb65-25"><a href="#cb65-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">age =</span> <span class="dv">78</span>L, <span class="at">ejection_fraction =</span> <span class="dv">30</span>, <span class="at">on_betablocker =</span> <span class="cn">TRUE</span>, <span class="at">primary_dx =</span> <span class="st">&quot;ischemic&quot;</span>)</span>
-<span id="cb65-26"><a href="#cb65-26" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb65-13"><a href="#cb65-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">serum_creatinine  =</span> <span class="fu">type_number</span>(<span class="st">&quot;serum creatinine in mg/dL; NA if not stated&quot;</span>),</span>
+<span id="cb65-14"><a href="#cb65-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-16"><a href="#cb65-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Key from the workshop-root .Renviron (gitignored), env only — .here anchors here() to THIS step ----</span></span>
+<span id="cb65-17"><a href="#cb65-17" aria-hidden="true" tabindex="-1"></a>renviron_path <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;..&quot;</span>, <span class="st">&quot;..&quot;</span>, <span class="st">&quot;.Renviron&quot;</span>)</span>
+<span id="cb65-18"><a href="#cb65-18" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(renviron_path)) <span class="fu">readRenviron</span>(renviron_path)</span>
+<span id="cb65-19"><a href="#cb65-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-20"><a href="#cb65-20" aria-hidden="true" tabindex="-1"></a><span class="co"># ONE live extraction; labeled INLINE fallback when no key (honesty doctrine, no shipped cache) ----</span></span>
+<span id="cb65-21"><a href="#cb65-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nzchar</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;OPENAI_API_KEY&quot;</span>))) {</span>
+<span id="cb65-22"><a href="#cb65-22" aria-hidden="true" tabindex="-1"></a>  chat <span class="ot">&lt;-</span> <span class="fu">chat_openai</span>(<span class="at">model =</span> <span class="st">&quot;gpt-5.4-nano&quot;</span>, <span class="at">echo =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb65-23"><a href="#cb65-23" aria-hidden="true" tabindex="-1"></a>  record <span class="ot">&lt;-</span> chat<span class="sc">$</span><span class="fu">chat_structured</span>(notes<span class="sc">$</span>text[[<span class="dv">1</span>]], <span class="at">type =</span> note_type)</span>
+<span id="cb65-24"><a href="#cb65-24" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb65-25"><a href="#cb65-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;[No API key set: showing a LABELED example of an earlier live extraction.]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb65-26"><a href="#cb65-26" aria-hidden="true" tabindex="-1"></a>  record <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="dv">78</span>L, <span class="at">ejection_fraction =</span> <span class="dv">30</span>, <span class="at">on_betablocker =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb65-27"><a href="#cb65-27" aria-hidden="true" tabindex="-1"></a>                 <span class="at">primary_dx =</span> <span class="st">&quot;ischemic&quot;</span>, <span class="at">serum_creatinine =</span> <span class="fl">1.8</span>)</span>
+<span id="cb65-28"><a href="#cb65-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb65-29"><a href="#cb65-29" aria-hidden="true" tabindex="-1"></a>record   <span class="co"># name the object to print it: ellmer&#39;s structured calls return invisibly</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$age
 [1] 78
@@ -4046,28 +4060,49 @@ $on_betablocker
 [1] TRUE
 
 $primary_dx
-[1] &quot;ischemic&quot;</code></pre>
+[1] &quot;ischemic&quot;
+
+$serum_creatinine
+[1] -1</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The batch — WRITTEN, NOT RUN (it would call the API once per note) ----</span></span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Low temperature =&gt; deterministic ETL; map iterates note-by-note into a typed tibble.</span></span>
-<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="cn">FALSE</span>) {</span>
-<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>  extract_one <span class="ot">&lt;-</span> <span class="cf">function</span>(txt) {</span>
-<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">chat_openai</span>(<span class="at">model =</span> <span class="st">&quot;gpt-5.4-nano&quot;</span>, <span class="at">params =</span> <span class="fu">params</span>(<span class="at">temperature =</span> <span class="dv">0</span>))<span class="sc">$</span><span class="fu">chat_structured</span>(txt, <span class="at">type =</span> note_type)</span>
-<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>  notes <span class="sc">|&gt;</span></span>
-<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">parsed =</span> purrr<span class="sc">::</span><span class="fu">map</span>(text, extract_one)) <span class="sc">|&gt;</span></span>
-<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(parsed)</span>
-<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Your turn — extend the schema ----</span></span>
-<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a>serum_creatinine <span class="ot">&lt;-</span> <span class="fu">type_number</span>(<span class="st">&quot;serum creatinine in mg/dL; NA if not stated&quot;</span>)</span>
-<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a>serum_creatinine</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scale to EVERY note at once: parallel_chat_structured fires the requests concurrently and returns</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="co"># a typed tibble, one row per note, so the answer comes back now. Same chat, same schema. ----</span></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nzchar</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;OPENAI_API_KEY&quot;</span>))) {</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>  chat <span class="ot">&lt;-</span> <span class="fu">chat_openai</span>(<span class="at">model =</span> <span class="st">&quot;gpt-5.4-nano&quot;</span>, <span class="at">params =</span> <span class="fu">params</span>(<span class="at">temperature =</span> <span class="dv">0</span>), <span class="at">echo =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>  records <span class="ot">&lt;-</span> <span class="fu">parallel_chat_structured</span>(chat, <span class="fu">as.list</span>(notes<span class="sc">$</span>text), <span class="at">type =</span> note_type)</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;[No API key set: showing a LABELED example of an earlier parallel extraction.]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>  records <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">age               =</span> <span class="fu">c</span>(<span class="dv">78</span>L, <span class="dv">65</span>L, <span class="dv">60</span>L),</span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">ejection_fraction =</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">45</span>, <span class="dv">30</span>),</span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">on_betablocker    =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>),</span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">primary_dx        =</span> <span class="fu">c</span>(<span class="st">&quot;ischemic&quot;</span>, <span class="st">&quot;hypertensive&quot;</span>, <span class="st">&quot;ischemic&quot;</span>),</span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">serum_creatinine  =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">1.2</span>, <span class="fl">2.1</span>),</span>
+<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb67-15"><a href="#cb67-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb67-16"><a href="#cb67-16" aria-hidden="true" tabindex="-1"></a>records   <span class="co"># likewise named, so the tibble prints: one validated row per note</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;ellmer::TypeBasic&gt;
- @ description: chr &quot;serum creatinine in mg/dL; NA if not stated&quot;
- @ required   : logi TRUE
- @ type       : chr &quot;number&quot;</code></pre>
+<pre><code># A tibble: 12 × 5
+     age ejection_fraction on_betablocker primary_dx   serum_creatinine
+   &lt;int&gt;             &lt;dbl&gt; &lt;lgl&gt;          &lt;fct&gt;                   &lt;dbl&gt;
+ 1    78                30 TRUE           ischemic                    0
+ 2    62                25 FALSE          ischemic                    0
+ 3    55                58 TRUE           hypertensive                0
+ 4    70                40 TRUE           hypertensive                0
+ 5    64                45 TRUE           valvular                    0
+ 6    71                35 FALSE          valvular                    0
+ 7    67                22 TRUE           ischemic                    0
+ 8    80                -1 TRUE           hypertensive               -1
+ 9    42                20 TRUE           other                       0
+10    58                38 FALSE          other                       0
+11    75                28 FALSE          ischemic                    0
+12    53                50 TRUE           hypertensive                0</code></pre>
 </div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The provider&#39;s cheaper Batch API is the SAME call with one word changed: batch_chat_structured in</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="co"># place of parallel_chat_structured (plus a path to resume the job). It trades immediacy for ~50%</span></span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="co"># lower cost, polling until the whole batch returns: right for large offline jobs, not a live class. ----</span></span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a><span class="co"># chat &lt;- chat_openai(model = &quot;gpt-5.4-nano&quot;, params = params(temperature = 0), echo = &quot;none&quot;)</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a><span class="co"># batch_chat_structured(chat, as.list(notes$text), path = here(&quot;hf_notes_batch.json&quot;), type = note_type)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
