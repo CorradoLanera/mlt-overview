@@ -1282,7 +1282,30 @@ flowchart LR
 <li><code>temperature = 0</code> = <strong>deterministic</strong> ETL (same input <span class="math inline">\(\to\)</span> same record).</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): hands-on (~36 min). L’LLM NON è una chat: è un ETL tipizzato e riproducibile. Min-112 (predict-output): struttura del record <code>type_object()</code> — 4 campi (age integer, ejection_fraction number, on_betablocker boolean, primary_dx enum a 4 valori) + cosa fa l’enum se il campo manca (vincola a lista chiusa; opzionali → NA, record resta valido). Modello reale: gpt-5.4-nano. Una sola estrazione live, il batch map è write-only.</p>
+<p>Voce docente (IT): hands-on (~36 min). L’LLM NON è una chat: è un ETL tipizzato e riproducibile. Min-112 (predict-output): struttura del record <code>type_object()</code> — 4 campi (age integer, ejection_fraction number, on_betablocker boolean, primary_dx enum a 4 valori) + cosa fa l’enum se il campo manca (vincola a lista chiusa; opzionali → NA, record resta valido). Modello reale: gpt-5.4-nano. Una sola estrazione live; tutte le note via <code>parallel_chat_structured</code>; il batch è mostrato come commento accanto.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="how-ellmer-works-one-chat-two-ways-to-ask" class="slide level2 smaller">
+<h2>How ellmer works: one chat, two ways to ask</h2>
+<p><code>ellmer</code> wraps an LLM provider in a <strong>chat object</strong> you build once, then query two ways:</p>
+<ul>
+<li><code>chat &lt;- chat_openai(model = "gpt-5.4-nano")</code> opens a typed connection to the provider (the API key lives only in a gitignored <code>.Renviron</code>).</li>
+<li><code>chat$chat(text)</code> is the <strong>conversational</strong> path: it returns prose you would still have to parse by hand.</li>
+<li><code>chat$chat_structured(text, type = schema)</code> is the <strong>ETL</strong> path: <code>ellmer</code> sends your text <strong>and</strong> the schema, the model replies with JSON that matches it, and <code>ellmer</code> validates and parses it into a typed R <strong>record</strong>.</li>
+</ul>
+<p>So the schema is not decoration: it is what turns a chat into a function from <em>messy note</em> to <em>typed row</em>.</p>
+<aside class="notes">
+<p>Voce docente (IT): l’intro che mancava — prima si saltava dritti ai <code>type_*</code>. Un solo oggetto <code>chat</code> (provider + modello), due metodi: <code>$chat()</code> torna prosa (la dovresti ri-parsare), <code>$chat_structured(text, type)</code> torna un record validato. ellmer manda testo + schema, il modello risponde in JSON conforme, ellmer lo valida e lo converte nei tipi R. È lo schema a trasformare la chat in una funzione nota→riga.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1302,7 +1325,7 @@ flowchart LR
 <li><code>type_object()</code> declares each field + its R type — e.g.&nbsp;<code>age = type_integer("patient age in years")</code>.</li>
 <li>An <strong>enum</strong> (<code>type_enum</code>) is a guard rail: <code>primary_dx</code> can only be one of a closed list, never <code>"probably cardiomyopathy"</code>.</li>
 <li>Optional fields (EF not stated, beta-blocker not mentioned) come back as <strong><code>NA</code></strong> — the record stays valid.</li>
-<li>The same schema scales to <strong>every</strong> note with <code>parallel_chat_structured()</code> (requests fire concurrently, a tidy tibble comes back now); <code>temperature = 0</code> keeps each record deterministic.</li>
+<li><code>temperature = 0</code> keeps each record <strong>deterministic</strong> — the same note always yields the same row (scaling it to every note comes next).</li>
 </ul>
 <div class="callout callout-note callout-style-simple">
 <div class="callout-body">
@@ -1328,39 +1351,61 @@ flowchart LR
           display:block!important;
       }</style></aside>
 </section>
-<section id="your-turn-predict-the-typed-record" class="slide level2">
-<h2>Your turn — predict the typed record</h2>
-<p>This <code>type_object()</code> schema extracts from clinical notes:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>schema <span class="ot">&lt;-</span> <span class="fu">type_object</span>(</span>
-<span id="cb4-2"><a href=""></a>  <span class="at">age               =</span> <span class="fu">type_integer</span>(<span class="st">"patient age in years"</span>),</span>
-<span id="cb4-3"><a href=""></a>  <span class="at">ejection_fraction =</span> <span class="fu">type_number</span>(<span class="st">"ejection fraction %; NA if not stated"</span>),</span>
-<span id="cb4-4"><a href=""></a>  <span class="at">on_betablocker    =</span> <span class="fu">type_boolean</span>(<span class="st">"TRUE if a beta-blocker is given/continued"</span>),</span>
-<span id="cb4-5"><a href=""></a>  <span class="at">primary_dx        =</span> <span class="fu">type_enum</span>(<span class="fu">c</span>(<span class="st">"ischemic"</span>, <span class="st">"hypertensive"</span>, <span class="st">"valvular"</span>, <span class="st">"other"</span>), <span class="st">"primary cardiac diagnosis"</span>)</span>
-<span id="cb4-6"><a href=""></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ol type="1">
-<li>How many <strong>fields</strong>, and their <strong>R types</strong> after parsing? (2) A note says <em>“60-year-old male, EF 30%, no medications listed.”</em> — <code>primary_dx</code> is <strong>absent</strong>. What does <code>ellmer</code> return for it?</li>
-</ol>
+<section id="the-type-vocabulary-how-you-describe-a-field" class="slide level2 smaller">
+<h2>The type vocabulary: how you describe a field</h2>
+<p>A schema is <code>type_object()</code> wrapping <strong>one constructor per field</strong>. The common ones:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>constructor</th>
+<th>R type back</th>
+<th>use for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>type_integer(desc)</code></td>
+<td>integer</td>
+<td>whole numbers (age, counts)</td>
+</tr>
+<tr class="even">
+<td><code>type_number(desc)</code></td>
+<td>double</td>
+<td>continuous values (ejection fraction, creatinine)</td>
+</tr>
+<tr class="odd">
+<td><code>type_boolean(desc)</code></td>
+<td>logical</td>
+<td>yes/no facts (is a beta-blocker given?)</td>
+</tr>
+<tr class="even">
+<td><code>type_string(desc)</code></td>
+<td>character</td>
+<td>free text (a verbatim phrase)</td>
+</tr>
+<tr class="odd">
+<td><code>type_enum(values, desc)</code></td>
+<td>character</td>
+<td>a <strong>closed list</strong> (<code>primary_dx</code> is one of a fixed set)</td>
+</tr>
+<tr class="even">
+<td><code>type_array(type, desc)</code></td>
+<td>list</td>
+<td>many of one type (all drug names)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Each <code>desc</code> is a prompt to the model: the sharper the description, the cleaner the extraction.</li>
+<li>An <strong>absent optional field</strong> comes back as <strong><code>NA</code></strong>, no error — the schema says what to look for, not that it must be present. That is what makes it robust on messy notes.</li>
+</ul>
 <aside class="notes">
-<p>Voce docente (IT): predict-output min-112 (Engage). Modello reale: gpt-5.4-nano.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="the-reveal-four-fields-graceful-absence" class="slide level2">
-<h2>The reveal — four fields, graceful absence</h2>
-<p><strong>Fields / R types:</strong> <code>age</code> → <code>integer</code>; <code>ejection_fraction</code> → declared <code>type_number</code>, but <strong>arrives as <code>integer</code></strong> for a whole-number JSON value (e.g.&nbsp;30) or <code>double</code> if decimal; <code>on_betablocker</code> → <code>logical</code>; <code>primary_dx</code> → <code>character</code> (one enum value, or <code>NA</code>/<code>NULL</code> if absent). <strong>Four fields.</strong></p>
-<p><strong>Integer vs double subtlety:</strong> JSON has no integer/float distinction for whole numbers; <code>EF = 30</code> parses to R <strong>integer</strong>. <code>stopifnot(is.double(rec$ejection_fraction))</code> would <strong>fail</strong> — coerce with <code>as.double(...)</code> when needed.</p>
-<p><strong>Absent enum:</strong> <code>ellmer</code> returns <code>NULL</code> (or <code>NA</code>), <strong>no error</strong> — the schema says what to look for, not that it must be present. That graceful handling is what makes it robust on messy notes.</p>
-<aside class="notes">
-<p>Voce docente (IT): Reveal min-112. La sottigliezza integer-vs-double sorprende: type_number non garantisce double; conta la rappresentazione JSON.</p>
+<p>Voce docente (IT): la slide che sostituisce il vecchio predict/reveal (la sottigliezza integer-vs-double era un buco di tana, non si capiva). Qui elenco i costruttori <code>type_*</code>: integer/number/boolean/string/enum/array, tutti dentro <code>type_object</code>. Due punti che restano: la <code>desc</code> è un prompt (descrizioni nette = estrazioni pulite); campo opzionale assente → <code>NA</code> senza errore (robustezza sulle note sporche). L’esercizio reale è nel codice: aggiungere il campo <code>serum_creatinine</code> allo schema.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1424,6 +1469,53 @@ flowchart LR
           display:block!important;
       }</style></aside>
 </section>
+<section id="what-it-costs-nano-is-cheap-batch-is-half" class="slide level2 smaller">
+<h2>What it costs: nano is cheap, batch is half</h2>
+<p><code>gpt-5.4-nano</code> is the cheapest tier; the <strong>Batch API halves every rate</strong>. Per <strong>1M tokens</strong> (USD, OpenAI list price, June 2026):</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>model</th>
+<th>input</th>
+<th>output</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GPT-5.4</td>
+<td>$2.50</td>
+<td>$15.00</td>
+</tr>
+<tr class="even">
+<td>GPT-5.4-mini</td>
+<td>$0.75</td>
+<td>$4.50</td>
+</tr>
+<tr class="odd">
+<td><strong>GPT-5.4-nano</strong> (ours)</td>
+<td><strong>$0.20</strong></td>
+<td><strong>$1.25</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Batch API:</strong> every rate halved — <code>gpt-5.4-nano</code> drops to <strong>$0.10 / $0.625</strong> per 1M, same call, async.</li>
+<li>Our 12 notes are a few thousand tokens: the live <code>parallel</code> run costs a <strong>fraction of a cent</strong>. The discount is the lever for a 50k-note overnight job, not for a classroom demo.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): i costi reali (listino OpenAI, giugno 2026) per dare il senso della scala. nano è il tier più economico: $0.20 input / $1.25 output per 1M token. Batch = metà su tutto (nano → $0.10 / $0.625). Le nostre 12 note sono poche migliaia di token: la run live <code>parallel</code> costa una frazione di centesimo; lo sconto batch conta per i lavori grossi offline, non per la demo in aula. Se vuoi, in aula apri il listino live (developers.openai.com/api/docs/pricing) — i numeri cambiano.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="your-turn-which-runner-answers-now" class="slide level2 smaller">
 <h2>Your turn: which runner answers now?</h2>
 <p>You have 12 notes and want the validated rows <strong>live in class</strong>; you also have a nightly job over 50k notes where <strong>cost</strong> matters. Match the runner:</p>
@@ -1431,11 +1523,11 @@ flowchart LR
 <li><strong>A.</strong> Live now uses <code>parallel_chat_structured()</code>; the nightly cheap job uses <code>batch_chat_structured()</code>. Same call, one word (and a <code>path</code>) changed.</li>
 <li><strong>B.</strong> Always <code>batch_chat_structured()</code>: batching is strictly faster.</li>
 <li><strong>C.</strong> <code>parallel_chat_structured()</code> for both; batch is a deprecated alias.</li>
-<li><strong>D.</strong> Neither scales; loop the notes with <code>purrr::map()</code>, one HTTP call at a time.</li>
+<li><strong>D.</strong> Either runner needs a <strong>fresh <code>chat_openai()</code> per note</strong> — you cannot reuse one <code>chat</code> across the set.</li>
 </ul>
 <p><em>Pick one, then we reveal it.</em></p>
 <aside class="notes">
-<p>Voce docente (IT): MCQ parallel vs batch (Engage). A giusto. Distrattori: B batch più veloce (NO: più economico, asincrono); C batch deprecato (NO, è corrente); D map seriale (è il vecchio approccio che parallel/batch sostituiscono).</p>
+<p>Voce docente (IT): MCQ parallel vs batch (Engage). A giusto. Distrattori: B batch più veloce (NO: più economico, asincrono); C batch deprecato (NO, è corrente); D nuovo <code>chat</code> per nota (NO: lo stesso <code>chat</code> si riusa, lo costruisci una volta e lo passi).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1456,10 +1548,10 @@ flowchart LR
 <li><strong>batch</strong> hands the whole set to the provider’s <strong>Batch API</strong>, about <strong>50% cheaper</strong>, back in <strong>minutes to 24 h</strong>: right for large offline jobs.</li>
 <li><strong>✗ B</strong> <em>(batch is faster)</em>: batch trades <strong>latency for cost</strong>, not the other way round.</li>
 <li><strong>✗ C</strong> <em>(batch deprecated)</em>: both are current, different transports, not aliases.</li>
-<li><strong>✗ D</strong> <em>(loop with <code>map</code>)</em>: that is the slow, serial path these two runners replace.</li>
+<li><strong>✗ D</strong> <em>(fresh <code>chat</code> per note)</em>: the <strong>same</strong> <code>chat</code> is reused across every note — you build it once and pass it in.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): Reveal. Il punto: stesso codice, due trasporti. parallel = concorrente, subito, prezzo pieno; batch = Batch API, ~50% costo, asincrono. D (map seriale) è il vecchio approccio sostituito. temperature=0 resta ortogonale (determinismo del record).</p>
+<p>Voce docente (IT): Reveal. Il punto: stesso codice, due trasporti. parallel = concorrente, subito, prezzo pieno; batch = Batch API, ~50% costo, asincrono. D (nuovo <code>chat</code> per nota): lo stesso <code>chat</code> si riusa, costruito una volta sola. temperature=0 resta ortogonale (determinismo del record).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
