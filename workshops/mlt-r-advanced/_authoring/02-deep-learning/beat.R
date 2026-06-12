@@ -86,7 +86,7 @@ torch_manual_seed(123)
 dl_tr <- dataloader(tensor_dataset(x_img[tr, , , ], y_img[tr]), batch_size = 16, shuffle = TRUE)
 dl_va <- dataloader(tensor_dataset(x_img[va, , , ], y_img[va]), batch_size = 64)
 
-# Train 100 epochs to SEE the overfit, but keep the best-validation checkpoint (early stopping) ----
+# Train 150 epochs to SEE the overfit, but keep the best-validation checkpoint (early stopping) ----
 cnn_fit <- cnn2d_net |>
   setup(
     loss = nn_cross_entropy_loss(),
@@ -97,7 +97,7 @@ cnn_fit <- cnn2d_net |>
   set_opt_hparams(lr = 1e-3) |>
   fit(
     dl_tr,
-    epochs = 100,
+    epochs = 150,
     valid_data = dl_va,
     verbose = FALSE,
     callbacks = list(luz_callback_keep_best_model(monitor = "valid_loss")),
@@ -164,7 +164,7 @@ rnn_fit <- rnn_net |>
   set_opt_hparams(lr = 1e-3) |>
   fit(
     edl_tr,
-    epochs = 100,
+    epochs = 150,
     valid_data = edl_va,
     verbose = FALSE,
     callbacks = list(luz_callback_keep_best_model(monitor = "valid_loss")),
