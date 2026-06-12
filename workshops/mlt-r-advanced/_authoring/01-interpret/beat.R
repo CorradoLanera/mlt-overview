@@ -19,7 +19,11 @@ vip(
 )
 
 # SHAP on the logistic anchor (log_fit, fitted in the recap): the sanity check ----
-# kernelshap's pred_fun signature is function(object, X, ...).
+# kernelshap's pred_fun signature is function(object, X, ...), and kernelshap hands `object`
+# back as-is: here `object` IS the model we pass, so ONE pred_fun serves the logistic, the
+# forest, and the MLP (model-agnostic). Contrast `vimp_pred` above, which must close over
+# `rf_wf`: vip hands `pred_wrapper` the bare `ranger` engine, on which `predict(., type = "prob")`
+# is undefined. Two explainers, two conventions, two functions.
 pred_fun <- function(object, X) predict(object, X, type = "prob")$.pred_died
 bg <- train |> select(-outcome)
 set.seed(2)
