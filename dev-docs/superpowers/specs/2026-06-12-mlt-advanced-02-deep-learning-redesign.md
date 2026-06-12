@@ -16,8 +16,9 @@ workshop). Apertura tabellare in tidymodels (MLP `brulee` + SHAP) → due strati
 
 **Stack.** `torch` + `luz` (+ `coro` per i dataloader) per le reti su misura; `brulee` (engine parsnip
 torch-backed) per la sola MLP tabellare; `torchvision` per il caricamento immagini; `kernelshap`/`shapviz`
-per SHAP sulla MLP; `yardstick` per le metriche da entrambi i lati del confine. Tutti già pinnati nel
-`renv.lock` dell'Advanced — **nessun delta renv bloccante**.
+per SHAP sulla MLP; `yardstick` per le metriche da entrambi i lati del confine. torch/luz/coro/brulee/
+kernelshap/shapviz sono già nel `renv.lock`; **`torchvision` è un delta renv** (non nel lock committato, ma
+in cache R-4.6 → installazione/link veloce, non bloccante) da aggiungere a `requirements.R` + lock.
 
 ---
 
@@ -177,8 +178,9 @@ Dir: `workshops/mlt-r-advanced/_authoring/02-deep-learning/`.
 - La **U** richiede di forzare un po' l'overfit (dataset piccolo + capacità adeguata + epoche sufficienti):
    è un setup didattico voluto, da tarare.
 - Idempotenza: `set.seed(123)` come da stile; il caricamento è da tensore committato (niente rete nel gate).
-- `renv`: torch/luz/coro/torchvision/brulee/kernelshap/shapviz già nel lock. Allineare `requirements.R`
-   elencando esplicitamente `torchvision` (oggi assente dall'elenco pur essendo pinnato).
+- `renv`: torch/luz/coro/brulee/kernelshap/shapviz già nel lock; **`torchvision` va aggiunto** a
+   `requirements.R` e ri-snapshottato (è in cache R-4.6, link veloce). Il `.npz` di PneumoniaMNIST si legge
+   con un lettore `.npy` puro-R (vedi `dev/prep-dl-data.R`), **senza** reticulate/numpy.
 - Rebuild: `& "C:\Program Files\R\R-4.6.0\bin\Rscript.exe" dev/mltbuild/rebuild.R mlt-r-advanced`
    (R 4.6.0 obbligatorio), poi `python scripts/build_site.py` per i partial + deck + soluzioni.
 

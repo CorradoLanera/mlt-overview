@@ -17,12 +17,17 @@ committati in `workshops/mlt-r-advanced/data-raw/`. Deck:
 `scripts/build_site.py`. **Sempre** invocare Rscript di R 4.6.0:
 `& "C:\Program Files\R\R-4.6.0\bin\Rscript.exe"`.
 
-**Contratto tensori** (output Task 1, consumato dalle task seguenti):
+**Contratto dati** (output Task 1, consumato dalle task seguenti). I `.rds` in `data-raw/` tengono **array R
+puri** + label intere (i tensori torch NON fanno round-trip con `saveRDS`: puntatore esterno invalido);
+`beat.R` ricostruisce i tensori con `torch_tensor()` al caricamento.
 
-- immagini: `x_img` float `[N, 1, 28, 28]` in `[0,1]`; `y_img` long `[N]`, classi **1-based** `{1L, 2L}`.
-- sequenze: `x_seq` float `[N, T, F]` (batch-first; per ECG5000 `T=140`, `F=1`); `y_seq` long `[N]`, classi `{1L, 2L}`.
+- immagini `pneumoniamnist.rds`: `x` array `[N, 1, 28, 28]` in `[0,1]`; `y` integer `[N]`, classi **1-based** `{1, 2}`.
+- sequenze `ecg.rds` (ECG5000): `x` array `[N, 140, 1]` (batch-first, `F=1`); `y` integer `[N]`, classi `{1, 2}`.
 - tabellare (per il fused): una riga `heart_failure` come float `[1, P]` (P = n. feature del `base_rec`).
 - target `nn_cross_entropy_loss()` di R torch = indici long 1-based in `1..C`.
+- **Valori reali Task 1 (misurati):** PneumoniaMNIST `800×1×28×28` bilanciato 400/400 (~1.06 MB); ECG5000
+  `800×140×1` bilanciato 400/400 (~0.86 MB). Sorgente immagini = PneumoniaMNIST (npz via lettore `.npy`
+  puro-R, niente reticulate). Entrambe scaricate dal vivo a authoring-time.
 
 ---
 
@@ -214,7 +219,10 @@ fused_net <- nn_module(
 - [ ] **Step 3.1 — Riscrivi `beat.R`.** Rimuovi `optionB_loss` e l'`if (FALSE)` luz. Tieni l'MLP `brulee`
   live + SHAP. Aggiungi: load tensori committati; train reale via `luz` per CNN e RNN con `valid_data`;
   curva train/val; predict + `roc_auc`; fused build + `forward()` shape-check (Parsons hole). Il fetch resta
-  mostrato-ma-guardato. Struttura:
+  mostrato-ma-guardato. **NB:** i `.rds` tengono array puri → dopo `readRDS` ricostruisci i tensori
+  (`x_img <- torch_tensor(img$x, dtype = torch_float())`, `y_img <- torch_tensor(img$y, dtype = torch_long())`;
+  idem ECG) e usa quei tensori in `tensor_dataset()`/slicing. Struttura (semplificata; nel codice reale
+  converti gli array come sopra):
 
 ```r
 library(brulee)
