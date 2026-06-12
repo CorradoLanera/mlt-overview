@@ -710,7 +710,26 @@ Voce docente (IT): hands-on (~36 min). L'LLM NON è una chat: è un ETL tipizzat
 riproducibile. Min-112 (predict-output): struttura del record `type_object()` — 4 campi
 (age integer, ejection_fraction number, on_betablocker boolean, primary_dx enum a 4 valori)
 + cosa fa l'enum se il campo manca (vincola a lista chiusa; opzionali → NA, record resta
-valido). Modello reale: gpt-5.4-nano. Una sola estrazione live, il batch map è write-only.
+valido). Modello reale: gpt-5.4-nano. Una sola estrazione live; tutte le note via
+`parallel_chat_structured`; il batch è mostrato come commento accanto.
+:::
+
+## How ellmer works: one chat, two ways to ask {.smaller}
+
+`ellmer` wraps an LLM provider in a **chat object** you build once, then query two ways:
+
+- `chat <- chat_openai(model = "gpt-5.4-nano")` opens a typed connection to the provider (the API key lives only in a gitignored `.Renviron`).
+- `chat$chat(text)` is the **conversational** path: it returns prose you would still have to parse by hand.
+- `chat$chat_structured(text, type = schema)` is the **ETL** path: `ellmer` sends your text **and** the schema, the model replies with JSON that matches it, and `ellmer` validates and parses it into a typed R **record**.
+
+So the schema is not decoration: it is what turns a chat into a function from *messy note* to *typed row*.
+
+::: {.notes}
+Voce docente (IT): l'intro che mancava — prima si saltava dritti ai `type_*`. Un solo oggetto
+`chat` (provider + modello), due metodi: `$chat()` torna prosa (la dovresti ri-parsare),
+`$chat_structured(text, type)` torna un record validato. ellmer manda testo + schema, il modello
+risponde in JSON conforme, ellmer lo valida e lo converte nei tipi R. È lo schema a trasformare la
+chat in una funzione nota→riga.
 :::
 
 ## The schema is the contract {.smaller}
@@ -720,7 +739,7 @@ A chat returns prose you must re-parse; an **ETL returns a record**. The schema 
 - `type_object()` declares each field + its R type — e.g. `age = type_integer("patient age in years")`.
 - An **enum** (`type_enum`) is a guard rail: `primary_dx` can only be one of a closed list, never `"probably cardiomyopathy"`.
 - Optional fields (EF not stated, beta-blocker not mentioned) come back as **`NA`** — the record stays valid.
-- The same schema scales to **every** note with `parallel_chat_structured()` (requests fire concurrently, a tidy tibble comes back now); `temperature = 0` keeps each record deterministic.
+- `temperature = 0` keeps each record **deterministic** — the same note always yields the same row (scaling it to every note comes next).
 
 ::: {.callout-note appearance="simple"}
 **Honesty (carried forward).** With no API key, we show a **labeled cached** result from an
@@ -733,36 +752,29 @@ API key) è la stessa dottrina dell'opzione-B: un vero record salvato prima, mos
 etichetta, mai finto. Il punto: stesso codice, due trasporti (parallel ora, batch più economico).
 :::
 
-## Your turn — predict the typed record
+## The type vocabulary: how you describe a field {.smaller}
 
-This `type_object()` schema extracts from clinical notes:
+A schema is `type_object()` wrapping **one constructor per field**. The common ones:
 
-```r
-schema <- type_object(
-  age               = type_integer("patient age in years"),
-  ejection_fraction = type_number("ejection fraction %; NA if not stated"),
-  on_betablocker    = type_boolean("TRUE if a beta-blocker is given/continued"),
-  primary_dx        = type_enum(c("ischemic", "hypertensive", "valvular", "other"), "primary cardiac diagnosis")
-)
-```
+| constructor | R type back | use for |
+|---|---|---|
+| `type_integer(desc)` | integer | whole numbers (age, counts) |
+| `type_number(desc)` | double | continuous values (ejection fraction, creatinine) |
+| `type_boolean(desc)` | logical | yes/no facts (is a beta-blocker given?) |
+| `type_string(desc)` | character | free text (a verbatim phrase) |
+| `type_enum(values, desc)` | character | a **closed list** (`primary_dx` is one of a fixed set) |
+| `type_array(type, desc)` | list | many of one type (all drug names) |
 
-(1) How many **fields**, and their **R types** after parsing? (2) A note says *"60-year-old male, EF 30%, no medications listed."* — `primary_dx` is **absent**. What does `ellmer` return for it?
-
-::: {.notes}
-Voce docente (IT): predict-output min-112 (Engage). Modello reale: gpt-5.4-nano.
-:::
-
-## The reveal — four fields, graceful absence
-
-**Fields / R types:** `age` → `integer`; `ejection_fraction` → declared `type_number`, but **arrives as `integer`** for a whole-number JSON value (e.g. 30) or `double` if decimal; `on_betablocker` → `logical`; `primary_dx` → `character` (one enum value, or `NA`/`NULL` if absent). **Four fields.**
-
-**Integer vs double subtlety:** JSON has no integer/float distinction for whole numbers; `EF = 30` parses to R **integer**. `stopifnot(is.double(rec$ejection_fraction))` would **fail** — coerce with `as.double(...)` when needed.
-
-**Absent enum:** `ellmer` returns `NULL` (or `NA`), **no error** — the schema says what to look for, not that it must be present. That graceful handling is what makes it robust on messy notes.
+- Each `desc` is a prompt to the model: the sharper the description, the cleaner the extraction.
+- An **absent optional field** comes back as **`NA`**, no error — the schema says what to look for, not that it must be present. That is what makes it robust on messy notes.
 
 ::: {.notes}
-Voce docente (IT): Reveal min-112. La sottigliezza integer-vs-double sorprende: type_number non
-garantisce double; conta la rappresentazione JSON.
+Voce docente (IT): la slide che sostituisce il vecchio predict/reveal (la sottigliezza
+integer-vs-double era un buco di tana, non si capiva). Qui elenco i costruttori `type_*`:
+integer/number/boolean/string/enum/array, tutti dentro `type_object`. Due punti che restano: la
+`desc` è un prompt (descrizioni nette = estrazioni pulite); campo opzionale assente → `NA` senza
+errore (robustezza sulle note sporche). L'esercizio reale è nel codice: aggiungere il campo
+`serum_creatinine` allo schema.
 :::
 
 ## Scaling the ETL: parallel vs batch {.smaller}
@@ -784,6 +796,27 @@ Batch API del provider, asincrono, ~50% costo, minuti→24h, ripreso via `path`.
 SOLO la funzione (+ path per batch). In aula: parallel; lavori grossi offline: batch.
 :::
 
+## What it costs: nano is cheap, batch is half {.smaller}
+
+`gpt-5.4-nano` is the cheapest tier; the **Batch API halves every rate**. Per **1M tokens** (USD, OpenAI list price, June 2026):
+
+| model | input | output |
+|---|---|---|
+| GPT-5.4 | \$2.50 | \$15.00 |
+| GPT-5.4-mini | \$0.75 | \$4.50 |
+| **GPT-5.4-nano** (ours) | **\$0.20** | **\$1.25** |
+
+- **Batch API:** every rate halved — `gpt-5.4-nano` drops to **\$0.10 / \$0.625** per 1M, same call, async.
+- Our 12 notes are a few thousand tokens: the live `parallel` run costs a **fraction of a cent**. The discount is the lever for a 50k-note overnight job, not for a classroom demo.
+
+::: {.notes}
+Voce docente (IT): i costi reali (listino OpenAI, giugno 2026) per dare il senso della scala. nano
+è il tier più economico: \$0.20 input / \$1.25 output per 1M token. Batch = metà su tutto (nano →
+\$0.10 / \$0.625). Le nostre 12 note sono poche migliaia di token: la run live `parallel` costa una
+frazione di centesimo; lo sconto batch conta per i lavori grossi offline, non per la demo in aula.
+Se vuoi, in aula apri il listino live (developers.openai.com/api/docs/pricing) — i numeri cambiano.
+:::
+
 ## Your turn: which runner answers now? {.smaller}
 
 You have 12 notes and want the validated rows **live in class**; you also have a nightly job over 50k notes where **cost** matters. Match the runner:
@@ -791,14 +824,14 @@ You have 12 notes and want the validated rows **live in class**; you also have a
 - **A.** Live now uses `parallel_chat_structured()`; the nightly cheap job uses `batch_chat_structured()`. Same call, one word (and a `path`) changed.
 - **B.** Always `batch_chat_structured()`: batching is strictly faster.
 - **C.** `parallel_chat_structured()` for both; batch is a deprecated alias.
-- **D.** Neither scales; loop the notes with `purrr::map()`, one HTTP call at a time.
+- **D.** Either runner needs a **fresh `chat_openai()` per note** — you cannot reuse one `chat` across the set.
 
 *Pick one, then we reveal it.*
 
 ::: {.notes}
 Voce docente (IT): MCQ parallel vs batch (Engage). A giusto. Distrattori: B batch più veloce (NO:
-più economico, asincrono); C batch deprecato (NO, è corrente); D map seriale (è il vecchio approccio
-che parallel/batch sostituiscono).
+più economico, asincrono); C batch deprecato (NO, è corrente); D nuovo `chat` per nota (NO: lo
+stesso `chat` si riusa, lo costruisci una volta e lo passi).
 :::
 
 ## The answer: A, same call, two transports {.smaller}
@@ -809,12 +842,12 @@ che parallel/batch sostituiscono).
 - **batch** hands the whole set to the provider's **Batch API**, about **50% cheaper**, back in **minutes to 24 h**: right for large offline jobs.
 - **✗ B** *(batch is faster)*: batch trades **latency for cost**, not the other way round.
 - **✗ C** *(batch deprecated)*: both are current, different transports, not aliases.
-- **✗ D** *(loop with `map`)*: that is the slow, serial path these two runners replace.
+- **✗ D** *(fresh `chat` per note)*: the **same** `chat` is reused across every note — you build it once and pass it in.
 
 ::: {.notes}
 Voce docente (IT): Reveal. Il punto: stesso codice, due trasporti. parallel = concorrente, subito,
-prezzo pieno; batch = Batch API, ~50% costo, asincrono. D (map seriale) è il vecchio approccio
-sostituito. temperature=0 resta ortogonale (determinismo del record).
+prezzo pieno; batch = Batch API, ~50% costo, asincrono. D (nuovo `chat` per nota): lo stesso `chat`
+si riusa, costruito una volta sola. temperature=0 resta ortogonale (determinismo del record).
 :::
 
 ## Go to code — `steps/03-ellmer/` {.center}
