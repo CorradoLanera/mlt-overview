@@ -932,16 +932,16 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 </section>
 <section id="the-training-loop-made-concrete" class="slide level2 smaller">
 <h2>The training loop, made concrete</h2>
-<p>A net learns by repeating one cycle. <code>luz</code> runs it for us; here is what each step does:</p>
+<p>A <code>dataloader</code> serves the data in <strong>mini-batches</strong> (shuffled for training); <code>luz</code> runs the loop for us. Each step:</p>
 <ol type="1">
 <li><strong>forward</strong>: push a batch through <code>forward()</code> to get predictions (recall the forward pass, ch.&nbsp;5).</li>
 <li><strong>loss</strong>: compare to the truth with cross-entropy.</li>
 <li><strong>backward</strong>: the gradient of the loss with respect to every weight.</li>
-<li><strong>step</strong>: the optimiser nudges the weights downhill.</li>
+<li><strong>step</strong>: the <strong>optimiser</strong> turns the gradient into a weight update (here <strong>Adam</strong>; others exist, e.g.&nbsp;SGD, RMSProp).</li>
 </ol>
-<p>One pass over all batches is an <strong>epoch</strong>. We watch <strong>two</strong> curves: training loss and <strong>validation</strong> loss. When training keeps dropping but validation turns up, that upturn is <strong>overfitting</strong> (recall ch.&nbsp;4): the <strong>U</strong> we will see live.</p>
+<p>One pass over all batches is an <strong>epoch</strong>. We watch <strong>two</strong> curves: training loss and <strong>validation</strong> loss. When training keeps dropping but validation turns up, that upturn is <strong>overfitting</strong> (recall ch.&nbsp;4): the <strong>U</strong>. We train past the bottom to <em>see</em> it, then keep the <strong>best-validation</strong> epoch (early stopping).</p>
 <aside class="notes">
-<p>Voce docente (IT): <code>forward()</code> non è magia, è il passo 1 del ciclo che ch.5 ha già introdotto; luz è solo il loop. La U si vede dal vivo sui dati veri, non disegnata.</p>
+<p>Voce docente (IT): <code>forward()</code> non è magia, è il passo 1 del ciclo che ch.5 ha già introdotto; luz è solo il loop, il dataloader serve i batch. Adam = un ottimizzatore tra tanti (cenno, non approfondiamo). La U si vede dal vivo; teniamo il checkpoint best-validation (early stopping).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -977,44 +977,38 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 </section>
 <section id="cnn-a-filter-sliding-over-an-image" class="slide level2 smaller">
 <h2>CNN: a filter sliding over an image</h2>
-<!-- CNN node: recall ch.6 + the live 2D train. -->
-<p>A 2D-CNN slides small learned <strong>filters</strong> across the image and pools the result (recall convolution and weight-sharing, ch.&nbsp;6). We build one with <code>nn_conv2d</code> and train it <strong>live</strong> on chest X-rays (PneumoniaMNIST).</p>
-<table class="caption-top">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>layer</th>
-<th>does</th>
-<th>output</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>nn_conv2d(1, ch, 3)</code></td>
-<td>learn <code>ch</code> filters over the image</td>
-<td><code>[B, ch, 28, 28]</code></td>
-</tr>
-<tr class="even">
-<td><code>nn_max_pool2d(2)</code></td>
-<td>halve the resolution</td>
-<td><code>[B, ch, 14, 14]</code></td>
-</tr>
-<tr class="odd">
-<td><code>nn_linear(.., 2)</code></td>
-<td>flatten then two logits</td>
-<td><code>[B, 2]</code></td>
-</tr>
-</tbody>
-</table>
+<!-- CNN node: recall ch.6 + the live 2D train + topology graph. -->
+<p>A 2D-CNN slides small learned <strong>filters</strong> across the image and pools the result (recall convolution and weight-sharing, ch.&nbsp;6). We build it with <code>nn_conv2d</code>, train it <strong>live</strong> on chest X-rays (PneumoniaMNIST), and follow the shape from input to output (<span class="math inline">\(B\)</span> = batch):</p>
+<style>
+#cnn-topo .nodeLabel, #cnn-topo .nodeLabel *, #cnn-topo .edgeLabel, #cnn-topo .edgeLabel * { font-family: Arial, Helvetica, sans-serif !important; }
+#cnn-topo svg { max-height: 300px !important; width: auto !important; max-width: 100% !important; height: auto !important; display: block; margin: 0 auto; }
+</style>
+<div id="cnn-topo">
+<div class="cell" data-reveal="true" data-file="cnn-topology.mmd" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'fontFamily': 'Arial, Helvetica, sans-serif', 'themeVariables': {'fontSize': '20px'}, 'flowchart': {'nodeSpacing': 26, 'rankSpacing': 34, 'padding': 8}}}%%
+flowchart LR
+  I["input&lt;br/&gt;B×1×28×28"] --&gt; C1["conv1 + ReLU&lt;br/&gt;B×16×28×28"]
+  C1 --&gt; P1["max-pool&lt;br/&gt;B×16×14×14"]
+  P1 --&gt; C2["conv2 + ReLU&lt;br/&gt;B×32×14×14"]
+  C2 --&gt; P2["max-pool&lt;br/&gt;B×32×7×7"]
+  P2 --&gt; F["flatten&lt;br/&gt;B×1568"]
+  F --&gt; H["head (linear)&lt;br/&gt;B×2"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
 <ul>
-<li>We train on a <strong>small slice on purpose</strong>, so the <strong>validation loss turns up</strong> while training loss keeps falling: the overfit <strong>U</strong>, live.</li>
+<li>Trained on a <strong>small slice on purpose</strong>: validation loss turns up while training loss keeps falling, the overfit <strong>U</strong> (we keep the best-validation epoch).</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): richiamo ch.6 (convoluzione, weight-sharing), poi <code>nn_conv2d</code> reale e training dal vivo. Train piccolo voluto → la U si vede. La curva è <code>plot(cnn_fit)</code>, vera.</p>
+<p>Voce docente (IT): richiamo ch.6 (convoluzione, weight-sharing), poi <code>nn_conv2d</code> reale e training dal vivo. Il grafo dà topologia + analisi dimensionale (input→output). Train piccolo voluto → la U si vede; <code>plot(cnn_fit)</code> è la curva vera.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1029,14 +1023,35 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 </section>
 <section id="rnn-reading-a-sequence-over-time" class="slide level2 smaller">
 <h2>RNN: reading a sequence over time</h2>
-<!-- RNN node: recall ch.6 + the live ECG train. -->
-<p>An RNN reads a sequence <strong>one step at a time</strong>, carrying a hidden state; we take the <strong>last</strong> step as the summary (recall RNNs over sequences, ch.&nbsp;6). We build one with <code>nn_lstm</code> and train it live on <strong>ECG</strong> traces (ECG5000).</p>
+<!-- RNN node: recall ch.6 + the live ECG train + topology graph. -->
+<p>An RNN reads a sequence <strong>one step at a time</strong>, carrying a hidden state; we take the <strong>last</strong> step as the summary (recall RNNs over sequences, ch.&nbsp;6). We build it with <code>nn_lstm</code> and train it live on <strong>ECG</strong> traces (ECG5000), input <code>B × time × channels</code>:</p>
+<style>
+#rnn-topo .nodeLabel, #rnn-topo .nodeLabel *, #rnn-topo .edgeLabel, #rnn-topo .edgeLabel * { font-family: Arial, Helvetica, sans-serif !important; }
+#rnn-topo svg { max-height: 220px !important; width: auto !important; max-width: 100% !important; height: auto !important; display: block; margin: 0 auto; }
+</style>
+<div id="rnn-topo">
+<div class="cell" data-reveal="true" data-file="rnn-topology.mmd" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'fontFamily': 'Arial, Helvetica, sans-serif', 'themeVariables': {'fontSize': '20px'}, 'flowchart': {'nodeSpacing': 26, 'rankSpacing': 40, 'padding': 8}}}%%
+flowchart LR
+  I["input&lt;br/&gt;B×140×1"] --&gt; L["LSTM&lt;br/&gt;hidden = 24"]
+  L --&gt; S["last time step&lt;br/&gt;B×24"]
+  S --&gt; H["head (linear)&lt;br/&gt;B×2"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
 <ul>
-<li>Input shape <code>[B, T, F]</code>: batch, time steps, channels. <code>nn_lstm(F, hidden)</code> then <code>nn_linear(hidden, 2)</code>.</li>
 <li>Same loop, same <code>plot()</code> curve, same <code>roc_auc()</code> on held-out traces: a different architecture, identical scaffolding.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): richiamo ch.6 (RNN su sequenze, ultimo step), poi <code>nn_lstm</code> reale su ECG. Stesso loop e stesso metro della CNN: l’unica cosa che cambia è l’architettura.</p>
+<p>Voce docente (IT): richiamo ch.6 (RNN su sequenze, ultimo step), poi <code>nn_lstm</code> reale su ECG. Il grafo dà topologia + dimensioni. Stesso loop e stesso metro della CNN: cambia solo l’architettura.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
