@@ -939,7 +939,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <li><strong>backward</strong>: the gradient of the loss with respect to every weight.</li>
 <li><strong>step</strong>: the <strong>optimiser</strong> turns the gradient into a weight update (here <strong>Adam</strong>; others exist, e.g.&nbsp;SGD, RMSProp).</li>
 </ol>
-<p>One pass over all batches is an <strong>epoch</strong>. We watch <strong>two</strong> curves: training loss and <strong>validation</strong> loss. When training keeps dropping but validation turns up, that upturn is <strong>overfitting</strong> (recall ch.&nbsp;4): the <strong>U</strong>. We train past the bottom to <em>see</em> it, then keep the <strong>best-validation</strong> epoch (early stopping).</p>
+<p>One pass over all batches is an <strong>epoch</strong>. We watch <strong>two</strong> curves: training loss and <strong>validation</strong> loss. When training keeps dropping but validation turns up, that upturn is <strong>overfitting</strong> (recall ch.&nbsp;4): the <strong>U</strong>. We train past the bottom to <em>see</em> it, then keep the <strong>best-validation</strong> epoch (early stopping). The score we report comes from a <strong>separate test set</strong> the model never trained on.</p>
 <aside class="notes">
 <p>Voce docente (IT): <code>forward()</code> non è magia, è il passo 1 del ciclo che ch.5 ha già introdotto; luz è solo il loop, il dataloader serve i batch. Adam = un ottimizzatore tra tanti (cenno, non approfondiamo). La U si vede dal vivo; teniamo il checkpoint best-validation (early stopping).</p>
 <style type="text/css">
@@ -1027,7 +1027,8 @@ flowchart LR
 </div>
 </div>
 <ul>
-<li>Trained on a <strong>small slice on purpose</strong>: validation loss turns up while training loss keeps falling, the overfit <strong>U</strong> (we keep the best-validation epoch).</li>
+<li>We split with <strong>rsample</strong> (stratified <strong>train / validation / test</strong>), the same discipline as the rest of the course; torch just gets the row indices.</li>
+<li>Trained on a <strong>small</strong> training slice on purpose: validation loss turns up while training loss keeps falling, the overfit <strong>U</strong> (we keep the best-validation epoch). The reported AUC is on the held-out <strong>test</strong> set.</li>
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): richiamo ch.6 (convoluzione, weight-sharing), poi <code>nn_conv2d</code> reale e training dal vivo. Il grafo dà topologia + analisi dimensionale (input→output). Train piccolo voluto → la U si vede; <code>plot(cnn_fit)</code> è la curva vera.</p>
@@ -1070,7 +1071,7 @@ flowchart LR
 </div>
 </div>
 <ul>
-<li>Same loop, same <code>plot()</code> curve, same <code>roc_auc()</code> on held-out traces: a different architecture, identical scaffolding.</li>
+<li>Same loop, same <code>plot()</code> curve, same <code>roc_auc()</code> on the held-out <strong>test</strong> traces: a different architecture, identical scaffolding.</li>
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): richiamo ch.6 (RNN su sequenze, ultimo step), poi <code>nn_lstm</code> reale su ECG. Il grafo dà topologia + dimensioni. Stesso loop e stesso metro della CNN: cambia solo l’architettura.</p>
