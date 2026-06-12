@@ -1333,7 +1333,7 @@ flowchart LR
 <i class="callout-icon"></i>
 </div>
 <div class="callout-content">
-<p><strong>Honesty (carried forward).</strong> With no API key, we show a <strong>labeled cached</strong> result from an earlier live run — never a faked record. The key lives only in a gitignored <code>.Renviron</code>.</p>
+<p><strong>Labeled fallback, never faked.</strong> With no API key, we show a clearly <strong>labeled</strong> example from an earlier live run — never a record passed off as live. The key lives only in a gitignored <code>.Renviron</code>.</p>
 </div>
 </div>
 </div>
@@ -1617,7 +1617,7 @@ flowchart LR
 <ul>
 <li><strong>Inspectable intermediates.</strong> Each step is a named target — <code>cohort</code>, <code>base_compare</code>, <code>vimp</code>, <code>shap</code> — that you can <code>tar_read()</code> and audit <em>in isolation</em>, without re-running the rest.</li>
 <li><strong>The pipeline compiles the report.</strong> A <code>report</code> target (<code>tarchetypes::tar_quarto()</code>) renders the document <em>from</em> the upstream targets, so what the report shows is exactly what the pipeline produced — auditable end to end.</li>
-<li><strong>Caching that stays honest.</strong> A re-run rebuilds <strong>only</strong> what changed (hash-checked) and skips the rest. That is caching <em>with</em> reproducibility — the opposite of a stale hand-made <code>.rds</code>.</li>
+<li><strong>Caching by content hash.</strong> A re-run rebuilds <strong>only</strong> what changed (hash-checked) and skips the rest. That is caching <em>with</em> reproducibility — the opposite of a stale hand-made <code>.rds</code>.</li>
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): nuova slide che esplicita il principio del feedback #13. Differenza chiave dal Basic: lì il qmd FA tutto al render (giusto, a N piccolo). Qui, per analisi pesanti, la pipeline tiene target intermedi esplorabili (audit per-step) E compila il report dai target (<code>tar_quarto</code>), e ricostruisce solo ciò che cambia. Cache onesta, non <code>.rds</code> a mano.</p>
@@ -1735,25 +1735,22 @@ flowchart TD
   MLP[Tiny MLP via brulee/luz]
   PARAMS_DL[MLP hyperparameters:&lt;br/&gt;epochs / learn_rate /&lt;br/&gt;hidden_units / batch /&lt;br/&gt;activation / penalty]
   BV[Bias-variance tradeoff]
-  NNMOD[nn_module architectures&lt;br/&gt;written not trained]
+  NNMOD[nn_module architectures&lt;br/&gt;trained live in torch/luz]
   CNN[1D-CNN:&lt;br/&gt;kernel / stride / channels]
   RNN[RNN: hidden /&lt;br/&gt;sequence / LSTM-GRU]
-  FUSED[Fused 3-branch net:&lt;br/&gt;single forward /&lt;br/&gt;shape-check]
+  FUSED[Fused 3-branch net:&lt;br/&gt;one forward /&lt;br/&gt;trained on noise]
   GPU[Hardware matters:&lt;br/&gt;GPU payoff]
-  OPTB[OPTION B:&lt;br/&gt;pre-trained loss&lt;br/&gt;curve labeled]
 
   TRANS[Transformer to&lt;br/&gt;ellmer bridge]
   ELLMER[LLM as typed&lt;br/&gt;reproducible ETL]
   SCHEMA[type_object&lt;br/&gt;typed schema]
   LLMPAR[LLM params:&lt;br/&gt;model / temperature /&lt;br/&gt;typing]
-  BATCH[purrr::map batch&lt;br/&gt;written not run]
+  BATCH[parallel + batch:&lt;br/&gt;one function apart]
 
   TARGETS[targets =&lt;br/&gt;reproducibility signature]
   DAG[tar_visnetwork DAG:&lt;br/&gt;inspectable&lt;br/&gt;intermediate targets]
   SKIP[tar_make then&lt;br/&gt;re-run all-skip]
   REPORT[Report compiled BY&lt;br/&gt;the pipeline:&lt;br/&gt;tar_quarto from targets]
-
-  HONESTY[Honesty rule:&lt;br/&gt;nothing pre-baked&lt;br/&gt;shown as live]
 
   BASIC --&gt;|enables| PRED
   PRED --&gt;|sets up| INTERP
@@ -1778,8 +1775,6 @@ flowchart TD
   CNN --&gt;|composes-into| FUSED
   RNN --&gt;|composes-into| FUSED
   FUSED --&gt;|motivates| GPU
-  GPU --&gt;|justifies| OPTB
-  OPTB --&gt;|excepted-by| HONESTY
   DL --&gt;|bridges-to| TRANS
   TRANS --&gt;|leads-to| ELLMER
   ELLMER --&gt;|requires| SCHEMA
@@ -1790,9 +1785,6 @@ flowchart TD
   TARGETS --&gt;|demonstrated-by| SKIP
   TARGETS --&gt;|compiles| REPORT
   DAG --&gt;|feeds| REPORT
-  HONESTY --&gt;|constrains| MLP
-  HONESTY --&gt;|constrains| ELLMER
-  HONESTY --&gt;|constrains| SKIP
 </pre>
 </div>
 <p></p></figure><p></p>
