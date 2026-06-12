@@ -15,15 +15,26 @@ Live-coded R workshop. Conventions:
 
 ## Advanced-specific notes
 
-- TORCH: `torch_tensor(1)` to pre-warm the backend; train the MLP small (<= 30 epochs). CNN/RNN/fused
-  nets are WRITTEN-not-trained (a Parsons reorder + a `forward()` shape-check), never a multi-minute train.
-  The GPU-vs-CPU demo is authored write-only (no usable GPU on the build machine; it runs in class on the
-  NVIDIA/CUDA teaching machine).
+- TORCH: `torch_tensor(1)` to pre-warm the backend. The CNN (PneumoniaMNIST) and RNN (ECG5000) are
+  TRAINED LIVE (torch/luz, real train/val curves, early-stopping U); the fused net is trained end-to-end
+  on invented labels (the mechanics run, test AUC ~0.5). Train small so the U stays visible. The GPU-vs-CPU
+  demo is authored write-only (no usable GPU on the build box; it runs in class on the NVIDIA/CUDA machine).
 - INTERPRETABILITY: agnostic SHAP via **`kernelshap`** (CRAN, pure R) + `shapviz` — NOT fastshap (archived
   from CRAN 2026-05-27). Use `pred_fun(object, X, ...)` + `bg_X` background; `permshap()` for the exact
-  logistic-anchor sanity-check.
-- ELLMER: one live typed extraction; `OPENAI_API_KEY` via env only (`.Renviron`, gitignored), NEVER committed;
-  the batch `purrr::map` is written-not-run.
-- HONESTY (delivery doctrine §8): nothing pre-baked is shown as live. The ONLY labeled exception is the
-  option-B fused-net loss curve ("I trained this earlier on GPU"). `targets` re-showing a cached "skip" is
+  logistic-anchor sanity-check. NOTE the explainer asymmetry: `vip(method="permute")` hands `pred_wrapper`
+  the BARE ranger engine (close over the workflow); `kernelshap` passes `object` verbatim (a generic
+  `pred_fun` works).
+- ELLMER: one live typed extraction, then ALL notes via `parallel_chat_structured()` (live, concurrent);
+  `batch_chat_structured()` sits beside it as a comment (Batch API, ~50% cost, async). Structured calls
+  return INVISIBLY (reference the object by bare name to print). `OPENAI_API_KEY` via env only (`.Renviron`,
+  gitignored), NEVER committed.
+- TARGETS (§04 capstone): one `tar_make()` re-runs the WHOLE arc live — explore -> 4-model compare
+  (workflow_set) -> RF -> VIMP -> SHAP -> brulee MLP learning curve -> ellmer extraction -> compiled report.
+  Each analysis is a `tar_read()`-able target (rich `tar_visnetwork()`, real selective recompute). The
+  engine:targets solution renders THREE tabs (student `_targets.R` / solved / report); `report.qmd` carries
+  `<!--MLT-REPORT-START/END-->` markers the build slices into tab 3. The build surfaces `OPENAI_API_KEY`
+  (workshop-root `.Renviron`) so the ellmer target is live.
+- HONESTY (delivery doctrine §8): nothing pre-baked is shown as live — nets, SHAP, ellmer, and the targets
+  DAG all run live in the build. The only labeled non-live path is the ellmer fallback when no API key is
+  set (a clearly-labeled example, never faked as live). `targets` re-showing a cached "skip" is
   reproducibility, not fakery.
