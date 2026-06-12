@@ -20,7 +20,7 @@ committati in `workshops/mlt-r-advanced/data-raw/`. Deck:
 **Contratto tensori** (output Task 1, consumato dalle task seguenti):
 
 - immagini: `x_img` float `[N, 1, 28, 28]` in `[0,1]`; `y_img` long `[N]`, classi **1-based** `{1L, 2L}`.
-- sequenze: `x_seq` float `[N, T, F]` (batch-first); `y_seq` long `[N]`, classi `{1L, 2L}`.
+- sequenze: `x_seq` float `[N, T, F]` (batch-first; per ECG5000 `T=140`, `F=1`); `y_seq` long `[N]`, classi `{1L, 2L}`.
 - tabellare (per il fused): una riga `heart_failure` come float `[1, P]` (P = n. feature del `base_rec`).
 - target `nn_cross_entropy_loss()` di R torch = indici long 1-based in `1..C`.
 
@@ -31,7 +31,7 @@ committati in `workshops/mlt-r-advanced/data-raw/`. Deck:
 **Files:**
 - Create: `dev/prep-dl-data.R` (script authoring-time, NON eseguito dal build)
 - Create: `workshops/mlt-r-advanced/data-raw/pneumoniamnist.rds` (tensore committato)
-- Create: `workshops/mlt-r-advanced/data-raw/vitals_seq.rds` (tensore committato)
+- Create: `workshops/mlt-r-advanced/data-raw/ecg.rds` (tensore committato, ECG5000 reale)
 
 **Ambiente.** Per eseguire R-con-torch serve una renv restaurata. Usare una build fresca dello step
 (`rebuild.R mlt-r-advanced` ripopola) **oppure** eseguire `prep-dl-data.R` da una cartella step con
@@ -73,9 +73,9 @@ prep_mnist_fallback <- function() {
   list(x = xi, y = yi)
 }
 
-img <- prep_pneumonia()
+img <- tryCatch(prep_pneumonia(), error = function(e) NULL)   # any failure (download/npz/reticulate) -> fallback
 if (is.null(img)) {
-  message("PneumoniaMNIST unreachable -> MNIST 2-class fallback")
+  message("PneumoniaMNIST unavailable -> MNIST 2-class fallback")
   img <- prep_mnist_fallback()
 }
 # balanced subset small enough for a fast-but-real CPU train that still overfits
@@ -89,38 +89,36 @@ y_img <- torch_tensor(img$y[idx], dtype = torch_long())                         
 saveRDS(list(x = x_img, y = y_img), file.path(out_dir, "pneumoniamnist.rds"))
 cat("images:", paste(dim(x_img), collapse = "x"), "labels", paste(range(as.integer(y_img)), collapse = "-"), "\n")
 
-# --- sequences: short vitals windows, reproducible didactic generator ----
-# Two physiological regimes (stable vs deteriorating) over T steps, F channels (HR, SBP, SpO2).
-make_vitals <- function(n = 800L, T = 12L, F = 3L) {
-  y <- rep(c(1L, 2L), each = n / 2)
-  arr <- array(0, dim = c(n, T, F))
-  for (i in seq_len(n)) {
-    drift <- if (y[i] == 2L) seq(0, 1.5, length.out = T) else rep(0, T)    # deteriorating trend
-    hr   <- 80 + 15 * drift + rnorm(T, 0, 3)
-    sbp  <- 120 - 18 * drift + rnorm(T, 0, 4)
-    spo2 <- 98 - 6 * drift  + rnorm(T, 0, 1)
-    arr[i, , ] <- scale(cbind(hr, sbp, spo2))    # standardise per window
-  }
-  list(x = arr, y = y)
+# --- sequences: real ECG (ECG5000, binary normal/abnormal) from a stable public mirror ----
+# The TF-hosted CSV is ECG5000: 5000 rows = 140 signal columns + a trailing label column (1=normal,0=abnormal).
+ecg_url <- "http://storage.googleapis.com/download.tensorflow.org/data/ecg.csv"
+ecg <- utils::read.csv(ecg_url, header = FALSE)
+sig  <- as.matrix(ecg[ , 1:140])                       # [5000, 140]
+lab  <- as.integer(ecg[ , 141] == 1) + 1L              # normal(1) -> class 2; abnormal(0) -> class 1  => {1,2}
+set.seed(123)
+keep <- {
+  per_class <- 400L
+  c1 <- which(lab == 1L); c2 <- which(lab == 2L)
+  c(sample(c1, min(per_class, length(c1))), sample(c2, min(per_class, length(c2))))
 }
-v <- make_vitals()
-x_seq <- torch_tensor(v$x, dtype = torch_float())   # [N,T,F]
-y_seq <- torch_tensor(v$y, dtype = torch_long())    # [N]
-saveRDS(list(x = x_seq, y = y_seq), file.path(out_dir, "vitals_seq.rds"))
-cat("sequences:", paste(dim(x_seq), collapse = "x"), "\n")
+sig <- scale(sig[keep, ])                              # z-score per time step across the cohort
+x_seq <- torch_tensor(array(sig, dim = c(nrow(sig), 140, 1)), dtype = torch_float())  # [N,140,1]
+y_seq <- torch_tensor(lab[keep], dtype = torch_long())                                # [N]
+saveRDS(list(x = x_seq, y = y_seq), file.path(out_dir, "ecg.rds"))
+cat("ecg:", paste(dim(x_seq), collapse = "x"), "labels", paste(sort(unique(as.integer(y_seq))), collapse = ","), "\n")
 cat("PREP OK\n")
 ```
 
 - [ ] **Step 1.2 — Esegui e verifica.** `& "...Rscript.exe" dev/prep-dl-data.R`. Atteso: stampa shapes
-  `[800,1,28,28]`/`[800,...]` (o sizes simili), `[800,12,3]`, `PREP OK`; i due `.rds` esistono in `data-raw/`.
-  Annota a referto: sorgente usata (Pneumonia o fallback MNIST), tempo di prep.
+  immagini `[800,1,28,28]` (o sizes simili), ecg `[800,140,1]`, `PREP OK`; i due `.rds` esistono in
+  `data-raw/`. Annota a referto: sorgente immagini usata (Pneumonia o fallback MNIST), tempo di prep.
 - [ ] **Step 1.3 — Commit.** `git add dev/prep-dl-data.R workshops/mlt-r-advanced/data-raw/pneumoniamnist.rds
-  workshops/mlt-r-advanced/data-raw/vitals_seq.rds` →
-  `data(advanced): committed DL tensors for step 02 (images + vitals seq)`.
+  workshops/mlt-r-advanced/data-raw/ecg.rds` →
+  `data(advanced): committed DL tensors for step 02 (images + real ECG seq)`.
 
 > NOTA per le task seguenti: se la sorgente immagini o le shape reali differiscono dal contratto, **adegua**
-> il contratto e propaga a Task 2/3 (i reviewer lo verificano). La sequenza vitali è generata in modo
-> riproducibile (no rete), quindi le sue shape sono garantite dal contratto.
+> il contratto e propaga a Task 2/3 (i reviewer lo verificano). ECG5000 ha shape fissa `[*,140,1]` dal mirror;
+> se il mirror CSV fosse irraggiungibile, fallback documentato = archivio UCR ECG200 (`.tsv`).
 
 ---
 
@@ -265,8 +263,8 @@ cnn_prob <- as.numeric(nnf_softmax(predict(cnn_fit, dl_va), dim = 2)[ , 2])
 tibble::tibble(truth = factor(as.integer(img$y[-ti]), levels = c(1, 2)), .pred = cnn_prob) |>
   yardstick::roc_auc(truth, .pred, event_level = "second")
 
-# A real RNN trained live on vitals sequences ----
-seq <- readRDS(here("data-raw", "vitals_seq.rds"))
+# A real RNN trained live on ECG sequences (ECG5000) ----
+seq <- readRDS(here("data-raw", "ecg.rds"))
 set.seed(123)
 ns  <- dim(seq$x)[1]
 si  <- sample(ns, floor(0.7 * ns))
