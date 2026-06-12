@@ -16,7 +16,7 @@ cnn2d_net <- nn_module(
   },
 )
 
-# RNN over a sequence (LSTM, last time step) — e.g. an ECG trace ----
+# RNN over a sequence (LSTM, last time step), e.g. an ECG trace ----
 rnn_net <- nn_module(
   "rnn_net",
   initialize = function(in_size, hidden = 16, n_class = 2) {

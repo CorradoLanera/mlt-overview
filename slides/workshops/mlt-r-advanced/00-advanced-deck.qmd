@@ -387,7 +387,7 @@ CNN e RNN addestrate DAVVERO (curve vere). Fused = demo (coorti diverse). Niente
 <!-- PARAMS_DL node. The param slide precedes the train. -->
 
 A small `brulee` MLP has four primary hyperparameters (plus two minor). With generous defaults
-a small net **overfits** this 299-patient cohort — and the cure is always the same.
+a small net **overfits** this 299-patient cohort, and the cure is always the same.
 
 | hyperparameter | what it controls | bias / variance |
 |---|---|---|
@@ -396,46 +396,46 @@ a small net **overfits** this 299-patient cohort — and the cure is always the 
 | `hidden_units` | capacity (width) | more $\to$ lower bias, **higher variance** |
 | `penalty` | weight decay (regularization) | $\uparrow$ penalty $\to$ more bias, **less variance** |
 
-- Minor settings: `batch` (gradient noise) and `activation` (nonlinearity) — **not** regularizers.
+- Minor settings: `batch` (gradient noise) and `activation` (nonlinearity), **not** regularizers.
 - **Overfit cure:** turn `penalty` **up** and `hidden_units` **down** (or cut `epochs`).
 
 ::: {.notes}
-Voce docente (IT): min-60 (MCQ). MLP overfit → quale knob? ✓ penalty↑ / hidden↓.
+Voce docente (IT): min-60 (MCQ). MLP overfit → quale setting? ✓ penalty↑ / hidden↓.
 Distrattori: "più epoche" (peggiora), "learning-rate↑" (diverge), "cambia activation
 come regolarizzatore" (NO, l'activation non regolarizza). Fallo dal vivo cambiando UN
-solo numero. La slide-parametro viene PRIMA del train (knob pre-caricati).
+solo numero. La slide-parametro viene PRIMA del train (setting pre-caricati).
 :::
 
-## Your turn — the MLP is overfitting; which knob?
+## Your turn: the MLP is overfitting; which setting?
 
 Training loss keeps dropping, validation loss has levelled off or risen. Which intervention most directly addresses the overfit?
 
-- **A.** **Increase `penalty`** (L2) **or decrease `hidden_units`** — reduce capacity, push toward high-bias / low-variance.
-- **B.** **Train for more epochs** — it just needs more gradient steps.
-- **C.** **Raise the learning rate** — a bigger step escapes the sharp overfit minima.
-- **D.** **Change the activation** (ReLU → tanh) — a smoother activation regularises.
+- **A.** **Increase `penalty`** (L2) **or decrease `hidden_units`**: reduce capacity, push toward high-bias / low-variance.
+- **B.** **Train for more epochs**: it just needs more gradient steps.
+- **C.** **Raise the learning rate**: a bigger step escapes the sharp overfit minima.
+- **D.** **Change the activation** (ReLU → tanh): a smoother activation regularises.
 
-*Pick one — then we reveal it.*
+*Pick one, then we reveal it.*
 
 ::: {.notes}
 Voce docente (IT): MCQ min-60 (Engage). Lo faccio dal vivo cambiando UN numero. Distrattori:
 B = più epoche (peggiora); C = learning-rate↑ (diverge); D = activation regolarizza (NO).
 :::
 
-## The answer — A: penalty ↑ / hidden_units ↓
+## The answer: penalty ↑ / hidden_units ↓
 
-**✓ A.** Capacity and weight-decay are the overfit knobs in an MLP.
+**✓ A.** Capacity and weight-decay are the overfit settings in an MLP.
 
-- **✗ B** — *more epochs.* Backwards: more training **deepens** the overfit; early stopping is the remedy, not the cause.
-- **✗ C** — *raise learning rate.* That's optimisation dynamics, not capacity; it may destabilise training and does not regularise.
-- **✗ D** — *activation as regulariser.* Activation shapes gradient flow/expressiveness, but it is not a direct regulariser; `penalty` and width are.
+- **✗ B.** *more epochs.* Backwards: more training **deepens** the overfit; early stopping is the remedy, not the cause.
+- **✗ C.** *raise learning rate.* That is optimisation dynamics, not capacity; it may destabilise training and does not regularise.
+- **✗ D.** *activation as regulariser.* Activation shapes gradient flow/expressiveness, but it is not a direct regulariser; `penalty` and width are.
 
 ::: {.notes}
 Voce docente (IT): Reveal min-60. penalty↑ / hidden↓ (o taglia epochs). La slide-parametro
 precede il train.
 :::
 
-## Your turn — the same explainer, now on the MLP
+## Your turn: the same explainer, now on the MLP
 
 We have `mlp_fit`. Using the **same explainer call** as on the logistic anchor (just swap the model), make a waterfall for observation 1:
 
@@ -451,13 +451,13 @@ Run it: do the top features match what VIMP told us?
 Voce docente (IT): your-turn min-66 (Engage). Stessa riga del blocco 01, cambia solo il modello.
 :::
 
-## My turn — model-agnostic, unchanged
+## My turn: model-agnostic, unchanged
 
-The call runs **unchanged** — only the fitted model differs. `kernelshap` reaches the model **only** through `pred_fun`; it never looks inside. The waterfall still puts `ejection_fraction` and `serum_creatinine` near the top (consistent with VIMP), though magnitudes differ (SHAP is per-observation; VIMP is averaged).
+The call runs **unchanged**: only the fitted model differs. `kernelshap` reaches the model **only** through `pred_fun`; it never looks inside. The waterfall still puts `ejection_fraction` and `serum_creatinine` near the top (consistent with VIMP), though magnitudes differ (SHAP is per-observation; VIMP is averaged).
 
-The point: the **same three lines** worked on logistic, RF (Step 01), and now the MLP — the explainer is truly model-agnostic.
+The point: the **same three lines** worked on logistic, RF (Step 01), and now the MLP: the explainer is model-agnostic.
 
-**Going further.** Why? `kernelshap` needs only `pred_fun(object, X, ...)` mapping rows → probabilities. It treats the model as a black box (no coefficients, splits, or weights), evaluating it on feature coalitions and fitting a weighted regression to recover Shapley values. "Give me a prediction function" is the only assumption — so it spans the whole model zoo.
+**Going further.** Why? `kernelshap` needs only `pred_fun(object, X, ...)` mapping rows → probabilities. It treats the model as a black box (no coefficients, splits, or weights), evaluating it on feature coalitions and fitting a weighted regression to recover Shapley values. "Give me a prediction function" is the only assumption, so it spans the whole model zoo.
 
 ::: {.notes}
 Voce docente (IT): Reveal/my-turn min-66. Riuso intenzionale di SHAP (non nuovo carico):
@@ -469,11 +469,11 @@ rinforza l'agnosticismo. Going further = ex-stretch.
 Training follows a gradient, so the objective must be **differentiable**. Accuracy is not.
 
 - We **optimise** cross-entropy $\mathcal{L}_{\text{CE}} = -\sum_{k} y_k \log \hat{p}_k$: smooth in the weights, so every step has a slope to follow (recall the gradient step, ch. 5).
-- We **report** accuracy / ROC-AUC: what we care about, but **flat almost everywhere** — nudging a weight rarely flips a label, so its gradient is $0$ and there is nothing to descend.
+- We **report** accuracy / ROC-AUC: what we care about, but **flat almost everywhere**, so nudging a weight rarely flips a label; its gradient is $0$ and there is nothing to descend.
 - The loss is a **differentiable stand-in** for the metric: minimise CE, then read the metric off the held-out predictions.
 
 ::: {.notes}
-Voce docente (IT): la domanda "perché non ottimizziamo direttamente l'accuracy?" — è a gradini,
+Voce docente (IT): la domanda "perché non ottimizziamo direttamente l'accuracy?": è a gradini,
 gradiente nullo quasi ovunque; la CE è la surrogata liscia. Una loss (anche sola), le metriche
 (anche più d'una). Aggancio alla curva: la valid-loss risale PRIMA che l'AUC peggiori.
 :::
@@ -482,10 +482,10 @@ gradiente nullo quasi ovunque; la CE è la surrogata liscia. Una loss (anche sol
 
 A net learns by repeating one cycle. `luz` runs it for us; here is what each step does:
 
-1. **forward** — push a batch through `forward()` to get predictions (recall the forward pass, ch. 5).
-2. **loss** — compare to the truth with cross-entropy.
-3. **backward** — the gradient of the loss with respect to every weight.
-4. **step** — the optimiser nudges the weights downhill.
+1. **forward**: push a batch through `forward()` to get predictions (recall the forward pass, ch. 5).
+2. **loss**: compare to the truth with cross-entropy.
+3. **backward**: the gradient of the loss with respect to every weight.
+4. **step**: the optimiser nudges the weights downhill.
 
 One pass over all batches is an **epoch**. We watch **two** curves: training loss and **validation** loss. When training keeps dropping but validation turns up, that upturn is **overfitting** (recall ch. 4): the **U** we will see live.
 
@@ -508,7 +508,7 @@ train+eval a mano, ma stesso metro (yardstick sulle predizioni).
 
 ## CNN: a filter sliding over an image {.smaller}
 
-<!-- CNN node — recall ch.6 + the live 2D train. -->
+<!-- CNN node: recall ch.6 + the live 2D train. -->
 
 A 2D-CNN slides small learned **filters** across the image and pools the result (recall convolution and weight-sharing, ch. 6). We build one with `nn_conv2d` and train it **live** on chest X-rays (PneumoniaMNIST).
 
@@ -527,7 +527,7 @@ dal vivo. Train piccolo voluto → la U si vede. La curva è `plot(cnn_fit)`, ve
 
 ## RNN: reading a sequence over time {.smaller}
 
-<!-- RNN node — recall ch.6 + the live ECG train. -->
+<!-- RNN node: recall ch.6 + the live ECG train. -->
 
 An RNN reads a sequence **one step at a time**, carrying a hidden state; we take the **last** step as the summary (recall RNNs over sequences, ch. 6). We build one with `nn_lstm` and train it live on **ECG** traces (ECG5000).
 
@@ -541,7 +541,7 @@ Stesso loop e stesso metro della CNN: l'unica cosa che cambia è l'architettura.
 
 ## Fused: three branches, one head {.smaller}
 
-<!-- FUSED node — constructible demo, Parsons reorder. -->
+<!-- FUSED node: constructible demo, Parsons reorder. -->
 
 A **fused** net runs one branch per modality and concatenates them into a shared head.
 

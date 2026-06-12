@@ -18,7 +18,7 @@ shapviz(ks_mlp) |> sv_waterfall()
 # Beyond tidymodels: bespoke nets written and trained in torch/luz ----
 source(here("R", "nn-modules.R"))
 
-# How the committed tensors were fetched (shown, not run — full script in dev/prep-dl-data.R) ----
+# How the committed tensors were fetched (shown, not run; full script in dev/prep-dl-data.R) ----
 if (FALSE) {
   utils::download.file(
     "https://zenodo.org/records/10519652/files/pneumoniamnist.npz?download=1",
@@ -29,7 +29,7 @@ if (FALSE) {
     "http://storage.googleapis.com/download.tensorflow.org/data/ecg.csv",
     "ecg.csv",
   )
-  # the .npz is read with a tiny pure-R .npy reader (no Python) — see dev/prep-dl-data.R
+  # the .npz is read with a tiny pure-R .npy reader (no Python); see dev/prep-dl-data.R
 }
 
 # A real 2D-CNN trained live on chest X-rays (PneumoniaMNIST) ----
@@ -95,7 +95,7 @@ tibble(
 ) |>
   roc_auc(truth, .pred, event_level = "second")
 
-# Fused net: constructible, NOT trained — three modalities, three unrelated cohorts ----
+# Fused net: constructible, NOT trained, three modalities from three unrelated cohorts ----
 # One example per modality (a heart_failure row, one X-ray, one ECG) only proves the wiring.
 x_tab_all <- bake(prep(base_rec), new_data = train) |>
   dplyr::select(-outcome) |>
@@ -114,4 +114,4 @@ fused_forward <- function(self, x_tab, x_img, x_seq) {
   self$head(torch_cat(list(t, c, r), dim = 2))
 }
 # <<<hole
-fused(x_tab1, x_img1, x_ecg1)$shape   # expect [1, 2] — wiring proven, nothing trained
+fused(x_tab1, x_img1, x_ecg1)$shape   # expect [1, 2]: wiring proven, nothing trained
