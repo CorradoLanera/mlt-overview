@@ -1,0 +1,5 @@
+%%{init: {'fontFamily': 'Arial, Helvetica, sans-serif', 'themeVariables': {'fontSize': '20px'}, 'flowchart': {'nodeSpacing': 26, 'rankSpacing': 40, 'padding': 8}}}%%
+flowchart LR
+  I["input<br/>B×140×1"] --> L["LSTM<br/>hidden = 24"]
+  L --> S["last time step<br/>B×24"]
+  S --> H["head (linear)<br/>B×2"]

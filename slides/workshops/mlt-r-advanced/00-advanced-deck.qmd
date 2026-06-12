@@ -480,18 +480,19 @@ gradiente nullo quasi ovunque; la CE è la surrogata liscia. Una loss (anche sol
 
 ## The training loop, made concrete {.smaller}
 
-A net learns by repeating one cycle. `luz` runs it for us; here is what each step does:
+A `dataloader` serves the data in **mini-batches** (shuffled for training); `luz` runs the loop for us. Each step:
 
 1. **forward**: push a batch through `forward()` to get predictions (recall the forward pass, ch. 5).
 2. **loss**: compare to the truth with cross-entropy.
 3. **backward**: the gradient of the loss with respect to every weight.
-4. **step**: the optimiser nudges the weights downhill.
+4. **step**: the **optimiser** turns the gradient into a weight update (here **Adam**; others exist, e.g. SGD, RMSProp).
 
-One pass over all batches is an **epoch**. We watch **two** curves: training loss and **validation** loss. When training keeps dropping but validation turns up, that upturn is **overfitting** (recall ch. 4): the **U** we will see live.
+One pass over all batches is an **epoch**. We watch **two** curves: training loss and **validation** loss. When training keeps dropping but validation turns up, that upturn is **overfitting** (recall ch. 4): the **U**. We train past the bottom to *see* it, then keep the **best-validation** epoch (early stopping).
 
 ::: {.notes}
 Voce docente (IT): `forward()` non è magia, è il passo 1 del ciclo che ch.5 ha già introdotto;
-luz è solo il loop. La U si vede dal vivo sui dati veri, non disegnata.
+luz è solo il loop, il dataloader serve i batch. Adam = un ottimizzatore tra tanti (cenno, non
+approfondiamo). La U si vede dal vivo; teniamo il checkpoint best-validation (early stopping).
 :::
 
 ## Where tidymodels ends and torch begins {.smaller}
@@ -508,35 +509,55 @@ train+eval a mano, ma stesso metro (yardstick sulle predizioni).
 
 ## CNN: a filter sliding over an image {.smaller}
 
-<!-- CNN node: recall ch.6 + the live 2D train. -->
+<!-- CNN node: recall ch.6 + the live 2D train + topology graph. -->
 
-A 2D-CNN slides small learned **filters** across the image and pools the result (recall convolution and weight-sharing, ch. 6). We build one with `nn_conv2d` and train it **live** on chest X-rays (PneumoniaMNIST).
+A 2D-CNN slides small learned **filters** across the image and pools the result (recall convolution and weight-sharing, ch. 6). We build it with `nn_conv2d`, train it **live** on chest X-rays (PneumoniaMNIST), and follow the shape from input to output ($B$ = batch):
 
-| layer | does | output |
-|---|---|---|
-| `nn_conv2d(1, ch, 3)` | learn `ch` filters over the image | `[B, ch, 28, 28]` |
-| `nn_max_pool2d(2)` | halve the resolution | `[B, ch, 14, 14]` |
-| `nn_linear(.., 2)` | flatten then two logits | `[B, 2]` |
+```{=html}
+<style>
+#cnn-topo .nodeLabel, #cnn-topo .nodeLabel *, #cnn-topo .edgeLabel, #cnn-topo .edgeLabel * { font-family: Arial, Helvetica, sans-serif !important; }
+#cnn-topo svg { max-height: 300px !important; width: auto !important; max-width: 100% !important; height: auto !important; display: block; margin: 0 auto; }
+</style>
+```
 
-- We train on a **small slice on purpose**, so the **validation loss turns up** while training loss keeps falling: the overfit **U**, live.
+::: {#cnn-topo}
+```{mermaid}
+%%| file: cnn-topology.mmd
+```
+:::
+
+- Trained on a **small slice on purpose**: validation loss turns up while training loss keeps falling, the overfit **U** (we keep the best-validation epoch).
 
 ::: {.notes}
 Voce docente (IT): richiamo ch.6 (convoluzione, weight-sharing), poi `nn_conv2d` reale e training
-dal vivo. Train piccolo voluto → la U si vede. La curva è `plot(cnn_fit)`, vera.
+dal vivo. Il grafo dà topologia + analisi dimensionale (input→output). Train piccolo voluto → la
+U si vede; `plot(cnn_fit)` è la curva vera.
 :::
 
 ## RNN: reading a sequence over time {.smaller}
 
-<!-- RNN node: recall ch.6 + the live ECG train. -->
+<!-- RNN node: recall ch.6 + the live ECG train + topology graph. -->
 
-An RNN reads a sequence **one step at a time**, carrying a hidden state; we take the **last** step as the summary (recall RNNs over sequences, ch. 6). We build one with `nn_lstm` and train it live on **ECG** traces (ECG5000).
+An RNN reads a sequence **one step at a time**, carrying a hidden state; we take the **last** step as the summary (recall RNNs over sequences, ch. 6). We build it with `nn_lstm` and train it live on **ECG** traces (ECG5000), input `B × time × channels`:
 
-- Input shape `[B, T, F]`: batch, time steps, channels. `nn_lstm(F, hidden)` then `nn_linear(hidden, 2)`.
+```{=html}
+<style>
+#rnn-topo .nodeLabel, #rnn-topo .nodeLabel *, #rnn-topo .edgeLabel, #rnn-topo .edgeLabel * { font-family: Arial, Helvetica, sans-serif !important; }
+#rnn-topo svg { max-height: 220px !important; width: auto !important; max-width: 100% !important; height: auto !important; display: block; margin: 0 auto; }
+</style>
+```
+
+::: {#rnn-topo}
+```{mermaid}
+%%| file: rnn-topology.mmd
+```
+:::
+
 - Same loop, same `plot()` curve, same `roc_auc()` on held-out traces: a different architecture, identical scaffolding.
 
 ::: {.notes}
 Voce docente (IT): richiamo ch.6 (RNN su sequenze, ultimo step), poi `nn_lstm` reale su ECG.
-Stesso loop e stesso metro della CNN: l'unica cosa che cambia è l'architettura.
+Il grafo dà topologia + dimensioni. Stesso loop e stesso metro della CNN: cambia solo l'architettura.
 :::
 
 ## Fused: three branches, one head {.smaller}

@@ -1,0 +1,8 @@
+%%{init: {'fontFamily': 'Arial, Helvetica, sans-serif', 'themeVariables': {'fontSize': '20px'}, 'flowchart': {'nodeSpacing': 26, 'rankSpacing': 34, 'padding': 8}}}%%
+flowchart LR
+  I["input<br/>B×1×28×28"] --> C1["conv1 + ReLU<br/>B×16×28×28"]
+  C1 --> P1["max-pool<br/>B×16×14×14"]
+  P1 --> C2["conv2 + ReLU<br/>B×32×14×14"]
+  C2 --> P2["max-pool<br/>B×32×7×7"]
+  P2 --> F["flatten<br/>B×1568"]
+  F --> H["head (linear)<br/>B×2"]
