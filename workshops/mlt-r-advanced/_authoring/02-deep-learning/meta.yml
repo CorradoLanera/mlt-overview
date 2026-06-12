@@ -3,7 +3,6 @@ title: "Step 02: Deep learning"
 minutes: 110
 summary: "Train an MLP in tidymodels (brulee), then a real 2D-CNN and an RNN live with torch/luz and their train/val curves, and wire a fused net."
 packages: [brulee, luz]
-carry: [R/nn-modules.R]
 check:
   kw: [brulee, kernelshap, cnn2d_net, rnn_net, luz, roc_auc, fused_net, torch_cat]
-  imgs: 2
+  imgs: 4
