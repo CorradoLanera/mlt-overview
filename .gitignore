@@ -33,6 +33,8 @@ dev/*.R
 dev/*.txt
 dev/*.py
 dev/release-assets/
+# Exception: authoring-time data-prep is a tracked deliverable (provenance of committed tensors)
+!dev/prep-dl-data.R
 # Built workshop ZIPs — published as GitHub Release assets, not committed
 dist/
 # Generated site partials (rebuilt by scripts/build_site.py)
