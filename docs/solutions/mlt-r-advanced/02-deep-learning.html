@@ -2374,278 +2374,279 @@ vertical-align: -.125em;
 <span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>preds <span class="sc">|&gt;</span> <span class="fu">roc_curve</span>(outcome, .pred_died) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span>
 <span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>preds <span class="sc">|&gt;</span> <span class="fu">pr_curve</span>(outcome, .pred_died) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span>
 <span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the model we just rebuilt: one-row probability prediction ----</span></span>
-<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>fitted_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
-<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fitted_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="co"># The validated random-forest workflow, extracted once and reused by the explainers in step 01 ----</span></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(rf_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)   <span class="co"># sanity-check: a one-row probability from the workflow</span></span>
 <span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="co"># Pre-warm torch so deep learning is instant later ----</span></span>
 <span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_tensor</span>(<span class="dv">1</span>)             <span class="co"># forces the LibTorch backend to load now, not mid-demo</span></span>
 <span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>torch<span class="sc">::</span><span class="fu">cuda_is_available</span>()  <span class="co"># FALSE on this CPU build box; TRUE on the classroom GPU machine</span></span>
 <span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a><span class="co"># The validated Basic random forest, already fitted in the recap, as a workflow ----</span></span>
-<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
-<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation VIMP — what the forest relies on ----</span></span>
-<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we</span></span>
-<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore `object` and route the prediction through the captured workflow `rf_wf` instead.</span></span>
-<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>vimp_pred <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata) <span class="fu">predict</span>(rf_wf, newdata, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
-<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a><span class="fu">vip</span>(</span>
-<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>  rf_wf,</span>
-<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>  <span class="at">method       =</span> <span class="st">&quot;permute&quot;</span>,</span>
-<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>  <span class="at">train        =</span> train,</span>
-<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>  <span class="at">target       =</span> <span class="st">&quot;outcome&quot;</span>,</span>
-<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric       =</span> <span class="st">&quot;roc_auc&quot;</span>,</span>
-<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_wrapper =</span> vimp_pred,</span>
-<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>  <span class="at">nsim         =</span> <span class="dv">10</span>,</span>
-<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_level  =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a><span class="co"># SHAP on the logistic anchor (log_fit, fitted in the recap): the sanity check ----</span></span>
-<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a><span class="co"># kernelshap&#39;s pred_fun signature is function(object, X, ...).</span></span>
-<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>pred_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(object, X) <span class="fu">predict</span>(object, X, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
-<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>bg <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>outcome)</span>
-<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>bg_small <span class="ot">&lt;-</span> bg <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">40</span>)</span>
-<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a><span class="co"># Background size, shown: full vs reduced (same explainer, same patient) ----</span></span>
-<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a><span class="co"># Full background (~224 rows): lower-variance attributions, slower.</span></span>
-<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>ks_log_full <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun)</span>
-<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_log_full) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
-<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a><span class="co"># Fixed 40-row background: cheaper and slightly noisier, the waterfall barely moves.</span></span>
-<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a><span class="co"># We reuse this background for every model (logistic -&gt; forest -&gt; MLP) so comparisons match.</span></span>
-<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>ks_log_small <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg_small, <span class="at">pred_fun =</span> pred_fun)</span>
-<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_log_small) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a><span class="co"># The SHAP signs must echo the logistic coefficients ----</span></span>
-<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(log_fit) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(<span class="fu">abs</span>(estimate)))</span>
-<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a><span class="co"># Your turn: swap the model and the function (permshap -&gt; kernelshap), reuse bg_small ----</span></span>
-<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
-<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>ks_rf <span class="ot">&lt;-</span> <span class="fu">kernelshap</span>(rf_wf, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg_small, <span class="at">pred_fun =</span> pred_fun)</span>
-<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_rf) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
-<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a><span class="co"># A live MLP: settings first, then train SMALL (in tidymodels via brulee) ----</span></span>
-<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>mlp_spec <span class="ot">&lt;-</span> <span class="fu">mlp</span>(<span class="at">hidden_units =</span> <span class="dv">16</span>, <span class="at">epochs =</span> <span class="dv">30</span>, <span class="at">penalty =</span> <span class="fl">0.01</span>, <span class="at">learn_rate =</span> <span class="fl">0.05</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;brulee&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>)</span>
-<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>mlp_fit <span class="ot">&lt;-</span> <span class="fu">fit</span>(<span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(base_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(mlp_spec), train)</span>
-<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(mlp_fit, test) <span class="sc">|&gt;</span> <span class="fu">roc_auc</span>(<span class="at">truth =</span> outcome, .pred_died)</span>
-<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a><span class="co"># The same explainer, a new model (only the fitted model changed, now a neural net) ----</span></span>
-<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
-<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>ks_mlp <span class="ot">&lt;-</span> <span class="fu">kernelshap</span>(mlp_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun)</span>
-<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_mlp) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
-<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a><span class="co"># Beyond tidymodels: bespoke nets in torch/luz. brulee fits in double and leaves</span></span>
-<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a><span class="co"># the torch default dtype as double; pin it to float32 so the nets match the inputs ----</span></span>
-<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_set_default_dtype</span>(<span class="fu">torch_float</span>())</span>
-<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a><span class="co"># How the committed tensors were fetched (shown, not run; full script in dev/prep-dl-data.R) ----</span></span>
-<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="cn">FALSE</span>) {</span>
-<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a>  utils<span class="sc">::</span><span class="fu">download.file</span>(</span>
-<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;https://zenodo.org/records/10519652/files/pneumoniamnist.npz?download=1&quot;</span>,</span>
-<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;pneumoniamnist.npz&quot;</span>,</span>
-<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>,</span>
-<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>  utils<span class="sc">::</span><span class="fu">download.file</span>(</span>
-<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;http://storage.googleapis.com/download.tensorflow.org/data/ecg.csv&quot;</span>,</span>
-<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;ecg.csv&quot;</span>,</span>
-<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the .npz is read with a tiny pure-R .npy reader (no Python); see dev/prep-dl-data.R</span></span>
-<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a><span class="co"># A real 2D-CNN on chest X-rays (PneumoniaMNIST) ----</span></span>
-<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the architecture inline so every layer is on screen: two conv+pool blocks, then a head.</span></span>
-<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>cnn2d_net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;cnn2d_net&quot;</span>,</span>
-<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(<span class="at">ch =</span> <span class="dv">16</span>, <span class="at">n_class =</span> <span class="dv">2</span>) {</span>
-<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>conv1 <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(<span class="dv">1</span>, ch, <span class="at">kernel_size =</span> <span class="dv">3</span>, <span class="at">padding =</span> <span class="dv">1</span>)</span>
-<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>conv2 <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(ch, ch <span class="sc">*</span> <span class="dv">2</span>, <span class="at">kernel_size =</span> <span class="dv">3</span>, <span class="at">padding =</span> <span class="dv">1</span>)</span>
-<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>pool  <span class="ot">&lt;-</span> <span class="fu">nn_max_pool2d</span>(<span class="dv">2</span>)</span>
-<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>head  <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(ch <span class="sc">*</span> <span class="dv">2</span> <span class="sc">*</span> <span class="dv">7</span> <span class="sc">*</span> <span class="dv">7</span>, n_class)   <span class="co"># 28 -&gt; 14 -&gt; 7 after two 2x2 pools</span></span>
-<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
-<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">pool</span>(<span class="fu">nnf_relu</span>(self<span class="sc">$</span><span class="fu">conv1</span>(x)))   <span class="co"># [B, ch, 14, 14]</span></span>
-<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">pool</span>(<span class="fu">nnf_relu</span>(self<span class="sc">$</span><span class="fu">conv2</span>(x)))   <span class="co"># [B, 2ch, 7, 7]</span></span>
-<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_flatten</span>(x, <span class="at">start_dim =</span> <span class="dv">2</span>))</span>
-<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a><span class="fu">cnn2d_net</span>(<span class="at">ch =</span> <span class="dv">16</span>, <span class="at">n_class =</span> <span class="dv">2</span>)   <span class="co"># inspect the architecture: layers + parameter count</span></span>
-<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>img   <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="fu">here</span>(<span class="st">&quot;data-raw&quot;</span>, <span class="st">&quot;pneumoniamnist.rds&quot;</span>))   <span class="co"># a list: x = images, y = labels</span></span>
-<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>x_img <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(img<span class="sc">$</span>x, <span class="at">dtype =</span> <span class="fu">torch_float</span>())</span>
-<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>y_img <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(img<span class="sc">$</span>y, <span class="at">dtype =</span> <span class="fu">torch_long</span>())</span>
-<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a><span class="co"># See the data: one X-ray per class, first as raw pixels, then as an image ----</span></span>
-<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>img<span class="sc">$</span>x[<span class="fu">which</span>(img<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">1</span>)[<span class="dv">1</span>], <span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]   <span class="co"># a 5x5 corner of one image, pixels in [0, 1]</span></span>
-<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a>img_show <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(</span>
-<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">expand_grid</span>(<span class="at">col =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">28</span>, <span class="at">row =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">28</span>) <span class="sc">|&gt;</span>   <span class="co"># col-major order matches as.numeric(matrix)</span></span>
-<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">pixel =</span> <span class="fu">as.numeric</span>(img<span class="sc">$</span>x[<span class="fu">which</span>(img<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">1</span>)[<span class="dv">1</span>], <span class="dv">1</span>, , ]), <span class="at">class =</span> <span class="st">&quot;normal&quot;</span>),</span>
-<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">expand_grid</span>(<span class="at">col =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">28</span>, <span class="at">row =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">28</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">pixel =</span> <span class="fu">as.numeric</span>(img<span class="sc">$</span>x[<span class="fu">which</span>(img<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">2</span>)[<span class="dv">1</span>], <span class="dv">1</span>, , ]), <span class="at">class =</span> <span class="st">&quot;pneumonia&quot;</span>),</span>
-<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(img_show, <span class="fu">aes</span>(col, row, <span class="at">fill =</span> pixel)) <span class="sc">+</span></span>
-<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>() <span class="sc">+</span></span>
-<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> class) <span class="sc">+</span></span>
-<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_reverse</span>() <span class="sc">+</span></span>
-<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">&quot;black&quot;</span>, <span class="at">high =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span></span>
-<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>() <span class="sc">+</span></span>
-<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
-<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a><span class="co"># A dataloader serves the images to the loop in shuffled mini-batches ----</span></span>
-<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_manual_seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a>perm  <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">dim</span>(x_img)[<span class="dv">1</span>])</span>
-<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a>tr    <span class="ot">&lt;-</span> perm[<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>]                       <span class="co"># a deliberately small training slice: the overfit U becomes visible</span></span>
-<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a>va    <span class="ot">&lt;-</span> perm[<span class="dv">101</span><span class="sc">:</span><span class="fu">length</span>(perm)]</span>
-<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>dl_tr <span class="ot">&lt;-</span> <span class="fu">dataloader</span>(<span class="fu">tensor_dataset</span>(x_img[tr, , , ], y_img[tr]), <span class="at">batch_size =</span> <span class="dv">16</span>, <span class="at">shuffle =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>dl_va <span class="ot">&lt;-</span> <span class="fu">dataloader</span>(<span class="fu">tensor_dataset</span>(x_img[va, , , ], y_img[va]), <span class="at">batch_size =</span> <span class="dv">64</span>)</span>
-<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a><span class="co"># Train 100 epochs to SEE the overfit, but keep the best-validation checkpoint (early stopping) ----</span></span>
-<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a>cnn_fit <span class="ot">&lt;-</span> cnn2d_net <span class="sc">|&gt;</span></span>
-<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setup</span>(</span>
-<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss =</span> <span class="fu">nn_cross_entropy_loss</span>(),</span>
-<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>    <span class="at">optimizer =</span> optim_adam,</span>
-<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">list</span>(<span class="fu">luz_metric_accuracy</span>()),</span>
-<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_hparams</span>(<span class="at">ch =</span> <span class="dv">16</span>, <span class="at">n_class =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_opt_hparams</span>(<span class="at">lr =</span> <span class="fl">1e-3</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(</span>
-<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a>    dl_tr,</span>
-<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a>    <span class="at">epochs =</span> <span class="dv">100</span>,</span>
-<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a>    <span class="at">valid_data =</span> dl_va,</span>
-<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a>    <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>    <span class="at">callbacks =</span> <span class="fu">list</span>(<span class="fu">luz_callback_keep_best_model</span>(<span class="at">monitor =</span> <span class="st">&quot;valid_loss&quot;</span>)),</span>
-<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cnn_fit)   <span class="co"># training loss keeps falling, validation loss turns up (the U); we kept the best epoch</span></span>
-<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate on the held-out images, reading the steps in execution order ----</span></span>
-<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a>cnn_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(cnn_fit, x_img[va, , , ]) <span class="sc">|&gt;</span>   <span class="co"># logits, one column per class</span></span>
-<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nnf_softmax</span>(<span class="at">dim =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span>                            <span class="co"># turn logits into probabilities</span></span>
-<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.array</span>()                                         <span class="co"># bring it back to R as a matrix [N, 2]</span></span>
-<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">truth =</span> <span class="fu">factor</span>(img<span class="sc">$</span>y[va], <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)), <span class="at">.pred =</span> cnn_prob[ , <span class="dv">2</span>]) <span class="sc">|&gt;</span></span>
-<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(truth, .pred, <span class="at">event_level =</span> <span class="st">&quot;second&quot;</span>)</span>
-<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a><span class="co"># A real RNN on ECG traces (ECG5000) ----</span></span>
-<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a>rnn_net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rnn_net&quot;</span>,</span>
-<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(in_size, <span class="at">hidden =</span> <span class="dv">24</span>, <span class="at">n_class =</span> <span class="dv">2</span>) {</span>
-<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>lstm <span class="ot">&lt;-</span> <span class="fu">nn_lstm</span>(in_size, hidden, <span class="at">batch_first =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>head <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(hidden, n_class)</span>
-<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
-<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>    out  <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">lstm</span>(x)</span>
-<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a>    last <span class="ot">&lt;-</span> out[[<span class="dv">1</span>]][ , <span class="fu">dim</span>(out[[<span class="dv">1</span>]])[<span class="dv">2</span>], ]   <span class="co"># the LAST time step -&gt; [B, hidden]</span></span>
-<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span><span class="fu">head</span>(last)</span>
-<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a><span class="fu">rnn_net</span>(<span class="at">in_size =</span> <span class="dv">1</span>)   <span class="co"># inspect the architecture</span></span>
-<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a>ecg   <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="fu">here</span>(<span class="st">&quot;data-raw&quot;</span>, <span class="st">&quot;ecg.rds&quot;</span>))   <span class="co"># a list: x = traces [N, 140, 1], y = labels</span></span>
-<span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a>x_ecg <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(ecg<span class="sc">$</span>x, <span class="at">dtype =</span> <span class="fu">torch_float</span>())</span>
-<span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a>y_ecg <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(ecg<span class="sc">$</span>y, <span class="at">dtype =</span> <span class="fu">torch_long</span>())</span>
-<span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a><span class="co"># See the data: one ECG trace per class, over the 140 time steps ----</span></span>
-<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a>ecg_show <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(</span>
-<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">t =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">140</span>, <span class="at">value =</span> <span class="fu">as.numeric</span>(ecg<span class="sc">$</span>x[<span class="fu">which</span>(ecg<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">1</span>)[<span class="dv">1</span>], , <span class="dv">1</span>]), <span class="at">class =</span> <span class="st">&quot;abnormal&quot;</span>),</span>
-<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">t =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">140</span>, <span class="at">value =</span> <span class="fu">as.numeric</span>(ecg<span class="sc">$</span>x[<span class="fu">which</span>(ecg<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">2</span>)[<span class="dv">1</span>], , <span class="dv">1</span>]), <span class="at">class =</span> <span class="st">&quot;normal&quot;</span>),</span>
-<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-327"><a href="#cb1-327" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ecg_show, <span class="fu">aes</span>(t, value)) <span class="sc">+</span></span>
-<span id="cb1-328"><a href="#cb1-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> class, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_manual_seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a>sp     <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">dim</span>(x_ecg)[<span class="dv">1</span>])</span>
-<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a>e_tr   <span class="ot">&lt;-</span> sp[<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>]</span>
-<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a>e_va   <span class="ot">&lt;-</span> sp[<span class="dv">101</span><span class="sc">:</span><span class="fu">length</span>(sp)]</span>
-<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a>edl_tr <span class="ot">&lt;-</span> <span class="fu">dataloader</span>(<span class="fu">tensor_dataset</span>(x_ecg[e_tr, , ], y_ecg[e_tr]), <span class="at">batch_size =</span> <span class="dv">16</span>, <span class="at">shuffle =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-338"><a href="#cb1-338" aria-hidden="true" tabindex="-1"></a>edl_va <span class="ot">&lt;-</span> <span class="fu">dataloader</span>(<span class="fu">tensor_dataset</span>(x_ecg[e_va, , ], y_ecg[e_va]), <span class="at">batch_size =</span> <span class="dv">64</span>)</span>
-<span id="cb1-339"><a href="#cb1-339" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-340"><a href="#cb1-340" aria-hidden="true" tabindex="-1"></a>rnn_fit <span class="ot">&lt;-</span> rnn_net <span class="sc">|&gt;</span></span>
-<span id="cb1-341"><a href="#cb1-341" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setup</span>(</span>
-<span id="cb1-342"><a href="#cb1-342" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss =</span> <span class="fu">nn_cross_entropy_loss</span>(),</span>
-<span id="cb1-343"><a href="#cb1-343" aria-hidden="true" tabindex="-1"></a>    <span class="at">optimizer =</span> optim_adam,</span>
-<span id="cb1-344"><a href="#cb1-344" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">list</span>(<span class="fu">luz_metric_accuracy</span>()),</span>
-<span id="cb1-345"><a href="#cb1-345" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb1-346"><a href="#cb1-346" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_hparams</span>(<span class="at">in_size =</span> <span class="fu">dim</span>(x_ecg)[<span class="dv">3</span>], <span class="at">hidden =</span> <span class="dv">24</span>, <span class="at">n_class =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-347"><a href="#cb1-347" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_opt_hparams</span>(<span class="at">lr =</span> <span class="fl">1e-3</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-348"><a href="#cb1-348" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(</span>
-<span id="cb1-349"><a href="#cb1-349" aria-hidden="true" tabindex="-1"></a>    edl_tr,</span>
-<span id="cb1-350"><a href="#cb1-350" aria-hidden="true" tabindex="-1"></a>    <span class="at">epochs =</span> <span class="dv">100</span>,</span>
-<span id="cb1-351"><a href="#cb1-351" aria-hidden="true" tabindex="-1"></a>    <span class="at">valid_data =</span> edl_va,</span>
-<span id="cb1-352"><a href="#cb1-352" aria-hidden="true" tabindex="-1"></a>    <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb1-353"><a href="#cb1-353" aria-hidden="true" tabindex="-1"></a>    <span class="at">callbacks =</span> <span class="fu">list</span>(<span class="fu">luz_callback_keep_best_model</span>(<span class="at">monitor =</span> <span class="st">&quot;valid_loss&quot;</span>)),</span>
-<span id="cb1-354"><a href="#cb1-354" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-355"><a href="#cb1-355" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rnn_fit)</span>
-<span id="cb1-357"><a href="#cb1-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-358"><a href="#cb1-358" aria-hidden="true" tabindex="-1"></a>ecg_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(rnn_fit, x_ecg[e_va, , ]) <span class="sc">|&gt;</span></span>
-<span id="cb1-359"><a href="#cb1-359" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nnf_softmax</span>(<span class="at">dim =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-360"><a href="#cb1-360" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.array</span>()</span>
-<span id="cb1-361"><a href="#cb1-361" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">truth =</span> <span class="fu">factor</span>(ecg<span class="sc">$</span>y[e_va], <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)), <span class="at">.pred =</span> ecg_prob[ , <span class="dv">2</span>]) <span class="sc">|&gt;</span></span>
-<span id="cb1-362"><a href="#cb1-362" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(truth, .pred, <span class="at">event_level =</span> <span class="st">&quot;second&quot;</span>)</span>
-<span id="cb1-363"><a href="#cb1-363" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-364"><a href="#cb1-364" aria-hidden="true" tabindex="-1"></a><span class="co"># Fused net: constructible, NOT trained, three modalities from three unrelated cohorts ----</span></span>
-<span id="cb1-365"><a href="#cb1-365" aria-hidden="true" tabindex="-1"></a><span class="co"># Head-less branches, one per modality, concatenated into a shared head.</span></span>
-<span id="cb1-366"><a href="#cb1-366" aria-hidden="true" tabindex="-1"></a>cnn2d_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb1-367"><a href="#cb1-367" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;cnn2d_branch&quot;</span>,</span>
-<span id="cb1-368"><a href="#cb1-368" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(<span class="at">ch =</span> <span class="dv">8</span>) {</span>
-<span id="cb1-369"><a href="#cb1-369" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>conv <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(<span class="dv">1</span>, ch, <span class="at">kernel_size =</span> <span class="dv">3</span>, <span class="at">padding =</span> <span class="dv">1</span>)</span>
-<span id="cb1-370"><a href="#cb1-370" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>pool <span class="ot">&lt;-</span> <span class="fu">nn_adaptive_avg_pool2d</span>(<span class="dv">1</span>)</span>
-<span id="cb1-371"><a href="#cb1-371" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-372"><a href="#cb1-372" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) self<span class="sc">$</span><span class="fu">pool</span>(<span class="fu">nnf_relu</span>(self<span class="sc">$</span><span class="fu">conv</span>(x)))<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">4</span>)<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">3</span>),   <span class="co"># [B, ch]</span></span>
-<span id="cb1-373"><a href="#cb1-373" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-374"><a href="#cb1-374" aria-hidden="true" tabindex="-1"></a>rnn_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb1-375"><a href="#cb1-375" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rnn_branch&quot;</span>,</span>
-<span id="cb1-376"><a href="#cb1-376" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(in_size, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
-<span id="cb1-377"><a href="#cb1-377" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>lstm <span class="ot">&lt;-</span> <span class="fu">nn_lstm</span>(in_size, hidden, <span class="at">batch_first =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-378"><a href="#cb1-378" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-379"><a href="#cb1-379" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
-<span id="cb1-380"><a href="#cb1-380" aria-hidden="true" tabindex="-1"></a>    out <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">lstm</span>(x)</span>
-<span id="cb1-381"><a href="#cb1-381" aria-hidden="true" tabindex="-1"></a>    out[[<span class="dv">1</span>]][ , <span class="fu">dim</span>(out[[<span class="dv">1</span>]])[<span class="dv">2</span>], ]</span>
-<span id="cb1-382"><a href="#cb1-382" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-383"><a href="#cb1-383" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-384"><a href="#cb1-384" aria-hidden="true" tabindex="-1"></a>fused_net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
-<span id="cb1-385"><a href="#cb1-385" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fused_net&quot;</span>,</span>
-<span id="cb1-386"><a href="#cb1-386" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(n_tab, <span class="at">img_ch =</span> <span class="dv">8</span>, seq_in, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
-<span id="cb1-387"><a href="#cb1-387" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>tab  <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(n_tab, <span class="dv">16</span>)</span>
-<span id="cb1-388"><a href="#cb1-388" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>cnn  <span class="ot">&lt;-</span> <span class="fu">cnn2d_branch</span>(img_ch)</span>
-<span id="cb1-389"><a href="#cb1-389" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>rnn  <span class="ot">&lt;-</span> <span class="fu">rnn_branch</span>(seq_in, hidden)</span>
-<span id="cb1-390"><a href="#cb1-390" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>head <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(<span class="dv">16</span> <span class="sc">+</span> img_ch <span class="sc">+</span> hidden, <span class="dv">2</span>)</span>
-<span id="cb1-391"><a href="#cb1-391" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-392"><a href="#cb1-392" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x_tab, x_img, x_seq) {</span>
-<span id="cb1-393"><a href="#cb1-393" aria-hidden="true" tabindex="-1"></a>    t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)   <span class="co"># [B, 16]</span></span>
-<span id="cb1-394"><a href="#cb1-394" aria-hidden="true" tabindex="-1"></a>    c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)   <span class="co"># [B, img_ch]</span></span>
-<span id="cb1-395"><a href="#cb1-395" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)   <span class="co"># [B, hidden]</span></span>
-<span id="cb1-396"><a href="#cb1-396" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))   <span class="co"># -&gt; [B, 2]</span></span>
-<span id="cb1-397"><a href="#cb1-397" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb1-398"><a href="#cb1-398" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-399"><a href="#cb1-399" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-400"><a href="#cb1-400" aria-hidden="true" tabindex="-1"></a><span class="co"># One example per modality (a heart_failure row, one X-ray, one ECG) only proves the wiring.</span></span>
-<span id="cb1-401"><a href="#cb1-401" aria-hidden="true" tabindex="-1"></a>x_tab_all <span class="ot">&lt;-</span> <span class="fu">bake</span>(<span class="fu">prep</span>(base_rec), <span class="at">new_data =</span> train) <span class="sc">|&gt;</span></span>
-<span id="cb1-402"><a href="#cb1-402" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>outcome) <span class="sc">|&gt;</span></span>
-<span id="cb1-403"><a href="#cb1-403" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
-<span id="cb1-404"><a href="#cb1-404" aria-hidden="true" tabindex="-1"></a>x_tab1 <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(x_tab_all[<span class="dv">1</span>, , <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="at">dtype =</span> <span class="fu">torch_float</span>())</span>
-<span id="cb1-405"><a href="#cb1-405" aria-hidden="true" tabindex="-1"></a>x_img1 <span class="ot">&lt;-</span> x_img[<span class="dv">1</span>, , , , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb1-406"><a href="#cb1-406" aria-hidden="true" tabindex="-1"></a>x_ecg1 <span class="ot">&lt;-</span> x_ecg[<span class="dv">1</span>, , , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb1-407"><a href="#cb1-407" aria-hidden="true" tabindex="-1"></a>fused  <span class="ot">&lt;-</span> <span class="fu">fused_net</span>(<span class="at">n_tab =</span> <span class="fu">ncol</span>(x_tab_all), <span class="at">img_ch =</span> <span class="dv">8</span>, <span class="at">seq_in =</span> <span class="fu">dim</span>(x_ecg)[<span class="dv">3</span>], <span class="at">hidden =</span> <span class="dv">16</span>)</span>
-<span id="cb1-408"><a href="#cb1-408" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-409"><a href="#cb1-409" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder the lines to: run the three branches, concat along dim=2, then the head</span></span>
-<span id="cb1-410"><a href="#cb1-410" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span>
-<span id="cb1-411"><a href="#cb1-411" aria-hidden="true" tabindex="-1"></a>  self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))</span>
-<span id="cb1-412"><a href="#cb1-412" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)</span>
-<span id="cb1-413"><a href="#cb1-413" aria-hidden="true" tabindex="-1"></a>  c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)</span>
-<span id="cb1-414"><a href="#cb1-414" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)</span>
-<span id="cb1-415"><a href="#cb1-415" aria-hidden="true" tabindex="-1"></a>fused_forward <span class="ot">&lt;-</span> <span class="cf">function</span>(self, x_tab, x_img, x_seq) {</span>
-<span id="cb1-416"><a href="#cb1-416" aria-hidden="true" tabindex="-1"></a><span class="fu">fused</span>(x_tab1, x_img1, x_ecg1)<span class="sc">$</span>shape   <span class="co"># expect [1, 2]: wiring proven, nothing trained</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation VIMP — what the forest relies on (rf_wf is the workflow extracted in the recap) ----</span></span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we</span></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore `object` and route the prediction through the captured workflow `rf_wf` instead.</span></span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>vimp_pred <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata) <span class="fu">predict</span>(rf_wf, newdata, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a><span class="fu">vip</span>(</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>  rf_wf,</span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>  <span class="at">method       =</span> <span class="st">&quot;permute&quot;</span>,</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>  <span class="at">train        =</span> train,</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>  <span class="at">target       =</span> <span class="st">&quot;outcome&quot;</span>,</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric       =</span> <span class="st">&quot;roc_auc&quot;</span>,</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_wrapper =</span> vimp_pred,</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>  <span class="at">nsim         =</span> <span class="dv">10</span>,</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_level  =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a><span class="co"># SHAP on the logistic anchor (log_fit, fitted in the recap): the sanity check ----</span></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a><span class="co"># kernelshap&#39;s pred_fun signature is function(object, X, ...), and kernelshap hands `object`</span></span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a><span class="co"># back as-is: here `object` IS the model we pass, so ONE pred_fun serves the logistic, the</span></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a><span class="co"># forest, and the MLP (model-agnostic). Contrast `vimp_pred` above, which must close over</span></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a><span class="co"># `rf_wf`: vip hands `pred_wrapper` the bare `ranger` engine, on which `predict(., type = &quot;prob&quot;)`</span></span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a><span class="co"># is undefined. Two explainers, two conventions, two functions.</span></span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>pred_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(object, X) <span class="fu">predict</span>(object, X, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>bg <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>outcome)</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>bg_small <span class="ot">&lt;-</span> bg <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">40</span>)</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a><span class="co"># Background size, shown: full vs reduced (same explainer, same patient) ----</span></span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a><span class="co"># Full background (~224 rows): lower-variance attributions, slower.</span></span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>ks_log_full <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun)</span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_log_full) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a><span class="co"># Fixed 40-row background: cheaper and slightly noisier, the waterfall barely moves.</span></span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a><span class="co"># We reuse this background for every model (logistic -&gt; forest -&gt; MLP) so comparisons match.</span></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>ks_log_small <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg_small, <span class="at">pred_fun =</span> pred_fun)</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_log_small) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a><span class="co"># The SHAP signs must echo the logistic coefficients ----</span></span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(log_fit) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(<span class="fu">abs</span>(estimate)))</span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a><span class="co"># Your turn: swap the model and the function (permshap -&gt; kernelshap), reuse bg_small ----</span></span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>ks_rf <span class="ot">&lt;-</span> <span class="fu">kernelshap</span>(rf_wf, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg_small, <span class="at">pred_fun =</span> pred_fun)</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_rf) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a><span class="co"># A live MLP: settings first, then train SMALL (in tidymodels via brulee) ----</span></span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>mlp_spec <span class="ot">&lt;-</span> <span class="fu">mlp</span>(<span class="at">hidden_units =</span> <span class="dv">16</span>, <span class="at">epochs =</span> <span class="dv">30</span>, <span class="at">penalty =</span> <span class="fl">0.01</span>, <span class="at">learn_rate =</span> <span class="fl">0.05</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;brulee&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>)</span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>mlp_fit <span class="ot">&lt;-</span> <span class="fu">fit</span>(<span class="fu">workflow</span>() <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(base_rec) <span class="sc">|&gt;</span> <span class="fu">add_model</span>(mlp_spec), train)</span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a><span class="fu">augment</span>(mlp_fit, test) <span class="sc">|&gt;</span> <span class="fu">roc_auc</span>(<span class="at">truth =</span> outcome, .pred_died)</span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a><span class="co"># The same explainer, a new model (only the fitted model changed, now a neural net) ----</span></span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>ks_mlp <span class="ot">&lt;-</span> <span class="fu">kernelshap</span>(mlp_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun)</span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_mlp) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a><span class="co"># Beyond tidymodels: bespoke nets in torch/luz. brulee fits in double and leaves</span></span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a><span class="co"># the torch default dtype as double; pin it to float32 so the nets match the inputs ----</span></span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_set_default_dtype</span>(<span class="fu">torch_float</span>())</span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a><span class="co"># How the committed tensors were fetched (shown, not run; full script in dev/prep-dl-data.R) ----</span></span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="cn">FALSE</span>) {</span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a>  utils<span class="sc">::</span><span class="fu">download.file</span>(</span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;https://zenodo.org/records/10519652/files/pneumoniamnist.npz?download=1&quot;</span>,</span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;pneumoniamnist.npz&quot;</span>,</span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>,</span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>  utils<span class="sc">::</span><span class="fu">download.file</span>(</span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;http://storage.googleapis.com/download.tensorflow.org/data/ecg.csv&quot;</span>,</span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;ecg.csv&quot;</span>,</span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the .npz is read with a tiny pure-R .npy reader (no Python); see dev/prep-dl-data.R</span></span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a><span class="co"># A real 2D-CNN on chest X-rays (PneumoniaMNIST) ----</span></span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the architecture inline so every layer is on screen: two conv+pool blocks, then a head.</span></span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>cnn2d_net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;cnn2d_net&quot;</span>,</span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(<span class="at">ch =</span> <span class="dv">16</span>, <span class="at">n_class =</span> <span class="dv">2</span>) {</span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>conv1 <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(<span class="dv">1</span>, ch, <span class="at">kernel_size =</span> <span class="dv">3</span>, <span class="at">padding =</span> <span class="dv">1</span>)</span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>conv2 <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(ch, ch <span class="sc">*</span> <span class="dv">2</span>, <span class="at">kernel_size =</span> <span class="dv">3</span>, <span class="at">padding =</span> <span class="dv">1</span>)</span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>pool  <span class="ot">&lt;-</span> <span class="fu">nn_max_pool2d</span>(<span class="dv">2</span>)</span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>head  <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(ch <span class="sc">*</span> <span class="dv">2</span> <span class="sc">*</span> <span class="dv">7</span> <span class="sc">*</span> <span class="dv">7</span>, n_class)   <span class="co"># 28 -&gt; 14 -&gt; 7 after two 2x2 pools</span></span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">pool</span>(<span class="fu">nnf_relu</span>(self<span class="sc">$</span><span class="fu">conv1</span>(x)))   <span class="co"># [B, ch, 14, 14]</span></span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">pool</span>(<span class="fu">nnf_relu</span>(self<span class="sc">$</span><span class="fu">conv2</span>(x)))   <span class="co"># [B, 2ch, 7, 7]</span></span>
+<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_flatten</span>(x, <span class="at">start_dim =</span> <span class="dv">2</span>))</span>
+<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a><span class="fu">cnn2d_net</span>(<span class="at">ch =</span> <span class="dv">16</span>, <span class="at">n_class =</span> <span class="dv">2</span>)   <span class="co"># inspect the architecture: layers + parameter count</span></span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>img   <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="fu">here</span>(<span class="st">&quot;data-raw&quot;</span>, <span class="st">&quot;pneumoniamnist.rds&quot;</span>))   <span class="co"># a list: x = images, y = labels</span></span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>x_img <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(img<span class="sc">$</span>x, <span class="at">dtype =</span> <span class="fu">torch_float</span>())</span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>y_img <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(img<span class="sc">$</span>y, <span class="at">dtype =</span> <span class="fu">torch_long</span>())</span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a><span class="co"># See the data: one X-ray per class, first as raw pixels, then as an image ----</span></span>
+<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a>img<span class="sc">$</span>x[<span class="fu">which</span>(img<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">1</span>)[<span class="dv">1</span>], <span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]   <span class="co"># a 5x5 corner of one image, pixels in [0, 1]</span></span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>img_show <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(</span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">expand_grid</span>(<span class="at">col =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">28</span>, <span class="at">row =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">28</span>) <span class="sc">|&gt;</span>   <span class="co"># col-major order matches as.numeric(matrix)</span></span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">pixel =</span> <span class="fu">as.numeric</span>(img<span class="sc">$</span>x[<span class="fu">which</span>(img<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">1</span>)[<span class="dv">1</span>], <span class="dv">1</span>, , ]), <span class="at">class =</span> <span class="st">&quot;normal&quot;</span>),</span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">expand_grid</span>(<span class="at">col =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">28</span>, <span class="at">row =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">28</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">pixel =</span> <span class="fu">as.numeric</span>(img<span class="sc">$</span>x[<span class="fu">which</span>(img<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">2</span>)[<span class="dv">1</span>], <span class="dv">1</span>, , ]), <span class="at">class =</span> <span class="st">&quot;pneumonia&quot;</span>),</span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(img_show, <span class="fu">aes</span>(col, row, <span class="at">fill =</span> pixel)) <span class="sc">+</span></span>
+<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_raster</span>() <span class="sc">+</span></span>
+<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> class) <span class="sc">+</span></span>
+<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_reverse</span>() <span class="sc">+</span></span>
+<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">&quot;black&quot;</span>, <span class="at">high =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span></span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>() <span class="sc">+</span></span>
+<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a><span class="co"># A dataloader serves the images to the loop in shuffled mini-batches ----</span></span>
+<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_manual_seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a>perm  <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">dim</span>(x_img)[<span class="dv">1</span>])</span>
+<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a>tr    <span class="ot">&lt;-</span> perm[<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>]                       <span class="co"># a deliberately small training slice: the overfit U becomes visible</span></span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>va    <span class="ot">&lt;-</span> perm[<span class="dv">101</span><span class="sc">:</span><span class="fu">length</span>(perm)]</span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>dl_tr <span class="ot">&lt;-</span> <span class="fu">dataloader</span>(<span class="fu">tensor_dataset</span>(x_img[tr, , , ], y_img[tr]), <span class="at">batch_size =</span> <span class="dv">16</span>, <span class="at">shuffle =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>dl_va <span class="ot">&lt;-</span> <span class="fu">dataloader</span>(<span class="fu">tensor_dataset</span>(x_img[va, , , ], y_img[va]), <span class="at">batch_size =</span> <span class="dv">64</span>)</span>
+<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a><span class="co"># Train 100 epochs to SEE the overfit, but keep the best-validation checkpoint (early stopping) ----</span></span>
+<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a>cnn_fit <span class="ot">&lt;-</span> cnn2d_net <span class="sc">|&gt;</span></span>
+<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setup</span>(</span>
+<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss =</span> <span class="fu">nn_cross_entropy_loss</span>(),</span>
+<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a>    <span class="at">optimizer =</span> optim_adam,</span>
+<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">list</span>(<span class="fu">luz_metric_accuracy</span>()),</span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_hparams</span>(<span class="at">ch =</span> <span class="dv">16</span>, <span class="at">n_class =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_opt_hparams</span>(<span class="at">lr =</span> <span class="fl">1e-3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(</span>
+<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a>    dl_tr,</span>
+<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a>    <span class="at">epochs =</span> <span class="dv">100</span>,</span>
+<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a>    <span class="at">valid_data =</span> dl_va,</span>
+<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>    <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a>    <span class="at">callbacks =</span> <span class="fu">list</span>(<span class="fu">luz_callback_keep_best_model</span>(<span class="at">monitor =</span> <span class="st">&quot;valid_loss&quot;</span>)),</span>
+<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cnn_fit)   <span class="co"># training loss keeps falling, validation loss turns up (the U); we kept the best epoch</span></span>
+<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate on the held-out images, reading the steps in execution order ----</span></span>
+<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a>cnn_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(cnn_fit, x_img[va, , , ]) <span class="sc">|&gt;</span>   <span class="co"># logits, one column per class</span></span>
+<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nnf_softmax</span>(<span class="at">dim =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span>                            <span class="co"># turn logits into probabilities</span></span>
+<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.array</span>()                                         <span class="co"># bring it back to R as a matrix [N, 2]</span></span>
+<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">truth =</span> <span class="fu">factor</span>(img<span class="sc">$</span>y[va], <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)), <span class="at">.pred =</span> cnn_prob[ , <span class="dv">2</span>]) <span class="sc">|&gt;</span></span>
+<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(truth, .pred, <span class="at">event_level =</span> <span class="st">&quot;second&quot;</span>)</span>
+<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a><span class="co"># A real RNN on ECG traces (ECG5000) ----</span></span>
+<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a>rnn_net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rnn_net&quot;</span>,</span>
+<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(in_size, <span class="at">hidden =</span> <span class="dv">24</span>, <span class="at">n_class =</span> <span class="dv">2</span>) {</span>
+<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>lstm <span class="ot">&lt;-</span> <span class="fu">nn_lstm</span>(in_size, hidden, <span class="at">batch_first =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>head <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(hidden, n_class)</span>
+<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a>    out  <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">lstm</span>(x)</span>
+<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a>    last <span class="ot">&lt;-</span> out[[<span class="dv">1</span>]][ , <span class="fu">dim</span>(out[[<span class="dv">1</span>]])[<span class="dv">2</span>], ]   <span class="co"># the LAST time step -&gt; [B, hidden]</span></span>
+<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span><span class="fu">head</span>(last)</span>
+<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a><span class="fu">rnn_net</span>(<span class="at">in_size =</span> <span class="dv">1</span>)   <span class="co"># inspect the architecture</span></span>
+<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a>ecg   <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="fu">here</span>(<span class="st">&quot;data-raw&quot;</span>, <span class="st">&quot;ecg.rds&quot;</span>))   <span class="co"># a list: x = traces [N, 140, 1], y = labels</span></span>
+<span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a>x_ecg <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(ecg<span class="sc">$</span>x, <span class="at">dtype =</span> <span class="fu">torch_float</span>())</span>
+<span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a>y_ecg <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(ecg<span class="sc">$</span>y, <span class="at">dtype =</span> <span class="fu">torch_long</span>())</span>
+<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a><span class="co"># See the data: one ECG trace per class, over the 140 time steps ----</span></span>
+<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a>ecg_show <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(</span>
+<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">t =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">140</span>, <span class="at">value =</span> <span class="fu">as.numeric</span>(ecg<span class="sc">$</span>x[<span class="fu">which</span>(ecg<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">1</span>)[<span class="dv">1</span>], , <span class="dv">1</span>]), <span class="at">class =</span> <span class="st">&quot;abnormal&quot;</span>),</span>
+<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">t =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">140</span>, <span class="at">value =</span> <span class="fu">as.numeric</span>(ecg<span class="sc">$</span>x[<span class="fu">which</span>(ecg<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">2</span>)[<span class="dv">1</span>], , <span class="dv">1</span>]), <span class="at">class =</span> <span class="st">&quot;normal&quot;</span>),</span>
+<span id="cb1-327"><a href="#cb1-327" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-328"><a href="#cb1-328" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ecg_show, <span class="fu">aes</span>(t, value)) <span class="sc">+</span></span>
+<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> class, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_manual_seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a>sp     <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">dim</span>(x_ecg)[<span class="dv">1</span>])</span>
+<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a>e_tr   <span class="ot">&lt;-</span> sp[<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>]</span>
+<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a>e_va   <span class="ot">&lt;-</span> sp[<span class="dv">101</span><span class="sc">:</span><span class="fu">length</span>(sp)]</span>
+<span id="cb1-338"><a href="#cb1-338" aria-hidden="true" tabindex="-1"></a>edl_tr <span class="ot">&lt;-</span> <span class="fu">dataloader</span>(<span class="fu">tensor_dataset</span>(x_ecg[e_tr, , ], y_ecg[e_tr]), <span class="at">batch_size =</span> <span class="dv">16</span>, <span class="at">shuffle =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-339"><a href="#cb1-339" aria-hidden="true" tabindex="-1"></a>edl_va <span class="ot">&lt;-</span> <span class="fu">dataloader</span>(<span class="fu">tensor_dataset</span>(x_ecg[e_va, , ], y_ecg[e_va]), <span class="at">batch_size =</span> <span class="dv">64</span>)</span>
+<span id="cb1-340"><a href="#cb1-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-341"><a href="#cb1-341" aria-hidden="true" tabindex="-1"></a>rnn_fit <span class="ot">&lt;-</span> rnn_net <span class="sc">|&gt;</span></span>
+<span id="cb1-342"><a href="#cb1-342" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setup</span>(</span>
+<span id="cb1-343"><a href="#cb1-343" aria-hidden="true" tabindex="-1"></a>    <span class="at">loss =</span> <span class="fu">nn_cross_entropy_loss</span>(),</span>
+<span id="cb1-344"><a href="#cb1-344" aria-hidden="true" tabindex="-1"></a>    <span class="at">optimizer =</span> optim_adam,</span>
+<span id="cb1-345"><a href="#cb1-345" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">list</span>(<span class="fu">luz_metric_accuracy</span>()),</span>
+<span id="cb1-346"><a href="#cb1-346" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-347"><a href="#cb1-347" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_hparams</span>(<span class="at">in_size =</span> <span class="fu">dim</span>(x_ecg)[<span class="dv">3</span>], <span class="at">hidden =</span> <span class="dv">24</span>, <span class="at">n_class =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-348"><a href="#cb1-348" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_opt_hparams</span>(<span class="at">lr =</span> <span class="fl">1e-3</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-349"><a href="#cb1-349" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(</span>
+<span id="cb1-350"><a href="#cb1-350" aria-hidden="true" tabindex="-1"></a>    edl_tr,</span>
+<span id="cb1-351"><a href="#cb1-351" aria-hidden="true" tabindex="-1"></a>    <span class="at">epochs =</span> <span class="dv">100</span>,</span>
+<span id="cb1-352"><a href="#cb1-352" aria-hidden="true" tabindex="-1"></a>    <span class="at">valid_data =</span> edl_va,</span>
+<span id="cb1-353"><a href="#cb1-353" aria-hidden="true" tabindex="-1"></a>    <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-354"><a href="#cb1-354" aria-hidden="true" tabindex="-1"></a>    <span class="at">callbacks =</span> <span class="fu">list</span>(<span class="fu">luz_callback_keep_best_model</span>(<span class="at">monitor =</span> <span class="st">&quot;valid_loss&quot;</span>)),</span>
+<span id="cb1-355"><a href="#cb1-355" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-357"><a href="#cb1-357" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rnn_fit)</span>
+<span id="cb1-358"><a href="#cb1-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-359"><a href="#cb1-359" aria-hidden="true" tabindex="-1"></a>ecg_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(rnn_fit, x_ecg[e_va, , ]) <span class="sc">|&gt;</span></span>
+<span id="cb1-360"><a href="#cb1-360" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nnf_softmax</span>(<span class="at">dim =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-361"><a href="#cb1-361" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.array</span>()</span>
+<span id="cb1-362"><a href="#cb1-362" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">truth =</span> <span class="fu">factor</span>(ecg<span class="sc">$</span>y[e_va], <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)), <span class="at">.pred =</span> ecg_prob[ , <span class="dv">2</span>]) <span class="sc">|&gt;</span></span>
+<span id="cb1-363"><a href="#cb1-363" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(truth, .pred, <span class="at">event_level =</span> <span class="st">&quot;second&quot;</span>)</span>
+<span id="cb1-364"><a href="#cb1-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-365"><a href="#cb1-365" aria-hidden="true" tabindex="-1"></a><span class="co"># Fused net: constructible, NOT trained, three modalities from three unrelated cohorts ----</span></span>
+<span id="cb1-366"><a href="#cb1-366" aria-hidden="true" tabindex="-1"></a><span class="co"># Head-less branches, one per modality, concatenated into a shared head.</span></span>
+<span id="cb1-367"><a href="#cb1-367" aria-hidden="true" tabindex="-1"></a>cnn2d_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb1-368"><a href="#cb1-368" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;cnn2d_branch&quot;</span>,</span>
+<span id="cb1-369"><a href="#cb1-369" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(<span class="at">ch =</span> <span class="dv">8</span>) {</span>
+<span id="cb1-370"><a href="#cb1-370" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>conv <span class="ot">&lt;-</span> <span class="fu">nn_conv2d</span>(<span class="dv">1</span>, ch, <span class="at">kernel_size =</span> <span class="dv">3</span>, <span class="at">padding =</span> <span class="dv">1</span>)</span>
+<span id="cb1-371"><a href="#cb1-371" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>pool <span class="ot">&lt;-</span> <span class="fu">nn_adaptive_avg_pool2d</span>(<span class="dv">1</span>)</span>
+<span id="cb1-372"><a href="#cb1-372" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-373"><a href="#cb1-373" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) self<span class="sc">$</span><span class="fu">pool</span>(<span class="fu">nnf_relu</span>(self<span class="sc">$</span><span class="fu">conv</span>(x)))<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">4</span>)<span class="sc">$</span><span class="fu">squeeze</span>(<span class="dv">3</span>),   <span class="co"># [B, ch]</span></span>
+<span id="cb1-374"><a href="#cb1-374" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-375"><a href="#cb1-375" aria-hidden="true" tabindex="-1"></a>rnn_branch <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb1-376"><a href="#cb1-376" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rnn_branch&quot;</span>,</span>
+<span id="cb1-377"><a href="#cb1-377" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(in_size, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
+<span id="cb1-378"><a href="#cb1-378" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>lstm <span class="ot">&lt;-</span> <span class="fu">nn_lstm</span>(in_size, hidden, <span class="at">batch_first =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-379"><a href="#cb1-379" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-380"><a href="#cb1-380" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-381"><a href="#cb1-381" aria-hidden="true" tabindex="-1"></a>    out <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">lstm</span>(x)</span>
+<span id="cb1-382"><a href="#cb1-382" aria-hidden="true" tabindex="-1"></a>    out[[<span class="dv">1</span>]][ , <span class="fu">dim</span>(out[[<span class="dv">1</span>]])[<span class="dv">2</span>], ]</span>
+<span id="cb1-383"><a href="#cb1-383" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-384"><a href="#cb1-384" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-385"><a href="#cb1-385" aria-hidden="true" tabindex="-1"></a>fused_net <span class="ot">&lt;-</span> <span class="fu">nn_module</span>(</span>
+<span id="cb1-386"><a href="#cb1-386" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fused_net&quot;</span>,</span>
+<span id="cb1-387"><a href="#cb1-387" aria-hidden="true" tabindex="-1"></a>  <span class="at">initialize =</span> <span class="cf">function</span>(n_tab, <span class="at">img_ch =</span> <span class="dv">8</span>, seq_in, <span class="at">hidden =</span> <span class="dv">16</span>) {</span>
+<span id="cb1-388"><a href="#cb1-388" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>tab  <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(n_tab, <span class="dv">16</span>)</span>
+<span id="cb1-389"><a href="#cb1-389" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>cnn  <span class="ot">&lt;-</span> <span class="fu">cnn2d_branch</span>(img_ch)</span>
+<span id="cb1-390"><a href="#cb1-390" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>rnn  <span class="ot">&lt;-</span> <span class="fu">rnn_branch</span>(seq_in, hidden)</span>
+<span id="cb1-391"><a href="#cb1-391" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span>head <span class="ot">&lt;-</span> <span class="fu">nn_linear</span>(<span class="dv">16</span> <span class="sc">+</span> img_ch <span class="sc">+</span> hidden, <span class="dv">2</span>)</span>
+<span id="cb1-392"><a href="#cb1-392" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-393"><a href="#cb1-393" aria-hidden="true" tabindex="-1"></a>  <span class="at">forward =</span> <span class="cf">function</span>(x_tab, x_img, x_seq) {</span>
+<span id="cb1-394"><a href="#cb1-394" aria-hidden="true" tabindex="-1"></a>    t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)   <span class="co"># [B, 16]</span></span>
+<span id="cb1-395"><a href="#cb1-395" aria-hidden="true" tabindex="-1"></a>    c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)   <span class="co"># [B, img_ch]</span></span>
+<span id="cb1-396"><a href="#cb1-396" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)   <span class="co"># [B, hidden]</span></span>
+<span id="cb1-397"><a href="#cb1-397" aria-hidden="true" tabindex="-1"></a>    self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))   <span class="co"># -&gt; [B, 2]</span></span>
+<span id="cb1-398"><a href="#cb1-398" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb1-399"><a href="#cb1-399" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-400"><a href="#cb1-400" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-401"><a href="#cb1-401" aria-hidden="true" tabindex="-1"></a><span class="co"># One example per modality (a heart_failure row, one X-ray, one ECG) only proves the wiring.</span></span>
+<span id="cb1-402"><a href="#cb1-402" aria-hidden="true" tabindex="-1"></a>x_tab_all <span class="ot">&lt;-</span> <span class="fu">bake</span>(<span class="fu">prep</span>(base_rec), <span class="at">new_data =</span> train) <span class="sc">|&gt;</span></span>
+<span id="cb1-403"><a href="#cb1-403" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>outcome) <span class="sc">|&gt;</span></span>
+<span id="cb1-404"><a href="#cb1-404" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
+<span id="cb1-405"><a href="#cb1-405" aria-hidden="true" tabindex="-1"></a>x_tab1 <span class="ot">&lt;-</span> <span class="fu">torch_tensor</span>(x_tab_all[<span class="dv">1</span>, , <span class="at">drop =</span> <span class="cn">FALSE</span>], <span class="at">dtype =</span> <span class="fu">torch_float</span>())</span>
+<span id="cb1-406"><a href="#cb1-406" aria-hidden="true" tabindex="-1"></a>x_img1 <span class="ot">&lt;-</span> x_img[<span class="dv">1</span>, , , , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb1-407"><a href="#cb1-407" aria-hidden="true" tabindex="-1"></a>x_ecg1 <span class="ot">&lt;-</span> x_ecg[<span class="dv">1</span>, , , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb1-408"><a href="#cb1-408" aria-hidden="true" tabindex="-1"></a>fused  <span class="ot">&lt;-</span> <span class="fu">fused_net</span>(<span class="at">n_tab =</span> <span class="fu">ncol</span>(x_tab_all), <span class="at">img_ch =</span> <span class="dv">8</span>, <span class="at">seq_in =</span> <span class="fu">dim</span>(x_ecg)[<span class="dv">3</span>], <span class="at">hidden =</span> <span class="dv">16</span>)</span>
+<span id="cb1-409"><a href="#cb1-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-410"><a href="#cb1-410" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder the lines to: run the three branches, concat along dim=2, then the head</span></span>
+<span id="cb1-411"><a href="#cb1-411" aria-hidden="true" tabindex="-1"></a><span class="er">}</span></span>
+<span id="cb1-412"><a href="#cb1-412" aria-hidden="true" tabindex="-1"></a>  self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))</span>
+<span id="cb1-413"><a href="#cb1-413" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)</span>
+<span id="cb1-414"><a href="#cb1-414" aria-hidden="true" tabindex="-1"></a>  c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)</span>
+<span id="cb1-415"><a href="#cb1-415" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)</span>
+<span id="cb1-416"><a href="#cb1-416" aria-hidden="true" tabindex="-1"></a>fused_forward <span class="ot">&lt;-</span> <span class="cf">function</span>(self, x_tab, x_img, x_seq) {</span>
+<span id="cb1-417"><a href="#cb1-417" aria-hidden="true" tabindex="-1"></a><span class="fu">fused</span>(x_tab1, x_img1, x_ecg1)<span class="sc">$</span>shape   <span class="co"># expect [1, 2]: wiring proven, nothing trained</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
@@ -2729,20 +2730,20 @@ $ outcome                  &lt;fct&gt; died, died, died, died, died, died, died,
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="xpakqzufbt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xpakqzufbt table {
+<div id="pvrtveeqay" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#pvrtveeqay table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#xpakqzufbt thead, #xpakqzufbt tbody, #xpakqzufbt tfoot, #xpakqzufbt tr, #xpakqzufbt td, #xpakqzufbt th {
+#pvrtveeqay thead, #pvrtveeqay tbody, #pvrtveeqay tfoot, #pvrtveeqay tr, #pvrtveeqay td, #pvrtveeqay th {
 border-style: none;
 }
-#xpakqzufbt p {
+#pvrtveeqay p {
 margin: 0;
 padding: 0;
 }
-#xpakqzufbt .gt_table {
+#pvrtveeqay .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2767,11 +2768,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#xpakqzufbt .gt_caption {
+#pvrtveeqay .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#xpakqzufbt .gt_title {
+#pvrtveeqay .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2782,7 +2783,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#xpakqzufbt .gt_subtitle {
+#pvrtveeqay .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2793,7 +2794,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#xpakqzufbt .gt_heading {
+#pvrtveeqay .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2804,12 +2805,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#xpakqzufbt .gt_bottom_border {
+#pvrtveeqay .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xpakqzufbt .gt_col_headings {
+#pvrtveeqay .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2823,7 +2824,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#xpakqzufbt .gt_col_heading {
+#pvrtveeqay .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2842,7 +2843,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#xpakqzufbt .gt_column_spanner_outer {
+#pvrtveeqay .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2853,13 +2854,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#xpakqzufbt .gt_column_spanner_outer:first-child {
+#pvrtveeqay .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#xpakqzufbt .gt_column_spanner_outer:last-child {
+#pvrtveeqay .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#xpakqzufbt .gt_column_spanner {
+#pvrtveeqay .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2870,10 +2871,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#xpakqzufbt .gt_spanner_row {
+#pvrtveeqay .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#xpakqzufbt .gt_group_heading {
+#pvrtveeqay .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2898,7 +2899,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#xpakqzufbt .gt_empty_group_heading {
+#pvrtveeqay .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2912,13 +2913,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#xpakqzufbt .gt_from_md > :first-child {
+#pvrtveeqay .gt_from_md > :first-child {
 margin-top: 0;
 }
-#xpakqzufbt .gt_from_md > :last-child {
+#pvrtveeqay .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#xpakqzufbt .gt_row {
+#pvrtveeqay .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2936,7 +2937,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#xpakqzufbt .gt_stub {
+#pvrtveeqay .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2948,7 +2949,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xpakqzufbt .gt_stub_row_group {
+#pvrtveeqay .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2961,13 +2962,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#xpakqzufbt .gt_row_group_first td {
+#pvrtveeqay .gt_row_group_first td {
 border-top-width: 2px;
 }
-#xpakqzufbt .gt_row_group_first th {
+#pvrtveeqay .gt_row_group_first th {
 border-top-width: 2px;
 }
-#xpakqzufbt .gt_summary_row {
+#pvrtveeqay .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2976,14 +2977,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xpakqzufbt .gt_first_summary_row {
+#pvrtveeqay .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#xpakqzufbt .gt_first_summary_row.thick {
+#pvrtveeqay .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#xpakqzufbt .gt_last_summary_row {
+#pvrtveeqay .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2992,7 +2993,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xpakqzufbt .gt_grand_summary_row {
+#pvrtveeqay .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3001,7 +3002,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xpakqzufbt .gt_first_grand_summary_row {
+#pvrtveeqay .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3010,7 +3011,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#xpakqzufbt .gt_last_grand_summary_row_top {
+#pvrtveeqay .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3019,10 +3020,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#xpakqzufbt .gt_striped {
+#pvrtveeqay .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#xpakqzufbt .gt_table_body {
+#pvrtveeqay .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3030,7 +3031,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xpakqzufbt .gt_footnotes {
+#pvrtveeqay .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3043,7 +3044,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#xpakqzufbt .gt_footnote {
+#pvrtveeqay .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3051,7 +3052,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xpakqzufbt .gt_sourcenotes {
+#pvrtveeqay .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3064,64 +3065,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#xpakqzufbt .gt_sourcenote {
+#pvrtveeqay .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xpakqzufbt .gt_left {
+#pvrtveeqay .gt_left {
 text-align: left;
 }
-#xpakqzufbt .gt_center {
+#pvrtveeqay .gt_center {
 text-align: center;
 }
-#xpakqzufbt .gt_right {
+#pvrtveeqay .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#xpakqzufbt .gt_font_normal {
+#pvrtveeqay .gt_font_normal {
 font-weight: normal;
 }
-#xpakqzufbt .gt_font_bold {
+#pvrtveeqay .gt_font_bold {
 font-weight: bold;
 }
-#xpakqzufbt .gt_font_italic {
+#pvrtveeqay .gt_font_italic {
 font-style: italic;
 }
-#xpakqzufbt .gt_super {
+#pvrtveeqay .gt_super {
 font-size: 65%;
 }
-#xpakqzufbt .gt_footnote_marks {
+#pvrtveeqay .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#xpakqzufbt .gt_asterisk {
+#pvrtveeqay .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#xpakqzufbt .gt_indent_1 {
+#pvrtveeqay .gt_indent_1 {
 text-indent: 5px;
 }
-#xpakqzufbt .gt_indent_2 {
+#pvrtveeqay .gt_indent_2 {
 text-indent: 10px;
 }
-#xpakqzufbt .gt_indent_3 {
+#pvrtveeqay .gt_indent_3 {
 text-indent: 15px;
 }
-#xpakqzufbt .gt_indent_4 {
+#pvrtveeqay .gt_indent_4 {
 text-indent: 20px;
 }
-#xpakqzufbt .gt_indent_5 {
+#pvrtveeqay .gt_indent_5 {
 text-indent: 25px;
 }
-#xpakqzufbt .katex-display {
+#pvrtveeqay .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#xpakqzufbt div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#pvrtveeqay div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -3442,9 +3443,9 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the model we just rebuilt: one-row probability prediction ----</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>fitted_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fitted_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The validated random-forest workflow, extracted once and reused by the explainers in step 01 ----</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(rf_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)   <span class="co"># sanity-check: a one-row probability from the workflow</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
   .pred_died .pred_survived
@@ -3462,24 +3463,21 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] FALSE</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The validated Basic random forest, already fitted in the recap, as a workflow ----</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation VIMP — what the forest relies on ----</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore `object` and route the prediction through the captured workflow `rf_wf` instead.</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>vimp_pred <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata) <span class="fu">predict</span>(rf_wf, newdata, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="fu">vip</span>(</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  rf_wf,</span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">method       =</span> <span class="st">&quot;permute&quot;</span>,</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">train        =</span> train,</span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">target       =</span> <span class="st">&quot;outcome&quot;</span>,</span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric       =</span> <span class="st">&quot;roc_auc&quot;</span>,</span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_wrapper =</span> vimp_pred,</span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">nsim         =</span> <span class="dv">10</span>,</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_level  =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation VIMP — what the forest relies on (rf_wf is the workflow extracted in the recap) ----</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore `object` and route the prediction through the captured workflow `rf_wf` instead.</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>vimp_pred <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata) <span class="fu">predict</span>(rf_wf, newdata, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">vip</span>(</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  rf_wf,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">method       =</span> <span class="st">&quot;permute&quot;</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">train        =</span> train,</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">target       =</span> <span class="st">&quot;outcome&quot;</span>,</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric       =</span> <span class="st">&quot;roc_auc&quot;</span>,</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_wrapper =</span> vimp_pred,</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">nsim         =</span> <span class="dv">10</span>,</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_level  =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -3488,16 +3486,20 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 </div>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SHAP on the logistic anchor (log_fit, fitted in the recap): the sanity check ----</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># kernelshap&#39;s pred_fun signature is function(object, X, ...).</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>pred_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(object, X) <span class="fu">predict</span>(object, X, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>bg <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>outcome)</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>bg_small <span class="ot">&lt;-</span> bg <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">40</span>)</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Background size, shown: full vs reduced (same explainer, same patient) ----</span></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Full background (~224 rows): lower-variance attributions, slower.</span></span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>ks_log_full <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># kernelshap&#39;s pred_fun signature is function(object, X, ...), and kernelshap hands `object`</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># back as-is: here `object` IS the model we pass, so ONE pred_fun serves the logistic, the</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># forest, and the MLP (model-agnostic). Contrast `vimp_pred` above, which must close over</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># `rf_wf`: vip hands `pred_wrapper` the bare `ranger` engine, on which `predict(., type = &quot;prob&quot;)`</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># is undefined. Two explainers, two conventions, two functions.</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>pred_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(object, X) <span class="fu">predict</span>(object, X, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>bg <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>outcome)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>bg_small <span class="ot">&lt;-</span> bg <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">40</span>)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Background size, shown: full vs reduced (same explainer, same patient) ----</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Full background (~224 rows): lower-variance attributions, slower.</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>ks_log_full <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_log_full) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>

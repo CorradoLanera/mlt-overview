@@ -313,7 +313,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <!-- Step 00 (~30 min): rebuild Basic's full selection live to final_fit; predict 1 row; pre-warm torch. -->
 <p><strong>Why first.</strong> Advanced starts by <strong>rebuilding</strong> the model you validated in Basic, live: day one re-runs that exact selection to land <code>final_fit</code> again, so a clean, warm session is the precondition for everything that follows.</p>
 <ul>
-<li>Rebuild Basic’s selection live, then <code>extract_workflow(final_fit)</code> on the finalized random forest.</li>
+<li>Rebuild Basic’s selection live, then <code>rf_wf &lt;- extract_workflow(final_fit)</code> on the finalized random forest.</li>
 <li><code>predict()</code> on <strong>one</strong> patient row: a probability, not yet an explanation.</li>
 <li><strong>Pre-warm torch</strong> so the first tensor later does not pay the init cost.</li>
 </ul>
@@ -335,7 +335,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <h2>Live check: is the model rebuilt, is torch warm?</h2>
 <p>Run three checks. Signal <strong>GREEN</strong> if all pass, <strong>RED</strong> if any fails:</p>
 <ol type="1">
-<li>Does <code>predict(fitted_wf, hf_tbl[1, ], type = "prob")</code> return a <strong>1-row tibble</strong> from the workflow we just fitted?</li>
+<li>Does <code>predict(rf_wf, hf_tbl[1, ], type = "prob")</code> return a <strong>1-row tibble</strong> from the workflow we just fitted?</li>
 <li>Does <strong><code>torch_tensor(1)</code></strong> run <strong>without a download</strong> (backend loads instantly, torch pre-warmed)?</li>
 <li>Is <code>final_fit</code> the <strong>finalized workflow</strong> from the live selection (the one that passed <code>last_fit()</code>)?</li>
 </ol>
@@ -357,7 +357,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <h2>GREEN: Basic’s model, rebuilt live</h2>
 <p>All three pass:</p>
 <ul>
-<li><code>predict()</code> on the extracted <code>fitted_wf</code> returns a probability; <code>final_fit</code> came from the live selection we just ran;</li>
+<li><code>predict()</code> on the extracted <code>rf_wf</code> returns a probability; <code>final_fit</code> came from the live selection we just ran;</li>
 <li><code>torch_tensor(1)</code> runs without downloading libtorch (the session was pre-warmed at setup);</li>
 <li>the object is the finalized <code>last_fit</code> workflow from the selection (<code>extract_workflow(final_fit)</code>), the random forest that won on <code>roc_auc</code>.</li>
 </ul>
@@ -423,13 +423,13 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 </section>
 <section id="what-we-hand-the-explainers-extract_workflow" class="slide level2 smaller">
 <h2>What we hand the explainers: <code>extract_workflow()</code></h2>
-<p><code>vip()</code> and <code>kernelshap()</code> both need a fitted object that <strong>predicts</strong>. From the recap we have <code>final_fit</code>: a <code>last_fit</code> <strong>result</strong> (metrics, predictions, and the fitted workflow), not a model you can call directly.</p>
+<p><code>vip()</code> and <code>kernelshap()</code> both need a fitted object that <strong>predicts</strong>. <code>final_fit</code> is a <code>last_fit</code> <strong>result</strong> (metrics, predictions, and the fitted workflow), not a model you can call directly. That is why, back in the recap, we ran <code>extract_workflow(final_fit)</code>.</p>
 <ul>
-<li><code>extract_workflow(final_fit)</code> pulls out the <strong>trained workflow</strong>: the recipe (the same preprocessing) <strong>plus</strong> the fitted model, as one object.</li>
-<li>That object is what we pass to <code>vip</code> and to <code>kernelshap</code>’s <code>pred_fun</code>, so every explanation runs through the exact preprocessing and model you validated.</li>
+<li>That call pulled out the <strong>trained workflow</strong> as <code>rf_wf</code>: the recipe (the same preprocessing) <strong>plus</strong> the fitted model, as one object.</li>
+<li><code>rf_wf</code> is what we pass to <code>vip</code> and to <code>kernelshap</code>’s <code>pred_fun</code>, so every explanation runs through the exact preprocessing and model you validated.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): plumbing, min-~20. <code>final_fit</code> è un risultato <code>last_fit</code>, non un modello chiamabile. <code>extract_workflow()</code> ne estrae il workflow allenato (recipe + modello). È ciò che diamo a vip e a kernelshap: spiegano esattamente pre-processing+modello validati.</p>
+<p>Voce docente (IT): plumbing, min-~20. <code>final_fit</code> è un risultato <code>last_fit</code>, non un modello chiamabile. Nel recap ne abbiamo già estratto il workflow allenato (<code>rf_wf</code>, via <code>extract_workflow()</code>): recipe + modello. È <code>rf_wf</code> che diamo a vip e a kernelshap: spiegano esattamente pre-processing+modello validati.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;

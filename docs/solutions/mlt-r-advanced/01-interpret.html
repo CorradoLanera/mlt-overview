@@ -2372,59 +2372,60 @@ vertical-align: -.125em;
 <span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>preds <span class="sc">|&gt;</span> <span class="fu">roc_curve</span>(outcome, .pred_died) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span>
 <span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>preds <span class="sc">|&gt;</span> <span class="fu">pr_curve</span>(outcome, .pred_died) <span class="sc">|&gt;</span> <span class="fu">autoplot</span>()</span>
 <span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the model we just rebuilt: one-row probability prediction ----</span></span>
-<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>fitted_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
-<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fitted_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a><span class="co"># The validated random-forest workflow, extracted once and reused by the explainers in step 01 ----</span></span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(rf_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)   <span class="co"># sanity-check: a one-row probability from the workflow</span></span>
 <span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="co"># Pre-warm torch so deep learning is instant later ----</span></span>
 <span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a><span class="fu">torch_tensor</span>(<span class="dv">1</span>)             <span class="co"># forces the LibTorch backend to load now, not mid-demo</span></span>
 <span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>torch<span class="sc">::</span><span class="fu">cuda_is_available</span>()  <span class="co"># FALSE on this CPU build box; TRUE on the classroom GPU machine</span></span>
 <span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a><span class="co"># The validated Basic random forest, already fitted in the recap, as a workflow ----</span></span>
-<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
-<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation VIMP — what the forest relies on ----</span></span>
-<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we</span></span>
-<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore `object` and route the prediction through the captured workflow `rf_wf` instead.</span></span>
-<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>vimp_pred <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata) <span class="fu">predict</span>(rf_wf, newdata, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
-<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a><span class="fu">vip</span>(</span>
-<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>  rf_wf,</span>
-<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>  <span class="at">method       =</span> <span class="st">&quot;permute&quot;</span>,</span>
-<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>  <span class="at">train        =</span> train,</span>
-<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>  <span class="at">target       =</span> <span class="st">&quot;outcome&quot;</span>,</span>
-<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric       =</span> <span class="st">&quot;roc_auc&quot;</span>,</span>
-<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_wrapper =</span> vimp_pred,</span>
-<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>  <span class="at">nsim         =</span> <span class="dv">10</span>,</span>
-<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_level  =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a><span class="co"># SHAP on the logistic anchor (log_fit, fitted in the recap): the sanity check ----</span></span>
-<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a><span class="co"># kernelshap&#39;s pred_fun signature is function(object, X, ...).</span></span>
-<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>pred_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(object, X) <span class="fu">predict</span>(object, X, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
-<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>bg <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>outcome)</span>
-<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>bg_small <span class="ot">&lt;-</span> bg <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">40</span>)</span>
-<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a><span class="co"># Background size, shown: full vs reduced (same explainer, same patient) ----</span></span>
-<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a><span class="co"># Full background (~224 rows): lower-variance attributions, slower.</span></span>
-<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>ks_log_full <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun)</span>
-<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_log_full) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
-<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a><span class="co"># Fixed 40-row background: cheaper and slightly noisier, the waterfall barely moves.</span></span>
-<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a><span class="co"># We reuse this background for every model (logistic -&gt; forest -&gt; MLP) so comparisons match.</span></span>
-<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>ks_log_small <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg_small, <span class="at">pred_fun =</span> pred_fun)</span>
-<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_log_small) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a><span class="co"># The SHAP signs must echo the logistic coefficients ----</span></span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(log_fit) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(<span class="fu">abs</span>(estimate)))</span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a><span class="co"># Your turn: swap the model and the function (permshap -&gt; kernelshap), reuse bg_small ----</span></span>
-<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
-<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>ks_rf <span class="ot">&lt;-</span> <span class="fu">kernelshap</span>(___, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> ___, <span class="at">pred_fun =</span> ___)</span>
-<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_rf) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation VIMP — what the forest relies on (rf_wf is the workflow extracted in the recap) ----</span></span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we</span></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore `object` and route the prediction through the captured workflow `rf_wf` instead.</span></span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>vimp_pred <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata) <span class="fu">predict</span>(rf_wf, newdata, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="fu">vip</span>(</span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>  rf_wf,</span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>  <span class="at">method       =</span> <span class="st">&quot;permute&quot;</span>,</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>  <span class="at">train        =</span> train,</span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>  <span class="at">target       =</span> <span class="st">&quot;outcome&quot;</span>,</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric       =</span> <span class="st">&quot;roc_auc&quot;</span>,</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_wrapper =</span> vimp_pred,</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>  <span class="at">nsim         =</span> <span class="dv">10</span>,</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_level  =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a><span class="co"># SHAP on the logistic anchor (log_fit, fitted in the recap): the sanity check ----</span></span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a><span class="co"># kernelshap&#39;s pred_fun signature is function(object, X, ...), and kernelshap hands `object`</span></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a><span class="co"># back as-is: here `object` IS the model we pass, so ONE pred_fun serves the logistic, the</span></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a><span class="co"># forest, and the MLP (model-agnostic). Contrast `vimp_pred` above, which must close over</span></span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a><span class="co"># `rf_wf`: vip hands `pred_wrapper` the bare `ranger` engine, on which `predict(., type = &quot;prob&quot;)`</span></span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a><span class="co"># is undefined. Two explainers, two conventions, two functions.</span></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>pred_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(object, X) <span class="fu">predict</span>(object, X, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>bg <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>outcome)</span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>bg_small <span class="ot">&lt;-</span> bg <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">40</span>)</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a><span class="co"># Background size, shown: full vs reduced (same explainer, same patient) ----</span></span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a><span class="co"># Full background (~224 rows): lower-variance attributions, slower.</span></span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>ks_log_full <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun)</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_log_full) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a><span class="co"># Fixed 40-row background: cheaper and slightly noisier, the waterfall barely moves.</span></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a><span class="co"># We reuse this background for every model (logistic -&gt; forest -&gt; MLP) so comparisons match.</span></span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>ks_log_small <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg_small, <span class="at">pred_fun =</span> pred_fun)</span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_log_small) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a><span class="co"># The SHAP signs must echo the logistic coefficients ----</span></span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(log_fit) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(<span class="fu">abs</span>(estimate)))</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a><span class="co"># Your turn: swap the model and the function (permshap -&gt; kernelshap), reuse bg_small ----</span></span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>ks_rf <span class="ot">&lt;-</span> <span class="fu">kernelshap</span>(___, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> ___, <span class="at">pred_fun =</span> ___)</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_rf) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
@@ -2506,20 +2507,20 @@ $ outcome                  &lt;fct&gt; died, died, died, died, died, died, died,
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="gcsgbpaljc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#gcsgbpaljc table {
+<div id="ppscuznhqq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ppscuznhqq table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#gcsgbpaljc thead, #gcsgbpaljc tbody, #gcsgbpaljc tfoot, #gcsgbpaljc tr, #gcsgbpaljc td, #gcsgbpaljc th {
+#ppscuznhqq thead, #ppscuznhqq tbody, #ppscuznhqq tfoot, #ppscuznhqq tr, #ppscuznhqq td, #ppscuznhqq th {
 border-style: none;
 }
-#gcsgbpaljc p {
+#ppscuznhqq p {
 margin: 0;
 padding: 0;
 }
-#gcsgbpaljc .gt_table {
+#ppscuznhqq .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2544,11 +2545,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_caption {
+#ppscuznhqq .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#gcsgbpaljc .gt_title {
+#ppscuznhqq .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2559,7 +2560,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#gcsgbpaljc .gt_subtitle {
+#ppscuznhqq .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2570,7 +2571,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#gcsgbpaljc .gt_heading {
+#ppscuznhqq .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2581,12 +2582,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_bottom_border {
+#ppscuznhqq .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_col_headings {
+#ppscuznhqq .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2600,7 +2601,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_col_heading {
+#ppscuznhqq .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2619,7 +2620,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#gcsgbpaljc .gt_column_spanner_outer {
+#ppscuznhqq .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2630,13 +2631,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#gcsgbpaljc .gt_column_spanner_outer:first-child {
+#ppscuznhqq .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#gcsgbpaljc .gt_column_spanner_outer:last-child {
+#ppscuznhqq .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#gcsgbpaljc .gt_column_spanner {
+#ppscuznhqq .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2647,10 +2648,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#gcsgbpaljc .gt_spanner_row {
+#ppscuznhqq .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#gcsgbpaljc .gt_group_heading {
+#ppscuznhqq .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2675,7 +2676,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#gcsgbpaljc .gt_empty_group_heading {
+#ppscuznhqq .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2689,13 +2690,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#gcsgbpaljc .gt_from_md > :first-child {
+#ppscuznhqq .gt_from_md > :first-child {
 margin-top: 0;
 }
-#gcsgbpaljc .gt_from_md > :last-child {
+#ppscuznhqq .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#gcsgbpaljc .gt_row {
+#ppscuznhqq .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2713,7 +2714,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#gcsgbpaljc .gt_stub {
+#ppscuznhqq .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2725,7 +2726,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#gcsgbpaljc .gt_stub_row_group {
+#ppscuznhqq .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2738,13 +2739,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#gcsgbpaljc .gt_row_group_first td {
+#ppscuznhqq .gt_row_group_first td {
 border-top-width: 2px;
 }
-#gcsgbpaljc .gt_row_group_first th {
+#ppscuznhqq .gt_row_group_first th {
 border-top-width: 2px;
 }
-#gcsgbpaljc .gt_summary_row {
+#ppscuznhqq .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2753,14 +2754,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#gcsgbpaljc .gt_first_summary_row {
+#ppscuznhqq .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_first_summary_row.thick {
+#ppscuznhqq .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#gcsgbpaljc .gt_last_summary_row {
+#ppscuznhqq .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2769,7 +2770,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_grand_summary_row {
+#ppscuznhqq .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2778,7 +2779,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#gcsgbpaljc .gt_first_grand_summary_row {
+#ppscuznhqq .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2787,7 +2788,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_last_grand_summary_row_top {
+#ppscuznhqq .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2796,10 +2797,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_striped {
+#ppscuznhqq .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#gcsgbpaljc .gt_table_body {
+#ppscuznhqq .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2807,7 +2808,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_footnotes {
+#ppscuznhqq .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2820,7 +2821,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_footnote {
+#ppscuznhqq .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -2828,7 +2829,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#gcsgbpaljc .gt_sourcenotes {
+#ppscuznhqq .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2841,64 +2842,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#gcsgbpaljc .gt_sourcenote {
+#ppscuznhqq .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#gcsgbpaljc .gt_left {
+#ppscuznhqq .gt_left {
 text-align: left;
 }
-#gcsgbpaljc .gt_center {
+#ppscuznhqq .gt_center {
 text-align: center;
 }
-#gcsgbpaljc .gt_right {
+#ppscuznhqq .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#gcsgbpaljc .gt_font_normal {
+#ppscuznhqq .gt_font_normal {
 font-weight: normal;
 }
-#gcsgbpaljc .gt_font_bold {
+#ppscuznhqq .gt_font_bold {
 font-weight: bold;
 }
-#gcsgbpaljc .gt_font_italic {
+#ppscuznhqq .gt_font_italic {
 font-style: italic;
 }
-#gcsgbpaljc .gt_super {
+#ppscuznhqq .gt_super {
 font-size: 65%;
 }
-#gcsgbpaljc .gt_footnote_marks {
+#ppscuznhqq .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#gcsgbpaljc .gt_asterisk {
+#ppscuznhqq .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#gcsgbpaljc .gt_indent_1 {
+#ppscuznhqq .gt_indent_1 {
 text-indent: 5px;
 }
-#gcsgbpaljc .gt_indent_2 {
+#ppscuznhqq .gt_indent_2 {
 text-indent: 10px;
 }
-#gcsgbpaljc .gt_indent_3 {
+#ppscuznhqq .gt_indent_3 {
 text-indent: 15px;
 }
-#gcsgbpaljc .gt_indent_4 {
+#ppscuznhqq .gt_indent_4 {
 text-indent: 20px;
 }
-#gcsgbpaljc .gt_indent_5 {
+#ppscuznhqq .gt_indent_5 {
 text-indent: 25px;
 }
-#gcsgbpaljc .katex-display {
+#ppscuznhqq .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#gcsgbpaljc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ppscuznhqq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -3219,9 +3220,9 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity-check the model we just rebuilt: one-row probability prediction ----</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>fitted_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fitted_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The validated random-forest workflow, extracted once and reused by the explainers in step 01 ----</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(rf_wf, hf[<span class="dv">1</span>, ], <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)   <span class="co"># sanity-check: a one-row probability from the workflow</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
   .pred_died .pred_survived
@@ -3239,24 +3240,21 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] FALSE</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The validated Basic random forest, already fitted in the recap, as a workflow ----</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>rf_wf <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation VIMP — what the forest relies on ----</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore `object` and route the prediction through the captured workflow `rf_wf` instead.</span></span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>vimp_pred <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata) <span class="fu">predict</span>(rf_wf, newdata, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="fu">vip</span>(</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  rf_wf,</span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">method       =</span> <span class="st">&quot;permute&quot;</span>,</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">train        =</span> train,</span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">target       =</span> <span class="st">&quot;outcome&quot;</span>,</span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric       =</span> <span class="st">&quot;roc_auc&quot;</span>,</span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_wrapper =</span> vimp_pred,</span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">nsim         =</span> <span class="dv">10</span>,</span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_level  =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Permutation VIMP — what the forest relies on (rf_wf is the workflow extracted in the recap) ----</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ignore `object` and route the prediction through the captured workflow `rf_wf` instead.</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>vimp_pred <span class="ot">&lt;-</span> <span class="cf">function</span>(object, newdata) <span class="fu">predict</span>(rf_wf, newdata, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">vip</span>(</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  rf_wf,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">method       =</span> <span class="st">&quot;permute&quot;</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">train        =</span> train,</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">target       =</span> <span class="st">&quot;outcome&quot;</span>,</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric       =</span> <span class="st">&quot;roc_auc&quot;</span>,</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_wrapper =</span> vimp_pred,</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">nsim         =</span> <span class="dv">10</span>,</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_level  =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -3265,16 +3263,20 @@ Residual Deviance: 236.2    AIC: 260.2</code></pre>
 </div>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># SHAP on the logistic anchor (log_fit, fitted in the recap): the sanity check ----</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># kernelshap&#39;s pred_fun signature is function(object, X, ...).</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>pred_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(object, X) <span class="fu">predict</span>(object, X, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>bg <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>outcome)</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>bg_small <span class="ot">&lt;-</span> bg <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">40</span>)</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Background size, shown: full vs reduced (same explainer, same patient) ----</span></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Full background (~224 rows): lower-variance attributions, slower.</span></span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>ks_log_full <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># kernelshap&#39;s pred_fun signature is function(object, X, ...), and kernelshap hands `object`</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># back as-is: here `object` IS the model we pass, so ONE pred_fun serves the logistic, the</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># forest, and the MLP (model-agnostic). Contrast `vimp_pred` above, which must close over</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># `rf_wf`: vip hands `pred_wrapper` the bare `ranger` engine, on which `predict(., type = &quot;prob&quot;)`</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># is undefined. Two explainers, two conventions, two functions.</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>pred_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(object, X) <span class="fu">predict</span>(object, X, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)<span class="sc">$</span>.pred_died</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>bg <span class="ot">&lt;-</span> train <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>outcome)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>bg_small <span class="ot">&lt;-</span> bg <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">40</span>)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Background size, shown: full vs reduced (same explainer, same patient) ----</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Full background (~224 rows): lower-variance attributions, slower.</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2</span>)</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>ks_log_full <span class="ot">&lt;-</span> <span class="fu">permshap</span>(log_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapviz</span>(ks_log_full) <span class="sc">|&gt;</span> <span class="fu">sv_waterfall</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
