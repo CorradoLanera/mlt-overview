@@ -17,6 +17,7 @@ shapviz(ks_mlp) |> sv_waterfall()
 
 # Beyond tidymodels: bespoke nets written and trained in torch/luz ----
 source(here("R", "nn-modules.R"))
+torch_set_default_dtype(torch_float())   # brulee left the default as double; nets use float32 to match inputs
 
 # How the committed tensors were fetched (shown, not run; full script in dev/prep-dl-data.R) ----
 if (FALSE) {
