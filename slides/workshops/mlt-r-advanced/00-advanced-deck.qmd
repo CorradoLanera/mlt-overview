@@ -367,21 +367,19 @@ Voce docente (IT): chiusura Step 01. La stessa riga di explainer gira su logisti
 
 # Step 02 · Deep learning {#sec-02-deep-learning .center}
 
-<!-- Step 02 (hands-on + demo, 67 min): MLP knobs -> train MLP live + SHAP callback -> write CNN/RNN/fused (shape-check) -> GPU-vs-CPU -> option B. -->
+<!-- Step 02 (hands-on, ~110 min): MLP + SHAP -> loss-vs-metrics + training loop -> tidymodels/torch boundary -> 2D-CNN live -> RNN live -> fused demo -> XAI note -> GPU note. -->
 
-**Why this step.** Interpretability is model-agnostic — so the same explainer follows us into deep learning. We train **one** small net honestly, write the richer architectures (validated by a shape-check, not trained), and keep one labeled exception explicit.
+**Why this step.** Interpretability is model-agnostic, so the same explainer follows us into deep learning. We train an MLP inside tidymodels, then step outside it to build and **train real** CNN and RNN nets with genuine train/val curves, and wire a fused net. Everything runs live.
 
-- **Knobs first**, then train a small `brulee` **MLP live** (≤30 epochs, seconds).
-- Explain it with the **same agnostic SHAP line** — only the model object changed.
-- Write **CNN / RNN / fused** `nn_module`s — validated by a `forward()` **shape-check** (`[5, 2]`), **not trained**.
-- **GPU-vs-CPU** on the heavy workload; the **one** labeled option-B loss curve.
+- **Settings first**, then train a small `brulee` **MLP live** (≤30 epochs) and explain it with the **same agnostic SHAP line**.
+- Cross the boundary: `brulee`/tidymodels ends, `torch`/`luz` begins; `yardstick` still scores both sides.
+- Train a **2D-CNN** (X-rays) and an **RNN** (ECG) **live**, and read the **train/val U**.
+- **Build** a fused net (one forward pass); a real multimodal model needs one shared cohort.
 
 ::: {.notes}
-Voce docente (IT): hands-on + demo (~67 min), l'hotspot (9 chunk). Le slide-parametro
-PRECEDONO il train. L'MLP è addestrato DAVVERO dal vivo: il suo `roc_auc` è single-split,
-NON confrontabile con la CV ~0.79 della foresta (apples-to-oranges — non dire che la rete
-batte la foresta). CNN/RNN/fused = SCRITTE non addestrate, validate solo dallo shape-check
-`[5,2]`. SHAP riusato al min-66 = riuso intenzionale, non nuovo carico.
+Voce docente (IT): hands-on (~110 min), il pezzo centrale. Le slide-parametro precedono il train.
+MLP addestrato dal vivo (roc_auc single-split, NON confrontabile con la CV ~0.79 della foresta).
+CNN e RNN addestrate DAVVERO (curve vere). Fused = demo (coorti diverse). Niente pre-cotto.
 :::
 
 ## MLP hyperparameters — and the overfit cure {.smaller}
@@ -466,30 +464,103 @@ Voce docente (IT): Reveal/my-turn min-66. Riuso intenzionale di SHAP (non nuovo 
 rinforza l'agnosticismo. Going further = ex-stretch.
 :::
 
-## CNN / RNN / fused — written, not trained {.smaller}
+## Loss vs. metrics: optimise one, report the other {.smaller}
 
-<!-- NNMOD/CNN/RNN/FUSED nodes — Parsons reorder, min-80. -->
+Training follows a gradient, so the objective must be **differentiable**. Accuracy is not.
 
-Three richer `nn_module`s, **written not trained** — validated only by a `forward()` shape-check.
-
-| net | the hyperparameters | shape role |
-|---|---|---|
-| **1D-CNN** | `kernel` / `stride` / `channels` | slides a filter over a signal |
-| **RNN** | `hidden` / `sequence` / LSTM-GRU | reads a vitals sequence over time |
-| **fused** | 3 branches $\to$ `torch_cat(dim = 2)` $\to$ head | branch widths must **sum** to the head input |
-
-- The fused net runs all three branches and concatenates them along `dim = 2` into a two-logit head.
-- A correct **`[5, 2]`** out (five patients, two logits) proves the wiring — it claims **nothing** about accuracy.
+- We **optimise** cross-entropy $\mathcal{L}_{\text{CE}} = -\sum_{k} y_k \log \hat{p}_k$: smooth in the weights, so every step has a slope to follow (recall the gradient step, ch. 5).
+- We **report** accuracy / ROC-AUC: what we care about, but **flat almost everywhere** — nudging a weight rarely flips a label, so its gradient is $0$ and there is nothing to descend.
+- The loss is a **differentiable stand-in** for the metric: minimise CE, then read the metric off the held-out predictions.
 
 ::: {.notes}
-Voce docente (IT): min-80 (Parsons). Riordina il `forward()` della rete fusa: 3 rami →
-`torch_cat(list(t, c, r), dim = 2)` → head. Vincolo fisso: prima calcoli i rami, POI
-concat-e-head; la larghezza d'ingresso della head = somma delle larghezze dei 3 rami.
-Lo split scrivi-non-addestra collassa CNN+RNN+fused in UN solo schema ("modulo cablato
-dal forward") → da 9 a ~5 chunk effettivi. Nessun training: solo `[5,2]`.
+Voce docente (IT): la domanda "perché non ottimizziamo direttamente l'accuracy?" — è a gradini,
+gradiente nullo quasi ovunque; la CE è la surrogata liscia. Una loss (anche sola), le metriche
+(anche più d'una). Aggancio alla curva: la valid-loss risale PRIMA che l'AUC peggiori.
 :::
 
-## Your turn — reorder the fused `forward()`
+## The training loop, made concrete {.smaller}
+
+A net learns by repeating one cycle. `luz` runs it for us; here is what each step does:
+
+1. **forward** — push a batch through `forward()` to get predictions (recall the forward pass, ch. 5).
+2. **loss** — compare to the truth with cross-entropy.
+3. **backward** — the gradient of the loss with respect to every weight.
+4. **step** — the optimiser nudges the weights downhill.
+
+One pass over all batches is an **epoch**. We watch **two** curves: training loss and **validation** loss. When training keeps dropping but validation turns up, that upturn is **overfitting** (recall ch. 4): the **U** we will see live.
+
+::: {.notes}
+Voce docente (IT): `forward()` non è magia, è il passo 1 del ciclo che ch.5 ha già introdotto;
+luz è solo il loop. La U si vede dal vivo sui dati veri, non disegnata.
+:::
+
+## Where tidymodels ends and torch begins {.smaller}
+
+`brulee` let the MLP live **inside** tidymodels: same `fit`/`predict`, same `workflow_set`, same metrics. That bridge covers a few standard architectures and stops there.
+
+- A bespoke **CNN / RNN / fused** net is **not** a parsnip model: no `workflow_set`, no `tune`. You write the `nn_module`, train it with `luz`, predict yourself.
+- `yardstick` still scores it: it works on **predictions**, not on the model object, so the same `roc_auc()` measures **both** sides of the line.
+
+::: {.notes}
+Voce docente (IT): il confine è il cuore della sezione. Dentro: confronto gratis. Fuori:
+train+eval a mano, ma stesso metro (yardstick sulle predizioni).
+:::
+
+## CNN: a filter sliding over an image {.smaller}
+
+<!-- CNN node — recall ch.6 + the live 2D train. -->
+
+A 2D-CNN slides small learned **filters** across the image and pools the result (recall convolution and weight-sharing, ch. 6). We build one with `nn_conv2d` and train it **live** on chest X-rays (PneumoniaMNIST).
+
+| layer | does | output |
+|---|---|---|
+| `nn_conv2d(1, ch, 3)` | learn `ch` filters over the image | `[B, ch, 28, 28]` |
+| `nn_max_pool2d(2)` | halve the resolution | `[B, ch, 14, 14]` |
+| `nn_linear(.., 2)` | flatten then two logits | `[B, 2]` |
+
+- We train on a **small slice on purpose**, so the **validation loss turns up** while training loss keeps falling: the overfit **U**, live.
+
+::: {.notes}
+Voce docente (IT): richiamo ch.6 (convoluzione, weight-sharing), poi `nn_conv2d` reale e training
+dal vivo. Train piccolo voluto → la U si vede. La curva è `plot(cnn_fit)`, vera.
+:::
+
+## RNN: reading a sequence over time {.smaller}
+
+<!-- RNN node — recall ch.6 + the live ECG train. -->
+
+An RNN reads a sequence **one step at a time**, carrying a hidden state; we take the **last** step as the summary (recall RNNs over sequences, ch. 6). We build one with `nn_lstm` and train it live on **ECG** traces (ECG5000).
+
+- Input shape `[B, T, F]`: batch, time steps, channels. `nn_lstm(F, hidden)` then `nn_linear(hidden, 2)`.
+- Same loop, same `plot()` curve, same `roc_auc()` on held-out traces: a different architecture, identical scaffolding.
+
+::: {.notes}
+Voce docente (IT): richiamo ch.6 (RNN su sequenze, ultimo step), poi `nn_lstm` reale su ECG.
+Stesso loop e stesso metro della CNN: l'unica cosa che cambia è l'architettura.
+:::
+
+## Fused: three branches, one head {.smaller}
+
+<!-- FUSED node — constructible demo, Parsons reorder. -->
+
+A **fused** net runs one branch per modality and concatenates them into a shared head.
+
+| branch | reads | width |
+|---|---|---|
+| tabular | a `heart_failure` row | 16 |
+| 2D-CNN | an X-ray | `img_ch` |
+| RNN | an ECG trace | `hidden` |
+
+- The branch widths must **sum** to the head input; `torch_cat(dim = 2)` joins along the feature axis into a two-logit head.
+- We **build it and run one forward pass** (into `[1, 2]`), but we do **not** train it: the three datasets are **different cohorts** with no shared patient. A real fused model needs one cohort measured in all three modalities.
+
+::: {.notes}
+Voce docente (IT): il fused è una DIMOSTRAZIONE: costruibile e gira, ma non allenato perché i
+tre dataset non condividono pazienti. La testa si potrebbe allargare a più outcome (non lo
+facciamo). Il forward è il Parsons che segue.
+:::
+
+## Your turn: reorder the fused `forward()`
 
 The `forward()` of the fused network is scrambled. Put these six lines in execution order:
 
@@ -498,121 +569,76 @@ The `forward()` of the fused network is scrambled. Put these six lines in execut
 (b)  t <- self$tab(x_tab)
 (c)  r <- self$rnn(x_seq)
 (d)  torch_cat(list(t, c, r), dim = 2)
-(e)  c <- self$cnn(x_sig)
-(f)  forward = function(x_tab, x_sig, x_seq) {
+(e)  c <- self$cnn(x_img)
+(f)  forward = function(x_tab, x_img, x_seq) {
 ```
 
-Then: (1) branch widths are 16, `sig_ch`, `hidden` — what must the **head's input dim** equal? (2) The head emits 2 logits — what's the output **shape** for a batch of $B = 5$?
+Then: (1) branch widths are 16, `img_ch`, `hidden`: what must the **head's input dim** equal? (2) The head emits 2 logits: what is the output **shape** for one example?
 
 ::: {.notes}
-Voce docente (IT): Parsons min-80 (Engage). (d) è il distrattore (concat senza head). Errori
-comuni: concat prima dei tre rami, o head prima del concat → shape error a runtime.
+Voce docente (IT): Parsons. (d) è il distrattore (concat senza head). Errori comuni: concat
+prima dei tre rami, o head prima del concat → shape error a runtime.
 :::
 
-## The answer — branches first, then concat + head
+## The answer: branches first, then concat + head
 
 **Order:** f → b → e → c → a (build `t`, `c`, `r` in any order, then concat + head in one call):
 
 ```r
-forward = function(x_tab, x_sig, x_seq) {
+forward = function(x_tab, x_img, x_seq) {
   t <- self$tab(x_tab)   # [B, 16]
-  c <- self$cnn(x_sig)   # [B, sig_ch]
+  c <- self$cnn(x_img)   # [B, img_ch]
   r <- self$rnn(x_seq)   # [B, hidden]
   self$head(torch_cat(list(t, c, r), dim = 2))
 }
 ```
 
-**Head input dim:** `16 + sig_ch + hidden` — `torch_cat(dim = 2)` concatenates along the feature axis; any mismatch errors at the first forward pass. **Output shape:** `[5, 2]` — one row per observation, two logits per row (batch is always `dim = 1`).
+**Head input dim:** `16 + img_ch + hidden`; `torch_cat(dim = 2)` concatenates along the feature axis, so any mismatch errors at the first forward pass. **Output shape:** `[1, 2]`: one row per example, two logits per row (batch is always `dim = 1`).
 
 ::: {.notes}
-Voce docente (IT): Reveal min-80. Riga (d) scartata. torch segnala lo shape mismatch subito →
-scrivere il forward + un batch fittizio è il modo più rapido di validare un'architettura.
+Voce docente (IT): Reveal. Riga (d) scartata. torch segnala lo shape mismatch subito →
+scrivere il forward + un esempio è il modo più rapido di validare un'architettura.
 :::
 
-## The honesty rule — one labeled exception {.smaller}
+## XAI beyond tabular: a note {.smaller}
 
-<!-- HONESTY node, min-92. -->
+SHAP rode along onto the tabular MLP because `kernelshap` needs only a prediction function. On an image it does not help: thousands of pixels, no readable attribution.
 
-Everything on screen is either **live** or **declared write-only**. The doctrine is explicit.
+- **Images:** occlusion sensitivity, saliency, Grad-CAM (*which pixels move the prediction*).
+- **Sequences:** attribution over time steps (*which moments mattered*).
 
-- The MLP above is **trained live**; its `roc_auc` is a genuine held-out number.
-- The CNN/RNN/fused nets are **shape-checked write-only** — never presented as trained.
-- The GPU demo's killed CPU epoch **was live** — a real interrupted epoch, not a simulation.
-
-::: {.callout-warning appearance="simple"}
-**The one labeled exception.** The fused-net **loss curve** is pre-computed — *"I trained
-this earlier on GPU."* It is labeled in the plot title and is the **only** pre-baked result.
-:::
-
-::: {.callout-note appearance="simple"}
-**`targets` is not an exception.** A cached target re-shown as *"skip"* is **reproducibility**
-(re-derivable, hash-checked: same input $\Rightarrow$ same output), not fakery — conceptually
-the opposite of a pre-baked number shown as live.
-:::
+We name them here; the tabular SHAP line stays our worked example.
 
 ::: {.notes}
-Voce docente (IT): min-92 (MCQ). ✓ unica eccezione ETICHETTATA = la loss-curve opzione B;
-la CPU killata ERA live. Distrattori: "nessuna cache mai" (NO), "tutto DL pre-trainabile
-senza label" (NO), "identico al cache di targets" (NO — la riproducibilità hash-checked è
-un'altra cosa). Distinzione chiave da far atterrare prima del capstone.
+Voce docente (IT): non facciamo la demo (scelta), ma lo strumento giusto per le immagini si
+nomina: occlusion/saliency/grad-CAM. SHAP resta sull'esempio tabellare.
 :::
 
-## Your turn — does the loss curve break the honesty rule?
+## GPU vs. CPU: a note {.smaller}
 
-We showed the fused network's loss curve and said *"I trained this earlier on GPU."* How does this fit the workshop's honesty rule?
+You just watched two real nets train on a **CPU**: seconds, because the data and nets are small.
 
-- **A.** It's the **single labeled exception** — announced as pre-trained, shown as a *didactic object*, not a live result. The killed CPU epoch **was** live (a real performance gap). Everything else is computed in real time.
-- **B.** **Nothing is ever cached** — the honesty rule means everything runs live, including this curve.
-- **C.** **All DL outputs** can be pre-trained and shown **without a label** — training time justifies skipping live-coding.
-- **D.** A labeled pre-trained result is **identical to the `targets` "skip"** — both pre-computed, same rule.
-
-*Pick one — then we reveal it.*
+- A serious image or fused workload makes the **per-epoch cost bite**, and that is where a **GPU** pays off.
+- The tiny tabular **MLP would not benefit**: the overhead would lose.
+- In class we run the heavy nets on the **NVIDIA/CUDA** machine (`cuda_is_available()` is `TRUE` there); this build box is CPU-only.
 
 ::: {.notes}
-Voce docente (IT): MCQ min-92 (Engage). Distinzione chiave da far atterrare prima del capstone.
+Voce docente (IT): non vendere la GPU sul giocattolo (MLP minuscolo), vendila sul carico vero
+(immagini/fuso). Qui abbiamo allenato davvero su CPU: si è visto che è lento, ecco perché in
+aula c'è la macchina CUDA.
 :::
 
-## The answer — A: one labeled exception
+## Go to code: `steps/02-deep-learning/` {.center}
 
-**✓ A.** Labeled, announced, shown as a didactic object; the killed CPU epoch was genuinely live.
+Open `steps/02-deep-learning/`: train the MLP and explain it with the same SHAP line, then train a 2D-CNN and an RNN live and read their train/val curves, and wire the fused net.
 
-- **✗ B** — *nothing is ever cached.* The rule is "don't show pre-cooked **as if live**"; a clearly labeled artifact is allowed.
-- **✗ C** — *pre-train without a label.* Strips the rule of its key condition — undisclosed pre-training is exactly what's prohibited.
-- **✗ D** — *same as `targets` skip.* Different: `targets` "skip" is **re-derivable** from unchanged inputs (reproducibility); the loss curve is a one-off GPU artifact that can't be reproduced live.
-
-::: {.notes}
-Voce docente (IT): Reveal min-92. La riproducibilità hash-checked di targets è un'altra cosa
-dal pre-cotto etichettato.
-:::
-
-## GPU payoff — where the accelerator actually pays {.smaller}
-
-The accelerator is **not** a magic speed button. Match it to the workload.
-
-- The tiny tabular **MLP does not need a GPU** — it trains in seconds on a CPU (overhead would lose).
-- The payoff is on the **CNN / fused** workload, where the per-epoch cost actually bites.
-- The live classroom move: **start on CPU $\to$ watch one epoch crawl $\to$ kill it $\to$ rerun on GPU.**
-- Authored **write-only** (`#| eval: false`): it runs on the classroom NVIDIA/CUDA machine,
-  where `cuda_is_available()` is `TRUE` — not on this CPU build box (`FALSE`).
-
-::: {.notes}
-Voce docente (IT): non vendere la GPU sul giocattolo (MLP minuscolo), vendila sul carico
-vero (CNN/fuso). L'epoca CPU "uccisa" è un'epoca reale interrotta, non simulata: parte sul
-serio, arranca, la fermi → rerun con `cpu = FALSE`, stesso codice, cambia solo
-l'acceleratore. Su questa macchina di build gira solo in lettura (eval false).
-:::
-
-## Go to code — `steps/02-deep-learning/` {.center}
-
-Open `steps/02-deep-learning/`: train the MLP live, explain it with the same SHAP line, write (don't train) CNN/RNN/fused, run the GPU-vs-CPU demo.
-
-- The MLP's `roc_auc` is single-split — **not** comparable to Basic's CV ~0.79 (apples to oranges).
-- One labeled exception (the loss curve); everything else live.
+- The nets' single-split `roc_auc` is **not** comparable to Basic's CV ~0.79 (apples to oranges), nor to each other (different cohorts).
+- Everything runs live; nothing is pre-baked.
 - **Behind?** Copy `steps/03-ellmer/` and you are back in sync.
 
 ::: {.notes}
-Voce docente (IT): chiusura Step 02 (l'hotspot). Break dopo questo step (uscita dall'hotspot).
-Non vendere l'MLP come vincitore della foresta.
+Voce docente (IT): chiusura Step 02 (il pezzo centrale). Reti allenate DAVVERO, curve vere,
+niente pre-cotto. Non vendere le reti come vincitrici della foresta (split singolo, coorti diverse).
 :::
 
 # Step 03 · LLM as typed ETL {#sec-03-ellmer .center}
