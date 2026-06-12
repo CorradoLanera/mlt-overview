@@ -318,14 +318,15 @@ fused(x_tab1, x_img1, x_seq1)$shape   # expect [1, 2] — wiring proven, nothing
 
 **Files:** Modify `workshops/mlt-r-advanced/_authoring/02-deep-learning/meta.yml`
 
-- [ ] **Step 4.1 — Aggiorna.** Titolo senza "honestly"; `packages` con `torchvision`; summary, check:
+- [ ] **Step 4.1 — Aggiorna.** Titolo senza "honestly"; `packages` resta `[brulee, luz]` (il beat carica i
+  tensori committati e NON usa torchvision a runtime); summary, check:
 
 ```yaml
 slug: 02-deep-learning
 title: "Step 02 — Deep learning: train real nets"
 minutes: 120
 summary: "Train an MLP in tidymodels (brulee), then a real 2D-CNN and an RNN live with torch/luz (train/val curves), and wire a fused net."
-packages: [brulee, luz, torchvision]
+packages: [brulee, luz]
 carry: [R/nn-modules.R]
 check:
   kw: [brulee, kernelshap, nn_conv2d, luz, roc_auc, fused_net, torch_cat]
