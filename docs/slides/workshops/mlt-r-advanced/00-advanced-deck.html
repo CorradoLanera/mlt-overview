@@ -1591,14 +1591,14 @@ flowchart LR
 <section id="sec-04-targets" class="title-slide slide level1 center">
 <h1>Step 04 · Reproducibility capstone</h1>
 <!-- Step 04 (demo, 20 min): read the targets DAG (tar_visnetwork); first build runs; re-run all-skip; pipeline renders the report. -->
-<p><strong>Why this step.</strong> A pipeline a colleague cannot re-run is not reproducible. <code>targets</code> makes the whole explain→deep→LLM story re-derivable by construction: inspectable intermediate targets, a report the pipeline compiles itself, and an all-skip re-run that proves nothing drifted.</p>
+<p><strong>Why this step.</strong> A pipeline a colleague cannot re-run is not reproducible. <code>targets</code> makes the whole explore→compare→explain→deep→LLM story re-derivable by construction: inspectable intermediate targets, a report the pipeline compiles itself, and an all-skip re-run that proves nothing drifted.</p>
 <ul>
-<li>Read the <code>targets</code> <strong>DAG</strong> (<code>tar_visnetwork()</code>): every analysis is an <strong>explicit, inspectable intermediate target</strong> you can <code>tar_read()</code> on its own — <code>cohort</code>, <code>model</code>, <code>explanation</code>.</li>
+<li>Read the <code>targets</code> <strong>DAG</strong> (<code>tar_visnetwork()</code>): every analysis is an <strong>explicit, inspectable intermediate target</strong> you can <code>tar_read()</code> on its own — <code>cohort</code>, <code>base_compare</code>, <code>vimp</code>, <code>shap</code>, <code>records</code>.</li>
 <li>The pipeline <strong>compiles the report itself</strong>: a final <code>report</code> target renders the Quarto doc <em>from</em> those intermediates, so the document and its inputs can never disagree.</li>
 <li>A <strong>second</strong> <code>tar_make()</code> is <strong>all-skip</strong> — input hashes unchanged ⇒ reproducibility, not fakery.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): capstone (~20 min, demo). REFRAME (feedback #13): il punto di <code>targets</code> NON è “cache così il report è veloce”. È: (1) ogni analisi è un TARGET INTERMEDIO esplicito, ispezionabile con <code>tar_read()</code> uno per uno (audit per-step); (2) la PIPELINE COMPILA IL REPORT (<code>tar_quarto</code>/<code>tar_render</code>), che legge i target — così documento e input non possono divergere; (3) il 2° <code>tar_make()</code> è all-skip per hash invariati = riproducibilità, non finzione. PROVA col valore di ritorno, non col messaggio: <code>tar_outdated()</code> == character(0) e <code>tar_progress()</code> tutti “skipped”. Il bridge <code>explanation</code> ricalcola DAVVERO la VIMP → ejection_fraction / serum_creatinine / age. Stretch Davide: il device GPU è un input CIECO se non è un target.</p>
+<p>Voce docente (IT): capstone (~20 min, demo). REFRAME (feedback #13): il punto di <code>targets</code> NON è “cache così il report è veloce”. È: (1) ogni analisi è un TARGET INTERMEDIO esplicito, ispezionabile con <code>tar_read()</code> uno per uno (audit per-step); (2) la PIPELINE COMPILA IL REPORT (<code>tar_quarto</code>/<code>tar_render</code>), che legge i target — così documento e input non possono divergere; (3) il 2° <code>tar_make()</code> è all-skip per hash invariati = riproducibilità, non finzione. PROVA col valore di ritorno, non col messaggio: <code>tar_outdated()</code> == character(0) e <code>tar_progress()</code> tutti “skipped”. I target <code>vimp</code>/<code>shap</code> ricalcolano DAVVERO l’importanza (ejection_fraction / serum_creatinine / age); <code>records</code> è l’estrazione ellmer LIVE. Stretch Davide: il device GPU è un input CIECO se non è un target.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1615,7 +1615,7 @@ flowchart LR
 <h2>Why a pipeline, not a hand-made cache</h2>
 <p>In Basic, the report <strong>ran the whole analysis on render</strong> — perfect at N=299. As analyses grow heavy, you do <strong>not</strong> start hand-saving <code>.rds</code> files and reloading them (that breaks the guarantee that the numbers came from <em>this</em> run). You reach for a <strong>pipeline</strong>.</p>
 <ul>
-<li><strong>Inspectable intermediates.</strong> Each step is a named target — <code>cohort</code>, <code>model</code>, <code>explanation</code> — that you can <code>tar_read()</code> and audit <em>in isolation</em>, without re-running the rest.</li>
+<li><strong>Inspectable intermediates.</strong> Each step is a named target — <code>cohort</code>, <code>base_compare</code>, <code>vimp</code>, <code>shap</code> — that you can <code>tar_read()</code> and audit <em>in isolation</em>, without re-running the rest.</li>
 <li><strong>The pipeline compiles the report.</strong> A <code>report</code> target (<code>tarchetypes::tar_quarto()</code>) renders the document <em>from</em> the upstream targets, so what the report shows is exactly what the pipeline produced — auditable end to end.</li>
 <li><strong>Caching that stays honest.</strong> A re-run rebuilds <strong>only</strong> what changed (hash-checked) and skips the rest. That is caching <em>with</em> reproducibility — the opposite of a stale hand-made <code>.rds</code>.</li>
 </ul>
@@ -1659,9 +1659,9 @@ flowchart LR
 <p><strong>Every target reports <code>skip</code>.</strong></p>
 <p>The reason is <strong>input-hash checking</strong>: <code>targets</code> hashes each target’s inputs (function source, upstream target objects, file dependencies). Nothing changed → hashes match → re-running would reproduce the same result → it skips. That’s <strong>reproducibility</strong> (re-derivable from unchanged inputs), not a stored value.</p>
 <p>Difference from a cache: change <em>any</em> input (data, code, a parameter) and the affected target + everything downstream go <strong>stale</strong> and rebuild. A cache returns a stored value regardless; <code>targets</code> re-derives or skips by content hash.</p>
-<p><strong>Going further.</strong> Swap <code>model/final_fit.rds</code> (a <code>format = "file"</code> target) → <code>model_file</code> re-hashes → <code>model</code> → the <code>explanation</code> bridge rebuild; <code>cohort</code> stays <code>skip</code>. Edit the VIMP knobs inside <code>explain_model()</code> → only <code>explanation</code> rebuilds. And the <strong>GPU device</strong> is an <em>ambient</em> input (<code>cuda_is_available()</code> inside the function body) — invisible to the DAG unless promoted to a <code>tar_target(device, ...)</code>.</p>
+<p><strong>Going further.</strong> Edit the data behind <code>cohort_file</code> (a <code>format = "file"</code> target) → it re-hashes → <code>cohort</code> and everything downstream rebuild. Change one function — a setting inside <code>compare_models()</code> → only <code>base_compare</code> and the <code>report</code> rebuild; <code>vimp</code>, <code>shap</code>, and <code>records</code> stay <code>skip</code>. And an <strong>ambient</strong> input like the GPU device (<code>cuda_is_available()</code> read inside a function body) is <strong>invisible</strong> to the DAG unless you promote it to a <code>tar_target(device, ...)</code>.</p>
 <aside class="notes">
-<p>Voce docente (IT): Reveal min-138. Provo col valore di ritorno, non col messaggio: <code>tar_outdated()</code> == character(0). Il bridge <code>explanation</code> ricalcola DAVVERO la VIMP. Going further = ex-stretch (stale propagation + device cieco).</p>
+<p>Voce docente (IT): Reveal min-138. Provo col valore di ritorno, non col messaggio: <code>tar_outdated()</code> == character(0). Going further: tocca <code>cohort_file</code> → ricostruisce tutto a valle; cambia <code>compare_models()</code> → solo <code>base_compare</code> + report (stale propagation + device cieco).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1678,8 +1678,8 @@ flowchart LR
 <h2>Go to code — <code>steps/04-targets/</code></h2>
 <p><strong>Follow along.</strong> Open <code>steps/04-targets/</code>: read the DAG (<code>tar_visnetwork()</code>), <code>tar_make()</code>, then re-run → all-skip.</p>
 <ul>
-<li>Each analysis is a named, inspectable target (<code>cohort</code>, <code>model</code>, <code>explanation</code>); the pipeline compiles the report itself.</li>
-<li>The loop closes: Basic validated the model, Advanced re-derives its explanation, deterministically.</li>
+<li>Each analysis is a named, inspectable target (<code>cohort</code>, <code>base_compare</code>, <code>vimp</code>, <code>shap</code>, <code>records</code>); the pipeline compiles the report itself.</li>
+<li>The loop closes: Basic validated the model, Advanced re-derives the whole arc (explore → compare → explain → deep → LLM), deterministically.</li>
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): chiusura Step 04 (demo → “follow along”). Chiude il loop Basic↔︎Advanced.</p>
