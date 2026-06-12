@@ -164,7 +164,7 @@ rnn_fit <- rnn_net |>
   set_opt_hparams(lr = 1e-3) |>
   fit(
     edl_tr,
-    epochs = 150,
+    epochs = 50,     # the LSTM on ECG overfits sooner than the CNN: 50 epochs already show the U
     valid_data = edl_va,
     verbose = FALSE,
     callbacks = list(luz_callback_keep_best_model(monitor = "valid_loss")),
