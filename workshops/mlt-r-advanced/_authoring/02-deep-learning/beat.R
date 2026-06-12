@@ -178,8 +178,10 @@ ecg_prob <- predict(rnn_fit, x_ecg[e_te, , ]) |>   # score on the held-out TEST 
 tibble(truth = factor(ecg$y[e_te], levels = c(1, 2)), .pred = ecg_prob[ , 2]) |>
   roc_auc(truth, .pred, event_level = "second")
 
-# Fused net: constructible, NOT trained, three modalities from three unrelated cohorts ----
-# Head-less branches, one per modality, concatenated into a shared head.
+# Fused net: three modalities, one head ----
+# We build it, run one forward pass, then train it on INVENTED labels just to drive the loop
+# end-to-end. The three cohorts share no patient, so nothing here can generalise. One head-less
+# branch per modality, concatenated into a shared head.
 cnn2d_branch <- nn_module(
   "cnn2d_branch",
   initialize = function(ch = 8) {
@@ -207,29 +209,75 @@ fused_net <- nn_module(
     self$head <- nn_linear(16 + img_ch + hidden, 2)
   },
   forward = function(x_tab, x_img, x_seq) {
-    t <- self$tab(x_tab)   # [B, 16]
-    c <- self$cnn(x_img)   # [B, img_ch]
-    r <- self$rnn(x_seq)   # [B, hidden]
-    self$head(torch_cat(list(t, c, r), dim = 2))   # -> [B, 2]
+    # >>>hole id=fused-forward kind=parsons prompt=run the three branches, concat along dim=2, then the head
+    #   solved:
+    t <- self$tab(x_tab)
+    c <- self$cnn(x_img)
+    r <- self$rnn(x_seq)
+    self$head(torch_cat(list(t, c, r), dim = 2))
+    # <<<hole
   },
 )
 
-# One example per modality (a heart_failure row, one X-ray, one ECG) only proves the wiring.
+# Wiring check: one example per modality (a heart_failure row, one X-ray, one ECG) returns [1, 2] ----
 x_tab_all <- bake(prep(base_rec), new_data = train) |>
   dplyr::select(-outcome) |>
   as.matrix()
-x_tab1 <- torch_tensor(x_tab_all[1, , drop = FALSE], dtype = torch_float())
-x_img1 <- x_img[1, , , , drop = FALSE]
-x_ecg1 <- x_ecg[1, , , drop = FALSE]
-fused  <- fused_net(n_tab = ncol(x_tab_all), img_ch = 8, seq_in = dim(x_ecg)[3], hidden = 16)
+set.seed(123)
+torch_manual_seed(123)
+fused <- fused_net(n_tab = ncol(x_tab_all), img_ch = 8, seq_in = dim(x_ecg)[3], hidden = 16)
+fused(
+  torch_tensor(x_tab_all[1, , drop = FALSE], dtype = torch_float()),
+  x_img[1, , , , drop = FALSE],
+  x_ecg[1, , , drop = FALSE]
+)$shape   # expect [1, 2]: the forward is wired correctly
 
-# >>>hole id=fused-forward kind=parsons prompt=run the three branches, concat along dim=2, then the head
-#   solved:
-fused_forward <- function(self, x_tab, x_img, x_seq) {
-  t <- self$tab(x_tab)
-  c <- self$cnn(x_img)
-  r <- self$rnn(x_seq)
-  self$head(torch_cat(list(t, c, r), dim = 2))
+# Line up the three cohorts arbitrarily and draw INVENTED labels (pure noise) ----
+# No patient is shared, so any pairing is arbitrary and the labels carry no signal: the net can
+# only memorise. The point is to SEE the same machinery run on a bespoke multi-input model.
+n_fuse <- min(nrow(x_tab_all), dim(x_img)[1], dim(x_ecg)[1])
+set.seed(123)
+xtab_f <- torch_tensor(x_tab_all[sample(nrow(x_tab_all), n_fuse), ], dtype = torch_float())
+ximg_f <- x_img[sample(dim(x_img)[1], n_fuse), , , ]
+xseq_f <- x_ecg[sample(dim(x_ecg)[1], n_fuse), , ]
+y_fuse <- sample(c(1L, 2L), n_fuse, replace = TRUE)
+
+# Same rsample split as the CNN and RNN: train / validation / test, stratified ----
+f_ids   <- tibble(row = seq_len(n_fuse), class = factor(y_fuse))
+set.seed(123)
+f_split <- initial_validation_split(f_ids, prop = c(0.125, 0.25), strata = class)
+f_tr <- training(f_split)$row
+f_va <- validation(f_split)$row
+f_te <- testing(f_split)$row
+
+# The training loop the section described, written out by hand (luz hides it for the CNN/RNN) ----
+opt     <- optim_adam(fused$parameters, lr = 1e-3)
+loss_fn <- nn_cross_entropy_loss()
+y_tr <- torch_tensor(y_fuse[f_tr], dtype = torch_long())
+y_va <- torch_tensor(y_fuse[f_va], dtype = torch_long())
+hist <- data.frame(epoch = integer(0), train = double(0), valid = double(0))
+for (epoch in seq_len(120)) {
+  fused$train()
+  opt$zero_grad()
+  loss <- loss_fn(fused(xtab_f[f_tr, ], ximg_f[f_tr, , , ], xseq_f[f_tr, , ]), y_tr)
+  loss$backward()
+  opt$step()
+  fused$eval()
+  v <- with_no_grad(loss_fn(fused(xtab_f[f_va, ], ximg_f[f_va, , , ], xseq_f[f_va, , ]), y_va))
+  hist <- rbind(hist, data.frame(epoch = epoch, train = loss$item(), valid = v$item()))
 }
-# <<<hole
-fused(x_tab1, x_img1, x_ecg1)$shape   # expect [1, 2]: wiring proven, nothing trained
+
+# The same train/val U as the CNN and RNN, drawn by hand: training loss falls, validation turns up ----
+ggplot(
+  tidyr::pivot_longer(hist, c(train, valid), names_to = "set", values_to = "loss"),
+  aes(epoch, loss, colour = set)
+) +
+  geom_line() +
+  theme_minimal()
+
+# Score on the held-out TEST set: the net memorised noise, so AUC sits at chance (~0.5) ----
+fused$eval()
+f_prob <- with_no_grad(nnf_softmax(fused(xtab_f[f_te, ], ximg_f[f_te, , , ], xseq_f[f_te, , ]), dim = 2)) |>
+  as.array()
+tibble(truth = factor(y_fuse[f_te], levels = c(1, 2)), .pred = f_prob[, 2]) |>
+  roc_auc(truth, .pred, event_level = "second")
