@@ -742,16 +742,16 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <section>
 <section id="sec-02-deep-learning" class="title-slide slide level1 center">
 <h1>Step 02 · Deep learning</h1>
-<!-- Step 02 (hands-on + demo, 67 min): MLP knobs -> train MLP live + SHAP callback -> write CNN/RNN/fused (shape-check) -> GPU-vs-CPU -> option B. -->
-<p><strong>Why this step.</strong> Interpretability is model-agnostic — so the same explainer follows us into deep learning. We train <strong>one</strong> small net honestly, write the richer architectures (validated by a shape-check, not trained), and keep one labeled exception explicit.</p>
+<!-- Step 02 (hands-on, ~110 min): MLP + SHAP -> loss-vs-metrics + training loop -> tidymodels/torch boundary -> 2D-CNN live -> RNN live -> fused demo -> XAI note -> GPU note. -->
+<p><strong>Why this step.</strong> Interpretability is model-agnostic, so the same explainer follows us into deep learning. We train an MLP inside tidymodels, then step outside it to build and <strong>train real</strong> CNN and RNN nets with genuine train/val curves, and wire a fused net. Everything runs live.</p>
 <ul>
-<li><strong>Knobs first</strong>, then train a small <code>brulee</code> <strong>MLP live</strong> (≤30 epochs, seconds).</li>
-<li>Explain it with the <strong>same agnostic SHAP line</strong> — only the model object changed.</li>
-<li>Write <strong>CNN / RNN / fused</strong> <code>nn_module</code>s — validated by a <code>forward()</code> <strong>shape-check</strong> (<code>[5, 2]</code>), <strong>not trained</strong>.</li>
-<li><strong>GPU-vs-CPU</strong> on the heavy workload; the <strong>one</strong> labeled option-B loss curve.</li>
+<li><strong>Settings first</strong>, then train a small <code>brulee</code> <strong>MLP live</strong> (≤30 epochs) and explain it with the <strong>same agnostic SHAP line</strong>.</li>
+<li>Cross the boundary: <code>brulee</code>/tidymodels ends, <code>torch</code>/<code>luz</code> begins; <code>yardstick</code> still scores both sides.</li>
+<li>Train a <strong>2D-CNN</strong> (X-rays) and an <strong>RNN</strong> (ECG) <strong>live</strong>, and read the <strong>train/val U</strong>.</li>
+<li><strong>Build</strong> a fused net (one forward pass); a real multimodal model needs one shared cohort.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): hands-on + demo (~67 min), l’hotspot (9 chunk). Le slide-parametro PRECEDONO il train. L’MLP è addestrato DAVVERO dal vivo: il suo <code>roc_auc</code> è single-split, NON confrontabile con la CV ~0.79 della foresta (apples-to-oranges — non dire che la rete batte la foresta). CNN/RNN/fused = SCRITTE non addestrate, validate solo dallo shape-check <code>[5,2]</code>. SHAP riusato al min-66 = riuso intenzionale, non nuovo carico.</p>
+<p>Voce docente (IT): hands-on (~110 min), il pezzo centrale. Le slide-parametro precedono il train. MLP addestrato dal vivo (roc_auc single-split, NON confrontabile con la CV ~0.79 della foresta). CNN e RNN addestrate DAVVERO (curve vere). Fused = demo (coorti diverse). Niente pre-cotto.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -767,7 +767,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 <section id="mlp-hyperparameters-and-the-overfit-cure" class="slide level2 smaller">
 <h2>MLP hyperparameters — and the overfit cure</h2>
 <!-- PARAMS_DL node. The param slide precedes the train. -->
-<p>A small <code>brulee</code> MLP has four primary hyperparameters (plus two minor). With generous defaults a small net <strong>overfits</strong> this 299-patient cohort — and the cure is always the same.</p>
+<p>A small <code>brulee</code> MLP has four primary hyperparameters (plus two minor). With generous defaults a small net <strong>overfits</strong> this 299-patient cohort, and the cure is always the same.</p>
 <table class="caption-top">
 <colgroup>
 <col style="width: 33%">
@@ -805,11 +805,11 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 </tbody>
 </table>
 <ul>
-<li>Minor settings: <code>batch</code> (gradient noise) and <code>activation</code> (nonlinearity) — <strong>not</strong> regularizers.</li>
+<li>Minor settings: <code>batch</code> (gradient noise) and <code>activation</code> (nonlinearity), <strong>not</strong> regularizers.</li>
 <li><strong>Overfit cure:</strong> turn <code>penalty</code> <strong>up</strong> and <code>hidden_units</code> <strong>down</strong> (or cut <code>epochs</code>).</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): min-60 (MCQ). MLP overfit → quale knob? ✓ penalty↑ / hidden↓. Distrattori: “più epoche” (peggiora), “learning-rate↑” (diverge), “cambia activation come regolarizzatore” (NO, l’activation non regolarizza). Fallo dal vivo cambiando UN solo numero. La slide-parametro viene PRIMA del train (knob pre-caricati).</p>
+<p>Voce docente (IT): min-60 (MCQ). MLP overfit → quale setting? ✓ penalty↑ / hidden↓. Distrattori: “più epoche” (peggiora), “learning-rate↑” (diverge), “cambia activation come regolarizzatore” (NO, l’activation non regolarizza). Fallo dal vivo cambiando UN solo numero. La slide-parametro viene PRIMA del train (setting pre-caricati).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -822,16 +822,16 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
-<section id="your-turn-the-mlp-is-overfitting-which-knob" class="slide level2">
-<h2>Your turn — the MLP is overfitting; which knob?</h2>
+<section id="your-turn-the-mlp-is-overfitting-which-setting" class="slide level2">
+<h2>Your turn: the MLP is overfitting; which setting?</h2>
 <p>Training loss keeps dropping, validation loss has levelled off or risen. Which intervention most directly addresses the overfit?</p>
 <ul>
-<li><strong>A.</strong> <strong>Increase <code>penalty</code></strong> (L2) <strong>or decrease <code>hidden_units</code></strong> — reduce capacity, push toward high-bias / low-variance.</li>
-<li><strong>B.</strong> <strong>Train for more epochs</strong> — it just needs more gradient steps.</li>
-<li><strong>C.</strong> <strong>Raise the learning rate</strong> — a bigger step escapes the sharp overfit minima.</li>
-<li><strong>D.</strong> <strong>Change the activation</strong> (ReLU → tanh) — a smoother activation regularises.</li>
+<li><strong>A.</strong> <strong>Increase <code>penalty</code></strong> (L2) <strong>or decrease <code>hidden_units</code></strong>: reduce capacity, push toward high-bias / low-variance.</li>
+<li><strong>B.</strong> <strong>Train for more epochs</strong>: it just needs more gradient steps.</li>
+<li><strong>C.</strong> <strong>Raise the learning rate</strong>: a bigger step escapes the sharp overfit minima.</li>
+<li><strong>D.</strong> <strong>Change the activation</strong> (ReLU → tanh): a smoother activation regularises.</li>
 </ul>
-<p><em>Pick one — then we reveal it.</em></p>
+<p><em>Pick one, then we reveal it.</em></p>
 <aside class="notes">
 <p>Voce docente (IT): MCQ min-60 (Engage). Lo faccio dal vivo cambiando UN numero. Distrattori: B = più epoche (peggiora); C = learning-rate↑ (diverge); D = activation regolarizza (NO).</p>
 <style type="text/css">
@@ -846,13 +846,13 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
-<section id="the-answer-a-penalty-hidden_units" class="slide level2">
-<h2>The answer — A: penalty ↑ / hidden_units ↓</h2>
-<p><strong>✓ A.</strong> Capacity and weight-decay are the overfit knobs in an MLP.</p>
+<section id="the-answer-penalty-hidden_units" class="slide level2">
+<h2>The answer: penalty ↑ / hidden_units ↓</h2>
+<p><strong>✓ A.</strong> Capacity and weight-decay are the overfit settings in an MLP.</p>
 <ul>
-<li><strong>✗ B</strong> — <em>more epochs.</em> Backwards: more training <strong>deepens</strong> the overfit; early stopping is the remedy, not the cause.</li>
-<li><strong>✗ C</strong> — <em>raise learning rate.</em> That’s optimisation dynamics, not capacity; it may destabilise training and does not regularise.</li>
-<li><strong>✗ D</strong> — <em>activation as regulariser.</em> Activation shapes gradient flow/expressiveness, but it is not a direct regulariser; <code>penalty</code> and width are.</li>
+<li><strong>✗ B.</strong> <em>more epochs.</em> Backwards: more training <strong>deepens</strong> the overfit; early stopping is the remedy, not the cause.</li>
+<li><strong>✗ C.</strong> <em>raise learning rate.</em> That is optimisation dynamics, not capacity; it may destabilise training and does not regularise.</li>
+<li><strong>✗ D.</strong> <em>activation as regulariser.</em> Activation shapes gradient flow/expressiveness, but it is not a direct regulariser; <code>penalty</code> and width are.</li>
 </ul>
 <aside class="notes">
 <p>Voce docente (IT): Reveal min-60. penalty↑ / hidden↓ (o taglia epochs). La slide-parametro precede il train.</p>
@@ -869,7 +869,7 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="your-turn-the-same-explainer-now-on-the-mlp" class="slide level2">
-<h2>Your turn — the same explainer, now on the MLP</h2>
+<h2>Your turn: the same explainer, now on the MLP</h2>
 <p>We have <code>mlp_fit</code>. Using the <strong>same explainer call</strong> as on the logistic anchor (just swap the model), make a waterfall for observation 1:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">kernelshap</span>(mlp_fit, <span class="at">X =</span> bg[<span class="dv">1</span>, ], <span class="at">bg_X =</span> bg, <span class="at">pred_fun =</span> pred_fun) <span class="sc">|&gt;</span></span>
 <span id="cb1-2"><a href=""></a>  <span class="fu">shapviz</span>() <span class="sc">|&gt;</span></span>
@@ -890,10 +890,10 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="my-turn-model-agnostic-unchanged" class="slide level2">
-<h2>My turn — model-agnostic, unchanged</h2>
-<p>The call runs <strong>unchanged</strong> — only the fitted model differs. <code>kernelshap</code> reaches the model <strong>only</strong> through <code>pred_fun</code>; it never looks inside. The waterfall still puts <code>ejection_fraction</code> and <code>serum_creatinine</code> near the top (consistent with VIMP), though magnitudes differ (SHAP is per-observation; VIMP is averaged).</p>
-<p>The point: the <strong>same three lines</strong> worked on logistic, RF (Step 01), and now the MLP — the explainer is truly model-agnostic.</p>
-<p><strong>Going further.</strong> Why? <code>kernelshap</code> needs only <code>pred_fun(object, X, ...)</code> mapping rows → probabilities. It treats the model as a black box (no coefficients, splits, or weights), evaluating it on feature coalitions and fitting a weighted regression to recover Shapley values. “Give me a prediction function” is the only assumption — so it spans the whole model zoo.</p>
+<h2>My turn: model-agnostic, unchanged</h2>
+<p>The call runs <strong>unchanged</strong>: only the fitted model differs. <code>kernelshap</code> reaches the model <strong>only</strong> through <code>pred_fun</code>; it never looks inside. The waterfall still puts <code>ejection_fraction</code> and <code>serum_creatinine</code> near the top (consistent with VIMP), though magnitudes differ (SHAP is per-observation; VIMP is averaged).</p>
+<p>The point: the <strong>same three lines</strong> worked on logistic, RF (Step 01), and now the MLP: the explainer is model-agnostic.</p>
+<p><strong>Going further.</strong> Why? <code>kernelshap</code> needs only <code>pred_fun(object, X, ...)</code> mapping rows → probabilities. It treats the model as a black box (no coefficients, splits, or weights), evaluating it on feature coalitions and fitting a weighted regression to recover Shapley values. “Give me a prediction function” is the only assumption, so it spans the whole model zoo.</p>
 <aside class="notes">
 <p>Voce docente (IT): Reveal/my-turn min-66. Riuso intenzionale di SHAP (non nuovo carico): rinforza l’agnosticismo. Going further = ex-stretch.</p>
 <style type="text/css">
@@ -908,10 +908,77 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
-<section id="cnn-rnn-fused-written-not-trained" class="slide level2 smaller">
-<h2>CNN / RNN / fused — written, not trained</h2>
-<!-- NNMOD/CNN/RNN/FUSED nodes — Parsons reorder, min-80. -->
-<p>Three richer <code>nn_module</code>s, <strong>written not trained</strong> — validated only by a <code>forward()</code> shape-check.</p>
+<section id="loss-vs.-metrics-optimise-one-report-the-other" class="slide level2 smaller">
+<h2>Loss vs.&nbsp;metrics: optimise one, report the other</h2>
+<p>Training follows a gradient, so the objective must be <strong>differentiable</strong>. Accuracy is not.</p>
+<ul>
+<li>We <strong>optimise</strong> cross-entropy <span class="math inline">\(\mathcal{L}_{\text{CE}} = -\sum_{k} y_k \log \hat{p}_k\)</span>: smooth in the weights, so every step has a slope to follow (recall the gradient step, ch.&nbsp;5).</li>
+<li>We <strong>report</strong> accuracy / ROC-AUC: what we care about, but <strong>flat almost everywhere</strong>, so nudging a weight rarely flips a label; its gradient is <span class="math inline">\(0\)</span> and there is nothing to descend.</li>
+<li>The loss is a <strong>differentiable stand-in</strong> for the metric: minimise CE, then read the metric off the held-out predictions.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): la domanda “perché non ottimizziamo direttamente l’accuracy?”: è a gradini, gradiente nullo quasi ovunque; la CE è la surrogata liscia. Una loss (anche sola), le metriche (anche più d’una). Aggancio alla curva: la valid-loss risale PRIMA che l’AUC peggiori.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-training-loop-made-concrete" class="slide level2 smaller">
+<h2>The training loop, made concrete</h2>
+<p>A net learns by repeating one cycle. <code>luz</code> runs it for us; here is what each step does:</p>
+<ol type="1">
+<li><strong>forward</strong>: push a batch through <code>forward()</code> to get predictions (recall the forward pass, ch.&nbsp;5).</li>
+<li><strong>loss</strong>: compare to the truth with cross-entropy.</li>
+<li><strong>backward</strong>: the gradient of the loss with respect to every weight.</li>
+<li><strong>step</strong>: the optimiser nudges the weights downhill.</li>
+</ol>
+<p>One pass over all batches is an <strong>epoch</strong>. We watch <strong>two</strong> curves: training loss and <strong>validation</strong> loss. When training keeps dropping but validation turns up, that upturn is <strong>overfitting</strong> (recall ch.&nbsp;4): the <strong>U</strong> we will see live.</p>
+<aside class="notes">
+<p>Voce docente (IT): <code>forward()</code> non è magia, è il passo 1 del ciclo che ch.5 ha già introdotto; luz è solo il loop. La U si vede dal vivo sui dati veri, non disegnata.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="where-tidymodels-ends-and-torch-begins" class="slide level2 smaller">
+<h2>Where tidymodels ends and torch begins</h2>
+<p><code>brulee</code> let the MLP live <strong>inside</strong> tidymodels: same <code>fit</code>/<code>predict</code>, same <code>workflow_set</code>, same metrics. That bridge covers a few standard architectures and stops there.</p>
+<ul>
+<li>A bespoke <strong>CNN / RNN / fused</strong> net is <strong>not</strong> a parsnip model: no <code>workflow_set</code>, no <code>tune</code>. You write the <code>nn_module</code>, train it with <code>luz</code>, predict yourself.</li>
+<li><code>yardstick</code> still scores it: it works on <strong>predictions</strong>, not on the model object, so the same <code>roc_auc()</code> measures <strong>both</strong> sides of the line.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): il confine è il cuore della sezione. Dentro: confronto gratis. Fuori: train+eval a mano, ma stesso metro (yardstick sulle predizioni).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="cnn-a-filter-sliding-over-an-image" class="slide level2 smaller">
+<h2>CNN: a filter sliding over an image</h2>
+<!-- CNN node: recall ch.6 + the live 2D train. -->
+<p>A 2D-CNN slides small learned <strong>filters</strong> across the image and pools the result (recall convolution and weight-sharing, ch.&nbsp;6). We build one with <code>nn_conv2d</code> and train it <strong>live</strong> on chest X-rays (PneumoniaMNIST).</p>
 <table class="caption-top">
 <colgroup>
 <col style="width: 33%">
@@ -920,35 +987,104 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
 </colgroup>
 <thead>
 <tr class="header">
-<th>net</th>
-<th>the hyperparameters</th>
-<th>shape role</th>
+<th>layer</th>
+<th>does</th>
+<th>output</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>1D-CNN</strong></td>
-<td><code>kernel</code> / <code>stride</code> / <code>channels</code></td>
-<td>slides a filter over a signal</td>
+<td><code>nn_conv2d(1, ch, 3)</code></td>
+<td>learn <code>ch</code> filters over the image</td>
+<td><code>[B, ch, 28, 28]</code></td>
 </tr>
 <tr class="even">
-<td><strong>RNN</strong></td>
-<td><code>hidden</code> / <code>sequence</code> / LSTM-GRU</td>
-<td>reads a vitals sequence over time</td>
+<td><code>nn_max_pool2d(2)</code></td>
+<td>halve the resolution</td>
+<td><code>[B, ch, 14, 14]</code></td>
 </tr>
 <tr class="odd">
-<td><strong>fused</strong></td>
-<td>3 branches <span class="math inline">\(\to\)</span> <code>torch_cat(dim = 2)</code> <span class="math inline">\(\to\)</span> head</td>
-<td>branch widths must <strong>sum</strong> to the head input</td>
+<td><code>nn_linear(.., 2)</code></td>
+<td>flatten then two logits</td>
+<td><code>[B, 2]</code></td>
 </tr>
 </tbody>
 </table>
 <ul>
-<li>The fused net runs all three branches and concatenates them along <code>dim = 2</code> into a two-logit head.</li>
-<li>A correct <strong><code>[5, 2]</code></strong> out (five patients, two logits) proves the wiring — it claims <strong>nothing</strong> about accuracy.</li>
+<li>We train on a <strong>small slice on purpose</strong>, so the <strong>validation loss turns up</strong> while training loss keeps falling: the overfit <strong>U</strong>, live.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): min-80 (Parsons). Riordina il <code>forward()</code> della rete fusa: 3 rami → <code>torch_cat(list(t, c, r), dim = 2)</code> → head. Vincolo fisso: prima calcoli i rami, POI concat-e-head; la larghezza d’ingresso della head = somma delle larghezze dei 3 rami. Lo split scrivi-non-addestra collassa CNN+RNN+fused in UN solo schema (“modulo cablato dal forward”) → da 9 a ~5 chunk effettivi. Nessun training: solo <code>[5,2]</code>.</p>
+<p>Voce docente (IT): richiamo ch.6 (convoluzione, weight-sharing), poi <code>nn_conv2d</code> reale e training dal vivo. Train piccolo voluto → la U si vede. La curva è <code>plot(cnn_fit)</code>, vera.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="rnn-reading-a-sequence-over-time" class="slide level2 smaller">
+<h2>RNN: reading a sequence over time</h2>
+<!-- RNN node: recall ch.6 + the live ECG train. -->
+<p>An RNN reads a sequence <strong>one step at a time</strong>, carrying a hidden state; we take the <strong>last</strong> step as the summary (recall RNNs over sequences, ch.&nbsp;6). We build one with <code>nn_lstm</code> and train it live on <strong>ECG</strong> traces (ECG5000).</p>
+<ul>
+<li>Input shape <code>[B, T, F]</code>: batch, time steps, channels. <code>nn_lstm(F, hidden)</code> then <code>nn_linear(hidden, 2)</code>.</li>
+<li>Same loop, same <code>plot()</code> curve, same <code>roc_auc()</code> on held-out traces: a different architecture, identical scaffolding.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): richiamo ch.6 (RNN su sequenze, ultimo step), poi <code>nn_lstm</code> reale su ECG. Stesso loop e stesso metro della CNN: l’unica cosa che cambia è l’architettura.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="fused-three-branches-one-head" class="slide level2 smaller">
+<h2>Fused: three branches, one head</h2>
+<!-- FUSED node: constructible demo, Parsons reorder. -->
+<p>A <strong>fused</strong> net runs one branch per modality and concatenates them into a shared head.</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>branch</th>
+<th>reads</th>
+<th>width</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tabular</td>
+<td>a <code>heart_failure</code> row</td>
+<td>16</td>
+</tr>
+<tr class="even">
+<td>2D-CNN</td>
+<td>an X-ray</td>
+<td><code>img_ch</code></td>
+</tr>
+<tr class="odd">
+<td>RNN</td>
+<td>an ECG trace</td>
+<td><code>hidden</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The branch widths must <strong>sum</strong> to the head input; <code>torch_cat(dim = 2)</code> joins along the feature axis into a two-logit head.</li>
+<li>We <strong>build it and run one forward pass</strong> (into <code>[1, 2]</code>), but we do <strong>not</strong> train it: the three datasets are <strong>different cohorts</strong> with no shared patient. A real fused model needs one cohort measured in all three modalities.</li>
+</ul>
+<aside class="notes">
+<p>Voce docente (IT): il fused è una DIMOSTRAZIONE: costruibile e gira, ma non allenato perché i tre dataset non condividono pazienti. La testa si potrebbe allargare a più outcome (non lo facciamo). Il forward è il Parsons che segue.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -962,17 +1098,17 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="your-turn-reorder-the-fused-forward" class="slide level2">
-<h2>Your turn — reorder the fused <code>forward()</code></h2>
+<h2>Your turn: reorder the fused <code>forward()</code></h2>
 <p>The <code>forward()</code> of the fused network is scrambled. Put these six lines in execution order:</p>
 <pre><code>(a)  self$head(torch_cat(list(t, c, r), dim = 2))
 (b)  t &lt;- self$tab(x_tab)
 (c)  r &lt;- self$rnn(x_seq)
 (d)  torch_cat(list(t, c, r), dim = 2)
-(e)  c &lt;- self$cnn(x_sig)
-(f)  forward = function(x_tab, x_sig, x_seq) {</code></pre>
-<p>Then: (1) branch widths are 16, <code>sig_ch</code>, <code>hidden</code> — what must the <strong>head’s input dim</strong> equal? (2) The head emits 2 logits — what’s the output <strong>shape</strong> for a batch of <span class="math inline">\(B = 5\)</span>?</p>
+(e)  c &lt;- self$cnn(x_img)
+(f)  forward = function(x_tab, x_img, x_seq) {</code></pre>
+<p>Then: (1) branch widths are 16, <code>img_ch</code>, <code>hidden</code>: what must the <strong>head’s input dim</strong> equal? (2) The head emits 2 logits: what is the output <strong>shape</strong> for one example?</p>
 <aside class="notes">
-<p>Voce docente (IT): Parsons min-80 (Engage). (d) è il distrattore (concat senza head). Errori comuni: concat prima dei tre rami, o head prima del concat → shape error a runtime.</p>
+<p>Voce docente (IT): Parsons. (d) è il distrattore (concat senza head). Errori comuni: concat prima dei tre rami, o head prima del concat → shape error a runtime.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -986,17 +1122,17 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="the-answer-branches-first-then-concat-head" class="slide level2">
-<h2>The answer — branches first, then concat + head</h2>
+<h2>The answer: branches first, then concat + head</h2>
 <p><strong>Order:</strong> f → b → e → c → a (build <code>t</code>, <code>c</code>, <code>r</code> in any order, then concat + head in one call):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>forward <span class="ot">=</span> <span class="cf">function</span>(x_tab, x_sig, x_seq) {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>forward <span class="ot">=</span> <span class="cf">function</span>(x_tab, x_img, x_seq) {</span>
 <span id="cb3-2"><a href=""></a>  t <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">tab</span>(x_tab)   <span class="co"># [B, 16]</span></span>
-<span id="cb3-3"><a href=""></a>  c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_sig)   <span class="co"># [B, sig_ch]</span></span>
+<span id="cb3-3"><a href=""></a>  c <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">cnn</span>(x_img)   <span class="co"># [B, img_ch]</span></span>
 <span id="cb3-4"><a href=""></a>  r <span class="ot">&lt;-</span> self<span class="sc">$</span><span class="fu">rnn</span>(x_seq)   <span class="co"># [B, hidden]</span></span>
 <span id="cb3-5"><a href=""></a>  self<span class="sc">$</span><span class="fu">head</span>(<span class="fu">torch_cat</span>(<span class="fu">list</span>(t, c, r), <span class="at">dim =</span> <span class="dv">2</span>))</span>
 <span id="cb3-6"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Head input dim:</strong> <code>16 + sig_ch + hidden</code> — <code>torch_cat(dim = 2)</code> concatenates along the feature axis; any mismatch errors at the first forward pass. <strong>Output shape:</strong> <code>[5, 2]</code> — one row per observation, two logits per row (batch is always <code>dim = 1</code>).</p>
+<p><strong>Head input dim:</strong> <code>16 + img_ch + hidden</code>; <code>torch_cat(dim = 2)</code> concatenates along the feature axis, so any mismatch errors at the first forward pass. <strong>Output shape:</strong> <code>[1, 2]</code>: one row per example, two logits per row (batch is always <code>dim = 1</code>).</p>
 <aside class="notes">
-<p>Voce docente (IT): Reveal min-80. Riga (d) scartata. torch segnala lo shape mismatch subito → scrivere il forward + un batch fittizio è il modo più rapido di validare un’architettura.</p>
+<p>Voce docente (IT): Reveal. Riga (d) scartata. torch segnala lo shape mismatch subito → scrivere il forward + un esempio è il modo più rapido di validare un’architettura.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1009,37 +1145,16 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
-<section id="the-honesty-rule-one-labeled-exception" class="slide level2 smaller">
-<h2>The honesty rule — one labeled exception</h2>
-<!-- HONESTY node, min-92. -->
-<p>Everything on screen is either <strong>live</strong> or <strong>declared write-only</strong>. The doctrine is explicit.</p>
+<section id="xai-beyond-tabular-a-note" class="slide level2 smaller">
+<h2>XAI beyond tabular: a note</h2>
+<p>SHAP rode along onto the tabular MLP because <code>kernelshap</code> needs only a prediction function. On an image it does not help: thousands of pixels, no readable attribution.</p>
 <ul>
-<li>The MLP above is <strong>trained live</strong>; its <code>roc_auc</code> is a genuine held-out number.</li>
-<li>The CNN/RNN/fused nets are <strong>shape-checked write-only</strong> — never presented as trained.</li>
-<li>The GPU demo’s killed CPU epoch <strong>was live</strong> — a real interrupted epoch, not a simulation.</li>
+<li><strong>Images:</strong> occlusion sensitivity, saliency, Grad-CAM (<em>which pixels move the prediction</em>).</li>
+<li><strong>Sequences:</strong> attribution over time steps (<em>which moments mattered</em>).</li>
 </ul>
-<div class="callout callout-warning callout-style-simple">
-<div class="callout-body">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-content">
-<p><strong>The one labeled exception.</strong> The fused-net <strong>loss curve</strong> is pre-computed — <em>“I trained this earlier on GPU.”</em> It is labeled in the plot title and is the <strong>only</strong> pre-baked result.</p>
-</div>
-</div>
-</div>
-<div class="callout callout-note callout-style-simple">
-<div class="callout-body">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-content">
-<p><strong><code>targets</code> is not an exception.</strong> A cached target re-shown as <em>“skip”</em> is <strong>reproducibility</strong> (re-derivable, hash-checked: same input <span class="math inline">\(\Rightarrow\)</span> same output), not fakery — conceptually the opposite of a pre-baked number shown as live.</p>
-</div>
-</div>
-</div>
+<p>We name them here; the tabular SHAP line stays our worked example.</p>
 <aside class="notes">
-<p>Voce docente (IT): min-92 (MCQ). ✓ unica eccezione ETICHETTATA = la loss-curve opzione B; la CPU killata ERA live. Distrattori: “nessuna cache mai” (NO), “tutto DL pre-trainabile senza label” (NO), “identico al cache di targets” (NO — la riproducibilità hash-checked è un’altra cosa). Distinzione chiave da far atterrare prima del capstone.</p>
+<p>Voce docente (IT): non facciamo la demo (scelta), ma lo strumento giusto per le immagini si nomina: occlusion/saliency/grad-CAM. SHAP resta sull’esempio tabellare.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1052,63 +1167,16 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
           display:block!important;
       }</style></aside>
 </section>
-<section id="your-turn-does-the-loss-curve-break-the-honesty-rule" class="slide level2">
-<h2>Your turn — does the loss curve break the honesty rule?</h2>
-<p>We showed the fused network’s loss curve and said <em>“I trained this earlier on GPU.”</em> How does this fit the workshop’s honesty rule?</p>
+<section id="gpu-vs.-cpu-a-note" class="slide level2 smaller">
+<h2>GPU vs.&nbsp;CPU: a note</h2>
+<p>You just watched two real nets train on a <strong>CPU</strong>: seconds, because the data and nets are small.</p>
 <ul>
-<li><strong>A.</strong> It’s the <strong>single labeled exception</strong> — announced as pre-trained, shown as a <em>didactic object</em>, not a live result. The killed CPU epoch <strong>was</strong> live (a real performance gap). Everything else is computed in real time.</li>
-<li><strong>B.</strong> <strong>Nothing is ever cached</strong> — the honesty rule means everything runs live, including this curve.</li>
-<li><strong>C.</strong> <strong>All DL outputs</strong> can be pre-trained and shown <strong>without a label</strong> — training time justifies skipping live-coding.</li>
-<li><strong>D.</strong> A labeled pre-trained result is <strong>identical to the <code>targets</code> “skip”</strong> — both pre-computed, same rule.</li>
-</ul>
-<p><em>Pick one — then we reveal it.</em></p>
-<aside class="notes">
-<p>Voce docente (IT): MCQ min-92 (Engage). Distinzione chiave da far atterrare prima del capstone.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="the-answer-a-one-labeled-exception" class="slide level2">
-<h2>The answer — A: one labeled exception</h2>
-<p><strong>✓ A.</strong> Labeled, announced, shown as a didactic object; the killed CPU epoch was genuinely live.</p>
-<ul>
-<li><strong>✗ B</strong> — <em>nothing is ever cached.</em> The rule is “don’t show pre-cooked <strong>as if live</strong>”; a clearly labeled artifact is allowed.</li>
-<li><strong>✗ C</strong> — <em>pre-train without a label.</em> Strips the rule of its key condition — undisclosed pre-training is exactly what’s prohibited.</li>
-<li><strong>✗ D</strong> — <em>same as <code>targets</code> skip.</em> Different: <code>targets</code> “skip” is <strong>re-derivable</strong> from unchanged inputs (reproducibility); the loss curve is a one-off GPU artifact that can’t be reproduced live.</li>
+<li>A serious image or fused workload makes the <strong>per-epoch cost bite</strong>, and that is where a <strong>GPU</strong> pays off.</li>
+<li>The tiny tabular <strong>MLP would not benefit</strong>: the overhead would lose.</li>
+<li>In class we run the heavy nets on the <strong>NVIDIA/CUDA</strong> machine (<code>cuda_is_available()</code> is <code>TRUE</code> there); this build box is CPU-only.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): Reveal min-92. La riproducibilità hash-checked di targets è un’altra cosa dal pre-cotto etichettato.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="gpu-payoff-where-the-accelerator-actually-pays" class="slide level2 smaller">
-<h2>GPU payoff — where the accelerator actually pays</h2>
-<p>The accelerator is <strong>not</strong> a magic speed button. Match it to the workload.</p>
-<ul>
-<li>The tiny tabular <strong>MLP does not need a GPU</strong> — it trains in seconds on a CPU (overhead would lose).</li>
-<li>The payoff is on the <strong>CNN / fused</strong> workload, where the per-epoch cost actually bites.</li>
-<li>The live classroom move: <strong>start on CPU <span class="math inline">\(\to\)</span> watch one epoch crawl <span class="math inline">\(\to\)</span> kill it <span class="math inline">\(\to\)</span> rerun on GPU.</strong></li>
-<li>Authored <strong>write-only</strong> (<code>#| eval: false</code>): it runs on the classroom NVIDIA/CUDA machine, where <code>cuda_is_available()</code> is <code>TRUE</code> — not on this CPU build box (<code>FALSE</code>).</li>
-</ul>
-<aside class="notes">
-<p>Voce docente (IT): non vendere la GPU sul giocattolo (MLP minuscolo), vendila sul carico vero (CNN/fuso). L’epoca CPU “uccisa” è un’epoca reale interrotta, non simulata: parte sul serio, arranca, la fermi → rerun con <code>cpu = FALSE</code>, stesso codice, cambia solo l’acceleratore. Su questa macchina di build gira solo in lettura (eval false).</p>
+<p>Voce docente (IT): non vendere la GPU sul giocattolo (MLP minuscolo), vendila sul carico vero (immagini/fuso). Qui abbiamo allenato davvero su CPU: si è visto che è lento, ecco perché in aula c’è la macchina CUDA.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1122,15 +1190,15 @@ PhD course in Translational Specialistic Medicine <em>“G.B. Morgagni”</em> �
       }</style></aside>
 </section>
 <section id="go-to-code-steps02-deep-learning" class="slide level2 center">
-<h2>Go to code — <code>steps/02-deep-learning/</code></h2>
-<p>Open <code>steps/02-deep-learning/</code>: train the MLP live, explain it with the same SHAP line, write (don’t train) CNN/RNN/fused, run the GPU-vs-CPU demo.</p>
+<h2>Go to code: <code>steps/02-deep-learning/</code></h2>
+<p>Open <code>steps/02-deep-learning/</code>: train the MLP and explain it with the same SHAP line, then train a 2D-CNN and an RNN live and read their train/val curves, and wire the fused net.</p>
 <ul>
-<li>The MLP’s <code>roc_auc</code> is single-split — <strong>not</strong> comparable to Basic’s CV ~0.79 (apples to oranges).</li>
-<li>One labeled exception (the loss curve); everything else live.</li>
+<li>The nets’ single-split <code>roc_auc</code> is <strong>not</strong> comparable to Basic’s CV ~0.79 (apples to oranges), nor to each other (different cohorts).</li>
+<li>Everything runs live; nothing is pre-baked.</li>
 <li><strong>Behind?</strong> Copy <code>steps/03-ellmer/</code> and you are back in sync.</li>
 </ul>
 <aside class="notes">
-<p>Voce docente (IT): chiusura Step 02 (l’hotspot). Break dopo questo step (uscita dall’hotspot). Non vendere l’MLP come vincitore della foresta.</p>
+<p>Voce docente (IT): chiusura Step 02 (il pezzo centrale). Reti allenate DAVVERO, curve vere, niente pre-cotto. Non vendere le reti come vincitrici della foresta (split singolo, coorti diverse).</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
