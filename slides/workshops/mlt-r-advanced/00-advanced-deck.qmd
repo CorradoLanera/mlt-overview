@@ -105,7 +105,7 @@ Everything live-coded; nothing pre-baked is shown as live (one labeled exception
 
 **Why first.** Advanced starts by **rebuilding** the model you validated in Basic, live: day one re-runs that exact selection to land `final_fit` again, so a clean, warm session is the precondition for everything that follows.
 
-- Rebuild Basic's selection live, then `extract_workflow(final_fit)` on the finalized random forest.
+- Rebuild Basic's selection live, then `rf_wf <- extract_workflow(final_fit)` on the finalized random forest.
 - `predict()` on **one** patient row: a probability, not yet an explanation.
 - **Pre-warm torch** so the first tensor later does not pay the init cost.
 
@@ -121,7 +121,7 @@ una probabilità non è una spiegazione → apre lo step 01.
 
 Run three checks. Signal **GREEN** if all pass, **RED** if any fails:
 
-1. Does `predict(fitted_wf, hf_tbl[1, ], type = "prob")` return a **1-row tibble** from the workflow we just fitted?
+1. Does `predict(rf_wf, hf_tbl[1, ], type = "prob")` return a **1-row tibble** from the workflow we just fitted?
 2. Does **`torch_tensor(1)`** run **without a download** (backend loads instantly, torch pre-warmed)?
 3. Is `final_fit` the **finalized workflow** from the live selection (the one that passed `last_fit()`)?
 
@@ -133,7 +133,7 @@ Voce docente (IT): live-check min-10 (Engage). Presenza: alzata di mano GREEN/RE
 
 All three pass:
 
-- `predict()` on the extracted `fitted_wf` returns a probability; `final_fit` came from the live selection we just ran;
+- `predict()` on the extracted `rf_wf` returns a probability; `final_fit` came from the live selection we just ran;
 - `torch_tensor(1)` runs without downloading libtorch (the session was pre-warmed at setup);
 - the object is the finalized `last_fit` workflow from the selection (`extract_workflow(final_fit)`), the random forest that won on `roc_auc`.
 
@@ -177,13 +177,13 @@ feature che la foresta ha imparato a USARE, non un'affermazione causale né di d
 
 ## What we hand the explainers: `extract_workflow()` {.smaller}
 
-`vip()` and `kernelshap()` both need a fitted object that **predicts**. From the recap we have `final_fit`: a `last_fit` **result** (metrics, predictions, and the fitted workflow), not a model you can call directly.
+`vip()` and `kernelshap()` both need a fitted object that **predicts**. `final_fit` is a `last_fit` **result** (metrics, predictions, and the fitted workflow), not a model you can call directly. That is why, back in the recap, we ran `extract_workflow(final_fit)`.
 
-- `extract_workflow(final_fit)` pulls out the **trained workflow**: the recipe (the same preprocessing) **plus** the fitted model, as one object.
-- That object is what we pass to `vip` and to `kernelshap`'s `pred_fun`, so every explanation runs through the exact preprocessing and model you validated.
+- That call pulled out the **trained workflow** as `rf_wf`: the recipe (the same preprocessing) **plus** the fitted model, as one object.
+- `rf_wf` is what we pass to `vip` and to `kernelshap`'s `pred_fun`, so every explanation runs through the exact preprocessing and model you validated.
 
 ::: {.notes}
-Voce docente (IT): plumbing, min-~20. `final_fit` è un risultato `last_fit`, non un modello chiamabile. `extract_workflow()` ne estrae il workflow allenato (recipe + modello). È ciò che diamo a vip e a kernelshap: spiegano esattamente pre-processing+modello validati.
+Voce docente (IT): plumbing, min-~20. `final_fit` è un risultato `last_fit`, non un modello chiamabile. Nel recap ne abbiamo già estratto il workflow allenato (`rf_wf`, via `extract_workflow()`): recipe + modello. È `rf_wf` che diamo a vip e a kernelshap: spiegano esattamente pre-processing+modello validati.
 :::
 
 ## How permutation VIMP works: a recall from ch. 4 {.smaller}

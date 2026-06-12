@@ -2,10 +2,7 @@ library(vip)
 library(kernelshap)
 library(shapviz)
 
-# The validated Basic random forest, already fitted in the recap, as a workflow ----
-rf_wf <- extract_workflow(final_fit)
-
-# Permutation VIMP — what the forest relies on ----
+# Permutation VIMP — what the forest relies on (rf_wf is the workflow extracted in the recap) ----
 # NOTE: vip unwraps the workflow and hands the bare engine (ranger) to pred_wrapper, so we
 # ignore `object` and route the prediction through the captured workflow `rf_wf` instead.
 vimp_pred <- function(object, newdata) predict(rf_wf, newdata, type = "prob")$.pred_died

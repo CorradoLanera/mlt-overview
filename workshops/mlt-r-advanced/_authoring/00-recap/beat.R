@@ -1,6 +1,6 @@
-# Sanity-check the model we just rebuilt: one-row probability prediction ----
-fitted_wf <- extract_workflow(final_fit)
-predict(fitted_wf, hf[1, ], type = "prob")
+# The validated random-forest workflow, extracted once and reused by the explainers in step 01 ----
+rf_wf <- extract_workflow(final_fit)
+predict(rf_wf, hf[1, ], type = "prob")   # sanity-check: a one-row probability from the workflow
 
 # Pre-warm torch so deep learning is instant later ----
 library(torch)
