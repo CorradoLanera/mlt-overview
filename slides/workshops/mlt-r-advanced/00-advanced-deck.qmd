@@ -487,7 +487,7 @@ A `dataloader` serves the data in **mini-batches** (shuffled for training); `luz
 3. **backward**: the gradient of the loss with respect to every weight.
 4. **step**: the **optimiser** turns the gradient into a weight update (here **Adam**; others exist, e.g. SGD, RMSProp).
 
-One pass over all batches is an **epoch**. We watch **two** curves: training loss and **validation** loss. When training keeps dropping but validation turns up, that upturn is **overfitting** (recall ch. 4): the **U**. We train past the bottom to *see* it, then keep the **best-validation** epoch (early stopping).
+One pass over all batches is an **epoch**. We watch **two** curves: training loss and **validation** loss. When training keeps dropping but validation turns up, that upturn is **overfitting** (recall ch. 4): the **U**. We train past the bottom to *see* it, then keep the **best-validation** epoch (early stopping). The score we report comes from a **separate test set** the model never trained on.
 
 ::: {.notes}
 Voce docente (IT): `forward()` non è magia, è il passo 1 del ciclo che ch.5 ha già introdotto;
@@ -542,7 +542,8 @@ A 2D-CNN slides small learned **filters** across the image and pools the result 
 ```
 :::
 
-- Trained on a **small slice on purpose**: validation loss turns up while training loss keeps falling, the overfit **U** (we keep the best-validation epoch).
+- We split with **rsample** (stratified **train / validation / test**), the same discipline as the rest of the course; torch just gets the row indices.
+- Trained on a **small** training slice on purpose: validation loss turns up while training loss keeps falling, the overfit **U** (we keep the best-validation epoch). The reported AUC is on the held-out **test** set.
 
 ::: {.notes}
 Voce docente (IT): richiamo ch.6 (convoluzione, weight-sharing), poi `nn_conv2d` reale e training
@@ -569,7 +570,7 @@ An RNN reads a sequence **one step at a time**, carrying a hidden state; we take
 ```
 :::
 
-- Same loop, same `plot()` curve, same `roc_auc()` on held-out traces: a different architecture, identical scaffolding.
+- Same loop, same `plot()` curve, same `roc_auc()` on the held-out **test** traces: a different architecture, identical scaffolding.
 
 ::: {.notes}
 Voce docente (IT): richiamo ch.6 (RNN su sequenze, ultimo step), poi `nn_lstm` reale su ECG.

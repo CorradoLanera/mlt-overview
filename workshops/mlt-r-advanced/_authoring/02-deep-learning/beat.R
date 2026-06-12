@@ -71,12 +71,18 @@ ggplot(img_show, aes(col, row, fill = pixel)) +
   coord_fixed() +
   theme_void()
 
+# Split with rsample, the same discipline as the rest of the course: train / validation / test,
+# stratified by class. torch only ever sees the row indices; the split itself stays tidymodels.
+img_ids   <- tibble(row = seq_len(dim(x_img)[1]), class = factor(img$y))
+set.seed(123)
+img_split <- initial_validation_split(img_ids, prop = c(0.125, 0.25), strata = class)
+tr <- training(img_split)$row     # deliberately small training slice: the overfit U becomes visible
+va <- validation(img_split)$row   # early stopping watches this set (keep best valid_loss)
+te <- testing(img_split)$row      # held out, scored once at the very end
+
 # A dataloader serves the images to the loop in shuffled mini-batches ----
 set.seed(123)
 torch_manual_seed(123)
-perm  <- sample(dim(x_img)[1])
-tr    <- perm[1:100]                       # a deliberately small training slice: the overfit U becomes visible
-va    <- perm[101:length(perm)]
 dl_tr <- dataloader(tensor_dataset(x_img[tr, , , ], y_img[tr]), batch_size = 16, shuffle = TRUE)
 dl_va <- dataloader(tensor_dataset(x_img[va, , , ], y_img[va]), batch_size = 64)
 
@@ -99,11 +105,11 @@ cnn_fit <- cnn2d_net |>
 
 plot(cnn_fit)   # training loss keeps falling, validation loss turns up (the U); we kept the best epoch
 
-# Evaluate on the held-out images, reading the steps in execution order ----
-cnn_prob <- predict(cnn_fit, x_img[va, , , ]) |>   # logits, one column per class
+# Score on the held-out TEST set: never used for training or early stopping ----
+cnn_prob <- predict(cnn_fit, x_img[te, , , ]) |>   # logits, one column per class
   nnf_softmax(dim = 2) |>                            # turn logits into probabilities
   as.array()                                         # bring it back to R as a matrix [N, 2]
-tibble(truth = factor(img$y[va], levels = c(1, 2)), .pred = cnn_prob[ , 2]) |>
+tibble(truth = factor(img$y[te], levels = c(1, 2)), .pred = cnn_prob[ , 2]) |>
   roc_auc(truth, .pred, event_level = "second")
 
 # A real RNN on ECG traces (ECG5000) ----
@@ -135,11 +141,16 @@ ggplot(ecg_show, aes(t, value)) +
   facet_wrap(~ class, ncol = 1) +
   theme_minimal()
 
+# Same rsample split, stratified by class: train / validation / test ----
+ecg_ids   <- tibble(row = seq_len(dim(x_ecg)[1]), class = factor(ecg$y))
+set.seed(123)
+ecg_split <- initial_validation_split(ecg_ids, prop = c(0.125, 0.25), strata = class)
+e_tr <- training(ecg_split)$row
+e_va <- validation(ecg_split)$row
+e_te <- testing(ecg_split)$row
+
 set.seed(123)
 torch_manual_seed(123)
-sp     <- sample(dim(x_ecg)[1])
-e_tr   <- sp[1:100]
-e_va   <- sp[101:length(sp)]
 edl_tr <- dataloader(tensor_dataset(x_ecg[e_tr, , ], y_ecg[e_tr]), batch_size = 16, shuffle = TRUE)
 edl_va <- dataloader(tensor_dataset(x_ecg[e_va, , ], y_ecg[e_va]), batch_size = 64)
 
@@ -161,10 +172,10 @@ rnn_fit <- rnn_net |>
 
 plot(rnn_fit)
 
-ecg_prob <- predict(rnn_fit, x_ecg[e_va, , ]) |>
+ecg_prob <- predict(rnn_fit, x_ecg[e_te, , ]) |>   # score on the held-out TEST set
   nnf_softmax(dim = 2) |>
   as.array()
-tibble(truth = factor(ecg$y[e_va], levels = c(1, 2)), .pred = ecg_prob[ , 2]) |>
+tibble(truth = factor(ecg$y[e_te], levels = c(1, 2)), .pred = ecg_prob[ , 2]) |>
   roc_auc(truth, .pred, event_level = "second")
 
 # Fused net: constructible, NOT trained, three modalities from three unrelated cohorts ----
