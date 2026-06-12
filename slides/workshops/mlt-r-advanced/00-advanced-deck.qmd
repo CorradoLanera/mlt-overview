@@ -696,13 +696,13 @@ niente pre-cotto. Non vendere le reti come vincitrici della foresta (split singo
 
 # Step 03 · LLM as typed ETL {#sec-03-ellmer .center}
 
-<!-- Step 03 (hands-on, 36 min): type_object schema; ONE live extraction; batch map written-not-run; temperature 0. -->
+<!-- Step 03 (hands-on, 36 min): type_object schema; one live extraction; all notes via parallel_chat_structured (live); batch_chat_structured shown as a comment; temperature 0. -->
 
 **Why this step.** A chat returns prose you must re-parse; an **ETL returns a record**. With a typed schema and `temperature = 0`, the LLM becomes a reproducible extractor — the same note always yields the same validated row.
 
 - A **typed schema** (`type_object()`) is the **contract**: declare fields + R types $\to$
   every note comes back as the same validated record.
-- **One** live structured extraction (first note); the batch `purrr::map` is **written, not run**.
+- **One** live extraction (first note), then **all** notes at once with `parallel_chat_structured()` (concurrent, live); the cheaper async `batch_chat_structured()` is shown as a comment.
 - `temperature = 0` = **deterministic** ETL (same input $\to$ same record).
 
 ::: {.notes}
@@ -720,7 +720,7 @@ A chat returns prose you must re-parse; an **ETL returns a record**. The schema 
 - `type_object()` declares each field + its R type — e.g. `age = type_integer("patient age in years")`.
 - An **enum** (`type_enum`) is a guard rail: `primary_dx` can only be one of a closed list, never `"probably cardiomyopathy"`.
 - Optional fields (EF not stated, beta-blocker not mentioned) come back as **`NA`** — the record stays valid.
-- The batch is **written, not run**: `map()` iterates note-by-note into a tidy tibble; `temperature = 0` keeps it deterministic.
+- The same schema scales to **every** note with `parallel_chat_structured()` (requests fire concurrently, a tidy tibble comes back now); `temperature = 0` keeps each record deterministic.
 
 ::: {.callout-note appearance="simple"}
 **Honesty (carried forward).** With no API key, we show a **labeled cached** result from an
@@ -728,10 +728,9 @@ earlier live run — never a faked record. The key lives only in a gitignored `.
 :::
 
 ::: {.notes}
-Voce docente (IT): min-124 (MCQ). temperature bassa + `map`: ✓ determinismo (ETL) +
-iterazione elemento-per-elemento. Distrattori: "temp = qualità" (NO), "temp alta + map su
-GPU" (NO), "temp irrilevante per extraction" (NO). La cache etichettata è la stessa
-dottrina dell'opzione-B: un vero record salvato prima, mostrato con etichetta, mai finto.
+Voce docente (IT): qui parte la teoria parallel-vs-batch + l'MCQ. La cache etichettata (senza
+API key) è la stessa dottrina dell'opzione-B: un vero record salvato prima, mostrato con
+etichetta, mai finto. Il punto: stesso codice, due trasporti (parallel ora, batch più economico).
 :::
 
 ## Your turn — predict the typed record
@@ -766,45 +765,71 @@ Voce docente (IT): Reveal min-112. La sottigliezza integer-vs-double sorprende: 
 garantisce double; conta la rappresentazione JSON.
 :::
 
-## Your turn — temperature 0 + `map()`, together?
+## Scaling the ETL: parallel vs batch {.smaller}
 
-We set `temperature = 0` and wrap the extraction in `purrr::map()`. What do these two achieve together?
+One note proves the contract; real data has many. `ellmer` runs the schema over **all** of them two ways, the **same signature**, one word changed:
 
-- **A.** `temperature = 0` = **determinism** (same input → same record → a reproducible ETL, not a chat); `purrr::map()` applies the extraction **element-by-element**, one record per note.
-- **B.** A **lower temperature improves quality** — the LLM is more accurate at 0, always the right choice.
-- **C.** **High temperature + `map()` runs on the GPU** — `map()` parallelises across cores, high temp enables GPU sampling.
-- **D.** **Temperature is irrelevant** with a `type_object()` schema — valid JSON regardless.
+| runner | how it works | cost | latency |
+|---|---|---|---|
+| `parallel_chat_structured()` | fires every request **concurrently** (capped by `max_active` / `rpm`), waits for the slowest | full | **seconds**: answer now |
+| `batch_chat_structured()` | submits all prompts as **one job** to the provider's **Batch API**, polled until done (resume via `path`) | **~50% less** | minutes to **24 h** |
 
-*Pick one — then we reveal it.*
+- Both return the **same typed tibble**, one validated row per note; `temperature = 0` keeps each record deterministic either way.
+- Live in class we use **parallel** (results now); a large overnight extraction is where **batch** pays off.
 
 ::: {.notes}
-Voce docente (IT): MCQ min-124 (Engage). Distrattori: B = temp = qualità; C = temp + map = GPU;
-D = temp irrilevante con schema.
+Voce docente (IT): la teoria del "come scala". parallel = N richieste concorrenti in volo insieme
+(cap max_active/rpm), blocchi fino alla più lenta, prezzo pieno, secondi. batch = un solo job alla
+Batch API del provider, asincrono, ~50% costo, minuti→24h, ripreso via `path`. Stessa firma, cambia
+SOLO la funzione (+ path per batch). In aula: parallel; lavori grossi offline: batch.
 :::
 
-## The answer — A: determinism + element-wise iteration
+## Your turn: which runner answers now? {.smaller}
 
-**✓ A.** `temperature = 0` makes the ETL reproducible; `map()` iterates note-by-note into one record each.
+You have 12 notes and want the validated rows **live in class**; you also have a nightly job over 50k notes where **cost** matters. Match the runner:
 
-- **✗ B** — *temperature = quality.* It controls randomness, not capability; for extraction we want **zero** randomness.
-- **✗ C** — *high temp + map = GPU.* Invented: `map()` iterates (sequentially, or parallel via `furrr`); neither it nor temperature touches the GPU.
-- **✗ D** — *temperature irrelevant with a schema.* Even typed, at `temperature > 0` two calls can differ; `0` = greedy, deterministic.
+- **A.** Live now uses `parallel_chat_structured()`; the nightly cheap job uses `batch_chat_structured()`. Same call, one word (and a `path`) changed.
+- **B.** Always `batch_chat_structured()`: batching is strictly faster.
+- **C.** `parallel_chat_structured()` for both; batch is a deprecated alias.
+- **D.** Neither scales; loop the notes with `purrr::map()`, one HTTP call at a time.
+
+*Pick one, then we reveal it.*
 
 ::: {.notes}
-Voce docente (IT): Reveal min-124. La cache etichettata (senza API key) è la stessa dottrina
-dell'opzione-B: un record vero salvato prima, mostrato con etichetta, mai finto.
+Voce docente (IT): MCQ parallel vs batch (Engage). A giusto. Distrattori: B batch più veloce (NO:
+più economico, asincrono); C batch deprecato (NO, è corrente); D map seriale (è il vecchio approccio
+che parallel/batch sostituiscono).
+:::
+
+## The answer: A, same call, two transports {.smaller}
+
+**✓ A.** `parallel_chat_structured(chat, notes, type)` and `batch_chat_structured(chat, notes, path, type)` take the **same** chat, prompts, and schema. Swap the function (batch adds a `path` to resume the job); nothing else changes.
+
+- **parallel** keeps the requests **in flight together** and returns in **seconds**: right for a live class, full per-call price.
+- **batch** hands the whole set to the provider's **Batch API**, about **50% cheaper**, back in **minutes to 24 h**: right for large offline jobs.
+- **✗ B** *(batch is faster)*: batch trades **latency for cost**, not the other way round.
+- **✗ C** *(batch deprecated)*: both are current, different transports, not aliases.
+- **✗ D** *(loop with `map`)*: that is the slow, serial path these two runners replace.
+
+::: {.notes}
+Voce docente (IT): Reveal. Il punto: stesso codice, due trasporti. parallel = concorrente, subito,
+prezzo pieno; batch = Batch API, ~50% costo, asincrono. D (map seriale) è il vecchio approccio
+sostituito. temperature=0 resta ortogonale (determinismo del record).
 :::
 
 ## Go to code — `steps/03-ellmer/` {.center}
 
-Open `steps/03-ellmer/`: define the typed schema, run **one** live extraction, read the batch `map` (written, not run).
+Open `steps/03-ellmer/`: define the typed schema, run one live extraction, then **all** notes with `parallel_chat_structured()` (live); the `batch_chat_structured()` variant sits beside it as a comment, the same call one word apart.
 
 - `temperature = 0` → deterministic ETL; the typed record is the contract.
+- **Your turn:** add a `serum_creatinine` field to the schema and watch it appear in every extracted record.
 - No API key? A labeled cached result from an earlier live run — never a faked record.
 - **Behind?** Copy `steps/04-targets/` and you are back in sync.
 
 ::: {.notes}
-Voce docente (IT): chiusura Step 03. Una sola estrazione live; il batch map è write-only.
+Voce docente (IT): chiusura Step 03. Una estrazione singola + tutte le note in parallelo (live);
+batch_chat_structured come commento (stessa firma, ~50% costo, asincrono). Esercizio: estendere lo
+schema con un campo (serum_creatinine).
 :::
 
 # Step 04 · Reproducibility capstone {#sec-04-targets .center}
