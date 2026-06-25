@@ -33,8 +33,10 @@ dev/*.R
 dev/*.txt
 dev/*.py
 dev/release-assets/
-# Built workshop ZIPs — published as GitHub Release assets, not committed
-dist/
+# Built workshop ZIPs — published as GitHub Release assets, not committed.
+# Anchored to repo root: an unanchored `dist/` also matches the reveal.js
+# `dist/` nested inside every deck's `_files`, which must ship in /docs.
+/dist/
 # Generated site partials (rebuilt by scripts/build_site.py)
 site/_generated/
 # mltbuild scratch (plan 1)
